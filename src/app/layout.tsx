@@ -3,10 +3,8 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { cn } from "@/lib/utils";
-import Header from "@/components/generalComponents/Header";
+import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
-import Script from "next/script";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -24,11 +22,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script
-        type="text/javascript"
-        src="http://localhost:1337/plugins/strapi-stripe/static/stripe.js"
-        async
-      />
       <MainContextProvider>
         <body
           className={cn(
@@ -36,7 +29,6 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
-          <Header />
           {children}
           <ToastContainer />
         </body>
