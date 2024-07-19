@@ -1,33 +1,43 @@
 "use client";
-import React, { use, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { MainContext } from "@/context/Main";
+import Link from "next/link";
+import { supabase } from "@/utils/supabase/client";
+import { toast } from "react-toastify";
 
 const Header = () => {
-  const router = useRouter();
-  const { userdata, setuserdata } = useContext(MainContext);
+  const { userdata, refreshUser } = useContext(MainContext);
   const [isLoggedIn, setIsLoggedIn] = useState(userdata ? true : false);
   useEffect(() => {
     if (userdata) {
       setIsLoggedIn(true);
+    } else{
+      setIsLoggedIn(false);
     }
   }, [userdata]);
-  const handleLogout = () => {
-    Cookies.remove("jwtToken");
-    localStorage.removeItem("userdata");
-    setuserdata(null)
-    router.push("/signin");
-    setIsLoggedIn(false)
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("Error logging out:", error.message);
+      toast.error("Error logging out");
+      return;
+    } else {
+      refreshUser();
+    }
   };
   return (
     <div className="p-2">
       <div className="ml-auto w-fit mr-2">
         {isLoggedIn ? (
-          <Button onClick={handleLogout}>Logout</Button>
+          <div className="flex gap-4 items-center justify-center">
+            <Link href="/dashboard">Dashboard</Link>
+            <Button onClick={handleLogout}>Logout</Button>
+          </div>
         ) : (
-          <Button onClick={() => router.push("/signin")}>Sign In</Button>
+          <Link href="/signin">Sign In</Link>
         )}
       </div>
     </div>
