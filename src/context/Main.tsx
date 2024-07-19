@@ -1,16 +1,41 @@
 "use client";
 import { createContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
 export const MainContext = createContext<any>(null);
+import { supabase } from "@/utils/supabase/client";
+import { usePathname, useRouter } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 
 export const MainContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [userdata, setuserdata] = useState<any>("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [userdata, setuserdata] = useState<User | null>(null);
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  const refreshUser = async () => {
+    const { data, error } = await supabase.auth.refreshSession();
+    if (data) {
+      setuserdata(data.user);
+      if (
+        (pathname.startsWith("/auth") || pathname === "/signin") &&
+        data.user
+      ) {
+        router.push("/dashboard");
+      } else if (pathname.startsWith("/dashboard") && !data.user) {
+        router.push("/signin");
+      }
+    } else {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    if (!userdata) {
+      refreshUser();
+    }
     if (typeof window !== "undefined") {
       setWindowWidth(window.innerWidth);
     }
@@ -25,39 +50,12 @@ export const MainContextProvider = ({
     };
   }, []);
 
-  useEffect(() => {
-    let data = localStorage.getItem("userdata");
-    let token = Cookies.get("jwtToken");
-    if (!token && data) {
-      localStorage.removeItem("userdata");
-    }
-    if (data === "") {
-      localStorage.removeItem("userdata");
-    } else if (!localStorage.getItem("userdata")) {
-      Cookies.remove("jwtToken");
-    }
-    if (data) {
-      data = JSON.parse(data);
-      setuserdata(data);
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem("userdata", JSON.stringify(userdata));
-  //   if (userdata === "") {
-  //     localStorage.removeItem("userdata");
-  //     Cookies.remove("jwtToken");
-  //   } else if (!localStorage.getItem("userdata")) {
-  //     Cookies.remove("jwtToken");
-  //   }
-  // }, [userdata]);
-
   return (
     <MainContext.Provider
       value={
         {
           userdata,
-          setuserdata,
+          refreshUser,
           windowWidth,
         } as any
       }
