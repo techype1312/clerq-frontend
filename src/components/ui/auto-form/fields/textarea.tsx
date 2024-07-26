@@ -18,6 +18,7 @@ export default function AutoFormTextarea({
         <AutoFormLabel
           label={fieldConfigItem?.label || label}
           isRequired={isRequired}
+          className={fieldProps.labelclass}
         />
       )}
       <FormControl>

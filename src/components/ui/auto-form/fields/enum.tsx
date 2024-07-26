@@ -39,6 +39,7 @@ export default function AutoFormEnum({
       <AutoFormLabel
         label={fieldConfigItem?.label || label}
         isRequired={isRequired}
+        className={fieldProps.labelclass}
       />
       <FormControl>
         <Select

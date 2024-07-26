@@ -19,6 +19,7 @@ export default function AutoFormNumber({
         <AutoFormLabel
           label={fieldConfigItem?.label || label}
           isRequired={isRequired}
+          className={fieldProps.labelclass}
         />
       )}
       <FormControl>

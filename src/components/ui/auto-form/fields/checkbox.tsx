@@ -23,6 +23,7 @@ export default function AutoFormCheckbox({
       <AutoFormLabel
         label={fieldConfigItem?.label || label}
         isRequired={isRequired}
+        className={fieldProps.labelclass}
       />
       <FormControl>
         <Select

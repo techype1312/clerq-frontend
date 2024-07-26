@@ -70,6 +70,8 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formAction,
   submitButtonText: submitButtonText = "Submit",
   isLoading,
+  submitButtonClass,
+  labelClass,
 }: {
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
@@ -92,6 +94,8 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formAction?: (formData: FormData) => Promise<void>;
   submitButtonText?: string;
   isLoading?: boolean;
+  submitButtonClass?: string;
+  labelClass?: string;
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
@@ -102,7 +106,6 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     defaultValues: defaultValues ?? undefined,
     values: valuesProp,
   });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
@@ -144,11 +147,17 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
               innerClassName={innerClassName}
               edit={edit}
               zodItemClass={zodItemClass}
+              labelClass={labelClass}
             />
             {renderChildren}
-            {withSubmitButton && <AutoFormSubmit />}
-            {!withSubmitButton && formAction && (
-              <button className="border py-1 rounded-md" formAction={formAction}>
+            {formAction && (
+              <button
+                className={cn(
+                  "border py-3 rounded-full background-text-primary text-white w-fit px-12",
+                  submitButtonClass
+                )}
+                formAction={formAction}
+              >
                 {isLoading ? (
                   <Loader2Icon className="animate-spin" />
                 ) : (
@@ -172,6 +181,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
               innerClassName={innerClassName}
               edit={edit}
               zodItemClass={zodItemClass}
+              labelClass={labelClass}
             />
             {renderChildren}
             {withSubmitButton && <AutoFormSubmit />}

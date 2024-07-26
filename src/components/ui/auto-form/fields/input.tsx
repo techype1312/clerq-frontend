@@ -13,14 +13,14 @@ export default function AutoFormInput({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const type = fieldProps.type || "text";
-
   return (
-    <div className="flex flex-row items-center space-x-2">
+    <div className="flex flex-row items-center space-x-2 w-full">
       <FormItem className="flex w-full flex-col justify-start">
         {showLabel && (
           <AutoFormLabel
             label={fieldConfigItem?.label || label}
             isRequired={isRequired}
+            className={fieldProps.labelclass}
           />
         )}
         <FormControl>

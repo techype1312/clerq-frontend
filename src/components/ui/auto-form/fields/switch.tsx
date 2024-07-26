@@ -25,6 +25,7 @@ export default function AutoFormSwitch({
           <AutoFormLabel
             label={fieldConfigItem?.label || label}
             isRequired={isRequired}
+            className={fieldProps.labelclass}
           />
         </div>
       </FormItem>

@@ -19,10 +19,13 @@ import {
   zodToHtmlInputProps,
 } from "../utils";
 import AutoFormArray from "./array";
+import AutoFormModal from "./modal";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
+
+export type SchemaType = z.ZodObject<any, any>;
 
 export default function AutoFormObject<
   SchemaType extends z.ZodObject<any, any>
@@ -35,6 +38,7 @@ export default function AutoFormObject<
   innerClassName,
   edit = true,
   zodItemClass,
+  labelClass,
 }: {
   schema: SchemaType | z.ZodEffects<SchemaType>;
   form: ReturnType<typeof useForm>;
@@ -44,6 +48,7 @@ export default function AutoFormObject<
   innerClassName?: string;
   edit?: boolean;
   zodItemClass?: string;
+  labelClass?: string;
 }) {
   const { watch } = useFormContext(); // Use useFormContext to access the watch function
 
@@ -81,6 +86,9 @@ export default function AutoFormObject<
         const zodBaseType = getBaseType(item);
         const itemName = item._def.description ?? beautifyObjectName(name);
         const key = [...path, name].join(".");
+        const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
+        // TODO: Leverage more openapi fields to power fieldConfig here
+        fieldConfigItem.label = fieldConfigItem.label;
         const {
           isHidden,
           isDisabled,
@@ -91,7 +99,10 @@ export default function AutoFormObject<
           return null;
         }
 
-        if (zodBaseType === "ZodObject") {
+        if (
+          zodBaseType === "ZodObject" &&
+          fieldConfigItem.fieldType !== "modal"
+        ) {
           return (
             <AccordionItem value={name} key={key} className="border-none mt-0">
               <AutoFormObject
@@ -104,6 +115,26 @@ export default function AutoFormObject<
                 }
                 path={[...path, name]}
                 innerClassName={zodItemClass}
+                labelClass={labelClass}
+              />
+            </AccordionItem>
+          );
+        }
+        if (
+          zodBaseType === "ZodObject" &&
+          fieldConfigItem.fieldType === "modal"
+        ) {
+          return (
+            <AccordionItem value={name} key={key} className="border-none mt-0">
+              {/* Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid */}
+              <AutoFormModal
+                name={name}
+                item={item as unknown as z.ZodObject<any, any>}
+                form={form}
+                fieldConfig={fieldConfig}
+                label={fieldConfigItem.label ?? itemName}
+                path={[...path, name]}
+                labelClass={labelClass}
               />
             </AccordionItem>
           );
@@ -120,10 +151,6 @@ export default function AutoFormObject<
             />
           );
         }
-        const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
-        // TODO: Leverage more openapi fields to power fieldConfig here
-        fieldConfigItem.label =
-          fieldConfigItem.label ?? item._def.openapi?.title;
         const zodInputProps = zodToHtmlInputProps(item);
         const isRequired =
           isRequiredByDependency ||
@@ -164,6 +191,7 @@ export default function AutoFormObject<
                 disabled: fieldConfigItem.inputProps?.disabled || isDisabled,
                 ref: undefined,
                 value: value,
+                labelclass: labelClass,
               };
 
               if (InputComponent === undefined) {
@@ -172,19 +200,21 @@ export default function AutoFormObject<
               return (
                 <ParentElement key={`${key}.parent`}>
                   {edit ? (
-                    <InputComponent
-                      zodInputProps={zodInputProps}
-                      field={field}
-                      fieldConfigItem={fieldConfigItem}
-                      label={itemName}
-                      isRequired={isRequired}
-                      zodItem={item}
-                      fieldProps={fieldProps}
-                      className={fieldProps.className}
-                    />
+                    <>
+                      <InputComponent
+                        zodInputProps={zodInputProps}
+                        field={field}
+                        fieldConfigItem={fieldConfigItem}
+                        label={itemName}
+                        isRequired={isRequired}
+                        zodItem={item}
+                        fieldProps={fieldProps}
+                        className={fieldProps.className}
+                      />
+                    </>
                   ) : (
                     <FormItem className="flex flex-col gap-2">
-                      <FormLabel>{itemName}</FormLabel>
+                      <FormLabel className={labelClass}>{itemName}</FormLabel>
                       {zodBaseType === "ZodDate"
                         ? field.value
                           ? format(field.value, "PPP")

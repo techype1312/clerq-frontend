@@ -40,6 +40,7 @@ export default function AutoFormFile({
         <AutoFormLabel
           label={fieldConfigItem?.label || label}
           isRequired={isRequired}
+          className={fieldProps.labelclass}
         />
       )}
       {!file && (

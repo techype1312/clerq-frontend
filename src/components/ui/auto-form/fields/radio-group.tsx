@@ -35,6 +35,7 @@ export default function AutoFormRadioGroup({
         <AutoFormLabel
           label={fieldConfigItem?.label || label}
           isRequired={isRequired}
+          className={fieldProps.labelclass}
         />
         <FormControl>
           <RadioGroup

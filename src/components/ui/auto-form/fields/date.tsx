@@ -36,14 +36,16 @@ export default function AutoFormDate({
       <AutoFormLabel
         label={fieldConfigItem?.label || label}
         isRequired={isRequired}
+        className={fieldProps.labelclass}
       />
       <FormControl>
         <div className="relative">
           <div
-            className="border p-2 rounded-md cursor-pointer"
+            className="border p-2 rounded-md cursor-pointer text-sm"
             onClick={() => setIsEdit(!isEdit)}
           >
-            {field.value ? format(field.value, "yyyy-MM-dd") : "Pick a date!"}
+            {field.value && format(field.value, "yyyy-MM-dd")}
+            {!field.value && <p className="text-muted">1990-01-01</p>}
           </div>
           {isEdit && (
             <div className="absolute z-10 bg-white border ">
