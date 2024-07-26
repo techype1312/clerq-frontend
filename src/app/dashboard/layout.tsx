@@ -13,7 +13,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const showHeader = !pathname.startsWith("/auth") && pathname !== "/signin";
+  const showHeader =
+    !pathname.startsWith("/auth") &&
+    pathname !== "/dashboard/verify-user" &&
+    !pathname.startsWith("/dashboard");
   return (
     <div>
       {showHeader && <Header />}

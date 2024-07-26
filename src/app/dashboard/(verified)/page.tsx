@@ -1,11 +1,9 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 
 const Page = () => {
-
   return (
-    <div>
-      Page
+    <div className="flex flex-col gap-4">
     </div>
   );
 };
