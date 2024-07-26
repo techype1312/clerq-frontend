@@ -9,7 +9,7 @@ const Page = () => {
       email: searchParams.get("email") as string,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: "http://localhost:3000/dashboard",
+        emailRedirectTo: process.env.NEXT_BASE_URL + "/dashboard",
       },
     });
   };

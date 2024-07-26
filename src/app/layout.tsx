@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
+import 'react-material-symbols/rounded';
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
