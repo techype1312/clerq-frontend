@@ -5,10 +5,10 @@ import validator from "validator";
 export const signUpSchema = z
   .object({
     name: z.object({
-      firstName: z.string({
+      first_name: z.string({
         required_error: "First Name is required",
       }),
-      lastName: z.string({
+      last_name: z.string({
         required_error: "Last Name is required",
       }),
     }),
@@ -59,6 +59,10 @@ export const signInSchema = z.object({
 const countryList = Country.getAllCountries().map((c) => c.name);
 const restOfCountryList = countryList.filter((c) => c !== countryList[0]);
 
+const customErrorMap: z.ZodErrorMap = (issue, ctx) => ({
+  message: "Country is required",
+});
+
 export const step1Schema = z.object({
   name: z.object({
     first_name: z.string({
@@ -67,9 +71,6 @@ export const step1Schema = z.object({
     last_name: z.string({
       required_error: "Last Name is required",
     }),
-  }),
-  address: z.string({
-    required_error: "Address is required",
   }),
   date_of_birth: z
     .date()
@@ -89,27 +90,74 @@ export const step1Schema = z.object({
     })
     .email(),
   phone: z.string().refine(validator.isMobilePhone),
-  country_of_tax_residence: z.enum([countryList[0], ...restOfCountryList]),
+  address: z.object({
+    country: z.enum([countryList[0], ...restOfCountryList], {
+      errorMap: customErrorMap,
+    }),
+    legal_address_1: z.string({
+      required_error: "Street is required",
+    }),
+    legal_address_2: z.string({
+      required_error: "City is required",
+    }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    // state_zip: z.object({
+    state: z.string({
+      required_error: "State is required",
+    }),
+    zip_code: z.number({
+      required_error: "Zip code is required",
+    }),
+    // }),
+  }),
+  country_of_tax_residence: z.enum([countryList[0], ...restOfCountryList], {
+    errorMap: customErrorMap,
+  }),
+  company: z.enum(["Yes", "No"]),
 });
+
+export type Step1Schema = z.infer<typeof step1Schema>;
+export type Address = Step1Schema["address"];
 
 export const step2Schema = z.object({
   company_name: z.string({
     required_error: "Company Name is required",
   }),
-  // company_type: z.enum([
-  //   "C Corporation",
-  //   "S Corporation",
-  //   "Partnership",
-  //   "Trust/estate",
-  //   "Limited liability company (if applicable, provide the classification)",
-  //   "Other (see instructions)",
-  // ]),
+  company_email: z
+    .string({
+      required_error: "Company Email is required",
+    })
+    .email(),
+  phone: z.string().refine(validator.isMobilePhone),
+  //Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid
+  address: z.object({
+    country: z.enum([countryList[0], ...restOfCountryList], {
+      errorMap: customErrorMap,
+    }),
+    legal_address_1: z.string({
+      required_error: "Street is required",
+    }),
+    legal_address_2: z.string({
+      required_error: "City is required",
+    }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    state: z.string({
+      required_error: "State is required",
+    }),
+    zip_code: z.number({
+      required_error: "Zip code is required",
+    }),
+  }),
   ein: z.string({
     required_error: "EIN is required",
   }),
-  company_email: z.string({
-    required_error: "Company Email is required",
-  }).email(),
+  country_of_tax_residence: z.enum([countryList[0], ...restOfCountryList], {
+    errorMap: customErrorMap,
+  }),
   federal_tax_classification: z.enum([
     "Individual/sole proprietor or single-member LLC",
     "C Corporation",
@@ -125,7 +173,9 @@ export const step2Schema = z.object({
   // ]),
 });
 
-export const step4Schema = z.object({
+export type Step2Schema = z.infer<typeof step2Schema>;
+
+export const step5Schema = z.object({
   management_company: z.string().optional(),
   agency: z.string().optional(),
   legal: z.string().optional(),
