@@ -78,6 +78,11 @@ const config = {
       },
     },
   },
+  variants: {
+    extend: {
+      placeholderColor: ['focus'],
+    }
+  },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config
 
