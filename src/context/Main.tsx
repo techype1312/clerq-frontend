@@ -19,13 +19,10 @@ export const MainContextProvider = ({
     const { data, error } = await supabase.auth.refreshSession();
     if (data) {
       setuserdata(data.user);
-      if (
-        (pathname.startsWith("/auth") || pathname === "/signin") &&
-        data.user
-      ) {
+      if (pathname.startsWith("/auth") && data.user) {
         router.push("/dashboard");
       } else if (pathname.startsWith("/dashboard") && !data.user) {
-        router.push("/signin");
+        router.push("/auth/signin");
       }
     } else {
       console.log(error);
