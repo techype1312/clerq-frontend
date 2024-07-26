@@ -37,19 +37,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/signin") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
+  if (!user && !request.nextUrl.pathname.startsWith("/auth")) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
-    url.pathname = "/signin";
+    url.pathname = "/auth/signin";
     return NextResponse.redirect(url);
   } else if (
     user?.user_metadata.is_user_verified &&
-    (request.nextUrl.pathname.startsWith("/signin") ||
-      request.nextUrl.pathname.startsWith("/auth") ||
+    (request.nextUrl.pathname.startsWith("/auth") ||
       request.nextUrl.pathname.startsWith("/dashboard/verify-user"))
   ) {
     const url = request.nextUrl.clone();
