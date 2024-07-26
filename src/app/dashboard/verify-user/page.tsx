@@ -13,63 +13,150 @@ const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
+  const [totalSteps, setTotalSteps] = useState(4);
   const { userdata, refreshUser } = useContext(MainContext);
   const changeStep = (step: number) => {
     setStep(step);
-    router.push("/dashboard/verify-user?step=" + step);
+    if (totalSteps === 5) {
+      router.push(
+        "/dashboard/verify-user?step=" + step + "&totalSteps=" + totalSteps
+      );
+    } else {
+      router.push("/dashboard/verify-user?step=" + step);
+    }
   };
   const [userRefreshed, setUserRefreshed] = useState(false);
   const [otherUserData, setOtherUserData] = useState(null);
-
+  const [staticForFirstTime, setStaticForFirstTime] = useState(false); // Need this for a very specific use case which is causing infinite loop
+  console.log(totalSteps);
   useEffect(() => {
     if (!userdata && !userRefreshed) {
       refreshUser();
     }
     setUserRefreshed(true);
-    getUserData().then((data) => {
-      if (data) {
-        setOtherUserData(data[0]);
-      }
-    });
+    if (!otherUserData) {
+      getUserData().then((data) => {
+        if (data) {
+          setOtherUserData(data[0]);
+        }
+      });
+    }
   }, [userdata]);
 
   useEffect(() => {
-    if (searchParams.get("step")) {
-      const step = parseInt(searchParams.get("step") ?? "1");
-      setStep(step);
-    } else {
-      router.push("/dashboard/verify-user?step=1");
+    if (searchParams) {
+      if (searchParams.get("step")) {
+        const steps = parseInt(searchParams.get("step") ?? "1");
+        setStep(steps);
+      }
+      if (searchParams.get("totalSteps")) {
+        const totalStep = parseInt(searchParams.get("totalSteps") ?? "4");
+        if (totalStep === 5) {
+          setStaticForFirstTime(true);
+          setTotalSteps(totalStep);
+        }
+      }
     }
   }, [searchParams]);
 
+  const stepsHeader = [
+    "Basic information",
+    "Add company",
+    "Generate W9 certificate",
+    "Add bank accounts",
+    "Add representatives",
+  ];
+  const headerText = stepsHeader.filter((header, index) => {
+    if (totalSteps === 5) {
+      if (step === index + 1) {
+        return header;
+      }
+    } else if (totalSteps === 4) {
+      if (step === 1 && index === 0) {
+        return header;
+      } else if (step === index && index !== 1) {
+        return header;
+      }
+    }
+  });
+
   return (
-    <div className="grid grid-cols-2 gap-4 px-8 py-8">
-      <div className="flex flex-col gap-4">
-        <p className="text-[#757575]">Step {step}/4</p>
-        {step === 1 && <h1>Basic information</h1>}
-        {step === 2 && <h1>Add company</h1>}
-        {step === 3 && <h1>Draft W9 certificate</h1>}
-        {step === 4 && <h1>Add representatives</h1>}
-        {step === 5 && <h1>Add bank accounts</h1>}
-      </div>
-      <div className="flex items-center py-12">
-        {step === 1 && (
-          <Step1
-            changeStep={changeStep}
-            userdata={userdata}
-            otherUserData={otherUserData}
-          />
-        )}
-        {step === 2 && <Step2 changeStep={changeStep} />}
-        {step === 3 && <Step3 changeStep={changeStep} />}
-        {step === 4 && (
-          <Step4
-            changeStep={changeStep}
-            userdata={userdata}
-            otherUserData={otherUserData}
-          />
-        )}
-        {step === 5 && <Step5 />}
+    <div className="flex px-12 h-screen items-center">
+      <div className="flex gap-4 h-[80vh] items-center w-full">
+        <div className="flex flex-col w-1/2 gap-4 self-start">
+          <p className="text-muted">
+            Step {step}/{totalSteps}
+          </p>
+          {/*
+          //Testing purpose remove later
+          <button
+            onClick={() => {
+              changeStep(step + 1);
+            }}
+          >
+            +
+          </button>
+          <button
+            onClick={() => {
+              changeStep(step - 1);
+            }}
+          >
+            -
+          </button> */}
+          <h1 className="text-primary text-3xl">
+            <span>{headerText}</span>
+            {headerText[0] === stepsHeader[3] && (
+              <p className="text-sm max-w-sm text-muted mt-2">
+                To securely connect your bank account, we use Plaid, you can
+                also manually add your bank account.
+              </p>
+            )}
+          </h1>
+          {headerText[0] === stepsHeader[2] && (
+            <>
+              {((step === 3 && totalSteps === 5) ||
+                (step === 2 && totalSteps === 4)) && (
+                <Step3 changeStep={changeStep} step={step} />
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex items-center w-1/2 py-12">
+          {step === 1 && (
+            <Step1
+              changeStep={changeStep}
+              userdata={userdata}
+              otherUserData={otherUserData}
+              setTotalSteps={setTotalSteps}
+              totalSteps={totalSteps}
+              staticForFirstTime={staticForFirstTime}
+              setStaticForFirstTime={setStaticForFirstTime}
+            />
+          )}
+          {step === 2 && totalSteps === 5 && (
+            <Step2 changeStep={changeStep} step={step} />
+          )}
+          {((step === 3 && totalSteps === 5) ||
+            (step === 2 && totalSteps === 4)) && <div className="h-sm"></div>}
+          {((step === 4 && totalSteps === 5) ||
+            (step === 3 && totalSteps === 4)) && (
+            <Step4
+              changeStep={changeStep}
+              userdata={userdata}
+              otherUserData={otherUserData}
+              step={step}
+            />
+          )}
+          {((step === 5 && totalSteps === 5) ||
+            (step === 4 && totalSteps === 4)) && (
+            <Step5
+              changeStep={changeStep}
+              userdata={userdata}
+              otherUserData={otherUserData}
+              step={step}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

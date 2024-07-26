@@ -3,15 +3,20 @@ import { Button } from "../ui/button";
 import W9Form from "../generalComponents/W9Form";
 
 
-const Step3 = ({ changeStep }: { changeStep: (step: number) => void }) => {
+const Step3 = ({ changeStep,step }: { changeStep: (step: number) => void, step: number }) => {
   const handleSubmit = async () => {
 
   };
   return (
     <div>
-      <Button onClick={() => handleSubmit()}>Generate</Button>
-      <W9Form />
-      <Button onClick={() => changeStep(4)}>Skip</Button>
+      <div className="text-primary">
+        Generate for
+      </div>
+      <div className="flex flex-col gap-4">
+      <Button className="w-fit px-7 rounded-full h-10 ml-auto" onClick={() => handleSubmit()}>Generate</Button>
+      {/* <W9Form /> */}
+      <Button className="w-fit px-7 rounded-full h-10 ml-auto" onClick={() => changeStep(step+1)}>Skip</Button>
+      </div>
     </div>
   );
 };
