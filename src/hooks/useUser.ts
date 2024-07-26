@@ -1,8 +1,9 @@
 import { supabase } from "@/utils/supabase/client";
 import { UserMetadata } from "@supabase/supabase-js";
+import { insertAddressData } from "./useAddress";
 
 //This will insert the user data into the other_user_info table
-export const insertUserData = async (data: any) => {
+export const insertUserData = async (data: any, address: any) => {
   const { data: user } = await supabase.auth.getUser();
   if (!user) {
     return null;
@@ -12,15 +13,18 @@ export const insertUserData = async (data: any) => {
   data.last_name = data.name.last_name;
   delete data.name;
   delete data.address;
+  delete data.company;
   data.phone = data.phone.toString();
   data.date_of_birth = new Date(data.date_of_birth).toISOString();
+  console.log(data);
   const { data: insertedData, error } = await supabase
     .from("other_user_info")
-    .insert(data);
+    .insert(data).select("id");
   if (error) {
     console.log(error);
     return null;
   } else {
+    insertAddressData(address, false)
     return insertedData;
   }
 };
@@ -50,6 +54,13 @@ export async function updateOtherUserData(data: any) {
   if (!user) {
     return null;
   }
+  console.log(data, 'update')
+  data.user_id = user?.user?.id;
+  data.first_name = data?.name?.first_name;
+  data.last_name = data?.name?.last_name;
+  delete data.name;
+  delete data.address;
+  delete data.company;
   const { data: updatedData, error } = await supabase
     .from("other_user_info")
     .update(data)
