@@ -1,6 +1,4 @@
 export const Servers = {
-    //LiveServer: "https://api-fohq.onrender.com/api/",
-    //LiveServer: "https://fohq-api.onrender.com/api/",
-    //LiveServer: "https://fohq-apis.techype.in/api/",
-    LiveServer: "http://localhost:1337/api/",
+  // LiveServer: "http://localhost:3003/functions/v1/",
+ LiveServer: "https://gseijrhbhurcrpgbxrgt.supabase.co/functions/v1/",
 };
