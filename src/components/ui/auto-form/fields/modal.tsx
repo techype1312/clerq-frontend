@@ -32,6 +32,7 @@ type AutoFormModalComponentProps = {
   path: string[];
   name: string;
   labelClass?: string;
+  isPresent?: boolean;
 };
 
 export default function AutoFormModal({
@@ -42,7 +43,8 @@ export default function AutoFormModal({
   zodItemClass,
   path = [],
   name,
-  labelClass
+  labelClass,
+  isPresent = false
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
   // const [oldState, setOldState] = useState<any>();
@@ -54,6 +56,11 @@ export default function AutoFormModal({
   //     setOldState(value);
   //   }
   // }, [update]);
+  useEffect(()=>{
+    if(isPresent){
+      setSaved(true);
+    }
+  },[isPresent])
   return (
     <>
       <div className="flex flex-row items-center space-x-2 w-full">

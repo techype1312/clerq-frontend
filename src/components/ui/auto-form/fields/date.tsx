@@ -18,19 +18,21 @@ export default function AutoFormDate({
   const [isEdit, setIsEdit] = useState(false);
   const dropdownRef = useRef<any>();
   const year = new Date().getFullYear();
+  const [month, setMonth] = useState<Date | null>();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsEdit(false);
       }
     };
-
+    setMonth(field.value);
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   return (
     <FormItem className="flex flex-col gap-2" ref={dropdownRef}>
       <AutoFormLabel
@@ -51,6 +53,8 @@ export default function AutoFormDate({
             <div className="absolute z-10 bg-white border ">
               <DayPicker
                 mode="single"
+                month={month}
+                onMonthChange={setMonth}
                 selected={field.value}
                 onSelect={field.onChange}
                 showOutsideDays
@@ -58,6 +62,7 @@ export default function AutoFormDate({
                 captionLayout="dropdown-buttons"
                 fromYear={1900}
                 toYear={year}
+                value={field.value}
                 {...fieldProps}
               />
             </div>

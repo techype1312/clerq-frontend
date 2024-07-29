@@ -6,6 +6,7 @@ export type FieldConfigItem = {
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
+    isPresent?: boolean;
   };
   label?: string;
   fieldType?:

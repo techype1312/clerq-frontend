@@ -135,22 +135,23 @@ export default function AutoFormObject<
                 label={fieldConfigItem.label ?? itemName}
                 path={[...path, name]}
                 labelClass={labelClass}
+                isPresent={fieldConfigItem.inputProps?.isPresent}
               />
             </AccordionItem>
           );
         }
-        if (zodBaseType === "ZodArray") {
-          return (
-            <AutoFormArray
-              key={key}
-              name={name}
-              item={item as unknown as z.ZodArray<any>}
-              form={form}
-              fieldConfig={fieldConfig?.[name] ?? {}}
-              path={[...path, name]}
-            />
-          );
-        }
+        // if (zodBaseType === "ZodArray") {
+        //   return (
+        //     <AutoFormArray
+        //       key={key}
+        //       name={name}
+        //       item={item as unknown as z.ZodArray<any>}
+        //       form={form}
+        //       fieldConfig={fieldConfig?.[name] ?? {}}
+        //       path={[...path, name]}
+        //     />
+        //   );
+        // }
         const zodInputProps = zodToHtmlInputProps(item);
         const isRequired =
           isRequiredByDependency ||
