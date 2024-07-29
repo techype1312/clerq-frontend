@@ -89,11 +89,14 @@ export const step1Schema = z.object({
       required_error: "Email is required",
     })
     .email(),
-  phone: z.string().refine(validator.isMobilePhone),
+  phone: z.string(),
   address: z.object({
-    country: z.enum([countryList[0], ...restOfCountryList], {
+    country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
+    // country: z.enum([countryList[0], ...restOfCountryList], {
+    //   errorMap: customErrorMap,
+    // }),
     legal_address_1: z.string({
       required_error: "Street is required",
     }),
@@ -112,7 +115,7 @@ export const step1Schema = z.object({
     }),
     // }),
   }),
-  country_of_tax_residence: z.enum([countryList[0], ...restOfCountryList], {
+  country_of_tax_residence: z.enum(["United States (US)"], {
     errorMap: customErrorMap,
   }),
   company: z.enum(["Yes", "No"]),
@@ -130,10 +133,10 @@ export const step2Schema = z.object({
       required_error: "Company Email is required",
     })
     .email(),
-  phone: z.string().refine(validator.isMobilePhone),
+  phone: z.string(),
   //Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid
   address: z.object({
-    country: z.enum([countryList[0], ...restOfCountryList], {
+    country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
     legal_address_1: z.string({
@@ -155,7 +158,7 @@ export const step2Schema = z.object({
   ein: z.string({
     required_error: "EIN is required",
   }),
-  country_of_tax_residence: z.enum([countryList[0], ...restOfCountryList], {
+  country_of_tax_residence: z.enum(["United States (US)"], {
     errorMap: customErrorMap,
   }),
   federal_tax_classification: z.enum([
@@ -176,7 +179,7 @@ export const step2Schema = z.object({
 export type Step2Schema = z.infer<typeof step2Schema>;
 
 export const step5Schema = z.object({
-  management_company: z.string().optional(),
-  agency: z.string().optional(),
-  legal: z.string().optional(),
+  management_company: z.string().array().optional(),
+  agency: z.string().array().optional(),
+  legal: z.string().array().optional(),
 });
