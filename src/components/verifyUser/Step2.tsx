@@ -61,22 +61,43 @@ const Step2 = ({
           company_name: {
             inputProps: {
               placeholder: "Value",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setCompanyData({
+                  ...companyData,
+                  company_name: e.currentTarget.value,
+                } as Step2Schema);
+              },
             },
           },
           company_email: {
             inputProps: {
               placeholder: "Value",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setCompanyData({
+                  ...companyData,
+                  company_email: e.currentTarget.value,
+                } as Step2Schema);
+              },
             },
           },
           phone: {
+            fieldType: "phone",
             label: "Phone number",
             inputProps: {
-              placeholder: "0123456789",
+              placeholder: "(123)-456-7890",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                console.log(e)
+                setCompanyData({
+                  ...companyData,
+                  phone: e?.currentTarget?.value,
+                } as Step2Schema);
+              },
             },
           },
           country_of_tax_residence: {
             inputProps: {
               placeholder: "Select country",
+              disabled: true,
             },
           },
           address: {
@@ -87,29 +108,44 @@ const Step2 = ({
             label: "EIN (Employer Identification no.)",
             inputProps: {
               placeholder: "Value",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setCompanyData({
+                  ...companyData,
+                  ein: e.currentTarget.value,
+                } as Step2Schema);
+              },
             },
           },
           federal_tax_classification: {
             inputProps: {
               placeholder: "Individual/sole proprietor or single-member LLC",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setCompanyData({
+                  ...companyData,
+                  federal_tax_classification: e.currentTarget.value,
+                } as Step2Schema);
+              },
             },
           },
         }}
         values={{
-          company_name: companyData?.company_name,
-          ein: companyData?.ein,
-          company_email: companyData?.company_email,
+          company_name: companyData?.company_name ?? "",
+          ein: companyData?.ein ?? "",
+          company_email: companyData?.company_email ?? "",
           federal_tax_classification: companyData?.federal_tax_classification,
-          phone: companyData?.phone,
-          country_of_tax_residence: companyData?.country_of_tax_residence,
+          phone: companyData?.phone ?? "",
+          country_of_tax_residence: "United States (US)",
           address: {
             legal_address_1: address ? address?.legal_address_1 : "",
             legal_address_2: address ? address?.legal_address_2 : "",
-            country: address ? address?.country : "",
+            country: "United States (US)",
             city: address ? address?.city : "",
             state: address ? address?.state : "",
             zip_code: address?.zip_code ?? 0,
           },
+        }}
+        defaultValues={{
+          country_of_tax_residence: "United States (US)",
         }}
         className="flex flex-col gap-4 mx-auto max-w-lg"
         zodItemClass="flex flex-row gap-4 space-y-0"

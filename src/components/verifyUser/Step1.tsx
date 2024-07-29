@@ -4,7 +4,11 @@ import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { getUserData, insertUserData, updateOtherUserData } from "@/hooks/useUser";
+import {
+  getUserData,
+  insertUserData,
+  updateOtherUserData,
+} from "@/hooks/useUser";
 import {
   getUserAddressData,
   insertAddressData,
@@ -19,6 +23,7 @@ const Step1 = ({
   totalSteps,
   staticForFirstTime,
   setStaticForFirstTime,
+  setOtherUserData,
 }: {
   changeStep: (step: number) => void;
   userdata: User;
@@ -27,6 +32,7 @@ const Step1 = ({
   totalSteps: number;
   staticForFirstTime: boolean;
   setStaticForFirstTime: (value: boolean) => void;
+  setOtherUserData: (data: any) => void;
 }) => {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<Address | undefined>();
@@ -43,8 +49,8 @@ const Step1 = ({
       if (data) {
         setOtherData(data[0]);
       }
-    }
-    fetchUserData()
+    };
+    fetchUserData();
     fetchUserAddress();
   }, []);
   const handleSubmit = async (e: Step1Schema) => {
@@ -52,7 +58,12 @@ const Step1 = ({
       setLoading(true);
       const address1 = e.address;
       if (otherData) await updateOtherUserData(e);
-      else await insertUserData(e,address1);
+      else await insertUserData(e, address1);
+      setOtherUserData({
+        ...otherUserData,
+        e,
+      });
+
       if (address) await updateAddressData(address1);
       else await insertAddressData(address1, false);
       setLoading(false);
@@ -73,17 +84,46 @@ const Step1 = ({
           first_name: {
             inputProps: {
               placeholder: "John",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setOtherUserData({
+                  ...otherUserData,
+                  first_name: e.currentTarget.value,
+                });
+              },
             },
           },
           last_name: {
             inputProps: {
               placeholder: "Doe",
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setOtherUserData({
+                  ...otherUserData,
+                  last_name: e.currentTarget.value,
+                });
+              },
+            },
+          },
+        },
+        date_of_birth: {
+          inputProps: {
+            onChange: (e: any) => {
+              console.log(e);
+              setOtherUserData({
+                ...otherUserData,
+                date_of_birth: e.currentTarget.value,
+              });
             },
           },
         },
         address: {
           fieldType: "modal",
           showLabel: false,
+          inputProps: {
+            isPresent: address ? true : false,
+            onChange: (e: any) => {
+              console.log(e);
+            },
+          },
           legal_address_1: {
             inputProps: {
               label: "Legal address (Line 1)",
@@ -98,6 +138,12 @@ const Step1 = ({
         country_of_tax_residence: {
           inputProps: {
             placeholder: "Select country",
+            disabled: true,
+          },
+        },
+        email: {
+          inputProps: {
+            disabled: true,
           },
         },
         phone: {
@@ -105,6 +151,12 @@ const Step1 = ({
           label: "Phone number",
           inputProps: {
             placeholder: "(123)-456-7890",
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+              setOtherUserData({
+                ...otherUserData,
+                phone: e?.target?.value,
+              });
+            },
           },
         },
         company: {
@@ -112,6 +164,7 @@ const Step1 = ({
           label:
             "Do you have a company/business (e.g. LLC, Corp, etc.) that you operate your business through?",
           inputProps: {
+            className: "flex gap-4",
             onChange: (e) => {
               if (staticForFirstTime) {
                 setStaticForFirstTime(false);
@@ -133,14 +186,14 @@ const Step1 = ({
         },
         email: otherUserData ? otherUserData.email : userdata?.email ?? "",
         phone: otherUserData ? otherUserData.phone : userdata?.phone ?? "",
-        country_of_tax_residence: otherUserData?.country_of_tax_residence,
+        country_of_tax_residence: "United States (US)",
         date_of_birth: otherUserData
           ? new Date(otherUserData ? otherUserData.date_of_birth : "")
           : undefined,
         address: {
           legal_address_1: address ? address?.legal_address_1 : "",
           legal_address_2: address ? address?.legal_address_2 : "",
-          country: address ? address?.country : "",
+          country: "United States (US)",
           city: address ? address?.city : "",
           state: address ? address?.state : "",
           zip_code: address?.zip_code ?? 0,
