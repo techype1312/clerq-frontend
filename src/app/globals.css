@@ -17,7 +17,7 @@
     --primary-text: #1e1e2a;
     --primary-background: #5266EB;
     --primary-foreground: 210 40% 98%;
-
+    --primary-background-light: #FAFBFD;
     --secondary: 210 40% 96.1%;
     --secondary-text: #73737f;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -119,4 +119,7 @@
 }
 input::placeholder {
   color: var(--muted-text);
+}
+.background-light{
+  background-color: var(--primary-background-light);
 }
