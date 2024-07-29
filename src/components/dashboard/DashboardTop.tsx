@@ -23,7 +23,7 @@ const DashboardTop = () => {
       <Input
         className="w-1/2 rounded-2xl"
         outerClassName="flex items-center justify-center"
-        startIcon={"search"}
+        endIcon={"search"}
         placeholder="Search for a product"
         type="text"
       />

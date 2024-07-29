@@ -20,7 +20,7 @@ export const DashboardLayout = ({
   }, [isOpen]);
 
   return (
-    <main className="flex min-h-screen max-h-screen bg-white overfl-whid">
+    <main className="flex min-h-screen max-h-screen bg-white">
       <DashboardSidebar isOpen={isOpen} setOpen={setOpen} />
 
       <button
@@ -30,9 +30,9 @@ export const DashboardLayout = ({
         <Menu size={30} />
       </button>
 
-      <div className="flex flex-col flex-1 bg-primary-foreground overflow-hidden">
+      <div className="flex flex-col flex-1 bg-white overflow-hidden">
         <DashboardTop />
-        <div className="px-4 sm:px-8 pt-4 pb-12 overflow-y-scroll overflow-x-hidden">
+        <div className={"px-4 sm:px-8 pt-4 pb-12 mx-8 overflow-y-auto overflow-x-hidden" }>
           {children}
         </div>
       </div>

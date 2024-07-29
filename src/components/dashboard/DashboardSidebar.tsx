@@ -39,30 +39,43 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const items = pathname.startsWith("/dashboard") ? (
     <>
       <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
-        <SymbolIcon icon="home" />
+        <SymbolIcon
+          icon="home"
+          color={pathname === "/dashboard" ? "#5266EB" : ""}
+        />
         Home
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/people"
+        href="/dashboard/transactions"
         setOpen={setOpen}
       >
-        <SymbolIcon icon="attach_money" />
+        <SymbolIcon
+          icon="attach_money"
+          color={pathname === "/dashboard/transactions" ? "#5266EB" : ""}
+        />
         Transactions
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/payment"
+        href="/dashboard/income-statement"
         setOpen={setOpen}
       >
-        <SymbolIcon icon="book_2" />
+        <SymbolIcon
+          icon="import_contacts"
+          color={pathname === "/dashboard/income-statement" ? "#5266EB" : ""}
+        />
         Income statements
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/organization-profile"
+        href="/dashboard/balance-sheet"
         setOpen={setOpen}
       >
+        <SymbolIcon
+          icon="monitoring"
+          color={pathname === "/dashboard/balance-sheets" ? "#5266EB" : ""}
+        />
         Balance sheets
       </SidebarLink>
       <SidebarLink
@@ -70,23 +83,20 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         href="/dashboard/banking"
         setOpen={setOpen}
       >
-        <LandmarkIcon
+        <SymbolIcon icon="article" color={pathname === "/dashboard/documents" ? "#5266EB": ""} />
+        {/* <LandmarkIcon
           fill={pathname.startsWith("/dashboard/banking") ? "black" : "white"}
           stroke="#1E1E1E"
           size={"20"}
-        />
+        /> */}
         Documents
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/payment"
+        href="/dashboard/bank-connections"
         setOpen={setOpen}
       >
-        <CreditCard
-          fill={pathname.startsWith("/dashboard/payment") ? "black" : "white"}
-          stroke="#1E1E1E"
-          size={"20"}
-        />
+        <SymbolIcon icon="account_balance" color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""} />
         Bank connections
       </SidebarLink>
       <SidebarLink
@@ -94,13 +104,14 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         href="/dashboard/payment"
         setOpen={setOpen}
       >
-        <CreditCard
+        <SymbolIcon icon="line_start_circle" />
+        {/* <CreditCard
           fill={
             pathname.startsWith("/dashboard/integrations") ? "black" : "white"
           }
           stroke="#1E1E1E"
           size={"20"}
-        />
+        /> */}
         Integrations
       </SidebarLink>
       <SidebarLink
@@ -118,7 +129,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
 
   return (
     <div
-      className={`absolute h-screen bg-white z-40 lg:flex lg:static gap-2 lg:h-auto flex-col min-w-fit transition-all duration-500 ${
+      className={`absolute h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static gap-2 lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
           ? "px-4 pt-6 pb-8 min-w-48"
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden px-4 pt-6 pb-8"
@@ -153,7 +164,7 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   return (
     <Link
       className={`${
-        isActive ? "text-black bg-secondary" : "text-primary bg-white"
+        isActive ? "text-black font-medium" : "text-primary background-light"
       } px-4 rounded py-2`}
       href={href}
       onClick={() => {
