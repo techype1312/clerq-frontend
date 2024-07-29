@@ -28,7 +28,7 @@ const Page = () => {
   const [userRefreshed, setUserRefreshed] = useState(false);
   const [otherUserData, setOtherUserData] = useState(null);
   const [staticForFirstTime, setStaticForFirstTime] = useState(false); // Need this for a very specific use case which is causing infinite loop
-  console.log(totalSteps);
+  
   useEffect(() => {
     if (!userdata && !userRefreshed) {
       refreshUser();
@@ -131,6 +131,7 @@ const Page = () => {
               totalSteps={totalSteps}
               staticForFirstTime={staticForFirstTime}
               setStaticForFirstTime={setStaticForFirstTime}
+              setOtherUserData={setOtherUserData}
             />
           )}
           {step === 2 && totalSteps === 5 && (
