@@ -1,7 +1,9 @@
-'use client';
+"use client";
 import DateRangeDropdownSelect from "@/components/generalComponents/DateRangeDropdownSelect";
 import HeaderCard from "@/components/generalComponents/HeaderCard";
-import { cardDetails, dateRangeType } from "@/types/general";
+import SheetsData from "@/components/generalComponents/SheetsData";
+import { Button } from "@/components/ui/button";
+import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
 
@@ -11,6 +13,41 @@ const Page = () => {
     dateRange[0]
   );
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
+  const [sheetData, setSheetData] = useState<sheetDataType>({
+    title: { title: "Revenue", value: 162500.7 },
+    data: [
+      { title: "Sales revenue", value: 112205.17 },
+      { title: "Operating expenses", value: 162500.123 },
+    ],
+    showFooter: false,
+    isCollapsible: true,
+  });
+  const [sheetData1, setSheetData1] = useState<sheetDataType>({
+    title: { title: "Liabilities", value: 162982.11 },
+    data: [
+      { title: "Individual contractor expenses", value: 159716.61 },
+      { title: "Travel & transportation expense", value: 1300.78 },
+      { title: "Training & education expense", value: 300.78 },
+      { title: "Business meals", value: 178.73 },
+      { title: "Overhead costs (Rent, utilities etc)", value: 515.19 },
+      { title: "Gift expense", value: 14.32 },
+    ],
+    showFooter: false,
+    isCollapsible: true,
+  });
+  const [sheetData2, setSheetData2] = useState<sheetDataType>({
+    title: { title: "Equity", value: 162982.11 },
+    data: [
+      { title: "Individual contractor expenses", value: 159716.61 },
+      { title: "Travel & transportation expense", value: 1300.78 },
+      { title: "Training & education expense", value: 300.78 },
+      { title: "Business meals", value: 178.73 },
+      { title: "Overhead costs (Rent, utilities etc)", value: 515.19 },
+      { title: "Gift expense", value: 14.32 },
+    ],
+    showFooter: false,
+    isCollapsible: true,
+  });
   const [cardDetails, setCardDetails] = useState<cardDetails>({
     dateRange: dateRange[0],
     title: "Balance sheet",
@@ -31,6 +68,7 @@ const Page = () => {
       rightText: { title: "Equity", value: 500.123 },
     });
   }, [selectedDateRange]);
+  const [isOpened, setIsOpened] = useState("all");
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
@@ -46,6 +84,63 @@ const Page = () => {
         />
       </div>
       <HeaderCard cardDetails={cardDetails} />
+      <div className="flex flex-col gap-4 mt-4 mx-1">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              setIsOpened("all");
+            }}
+            className={
+              isOpened === "all"
+                ? "bg-primary text-background-muted hover:text-white"
+                : "background-muted text-label hover:text-white"
+            }
+          >
+            All
+          </Button>
+          <Button
+            onClick={() => {
+              setIsOpened("Revenue");
+            }}
+            className={
+              isOpened === "Revenue"
+                ? "bg-primary text-background-muted hover:text-white"
+                : "background-muted text-label hover:text-white"
+            }
+          >
+            Revenue
+          </Button>
+          <Button
+            onClick={() => {
+              setIsOpened("Liabilities");
+            }}
+            className={
+              isOpened === "Liabilities"
+                ? "bg-primary text-background-muted hover:text-white"
+                : "background-muted text-label hover:text-white"
+            }
+          >
+            Liabilities
+          </Button>
+          <Button
+            onClick={() => {
+              setIsOpened("Equity");
+            }}
+            className={
+              isOpened === "Equity"
+                ? "bg-primary text-background-muted hover:text-white"
+                : "background-muted text-label hover:text-white"
+            }
+          >
+            Equity
+          </Button>
+        </div>
+        <SheetsData sheetData={sheetData} isOpened={isOpened} />
+        <span className="border-b border-muted"></span>
+        <SheetsData sheetData={sheetData1} isOpened={isOpened} />
+        <span className="border-b border-muted"></span>
+        <SheetsData sheetData={sheetData2} isOpened={isOpened} />
+      </div>
     </div>
   );
 };

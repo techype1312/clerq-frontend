@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  ColumnFilter,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -11,7 +12,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -24,14 +24,7 @@ import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { useState } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
@@ -46,6 +39,15 @@ interface DataTableProps<TData, TValue> {
 //   endOfMonth,
 // } from "date-fns";
 import { mkConfig, generateCsv, download } from "export-to-csv";
+import Filters from "./Filters";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { PopoverPortal } from "@radix-ui/react-popover";
+import { labelValue, textType } from "@/types/general";
+import { formatFilterId } from "@/utils/utils";
 
 // export const dateFilter = (row: any[], columnIds: (string | number)[], filterValue: string) => {
 //   const currentDate = new Date();
@@ -88,14 +90,23 @@ export function DataTable<TData, TValue>({
     pageSize: 10,
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [filterValue, setFilterValue] = useState<string[]>([]);
+
   const exportExcel = (rows: any) => {
     // const rowData = rows.map((row: any) => row.original);
     const rowData = rows.map((row: any) => {
       // Extract desired data from row.original
       console.log(row.original);
-      const { date, merchant_name, amount, category, clerq_category, gl_code, receipt } =
-        row.original;
-        const Category = category.join(", ");
+      const {
+        date,
+        merchant_name,
+        amount,
+        category,
+        clerq_category,
+        gl_code,
+        receipt,
+      } = row.original;
+      const Category = category.join(", ");
       return {
         date,
         mask: row.original.account.mask,
@@ -104,7 +115,7 @@ export function DataTable<TData, TValue>({
         Category,
         clerq_category,
         gl_code,
-        receipt
+        receipt,
       };
     });
     const csv = generateCsv(csvConfig)(rowData);
@@ -127,47 +138,138 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
-
+  const [openedFilter, setOpenedFilter] = useState<string>("clerq_category");
+  const [filterCategories, setFilterCategories] = useState<labelValue[]>([
+    {
+      label: "Date",
+      value: "date",
+    },
+    {
+      label: "Clerq Category",
+      value: "clerq_category",
+    },
+    {
+      label: "GL Code",
+      value: "gl_code",
+    },
+  ]);
+  console.log(columnFilters, 'columnFilters');
   return (
     <>
       <div className="flex items-center justify-between">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 gap-2 px-2 flex items-center">
-              <span className="-mb-1">
-                <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
-              </span>
-              <span>Filter</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Filters</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {/* <DropdownMenuItem
-                onClick={() => {
-                  table.getColumn("date")?.setFilterValue("this_month");
-                }}
+        <div className="flex gap-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="h-8 gap-2 px-2 flex items-center">
+                <span className="-mb-1">
+                  <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
+                </span>
+                <span>Filter</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-fit ml-60">
+              <h6>Filters</h6>
+              <DropdownMenuSeparator />
+              <div className="flex">
+                <div className="flex flex-col gap-2 text-left  border-r">
+                  {filterCategories.map((category, index) => {
+                    // let hover;
+                    // if (openedFilter === category.value) hover = true;
+                    return (
+                      <Button
+                        variant={"ghost"}
+                        key={index}
+                        onClick={() => {
+                          setOpenedFilter(category.value);
+                        }}
+                        className={`${
+                          openedFilter === category.value
+                            ? "text-primary bg-muted"
+                            : " text-label hover:text-label"
+                        } justify-between`}
+                        // onMouseEnter={() => {
+                        //   console.log("hover");
+                        //   hover = true;
+                        // }}
+                        // onMouseLeave={() => {
+                        //   console.log("hover");
+                        //   if (openedFilter !== category.value) hover = false;
+                        // }}
+                      >
+                        {category.label}{" "}
+                        <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />
+                      </Button>
+                    );
+                  })}
+                </div>
+                <div className="w-42 h-64 overflow-x-scroll">
+                  <Filters
+                    openedFilter={openedFilter}
+                    setColumnFilters={setColumnFilters}
+                    columnFilters={columnFilters}
+                  />
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+          {/* <DropdownMenuItem onClick={() => {}}>
+                  Advertising
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (filterValue.length === 0) {
+                      setFilterValue(["400 - Inventory"]);
+                      setColumnFilters([
+                        { id: "gl_code", value: "400 - Inventory" },
+                      ]);
+                    } else {
+                      setFilterValue([...filterValue, "400 - Inventory"]);
+                      setColumnFilters([
+                        { id: "gl_code", value: "400 - Inventory" },
+                      ]);
+                    }
+                  }}
+                >
+                  Inventory
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (filterValue.length === 0) {
+                      setFilterValue(["230 - Electric Bills"]);
+                    } else {
+                      setFilterValue([...filterValue, "230 - Electric Bills"]);
+                      setColumnFilters([{ id: "gl_code", value: filterValue }]);
+                    }
+                  }}
+                >
+                  Electric Bills
+                </DropdownMenuItem> */}
+          {/* </DropdownMenuGroup> */}
+          <div className="flex gap-2">
+            {columnFilters.map((filter: any, index: number) => (
+              <div
+                className="bg-muted flex gap-2 w-fit px-4 items-center justify-center rounded-md"
+                key={index}
               >
-                Last month
-              </DropdownMenuItem> */}
-              <DropdownMenuItem
-                onClick={() => {
-                  table.getColumn("clerq_category")?.setFilterValue("Advertising");
-                }}
-              >
-                Advertising
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  table.getColumn("gl_code")?.setFilterValue("400 - Inventory");
-                }}
-              >
-                Inventory
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <p className="text-primary-alt">
+                  {filter?.value.length > 1
+                    ? formatFilterId(filter?.id) + ` (${filter?.value.length})`
+                    : filter?.value}
+                </p>
+                <span
+                  className="cursor-pointer h-6"
+                  onClick={() => {
+                    setColumnFilters(
+                      columnFilters.filter((val) => val !== filter.value)
+                    );
+                  }}
+                >
+                  <SymbolIcon icon="close" color="#535460" />
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center justify-end space-x-2 py-4">
           <div>
             <span className="text-muted">

@@ -47,7 +47,7 @@ const ExpenseModule = ({ expense }: { expense: textType }) => {
     <div className="flex flex-col">
       <h6 className="text-primary text-sm">{expense.title}</h6>
       <p className="text-background-primary text-[32px]">
-        {expense.value < 0 && "-"}${Math.abs(expense.value).toFixed(2)}
+        {expense.value < 0 && "-"}${Math.abs(expense.value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </p>
     </div>
   );

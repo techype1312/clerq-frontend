@@ -74,7 +74,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       >
         <SymbolIcon
           icon="monitoring"
-          color={pathname === "/dashboard/balance-sheets" ? "#5266EB" : ""}
+          color={pathname === "/dashboard/balance-sheet" ? "#5266EB" : ""}
         />
         Balance sheets
       </SidebarLink>
