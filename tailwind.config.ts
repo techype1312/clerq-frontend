@@ -1,14 +1,14 @@
-import type { Config } from "tailwindcss"
-const { fontFamily } = require("tailwindcss/defaultTheme")
+import type { Config } from "tailwindcss";
+const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -77,13 +77,28 @@ const config = {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
     },
+    fontSize: {
+      xs: "var(--font-xs)",
+      sm: "var(--font-sm)",
+      base: "var(--font-base)",
+      lg: "var(--font-lg)",
+      xl: "var(--font-xl)",
+      "2xl": "var(--font-2xl)",
+      "3xl": "var(--font-3xl)",
+      "3.5xl": "32px",
+      "4xl": "var(--font-4xl)",
+      "5xl": "var(--font-5xl)",
+      "6xl": "var(--font-6xl)",
+      "7xl": "var(--font-7xl)",
+      "8xl": "var(--font-8xl)",
+    },
   },
   variants: {
     extend: {
-      placeholderColor: ['focus'],
-    }
+      placeholderColor: ["focus"],
+    },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

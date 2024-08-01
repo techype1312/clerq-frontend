@@ -4,6 +4,20 @@
 
 @layer base {
   :root {
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-base: 1rem;
+    --font-lg: 1.125rem;
+    --font-xl: 1.25rem;
+    --font-2xl: 1.5rem;
+    --font-3xl: 1.875rem;
+    --font-4xl: 2.25rem;
+    --font-5xl: 3rem;
+    --font-6xl: 3.75rem;
+    --font-7xl: 4.5rem;
+    --font-8xl: 6rem;
+    --font-9xl: 8rem;
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -38,8 +52,8 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    
+    /* --ring: 222.2 84% 4.9%; */
+    --ring: 210 40% 96.1%;
     --radius: 0.5rem;
     --placeholder: #e9edf6;
   }
