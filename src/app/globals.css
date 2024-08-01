@@ -29,6 +29,7 @@
 
     --primary: 222.2 47.4% 11.2%;
     --primary-text: #1e1e2a;
+    --primary-text-alt: #1E1E1E;
     --primary-background: #5266EB;
     --primary-foreground: 210 40% 98%;
     --primary-background-light: #FAFBFD;
@@ -43,7 +44,7 @@
     --muted-text: #9d9da7;
     --muted-background: #F7F7F8;
     --muted-foreground: 215.4 16.3% 46.9%;
-
+    --muted-border: #F1F1F4;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
@@ -56,6 +57,7 @@
     --ring: 210 40% 96.1%;
     --radius: 0.5rem;
     --placeholder: #e9edf6;
+
   }
 
   .dark {
@@ -101,6 +103,9 @@
 .text-primary {
   color: var(--primary-text);
 }
+.text-primary-alt {
+  color: var(--primary-text-alt);
+}
 .background-text-primary {
   background-color: var(--primary-text);
 }
@@ -119,6 +124,9 @@
 .border-input {
   border-color: var(--input-border);
 }
+.border-muted{
+  border-color: var(--muted-border);
+}
 .text-muted {
   color: var(--muted-text);
 }
@@ -131,9 +139,33 @@
 .background-muted {
   background-color: var(--muted-background);
 }
+.text-background-muted {
+  color: var(--muted-background);
+}
 input::placeholder {
   color: var(--muted-text);
 }
 .background-light{
   background-color: var(--primary-background-light);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #d9d9d9;
 }
