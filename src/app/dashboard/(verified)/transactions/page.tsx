@@ -41,7 +41,7 @@ type merchant = {
 //   return [lastMonth, endOfLastMonth];
 // };
 
-const glCode = [
+export const glCode = [
   "230 - Electric Bills",
   "120 - Accounts Receivable",
   "400 - Inventory",
@@ -51,7 +51,7 @@ const glCode = [
   "664 - Utilities",
 ];
 
-const categories = [
+export const categories = [
   "Advertising",
   "Bank Charges",
   "Business Meals",
@@ -168,6 +168,9 @@ export const transactionsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "clerq_category",
     header: "Clerq category",
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId));
+    },
     cell: ({ cell }) => (
       <Select defaultValue={cell.getValue() as string}>
         <SelectTrigger className="flex h-5 w-full text-black">
@@ -191,6 +194,9 @@ export const transactionsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "gl_code",
     header: "GL code",
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId));
+    },
     cell: ({ cell }) => (
       <Select defaultValue={cell.getValue() as string}>
         <SelectTrigger className="h-5 w-full text-black outline-none">
