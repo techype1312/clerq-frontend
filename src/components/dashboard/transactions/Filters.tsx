@@ -3,7 +3,7 @@ import {
   glCode,
 } from "@/app/dashboard/(verified)/transactions/page";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColumnFilter, ColumnFiltersState } from "@tanstack/react-table";
+import { ColumnFiltersState } from "@tanstack/react-table";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 
 const Filters = ({

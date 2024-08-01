@@ -23,9 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { useState } from "react";
-import {
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -153,7 +151,6 @@ export function DataTable<TData, TValue>({
       value: "gl_code",
     },
   ]);
-  console.log(columnFilters, 'columnFilters');
   return (
     <>
       <div className="flex items-center justify-between">
@@ -260,7 +257,7 @@ export function DataTable<TData, TValue>({
                   className="cursor-pointer h-6"
                   onClick={() => {
                     setColumnFilters(
-                      columnFilters.filter((val) => val !== filter.value)
+                      columnFilters.filter((val) => val.id !== filter.id)
                     );
                   }}
                 >
@@ -268,6 +265,16 @@ export function DataTable<TData, TValue>({
                 </span>
               </div>
             ))}
+            {columnFilters.length > 0 && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setColumnFilters([]);
+                }}
+              >
+                Clear
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
