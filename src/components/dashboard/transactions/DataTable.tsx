@@ -22,12 +22,17 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  showDownloadButton?: boolean;
+  showUploadButton?: boolean;
+  showHeader?: boolean;
+  showPagination?: boolean;
+  onUpload?: () => void;
 }
 // import {
 //   parseISO,
@@ -81,6 +86,11 @@ const csvConfig = mkConfig({
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onUpload,
+  showDownloadButton = true,
+  showUploadButton = false,
+  showHeader = true,
+  showPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
@@ -153,7 +163,7 @@ export function DataTable<TData, TValue>({
   ]);
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between w-full">
         <div className="flex gap-2">
           <Popover>
             <PopoverTrigger asChild>
@@ -164,7 +174,12 @@ export function DataTable<TData, TValue>({
                 <span>Filter</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-fit ml-60">
+            <PopoverContent
+              style={{
+                width: "480px",
+              }}
+              align="start"
+            >
               <h6>Filters</h6>
               <DropdownMenuSeparator />
               <div className="flex">
@@ -245,7 +260,7 @@ export function DataTable<TData, TValue>({
           <div className="flex gap-2">
             {columnFilters.map((filter: any, index: number) => (
               <div
-                className="bg-muted flex gap-2 w-fit px-4 items-center justify-center rounded-md"
+                className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
                 key={index}
               >
                 <p className="text-primary-alt">
@@ -253,16 +268,16 @@ export function DataTable<TData, TValue>({
                     ? formatFilterId(filter?.id) + ` (${filter?.value.length})`
                     : filter?.value}
                 </p>
-                <span
-                  className="cursor-pointer h-6"
+                <p
+                  className="cursor-pointer h-5"
                   onClick={() => {
                     setColumnFilters(
                       columnFilters.filter((val) => val.id !== filter.id)
                     );
                   }}
                 >
-                  <SymbolIcon icon="close" color="#535460" />
-                </span>
+                  <SymbolIcon icon="close" color="#535460" size={20} />
+                </p>
               </div>
             ))}
             {columnFilters.length > 0 && (
@@ -271,6 +286,7 @@ export function DataTable<TData, TValue>({
                 onClick={() => {
                   setColumnFilters([]);
                 }}
+                className="h-8"
               >
                 Clear
               </Button>
@@ -278,61 +294,82 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
-          <div>
-            <span className="text-muted">
-              {pagination.pageSize * pagination.pageIndex + 1}-
-              {pagination.pageSize * (pagination.pageIndex + 1) < data.length
-                ? pagination.pageSize * (pagination.pageIndex + 1)
-                : data.length}{" "}
-              of {data.length}
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="py-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <SymbolIcon icon="chevron_left" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="py-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <SymbolIcon icon="chevron_right" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => exportExcel(table.getFilteredRowModel().rows)}
-          >
-            <SymbolIcon icon="download" />
-          </Button>
+          {showPagination && (
+            <Fragment>
+              <div>
+                <span className="text-muted">
+                  {pagination.pageSize * pagination.pageIndex + 1}-
+                  {pagination.pageSize * (pagination.pageIndex + 1) <
+                  data.length
+                    ? pagination.pageSize * (pagination.pageIndex + 1)
+                    : data.length}{" "}
+                  of {data.length}
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="py-0"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <SymbolIcon icon="chevron_left" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="py-0"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <SymbolIcon icon="chevron_right" />
+              </Button>
+            </Fragment>
+          )}
+          {showDownloadButton && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => exportExcel(table.getFilteredRowModel().rows)}
+            >
+              <SymbolIcon icon="download" />
+              Download
+            </Button>
+          )}
+          {showUploadButton && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onUpload}
+              className="p-1"
+            >
+              <SymbolIcon icon="upload" />
+              Upload
+            </Button>
+          )}
         </div>
       </div>
       <Table className="overflow-x-scroll">
-        <TableHeader className="border-b">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className="text-[#757575]">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
+        {showHeader && (
+          <TableHeader className="border-b">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} className="text-[#757575]">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+        )}
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
@@ -342,7 +379,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="px-4 py-3 text-nowrap">
+                  <TableCell key={cell.id} className="px-0 py-3 text-nowrap">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

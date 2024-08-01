@@ -16,7 +16,7 @@ const SymbolIcon = ({
       icon={icon}
       weight={300}
       size={size ?? 24}
-      color={color ?? "#535460"}
+      color={color}
     />
   );
 };

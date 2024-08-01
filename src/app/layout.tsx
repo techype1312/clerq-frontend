@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
 import 'react-material-symbols/rounded';
+import { Toaster } from "@/components/ui/toaster";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         >
           {children}
           <ToastContainer />
+          <Toaster />
         </body>
       </MainContextProvider>
     </html>

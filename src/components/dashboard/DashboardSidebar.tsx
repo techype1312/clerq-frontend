@@ -80,7 +80,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/banking"
+        href="/dashboard/documents"
         setOpen={setOpen}
       >
         <SymbolIcon icon="article" color={pathname === "/dashboard/documents" ? "#5266EB": ""} />
