@@ -34,3 +34,7 @@ export const formatDateRange = (startDate: string, endDate: string): string => {
 
   return `${startMonth} ${startYear}-${endYear.toString().slice(-2)}`;
 };
+
+export const formatFilterId = (id: string): string => {
+  return id.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+};

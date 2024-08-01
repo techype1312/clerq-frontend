@@ -8,6 +8,11 @@ export type textType = {
   value: number;
 };
 
+export type labelValue = {
+  label: string;
+  value: string;
+};
+
 export type cardDetails = {
   title?: string;
   dateRange: dateRangeType;
@@ -15,4 +20,12 @@ export type cardDetails = {
   leftText: textType;
   centerText: textType;
   rightText: textType;
+};
+
+export type sheetDataType = {
+  title: textType;
+  data: textType[];
+  showFooter: boolean;
+  footerData?: textType;
+  isCollapsible: boolean;
 };
