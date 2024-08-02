@@ -181,9 +181,9 @@ export const transactionsColumns: ColumnDef<any>[] = [
             </div>
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="p-2 cursor-pointer">
           {categories.map((value, index) => (
-            <SelectItem value={value ?? "undefined"} key={value + index}>
+            <SelectItem className="px-2 py-2 border-b" value={value ?? "undefined"} key={value + index}>
               {value ?? "Undefined value"}
             </SelectItem>
           ))}
@@ -207,9 +207,9 @@ export const transactionsColumns: ColumnDef<any>[] = [
             </div>
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="p-2 cursor-pointer">
           {glCode.map((value, index) => (
-            <SelectItem value={value ?? "undefined"} key={value + index}>
+            <SelectItem className="px-2 py-2 border-b" value={value ?? "undefined"} key={value + index}>
               {value ?? "Undefined value"}
             </SelectItem>
           ))}
@@ -246,7 +246,7 @@ const Page = () => {
     supabase.functions.invoke("plaid-transactions").then((res) => {
       if (res.data) {
         setTransactions(
-          res.data.transactions.map((transaction: any, index: number) => {
+          res.data?.transactions?.map((transaction: any, index: number) => {
             return {
               ...transaction,
               merchant: {

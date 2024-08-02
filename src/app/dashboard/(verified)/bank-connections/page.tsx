@@ -42,7 +42,6 @@ const Page = () => {
         }
       });
     }
-    console.log(bankAccounts);
   }, [bankAccounts]);
 
   return (
@@ -54,7 +53,7 @@ const Page = () => {
           Automatically extract all business transactions for bookkeeping.
         </p>
         {loading ? (
-          <div className="w-full h-12">
+          <div className="w-full flex items-center h-12">
             <Loader2Icon className="animate-spin" />
           </div>
         ) : (

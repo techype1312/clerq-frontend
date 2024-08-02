@@ -52,7 +52,7 @@ const Page = () => {
       centerText: { title: "Gross profit", value: 162500.123 },
       rightText: { title: "Operating expenses", value: 162500.123 },
     });
-  }, []);
+  }, [selectedDateRange]);
   const netProfit = sheetData.title.value - sheetData1.title.value;
   return (
     <div className="flex flex-col gap-4">
