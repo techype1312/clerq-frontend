@@ -29,10 +29,10 @@ export function LinkedTable({
   labels: labels;
 }) {
   const [token, setToken] = useState<string>("");
-  const [data, setData] = useState<any>([]); // Required to show the live data 
-  useEffect(()=>{
-    setData(details)
-  },[details])
+  const [data, setData] = useState<any>([]); // Required to show the live data
+  useEffect(() => {
+    setData(details);
+  }, [details]);
   const config: PlaidLinkOptions = {
     onSuccess: () => {
       toast.success("Account linked successfully");
@@ -42,9 +42,9 @@ export function LinkedTable({
     token: token,
   };
   const { open, exit, ready } = usePlaidLink(config);
-  //   if (ready) {
-  //     open();
-  //   }
+  if (ready) {
+    open();
+  }
   return (
     <Table className="gap-20">
       <TableHeader>
