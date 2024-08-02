@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { supabase } from "@/utils/supabase/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlaidAccount, PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
 import { toast } from "react-toastify";
 
@@ -29,7 +29,10 @@ export function LinkedTable({
   labels: labels;
 }) {
   const [token, setToken] = useState<string>("");
-
+  const [data, setData] = useState<any>([]); // Required to show the live data 
+  useEffect(()=>{
+    setData(details)
+  },[details])
   const config: PlaidLinkOptions = {
     onSuccess: () => {
       toast.success("Account linked successfully");
@@ -42,7 +45,6 @@ export function LinkedTable({
   //   if (ready) {
   //     open();
   //   }
-
   return (
     <Table className="gap-20">
       <TableHeader>
@@ -54,11 +56,11 @@ export function LinkedTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {details?.map((detail: PlaidAccount | any, index: number) => (
+        {data?.map((detail: PlaidAccount | any, index: number) => (
           <TableRow key={index}>
             <TableCell className="font-medium">
               <div className="flex gap-2">
-                <span className="bg-[#5266EB29] flex items-center justify-center rounded-full px-2 py-0">
+                <span className="bg-[#5266EB29] flex items-center justify-center rounded-full px-3 py-0">
                   <SymbolIcon icon="account_balance" color="#5266EB" />
                 </span>
                 <div className="flex flex-col">
@@ -70,11 +72,11 @@ export function LinkedTable({
               </div>
             </TableCell>
             <TableCell className="text-label text-center">
-              **********{detail.mask}
+              *****{detail.mask}
             </TableCell>
             <TableCell className="text-center text-primary">
               {detail.type !== "credit" ? (
-                detail.routing
+                <span>{detail.routing}</span>
               ) : (
                 <span className="text-transparent">543543543</span>
               )}

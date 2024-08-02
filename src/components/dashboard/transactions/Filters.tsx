@@ -71,7 +71,11 @@ const Filters = ({
               className="flex gap-2 items-center pl-4 text-label"
             >
               <Checkbox
-                checked={(filter[0]?.value as string[])?.includes(value)}
+                checked={
+                  filter.length !== 0
+                    ? (filter[0]?.value as string[])?.includes(value)
+                    : false
+                }
                 onCheckedChange={(checked: boolean) => {
                   handleCheckboxClick(value, checked);
                 }}
@@ -90,7 +94,11 @@ const Filters = ({
                 className="flex gap-2 items-center pl-4 text-label"
               >
                 <Checkbox
-                  checked={(filter[0]?.value as string[])?.includes(value)}
+                  checked={
+                    filter.length !== 0
+                      ? (filter[0]?.value as string[])?.includes(value)
+                      : false
+                  }
                   onCheckedChange={(checked: boolean) => {
                     handleCheckboxClick(value, checked);
                   }}

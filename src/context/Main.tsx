@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 export const MainContext = createContext<any>(null);
 import { supabase } from "@/utils/supabase/client";
 import { usePathname, useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
+import { PostgrestSingleResponse, User } from "@supabase/supabase-js";
 
 export const MainContextProvider = ({
   children,
@@ -14,19 +14,32 @@ export const MainContextProvider = ({
   const pathname = usePathname();
   const [userdata, setuserdata] = useState<User | null>(null);
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const [otherUserData, setOtherUserData] = useState<any>(null);
 
   const refreshUser = async () => {
     const { data, error } = await supabase.auth.refreshSession();
-     if (data) {
-       setuserdata(data.user);
-       if (pathname.startsWith("/auth") && data.user) {
-         router.push("/dashboard");
-       } else if (pathname.startsWith("/dashboard") && !data.user) {
-         router.push("/auth/signin");
-       }
-     } else {
-       console.log(error);
-     }
+    if (data) {
+      setuserdata(data.user);
+      supabase
+        .from("other_user_info")
+        .select("*")
+        .eq("user_id", data?.user?.id)
+        .then(({ data, error }) => {
+          if (data) {
+            console.log(data);
+            setOtherUserData(data[0]);
+          } else {
+            console.log(error);
+          }
+        });
+      if (pathname.startsWith("/auth") && data.user) {
+        router.push("/dashboard");
+      } else if (pathname.startsWith("/dashboard") && !data.user) {
+        router.push("/auth/signin");
+      }
+    } else {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -54,6 +67,7 @@ export const MainContextProvider = ({
           userdata,
           refreshUser,
           windowWidth,
+          otherUserData,
         } as any
       }
     >

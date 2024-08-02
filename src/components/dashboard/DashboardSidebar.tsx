@@ -16,7 +16,7 @@ import { useContext, useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
 import { MainContext } from "@/context/Main";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const router = useRouter();
@@ -47,6 +47,14 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           color={pathname === "/dashboard" ? "#5266EB" : ""}
         />
         Home
+      </SidebarLink>
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/deal-tracker"
+        setOpen={setOpen}
+      >
+        <Image src="/dollarWithArrow.svg" alt="a" width={24} height={24} />
+        Deal tracker
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
@@ -108,7 +116,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         />
         Bank connections
       </SidebarLink>
-      <SidebarLink
+      {/* <SidebarLink
         pathname={pathname}
         href="/dashboard/payment"
         setOpen={setOpen}
@@ -120,9 +128,9 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           }
           stroke="#1E1E1E"
           size={"20"}
-        /> */}
+        /> 
         Integrations
-      </SidebarLink>
+      </SidebarLink> */}
       <SidebarLink
         pathname={pathname}
         href="/dashboard/settings"
@@ -158,18 +166,21 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       <div className="flex flex-col mt-4 gap-4">
         <div className="flex flex-col gap-4">{items}</div>
       </div>
-      <div 
-      onClick={()=>{
-        router.push('/dashboard/profile')
-      }}
-      className="mt-auto flex gap-4 cursor-pointer">
-        <Image
-          src="/profile.png"
-          className="rounded-full"
-          alt="logo"
-          width={50}
-          height={40}
-        />
+      <div
+        onClick={() => {
+          router.push("/dashboard/profile");
+        }}
+        className="mt-auto flex gap-4 cursor-pointer"
+      >
+        <div className="flex items-center">
+          <Image
+            src="/profile.png"
+            className="rounded-full"
+            alt="logo"
+            width={40}
+            height={40}
+          />
+        </div>
         <div className="flex flex-col">
           <p className="text-label">
             {userdata?.user_metadata?.first_name}{" "}
