@@ -13,6 +13,12 @@ export type labelValue = {
   value: string;
 };
 
+export type switchModuleType = {
+  title: string;
+  description?: string;
+  isActive: boolean;
+};
+
 export type cardDetails = {
   title?: string;
   dateRange: dateRangeType;
