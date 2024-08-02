@@ -17,16 +17,16 @@ export const MainContextProvider = ({
 
   const refreshUser = async () => {
     const { data, error } = await supabase.auth.refreshSession();
-    // if (data) {
-    //   setuserdata(data.user);
-    //   if (pathname.startsWith("/auth") && data.user) {
-    //     router.push("/dashboard");
-    //   } else if (pathname.startsWith("/dashboard") && !data.user) {
-    //     router.push("/auth/signin");
-    //   }
-    // } else {
-    //   console.log(error);
-    // }
+     if (data) {
+       setuserdata(data.user);
+       if (pathname.startsWith("/auth") && data.user) {
+         router.push("/dashboard");
+       } else if (pathname.startsWith("/dashboard") && !data.user) {
+         router.push("/auth/signin");
+       }
+     } else {
+       console.log(error);
+     }
   };
 
   useEffect(() => {
