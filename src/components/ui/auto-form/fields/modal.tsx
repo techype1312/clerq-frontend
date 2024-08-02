@@ -61,6 +61,7 @@ export default function AutoFormModal({
       setSaved(true);
     }
   },[isPresent])
+
   return (
     <>
       <div className="flex flex-row items-center space-x-2 w-full">

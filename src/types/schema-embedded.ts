@@ -183,3 +183,25 @@ export const step5Schema = z.object({
   agency: z.string().array().optional(),
   legal: z.string().array().optional(),
 });
+
+export const inviteUserSchema = z.object({
+  name: z.object({
+    first_name: z.string({
+      required_error: "First Name is required",
+    }),
+    last_name: z.string({
+      required_error: "Last Name is required",
+    }),
+  }),
+  email: z
+    .string({
+      required_error: "Email is required",
+    })
+    .email(),
+  role: z.enum(
+    ["Owner", "Admin", "Accountant", "CPA", "Lawyer", "Agency", "Management"],
+    {
+      errorMap: customErrorMap,
+    }
+  ),
+});
