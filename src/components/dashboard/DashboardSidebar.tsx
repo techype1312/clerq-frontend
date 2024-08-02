@@ -12,18 +12,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import Image from "next/image";
+import { MainContext } from "@/context/Main";
+import { useRouter } from 'next/navigation';
 
 const DashboardSidebar = ({ isOpen, setOpen }: any) => {
+  const router = useRouter();
   const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number>(300);
+  const { userdata } = useContext(MainContext);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setWindowWidth(window.innerWidth);
     }
-    console.log(windowWidth);
 
     window.addEventListener("resize", () => {
       setWindowWidth(window.innerWidth);
@@ -35,7 +39,6 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       });
     };
   }, []);
-
   const items = pathname.startsWith("/dashboard") ? (
     <>
       <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
@@ -83,7 +86,10 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         href="/dashboard/documents"
         setOpen={setOpen}
       >
-        <SymbolIcon icon="article" color={pathname === "/dashboard/documents" ? "#5266EB": ""} />
+        <SymbolIcon
+          icon="article"
+          color={pathname === "/dashboard/documents" ? "#5266EB" : ""}
+        />
         {/* <LandmarkIcon
           fill={pathname.startsWith("/dashboard/banking") ? "black" : "white"}
           stroke="#1E1E1E"
@@ -96,7 +102,10 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         href="/dashboard/bank-connections"
         setOpen={setOpen}
       >
-        <SymbolIcon icon="account_balance" color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""} />
+        <SymbolIcon
+          icon="account_balance"
+          color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""}
+        />
         Bank connections
       </SidebarLink>
       <SidebarLink
@@ -131,7 +140,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
     <div
       className={`absolute h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static gap-2 lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
-          ? "px-4 pt-6 pb-8 min-w-48"
+          ? "px-4 pt-6 pb-4 min-w-48"
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden px-4 pt-6 pb-8"
       } `}
     >
@@ -148,6 +157,26 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </div>
       <div className="flex flex-col mt-4 gap-4">
         <div className="flex flex-col gap-4">{items}</div>
+      </div>
+      <div 
+      onClick={()=>{
+        router.push('/dashboard/profile')
+      }}
+      className="mt-auto flex gap-4 cursor-pointer">
+        <Image
+          src="/profile.png"
+          className="rounded-full"
+          alt="logo"
+          width={50}
+          height={40}
+        />
+        <div className="flex flex-col">
+          <p className="text-label">
+            {userdata?.user_metadata?.first_name}{" "}
+            {userdata?.user_metadata?.last_name}
+          </p>
+          <p className="text-muted">{userdata?.email}</p>
+        </div>
       </div>
     </div>
   );
