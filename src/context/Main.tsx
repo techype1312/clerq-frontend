@@ -10,8 +10,6 @@ export const MainContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const [userdata, setuserdata] = useState<User | null>(null);
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const [otherUserData, setOtherUserData] = useState<any>(null);
@@ -32,11 +30,11 @@ export const MainContextProvider = ({
             console.log(error);
           }
         });
-      if (pathname.startsWith("/auth") && data.user) {
-        router.push("/dashboard");
-      } else if (pathname.startsWith("/dashboard") && !data.user) {
-        router.push("/auth/signin");
-      }
+      // if (pathname.startsWith("/auth") && data.user) {
+      //   router.push("/dashboard");
+      // } else if (pathname.startsWith("/dashboard") && !data.user) {
+      //   router.push("/auth/signin");
+      // }
     } else {
       console.log(error);
     }
