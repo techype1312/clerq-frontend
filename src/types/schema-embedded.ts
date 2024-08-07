@@ -26,6 +26,9 @@ export const signUpSchema = z
     confirmPassword: z.string({
       required_error: "Confirm Password is required",
     }),
+    phone: z.string({
+      required_error: "Phone is required",
+    }),
   })
   .superRefine(({ password, confirmPassword }, checkPassComplexity) => {
     const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
@@ -53,7 +56,12 @@ export const signUpSchema = z
 
 export const signInSchema = z.object({
   email: z.string({
-    required_error: "Username or Email is required",
+    required_error: "Email is required",
+  }),
+});
+export const signInWithPhoneSchema = z.object({
+  phone: z.string({
+    required_error: "phone number is required",
   }),
 });
 const countryList = Country.getAllCountries().map((c) => c.name);

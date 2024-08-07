@@ -6,6 +6,7 @@ export type dateRangeType = {
 export type textType = {
   title: string;
   value: number;
+  percentage?: number;
 };
 
 export type labelValue = {
@@ -34,4 +35,37 @@ export type sheetDataType = {
   showFooter: boolean;
   footerData?: textType;
   isCollapsible: boolean;
+};
+
+export type bookKeepingStatusType = {
+  value: "completed" | "pending" | "in-progress" | "upcoming";
+};
+
+export type moneyMovementDataType = {
+  title: string;
+  value: number;
+  categories: textType[];
+  avgValue: number;
+  avgValueDistribution: number[];
+};
+
+export type profitLossType = {
+  revenue: number;
+  expenses: number;
+};
+
+export type profitLossDataType = {
+  totalRevenue: number;
+  totalExpenses: number;
+  profitLoss: profitLossType[];
+  fromMonth: string;
+  toMonth: string;
+};
+
+export type monthlyGraphDataType = {
+  name: string;
+  uv: number;
+  pv: number;
+  amt: number;
+  month?: string;
 };
