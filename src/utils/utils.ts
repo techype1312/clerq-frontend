@@ -38,3 +38,28 @@ export const formatDateRange = (startDate: string, endDate: string): string => {
 export const formatFilterId = (id: string): string => {
   return id.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 };
+
+export const formatNumber = (num: number): string => {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return num.toString();
+};
+
+export function formatPhone(phone: string) {
+  const countryCodeLength = 1;
+  
+  const countryCode = phone.slice(0, countryCodeLength);
+  const localNumber = phone.slice(countryCodeLength);
+  
+  console.log("Country Code:", countryCode);
+  console.log("Local Number:", localNumber);
+
+  return { countryCode, localNumber };
+}
