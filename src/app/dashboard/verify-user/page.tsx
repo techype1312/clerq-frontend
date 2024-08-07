@@ -8,13 +8,14 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Step4 from "@/components/verifyUser/Step4";
 import Step5 from "@/components/verifyUser/Step5";
+import { UserContext } from "@/context/User";
 
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [totalSteps, setTotalSteps] = useState(4);
-  const { userdata, refreshUser } = useContext(MainContext);
+  const { userdata, refreshUser } = useContext(UserContext);
   const changeStep = (step: number) => {
     setStep(step);
     if (totalSteps === 5) {

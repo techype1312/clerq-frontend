@@ -1,88 +1,196 @@
-// "use client";
-// import React, { useContext } from "react";
-
-// const Page = () => {
-//   return (
-//     <div className="flex flex-col gap-4">
-//     </div>
-//   );
-// };
-
-// export default Page;
-
 "use client";
-import React, { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
+import React, { useContext, useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
+import {
+  bookKeepingStatusType,
+  moneyMovementDataType,
+  profitLossDataType,
+  textType,
+} from "@/types/general";
+import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
+import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
+import TopExpenses from "@/components/dashboard/home/TopExpenses";
+import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
+import Step4 from "@/components/verifyUser/Step4";
+import { MainContext } from "@/context/Main";
 
-const Page = ({}) => {
-  const body = {
-    userId: "98d46477-37c8-4b35-9ed0-bc6596d0b7e9",
-    clientName: "John Doe",
-  };
-  const [token, setToken] = useState<string>("");
-  const config: PlaidLinkOptions = {
-    onSuccess: (public_token, metadata) => {
-      supabase.functions
-        .invoke("plaid-success", {
-          method: "POST",
-          body: { public_token, user_id: "98d46477-37c8-4b35-9ed0-bc6596d0b7e9" },
-        })
-        .then((res) => {});
+const Page = () => {
+  const {userdata} = useContext(MainContext)
+  const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
+    {
+      title: "Last 7 days",
+      value: -7,
     },
-    onEvent: (eventName, metadata) => {},
-    token: token,
-  };
-  const { open, exit, ready } = usePlaidLink(config);
+    {
+      title: "Last month",
+      value: -30,
+    },
+    {
+      title: "This month",
+      value: 30,
+    },
+    {
+      title: "Year to date",
+      value: 365,
+    },
+  ]);
+  const [selectedTimeLine, setSelectedTimeLine] = useState<textType>({
+    title: "This month",
+    value: 30,
+  });
 
-  useEffect(() => {
-    if ("1" && !token) {
-      supabase.functions
-        .invoke("plaid", {
-          method: "POST",
-          body: body,
-        })
-        .then(async (res) => {
-          console.log(res);
-          setToken(res.data.link_token);
-        });
-    }
-  }, []);
+  const [bookkeepingStatus, setBookkeepingStatus] = useState<
+    bookKeepingStatusType[]
+  >([
+    { value: "completed" },
+    { value: "completed" },
+    { value: "completed" },
+    { value: "completed" },
+    { value: "completed" },
+    { value: "completed" },
+    { value: "completed" },
+    { value: "pending" },
+    { value: "upcoming" },
+    { value: "upcoming" },
+    { value: "upcoming" },
+    { value: "upcoming" },
+  ]);
+
+  const [moneyMovementData, setMoneyMovementData] =
+    useState<moneyMovementDataType>({
+      title: "Money in",
+      value: 10000,
+      categories: [
+        { title: "Logistics", value: 1000 },
+        { title: "Wages", value: 700 },
+        { title: "Stationery", value: 200 },
+        { title: "Uncategorised", value: 100 },
+      ],
+      avgValue: 4000000,
+      avgValueDistribution: [1000000, 2000000, 3000000],
+    });
+  const [moneyMovementData1, setMoneyMovementData1] =
+    useState<moneyMovementDataType>({
+      title: "Money out",
+      value: -10000,
+      categories: [
+        { title: "Logistics", value: 1000 },
+        { title: "Wages", value: 700 },
+        { title: "Stationery", value: 200 },
+        { title: "Uncategorised", value: 100 },
+      ],
+      avgValue: 200000,
+      avgValueDistribution: [10000, 20000, 30000],
+    });
+  const [topExpenses, setTopExpenses] = useState<textType[]>([
+    {
+      title: "Independent Contractor Expense",
+      value: -1456,
+      percentage: 40,
+    },
+    {
+      title: "Travel & Transportation Expense",
+      value: -1000,
+      percentage: 30,
+    },
+    {
+      title: "Training & Education Expense",
+      value: -500,
+      percentage: 15,
+    },
+    {
+      title: "Business Meals",
+      value: -200,
+      percentage: 10,
+    },
+    {
+      title: "Overhead Costs (Rent, Utilities etc)",
+      value: -100,
+      percentage: 5,
+    },
+  ]);
+
+  const [profitNLoss, setProfitNLoss] = useState<profitLossDataType>({
+    totalRevenue: 100000.5,
+    totalExpenses: 50000.632,
+    fromMonth: "Jan",
+    toMonth: "Mar",
+    profitLoss: [
+      {
+        revenue: 100000,
+        expenses: 50000,
+      },
+      {
+        revenue: 150000,
+        expenses: 50000,
+      },
+      {
+        revenue: 6000,
+        expenses: 50000,
+      },
+    ],
+  });
+
   return (
-    <>
-      <Card
-        onClick={() => {
-          open();
-        }}
-        className="p-4 flex gap-2 bg-[#FAFBFD] border-none cursor-pointer"
-      >
-        <div className="my-auto">
-          <Image
-            src="/plaid&clerq.png"
-            alt="Plaid & Clerq"
-            width={102}
-            height={64}
-          />
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between">
+        <h1 className="text-primary text-2xl font-medium ml-1">Overview</h1>
+        <div className="flex gap-2">
+          {overviewTimeLine.map((timeLine, index) => (
+            <Button
+              key={index}
+              variant={"ghost"}
+              className={`${
+                selectedTimeLine.value === timeLine.value
+                  ? "text-background-primary background-muted"
+                  : "text-muted"
+              } hover:text-label `}
+            >
+              {timeLine.title}
+            </Button>
+          ))}
         </div>
-        <CardHeader>
-          <CardTitle className="text-xl font-normal text-primary">
-            Connect with Plaid
-          </CardTitle>
-          <CardDescription className="text-base font-normal text-label">
-            Deploy your new project in one-click.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    </>
+      </div>
+      <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
+      <div className="flex flex-col gap-4">
+        <h2 className="text-primary text-xl">Money movement</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <MoneyMovement moneyMovementData={moneyMovementData} />
+          <MoneyMovement moneyMovementData={moneyMovementData1} />
+        </div>
+      </div>
+      <TopExpenses topExpenses={topExpenses} />
+      <ProfitNLoss profitNLoss={profitNLoss} />
+      {/* <Step4 userdata={userdata} /> */}
+    </div>
   );
 };
 
 export default Page;
+
+{
+  /* <Card
+  onClick={() => {
+    open();
+  }}
+  className="p-4 flex gap-2 bg-[#FAFBFD] border-none cursor-pointer"
+>
+  <div className="my-auto">
+    <Image
+      src="/plaid&clerq.png"
+      alt="Plaid & Clerq"
+      width={102}
+      height={64}
+    />
+  </div>
+  <CardHeader>
+    <CardTitle className="text-xl font-normal text-primary">
+      Connect with Plaid
+    </CardTitle>
+    <CardDescription className="text-base font-normal text-label">
+      Deploy your new project in one-click.
+    </CardDescription>
+  </CardHeader>
+</Card> */
+}

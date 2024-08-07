@@ -1,6 +1,7 @@
 "use client";
+import AuthApis from "@/actions/apis/AuthApis";
 import { signup } from "@/app/auth/signin/actions";
-import AutoForm from "@/components/ui/auto-form";
+import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signUpSchema } from "@/types/schema-embedded";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,6 +12,12 @@ const Page = () => {
   const [email, setEmail] = React.useState(searchParams.get("email") || "");
   React.useEffect(() => {
     setEmail(searchParams.get("email") || "");
+    // const res = async () => {
+    //   const res1 = await AuthApis.healthCheck();
+    //   console.log(res1);
+    //   return res1;
+    // };
+    // res();
   }, [searchParams]);
   return (
     <div className="flex h-screen items-center justify-center">
@@ -24,7 +31,19 @@ const Page = () => {
         </div>
         <AutoForm
           formSchema={signUpSchema}
-          formAction={signup}
+          // formAction={signup}
+          onSubmit={(e) => {
+            const data = {
+              email: e.email,
+              password: e.password,
+              firstName: e.name.first_name,
+              lastName: e.name.last_name,
+              phone: e.phone,
+              country_code: 91,
+            };
+            const res = AuthApis.signUp(data);
+            console.log(res);
+          }}
           fieldConfig={{
             password: {
               inputProps: {
@@ -44,7 +63,11 @@ const Page = () => {
           submitButtonText="Get started"
           submitButtonClass="background-primary"
           labelClass="text-primary"
-        ></AutoForm>
+        >
+          <AutoFormSubmit className="border py-3 rounded-full background-text-primary text-white w-fit px-12">
+            Get Started
+          </AutoFormSubmit>
+        </AutoForm>
         <h5 className="text-label flex gap-1 justify-center">
           Already have an account?
           <Link href={"/auth/signin"}>

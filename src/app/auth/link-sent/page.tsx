@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useFormState, useFormStatus } from "react-dom";
+import { UserContext } from "@/context/User";
 
 const initialState = {
   message: "",
@@ -20,7 +21,7 @@ const Page = () => {
   const email = searchParams.get("email");
   const newUser = searchParams.get("newUser") === "true" ? true : false;
   const [loading, setLoading] = React.useState(false);
-  const { refreshUser } = useContext(MainContext);
+  const { refreshUser } = useContext(UserContext);
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();

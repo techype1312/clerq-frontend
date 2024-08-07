@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/User";
 
 const Page = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const Page = () => {
   const error = searchParams.get("error");
   const error_description = searchParams.get("error_description");
   const [loading, setLoading] = useState(false);
-  const { refreshUser } = useContext(MainContext);
+  const { refreshUser } = useContext(UserContext);
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();
