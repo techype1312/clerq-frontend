@@ -5,9 +5,10 @@ import { Button } from "../ui/button";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "react-toastify";
 import { MainContext } from "@/context/Main";
+import { UserContext } from "@/context/User";
 
 const DashboardTop = () => {
-  const { refreshUser } = useContext(MainContext);
+  const { refreshUser } = useContext(UserContext);
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {

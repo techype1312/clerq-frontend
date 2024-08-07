@@ -1,15 +1,13 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { MainContext } from "@/context/Main";
 import Link from "next/link";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "react-toastify";
+import { UserContext } from "@/context/User";
 
 const Header = () => {
-  const { userdata, refreshUser } = useContext(MainContext);
+  const { userdata, refreshUser } = useContext(UserContext);
   const [isLoggedIn, setIsLoggedIn] = useState(userdata ? true : false);
   useEffect(() => {
     if (userdata) {
