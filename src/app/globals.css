@@ -174,3 +174,10 @@ input::placeholder {
 ::-webkit-scrollbar-thumb:hover {
   background: #d9d9d9;
 }
+.bg-custom-gradient{
+  background: linear-gradient(90deg, rgba(82, 102, 235, 0.2) 0%, #5266EB 320.24%);
+}
+
+.custom-grid-template{
+  grid-template-columns: 1fr 1fr fit-content(100%) 1fr;
+}

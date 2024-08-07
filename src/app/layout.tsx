@@ -5,9 +5,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
-import 'react-material-symbols/rounded';
+import "react-material-symbols/rounded";
 import { Toaster } from "@/components/ui/toaster";
 import { HelpCenter } from "@/components/help";
+import { UserContextProvider } from "@/context/User";
+import Script from "next/script";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -26,17 +28,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <MainContextProvider>
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          {children}
-          <HelpCenter />
-          <ToastContainer />
-          <Toaster />
-        </body>
+        <UserContextProvider>
+          <Script
+            async
+            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_GOOGLE_API}&loading=async&libraries=places&callback=initMap`}
+          ></Script>
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              fontSans.variable
+            )}
+          >
+            {children}
+            <HelpCenter />
+            <ToastContainer />
+            <Toaster />
+          </body>
+        </UserContextProvider>
       </MainContextProvider>
     </html>
   );
