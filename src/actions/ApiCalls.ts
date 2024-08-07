@@ -48,7 +48,7 @@ export const getResponse = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error) {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
           console.log(res);
           if (res && res?.data && res.status === 202) {
@@ -135,7 +135,7 @@ export const deleteResponse = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error) {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
@@ -181,23 +181,22 @@ export const postResponse = async (
   })
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
+      console.log(error, error.response, error.response?.status);
       if (error) {
         if (
-          error.response.status === 401 &&
+          error?.response?.status === 401 &&
           url !== "v1/users/verify-refresh-token" &&
           url !== "v1/users/"
         ) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+            Cookies.set("jwtToken", res?.data?.data?.token);
+            Cookies.set("refreshToken", res?.data?.data?.refreshToken, {
+              expires: res?.data?.data?.tokenExpiry,
+            });
             if (!retry) {
               // Retry the request with the new token
-              return postResponse(
-                url,
-                payload,
-                res?.data?.data?.accessToken,
-                true
-              );
+              return postResponse(url, payload, res?.data?.data?.token, true);
             }
           } else if (res.status === 401 && !res.response.success) {
             localStorage.clear();
@@ -206,14 +205,19 @@ export const postResponse = async (
             Cookies.remove("userType");
             window.location.href = "/";
           }
-        }
-        else if (error.response.status === 400) {
+        } else if (error?.response?.status === 400) {
           toast.error(error.response.data.error.message);
+        } else if (error?.response?.status === 422) {
+          let toastError = error.response.data.errors;
+          toast.error(
+            Object.keys(toastError)[0] +
+              ": " +
+              toastError[Object.keys(toastError)[0]]
+          );
+        } else if (error.response) {
+          toast.error(error.response.data.message);
         }
-      } else if (error.response) {
-        toast.error(error.response.data.message);
-      }
-      return error;
+      } else return error;
     });
 };
 
@@ -233,7 +237,7 @@ export const postResponseUpdated = async (
     .then((response) => response)
     .catch(async (error) => {
       if (error) {
-        if (error.response.status === 401 && !error.response.success) {
+        if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
@@ -277,7 +281,7 @@ export const patchResponse = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error.response) {
-        if (error.response.status === 401 && !error.response.success) {
+        if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
@@ -320,7 +324,7 @@ export const patchResponseFormData = async (
     .then((response) => response)
     .catch(async (error) => {
       if (error.response) {
-        if (error.response.status === 401 && !error.response.success) {
+        if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
@@ -360,7 +364,7 @@ export const postResponseFormData = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error.response) {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
@@ -433,7 +437,7 @@ export const getResponseWithQueryParams = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error) {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res.status === 202) {
             Cookies.set("jwtToken", res?.data?.data?.accessToken);
