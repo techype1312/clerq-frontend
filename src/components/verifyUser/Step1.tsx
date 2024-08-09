@@ -2,18 +2,29 @@
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import {
-  getUserData,
+  // getUserData,
   insertUserData,
   updateOtherUserData,
 } from "@/hooks/useUser";
+// import {
+//   getUserAddressData,
+//   insertAddressData,
+//   updateAddressData,
+// } from "@/hooks/useAddress";
 import {
-  getUserAddressData,
-  insertAddressData,
-  updateAddressData,
-} from "@/hooks/useAddress";
+  AutoFormInputComponentProps,
+  DependencyType,
+} from "../ui/auto-form/types";
+import { FormControl, FormItem } from "../ui/form";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import OnboardingApis from "@/actions/apis/OnboardingApis";
+import AuthApis from "@/actions/apis/AuthApis";
+import { UserContext } from "@/context/User";
+import CompanyApis from "@/actions/apis/CompanyApis";
 
 const Step1 = ({
   changeStep,
@@ -26,7 +37,7 @@ const Step1 = ({
   setOtherUserData,
 }: {
   changeStep: (step: number) => void;
-  userdata: User;
+  userdata: any;
   otherUserData: any;
   setTotalSteps: (steps: number) => void;
   totalSteps: number;
@@ -35,44 +46,146 @@ const Step1 = ({
   setOtherUserData: (data: any) => void;
 }) => {
   const [loading, setLoading] = useState(false);
-  const [address, setAddress] = useState<Address | undefined>();
+  const [address, setAddress] = useState<Address | any | undefined>();
+  const [mailingAddress, setMailingAddress] = useState<
+    Address | any | undefined
+  >();
   const [otherData, setOtherData] = useState<any>();
-  useEffect(() => {
-    const fetchUserAddress = async () => {
-      const data = await getUserAddressData();
-      if (data) {
-        setAddress(data[0]);
-      }
-    };
-    const fetchUserData = async () => {
-      const data = await getUserData();
-      if (data) {
-        setOtherData(data[0]);
-      }
-    };
-    fetchUserData();
-    fetchUserAddress();
-  }, []);
+  const {
+    userdata: user,
+    refetchUserData,
+    setRefetchUserData,
+  } = useContext(UserContext);
+
+  const [companyData, setCompanyData] = useState<any>();
+
   const handleSubmit = async (e: Step1Schema) => {
     try {
       setLoading(true);
-      const address1 = e.address;
-      if (otherData) await updateOtherUserData(e);
-      else await insertUserData(e, address1);
-      setOtherUserData({
-        ...otherUserData,
-        e,
-      });
+      let userData: any = e;
+      console.log(companyData, userData.company, "here");
+      if (userData?.company === "No" && companyData?.length === 0) {
+        const resCompany = await CompanyApis.createCompany({
+          email: userData?.email,
+          name: `${userData?.firstName} ${userData?.lastName}`,
+          phone: userdata?.phone,
+          country_code: 91, // change to 1
+          ein: userdata?.phone,
+          tax_residence_country: "US",
+          tax_classification: "Individual/Sole Proprietor",
+        });
+        console.log(resCompany)
+      } else if (userData?.company === "No" && companyData?.length > 0) {
+        const resCompany = await CompanyApis.updateCompany(companyData[0].id, {
+          email: userData?.email,
+          name: `${userdata?.firstName} ${userdata?.lastName}`,
+          phone: userdata?.phone,
+          country_code: 91, // change to 1
+          ein: userdata?.phone,
+          tax_residence_country: "US",
+          tax_classification: "Individual/Sole Proprietor",
+        });
+        console.log(resCompany)
+      }
+      delete userData.address;
+      delete userData.mailing_address;
+      delete userData.is_mailing_address_same;
+      delete userData.address_id;
+      delete userData.mailing_address_id;
+      delete userData.company;
+      userData.firstName = e.name.firstName;
+      userData.lastName = e.name.lastName;
+      delete userData.name;
+      (userData.tax_residence_country = "US"),
+        delete userData.country_of_tax_residence;
+      delete userData.email;
+      delete userData.phone;
+      userData.dob = e.date_of_birth.toUTCString();
+      delete userData.date_of_birth;
 
-      if (address) await updateAddressData(address1);
-      else await insertAddressData(address1, false);
+      // delete userData.lat;
+      // delete userData.lng;
+      // delete userData.lat1;
+      // delete userData.lng1;
+      const res = await AuthApis.updateUser(userData);
+
+      if (res && res.status === 200) {
+        changeStep(2);
+      }
       setLoading(false);
-      changeStep(2);
     } catch (error: any) {
       setLoading(false);
       changeStep(2);
     }
   };
+  const [addressId, setAddressId] = useState<string | null>(null);
+  const [mailingAddressId, setMailingAddressId] = useState<string | null>(null);
+  const [changedAddress, setChangedAddress] = useState(false);
+  const [isMailingAddressSame, setIsMailingAddressSame] = useState(true);
+
+  useEffect(() => {
+    if (addressId && mailingAddressId)
+      AuthApis.updateUser({
+        permanent_address: {
+          id: addressId,
+        },
+        mailing_address: {
+          id: mailingAddressId,
+        },
+      });
+  }, [changedAddress]);
+
+  useEffect(() => {
+    if (
+      isMailingAddressSame &&
+      addressId !== mailingAddressId &&
+      addressId &&
+      mailingAddressId
+    ) {
+      const updateAddress = async () => {
+        const res = await AuthApis.updateUser({
+          mailing_address: {
+            id: addressId,
+          },
+        });
+        if (res && res.data.status === 200) {
+          setMailingAddress(address);
+          setMailingAddressId(addressId);
+        }
+      };
+      updateAddress();
+    }
+    console.log(addressId, mailingAddressId, isMailingAddressSame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMailingAddressSame, addressId, mailingAddressId]);
+
+  useEffect(() => {
+    if (!user) {
+      return setRefetchUserData(!refetchUserData);
+    } else {
+      if (user?.permanent_address?.id)
+        setAddressId(user?.permanent_address?.id);
+      if (user?.mailing_address?.id)
+        setMailingAddressId(user?.mailing_address?.id);
+      if (
+        user?.permanent_address &&
+        user?.permanent_address?.id !== user?.mailing_address.id
+      ) {
+        setIsMailingAddressSame(false);
+      } else {
+        setIsMailingAddressSame(true);
+      }
+      if (user?.permanent_address) setAddress(user?.permanent_address);
+      if (user?.mailing_address) setMailingAddress(user?.mailing_address);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    CompanyApis.getAllCompanies().then((res) => {
+      setCompanyData(res.data.data);
+    });
+  }, []);
+
   return (
     <AutoForm
       formSchema={step1Schema}
@@ -81,26 +194,14 @@ const Step1 = ({
       }}
       fieldConfig={{
         name: {
-          first_name: {
+          firstName: {
             inputProps: {
               placeholder: "John",
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setOtherUserData({
-                  ...otherUserData,
-                  first_name: e.currentTarget.value,
-                });
-              },
             },
           },
-          last_name: {
+          lastName: {
             inputProps: {
               placeholder: "Doe",
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setOtherUserData({
-                  ...otherUserData,
-                  last_name: e.currentTarget.value,
-                });
-              },
             },
           },
         },
@@ -115,23 +216,62 @@ const Step1 = ({
             },
           },
         },
+        mailing_address: {
+          label: "Mailing address",
+          inputProps: {
+            onChange: (e: any) => {
+              setChangedAddress(!changedAddress);
+            },
+          },
+          fieldType: "modal",
+        },
+        is_mailing_address_same: {
+          fieldType: ({
+            label,
+            isRequired,
+            field,
+            fieldConfigItem,
+            fieldProps,
+          }: AutoFormInputComponentProps) => (
+            <FormItem>
+              <FormControl>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={() => {
+                        console.log(field.value);
+                        if (!field.value) setIsMailingAddressSame(true);
+                        field.onChange(!field.value);
+                      }}
+                      {...fieldProps}
+                    />
+                    Set as mailing address
+                  </div>
+                  {field.value && (
+                    <Button
+                      onClick={() => {
+                        field.onChange(!field.value);
+                        setIsMailingAddressSame(false);
+                      }}
+                      variant={"ghost"}
+                      className="text-label"
+                    >
+                      + Add mailing address
+                    </Button>
+                  )}
+                </div>
+              </FormControl>
+            </FormItem>
+          ),
+        },
         address: {
           fieldType: "modal",
-          showLabel: false,
           inputProps: {
+            showLabel: false,
             isPresent: address ? true : false,
             onChange: (e: any) => {
-              console.log(e);
-            },
-          },
-          legal_address_1: {
-            inputProps: {
-              label: "Legal address (Line 1)",
-            },
-          },
-          legal_address_2: {
-            inputProps: {
-              label: "Legal address (Line 2)",
+              setChangedAddress(!changedAddress);
             },
           },
         },
@@ -144,6 +284,20 @@ const Step1 = ({
         email: {
           inputProps: {
             disabled: true,
+          },
+        },
+        address_id: {
+          inputProps: {
+            onChange: (e: any) => {
+              setAddressId(e.target.value);
+            },
+          },
+        },
+        mailing_address_id: {
+          inputProps: {
+            onChange: (e: any) => {
+              setMailingAddressId(e.target.value);
+            },
           },
         },
         phone: {
@@ -170,35 +324,102 @@ const Step1 = ({
                 setStaticForFirstTime(false);
                 return;
               }
-              setTotalSteps(e.target.value === "Yes" ? 5 : 4);
+              setTotalSteps(e.target.value === "Yes" ? 3 : 2);
             },
           },
         },
       }}
+      dependencies={[
+        {
+          sourceField: "is_mailing_address_same",
+          type: DependencyType.HIDES,
+          targetField: "mailing_address",
+          when: (is_mailing_address_same) => is_mailing_address_same,
+        },
+        {
+          sourceField: "address_id",
+          type: DependencyType.HIDES,
+          targetField: "address_id",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "mailing_address_id",
+          type: DependencyType.HIDES,
+          targetField: "mailing_address_id",
+          when: () => {
+            return true;
+          },
+        },
+        // {
+        //   sourceField: "lat",
+        //   type: DependencyType.HIDES,
+        //   targetField: "lat",
+        //   when: () => {
+        //     return true;
+        //   },
+        // },
+        // {
+        //   sourceField: "lat1",
+        //   type: DependencyType.HIDES,
+        //   targetField: "lat1",
+        //   when: () => {
+        //     return true;
+        //   },
+        // },
+        // {
+        //   sourceField: "lng",
+        //   type: DependencyType.HIDES,
+        //   targetField: "lng",
+        //   when: () => {
+        //     return true;
+        //   },
+        // },
+        // {
+        //   sourceField: "lng1",
+        //   type: DependencyType.HIDES,
+        //   targetField: "lng1",
+        //   when: () => {
+        //     return true;
+        //   },
+        // },
+      ]}
       values={{
         name: {
-          first_name: otherUserData
-            ? otherUserData.first_name
-            : userdata?.user_metadata?.first_name ?? "",
-          last_name: otherUserData
-            ? otherUserData.last_name
-            : userdata?.user_metadata?.last_name ?? "",
+          firstName: userdata?.firstName ? userdata?.firstName : "",
+          lastName: userdata?.lastName ? userdata?.lastName : "",
         },
-        email: otherUserData ? otherUserData.email : userdata?.email ?? "",
-        phone: otherUserData ? otherUserData.phone : userdata?.phone ?? "",
+        email: userdata?.email ?? "",
+        phone: userdata?.phone ?? "",
         country_of_tax_residence: "United States (US)",
-        date_of_birth: otherUserData
-          ? new Date(otherUserData ? otherUserData.date_of_birth : "")
+        date_of_birth: userdata?.dob
+          ? new Date(userdata?.dob ?? "")
           : undefined,
         address: {
-          legal_address_1: address ? address?.legal_address_1 : "",
-          legal_address_2: address ? address?.legal_address_2 : "",
+          address_line_1: address ? address?.address_line_1 : "",
+          address_line_2: address ? address?.address_line_2 : "",
           country: "United States (US)",
           city: address ? address?.city : "",
           state: address ? address?.state : "",
-          zip_code: address?.zip_code ?? 0,
+          postal_code: address?.postal_code ?? 0,
         },
-        company: totalSteps === 5 ? "Yes" : "No",
+        is_mailing_address_same: isMailingAddressSame,
+        mailing_address: {
+          address_line_1: mailingAddress ? mailingAddress?.address_line_1 : "",
+          address_line_2: mailingAddress ? mailingAddress?.address_line_2 : "",
+          city: mailingAddress ? mailingAddress?.city : "",
+          state: mailingAddress ? mailingAddress?.state : "",
+          postal_code: mailingAddress?.postal_code ?? 0,
+          country: "United States (US)",
+        },
+        address_id: addressId ?? "",
+        mailing_address_id: mailingAddressId ?? "",
+        company: totalSteps === 3 ? "Yes" : "No",
+        // lat: address?.latitude ?? 0,
+        // lng: address?.longitude ?? 0,
+        // lat1: mailingAddress?.latitude ?? 0,
+        // lng1: mailingAddress?.longitude ?? 0,
       }}
       className="flex flex-col gap-4 mx-auto max-w-lg"
       zodItemClass="flex flex-row gap-4 space-y-0"

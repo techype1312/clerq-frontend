@@ -73,10 +73,10 @@ const customErrorMap: z.ZodErrorMap = (issue, ctx) => ({
 
 export const step1Schema = z.object({
   name: z.object({
-    first_name: z.string({
+    firstName: z.string({
       required_error: "First Name is required",
     }),
-    last_name: z.string({
+    lastName: z.string({
       required_error: "Last Name is required",
     }),
   }),
@@ -102,31 +102,53 @@ export const step1Schema = z.object({
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
-    // country: z.enum([countryList[0], ...restOfCountryList], {
-    //   errorMap: customErrorMap,
-    // }),
-    legal_address_1: z.string({
+    address_line_1: z.string({
       required_error: "Street is required",
     }),
-    legal_address_2: z.string({
+    address_line_2: z.string({
       required_error: "City is required",
     }),
     city: z.string({
       required_error: "City is required",
     }),
-    // state_zip: z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    zip_code: z.number({
+    postal_code: z.number({
       required_error: "Zip code is required",
     }),
-    // }),
-  }),
+  }).optional(),
+  is_mailing_address_same: z.boolean().optional(),
+  mailing_address: z.object({
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
+    }),
+    address_line_1: z.string({
+      required_error: "Street is required",
+    }),
+    address_line_2: z.string({
+      required_error: "City is required",
+    }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    state: z.string({
+      required_error: "State is required",
+    }),
+    postal_code: z.number({
+      required_error: "Zip code is required",
+    }),
+  }).optional(),
+  address_id: z.string().optional(),
+  mailing_address_id: z.string().optional(),
+  // lat: z.number(),
+  // lng: z.number(),
+  // lat1: z.number(),
+  // lng1: z.number(),
   country_of_tax_residence: z.enum(["United States (US)"], {
     errorMap: customErrorMap,
   }),
-  company: z.enum(["Yes", "No"]),
+  company: z.enum(["Yes", "No"]).optional(),
 });
 
 export type Step1Schema = z.infer<typeof step1Schema>;
@@ -147,10 +169,10 @@ export const step2Schema = z.object({
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
-    legal_address_1: z.string({
+    address_line_1: z.string({
       required_error: "Street is required",
     }),
-    legal_address_2: z.string({
+    address_line_2: z.string({
       required_error: "City is required",
     }),
     city: z.string({
@@ -159,10 +181,33 @@ export const step2Schema = z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    zip_code: z.number({
+    postal_code: z.number({
       required_error: "Zip code is required",
     }),
-  }),
+  }).optional(),
+  is_mailing_address_same: z.boolean().optional(),
+  mailing_address: z.object({
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
+    }),
+    address_line_1: z.string({
+      required_error: "Street is required",
+    }),
+    address_line_2: z.string({
+      required_error: "City is required",
+    }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    state: z.string({
+      required_error: "State is required",
+    }),
+    postal_code: z.number({
+      required_error: "Zip code is required",
+    }),
+  }).optional(),
+  address_id: z.string().optional(),
+  mailing_address_id: z.string().optional(),
   ein: z.string({
     required_error: "EIN is required",
   }),

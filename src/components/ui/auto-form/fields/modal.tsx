@@ -1,19 +1,12 @@
 import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import AutoFormLabel from "../common/label";
-import AutoFormTooltip from "../common/tooltip";
-import {
-  AutoFormInputComponentProps,
-  FieldConfig,
-  FieldConfigItem,
-} from "../types";
+import { FieldConfig } from "../types";
 import { Button } from "../../button";
 import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -21,7 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import AutoFormObject from "./object";
 import { z } from "zod";
-import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import GooglePlacesAutocomplete, {
+  geocodeByAddress,
+  geocodeByLatLng,
+  getLatLng,
+} from "react-google-places-autocomplete";
+import OnboardingApis from "@/actions/apis/OnboardingApis";
+import AuthApis from "@/actions/apis/AuthApis";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -44,102 +44,249 @@ export default function AutoFormModal({
   path = [],
   name,
   labelClass,
-  isPresent = false
+  isPresent = false,
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
-  // const [oldState, setOldState] = useState<any>();
-  // const [update, setUpdate] = useState(false);
-  // useEffect(() => {
-  //   if(update) {
-  //     const value = form.getValues();
-  //     console.log(value)
-  //     setOldState(value);
-  //   }
-  // }, [update]);
-  useEffect(()=>{
-    if(isPresent){
+
+  useEffect(() => {
+    if (isPresent) {
       setSaved(true);
     }
-  },[isPresent])
+  }, [isPresent]);
+  const [value, setValue] = useState<any>(null);
+  const [update, setUpdate] = useState<boolean>(false);
+  const [loadedValue, setLoadedValue] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (name === "address" && form.getValues("address_id"))
+      setValue({
+        label:
+          form.getValues()?.address?.address_line_1 +
+          "," +
+          form.getValues()?.address?.address_line_2 +
+          "," +
+          form.getValues()?.address?.city +
+          "," +
+          form.getValues()?.address?.state +
+          "," +
+          form.getValues()?.address?.postal_code,
+        value:
+          form.getValues()?.address?.address_line_1 +
+          "," +
+          form.getValues()?.address?.address_line_2 +
+          "," +
+          form.getValues()?.address?.city +
+          "," +
+          form.getValues()?.address?.state +
+          "," +
+          form.getValues()?.address?.postal_code,
+      });
+  }, [form.getValues("address_id")]);
+
+  useEffect(() => {
+    if (update) {
+      setUpdate(false);
+      if (name === "address") {
+        const updateAddress = async () => {
+          console.log(form.getValues("address_id"));
+          const res = await OnboardingApis.updateAddress(
+            form.getValues("address_id"),
+            form.getValues(name)
+          );
+          console.log(res);
+        };
+        updateAddress();
+      }
+    }
+  }, [update]);
+
+  const handlePlaceSelect = (value: any) => {
+    if (!value) return;
+    geocodeByAddress(value?.label)
+      .then((results) => getLatLng(results[0]))
+      .then(async ({ lat, lng }) => {
+        if (name === "address") {
+          form.setValue("lat", lat);
+          form.setValue("lng", lng);
+          let res;
+          if (!form.getValues("address_id")) {
+            res = await OnboardingApis.createAddress({
+              latitude: lat,
+              longitude: lng,
+            });
+          } else {
+            const body = {
+              latitude: lat,
+              longitude: lng,
+            };
+            res = await OnboardingApis.updateAddress(
+              form.getValues("address_id"),
+              body
+            );
+          }
+          if (res && res.data && (res.status === 201 || res.status === 200)) {
+            form.setValue("address_id", res.data.id);
+            if (form.getValues("is_mailing_address_same")) {
+              form.setValue("mailing_address_id", res.data.id);
+            }
+            form.setValue(name, {
+              address_line_1: res.data.address_line_1,
+              address_line_2: res.data.address_line_1,
+              city: res.data.city,
+              state: res.data.state,
+              postal_code: res.data.postal_code,
+              mailing_address: form.getValues(name).mailing_address,
+            });
+          }
+        } else if (
+          name === "mailing_address" &&
+          !form.getValues("is_mailing_address_same")
+        ) {
+          form.setValue("lat1", lat);
+          form.setValue("lng1", lng);
+          let res;
+          if (!form.getValues("mailing_address_id")) {
+            res = await OnboardingApis.createAddress({
+              latitude: lat,
+              longitude: lng,
+            });
+          } else {
+            const body = {
+              latitude: lat,
+              longitude: lng,
+            };
+            res = await OnboardingApis.updateAddress(
+              form.getValues("mailing_address_id"),
+              body
+            );
+          }
+          if (res && res.data && (res.status === 201 || res.status === 200)) {
+            form.setValue("mailing_address_id", res.data.id);
+            form.setValue(name, {
+              address_line_1: res.data.address_line_1,
+              address_line_2: res.data.address_line_1,
+              city: res.data.city,
+              state: res.data.state,
+              postal_code: res.data.postal_code,
+              mailing_address: form.getValues(name).mailing_address,
+            });
+          }
+        }
+        setSaved(true);
+      });
+  };
+  useEffect(() => {
+    if (loadedValue) {
+      handlePlaceSelect(value);
+    } else {
+      setLoadedValue(true);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (update) {
+      const updateAddress = async () => {
+        const res = await OnboardingApis.updateAddress(
+          name === "address"
+            ? form.getValues("address_id")
+            : form.getValues("mailing_address_id"),
+          form.getValues(name)
+        );
+        console.log(res.data);
+      };
+      updateAddress();
+    }
+  }, [update]);
 
   return (
-    <>
-      <div className="flex flex-row items-center space-x-2 w-full">
-        <FormItem className="flex w-full flex-col justify-start">
-          <FormControl>
-            <Dialog>
+    <div className="flex flex-row items-center space-x-2 w-full">
+      <FormItem className="flex w-full flex-col justify-start">
+        <FormControl>
+          <Dialog>
+            <AutoFormLabel
+              label={label}
+              isRequired={true}
+              className={labelClass}
+            />
+            <div className="flex gap-4">
+              <div className="w-full">
+                <GooglePlacesAutocomplete
+                  apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
+                  autocompletionRequest={{
+                    bounds: [
+                      { lat: 50, lng: 50 },
+                      { lat: 100, lng: 100 },
+                    ],
+                    componentRestrictions: {
+                      country: ["us"],
+                    },
+                  }}
+                  apiOptions={{ language: "en", region: "us" }}
+                  selectProps={{
+                    value,
+                    onChange: setValue,
+                    className:
+                      "w-full border !important:border-input rounded-md focus:outline-none focus:border-primary",
+                  }}
+                />
+              </div>
               <DialogTrigger asChild>
                 <Button
                   type="button"
-                  className="background-muted text-background-primary hover:!background-muted "
+                  className={`${
+                    saved ? "" : "hidden"
+                  } background-muted text-background-primary hover:!background-muted `}
                   variant={"ghost"}
                   // onClick={() => {
                   //   setUpdate(!update);
                   // }}
                 >
-                  {saved ? "Edit" : "Add"} {label?.toLowerCase()}
+                  {saved ? "Edit" : ""}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                  <DialogTitle>Add {label}</DialogTitle>
-                </DialogHeader>
-                <AutoFormObject
-                  schema={item as unknown as z.ZodObject<any, any>}
-                  form={form}
-                  fieldConfig={
-                    (fieldConfig?.[name] ?? {}) as FieldConfig<
-                      z.infer<typeof item>
-                    >
-                  }
-                  path={[name]}
-                  innerClassName={zodItemClass}
-                  labelClass={labelClass}
-                />
-                <DialogFooter className="mr-auto my-2 h-12 flex gap-2">
-                  <DialogClose asChild>
-                    {/* 
-                    Disabling the cancel button right now as for some reason it's not working as I want it to.
-                    I want it to reset the form to the previous state but it's not working.
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="background-muted text-label hover:!background-muted h-12 px-10 rounded-full"
-                       onClick={() => {
-                         console.log(name, oldState);
-                         setUpdate(false);
-                         form.setValue(name, oldState);
-                       }}
-                    >
-                      Close
-                    </Button> */}
-                  </DialogClose>
-                  <DialogClose asChild>
-                    <Button
-                      onClick={() => {
-                        setSaved(true);
-                        // setUpdate(false);
-                      }}
-                      type="button"
-                      className="background-primary px-10 rounded-full h-12"
-                    >
-                      {saved ? "Save changes" : "Add"}
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            {/* <Button
+            </div>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Add {label}</DialogTitle>
+              </DialogHeader>
+              <AutoFormObject
+                schema={item as unknown as z.ZodObject<any, any>}
+                form={form}
+                fieldConfig={
+                  (fieldConfig?.[name] ?? {}) as FieldConfig<
+                    z.infer<typeof item>
+                  >
+                }
+                path={[name]}
+                innerClassName={zodItemClass}
+                labelClass={labelClass}
+              />
+              <DialogFooter className="mr-auto my-2 h-12 flex gap-2">
+                <DialogClose asChild>
+                  <Button
+                    onClick={() => {
+                      // setSaved(true);
+                      setUpdate(true);
+                    }}
+                    type="button"
+                    className="background-primary px-10 rounded-full h-12"
+                  >
+                    {saved ? "Save changes" : "Add"}
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* <Button
               onClick={() => setIsOpen(true)}
               className="background-muted text-background-primary hover:!background-muted "
               variant={"ghost"}
             >
               Add {fieldConfigItem?.label || label}
             </Button> */}
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </div>
-    </>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </div>
   );
 }

@@ -218,7 +218,7 @@ export default function AutoFormObject<
                       <FormLabel className={labelClass}>{itemName}</FormLabel>
                       {zodBaseType === "ZodDate"
                         ? field.value
-                          ? format(field.value, "PPP")
+                          ? format(field?.value, "PPP")
                           : "-"
                         : zodBaseType === "ZodBoolean"
                         ? field.value === true

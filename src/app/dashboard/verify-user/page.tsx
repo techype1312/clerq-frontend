@@ -2,8 +2,6 @@
 import Step1 from "@/components/verifyUser/Step1";
 import Step2 from "@/components/verifyUser/Step2";
 import Step3 from "@/components/verifyUser/Step3";
-import { MainContext } from "@/context/Main";
-import { getUserData } from "@/hooks/useUser";
 import { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Step4 from "@/components/verifyUser/Step4";
@@ -14,11 +12,12 @@ const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
-  const [totalSteps, setTotalSteps] = useState(4);
-  const { userdata, refreshUser } = useContext(UserContext);
+  const [totalSteps, setTotalSteps] = useState(2);
+  const { userdata, refetchUserData, setRefetchUserData } =
+    useContext(UserContext);
   const changeStep = (step: number) => {
     setStep(step);
-    if (totalSteps === 5) {
+    if (totalSteps === 3) {
       router.push(
         "/dashboard/verify-user?step=" + step + "&totalSteps=" + totalSteps
       );
@@ -26,23 +25,12 @@ const Page = () => {
       router.push("/dashboard/verify-user?step=" + step);
     }
   };
-  const [userRefreshed, setUserRefreshed] = useState(false);
   const [otherUserData, setOtherUserData] = useState(null);
   const [staticForFirstTime, setStaticForFirstTime] = useState(false); // Need this for a very specific use case which is causing infinite loop
-  
+
   useEffect(() => {
-    if (!userdata && !userRefreshed) {
-      refreshUser();
-    }
-    setUserRefreshed(true);
-    if (!otherUserData) {
-      getUserData().then((data) => {
-        if (data) {
-          setOtherUserData(data[0]);
-        }
-      });
-    }
-  }, [userdata]);
+    setRefetchUserData(!refetchUserData);
+  }, []);
 
   useEffect(() => {
     if (searchParams) {
@@ -51,8 +39,8 @@ const Page = () => {
         setStep(steps);
       }
       if (searchParams.get("totalSteps")) {
-        const totalStep = parseInt(searchParams.get("totalSteps") ?? "4");
-        if (totalStep === 5) {
+        const totalStep = parseInt(searchParams.get("totalSteps") ?? "2");
+        if (totalStep === 3) {
           setStaticForFirstTime(true);
           setTotalSteps(totalStep);
         }
@@ -60,19 +48,15 @@ const Page = () => {
     }
   }, [searchParams]);
 
-  const stepsHeader = [
-    "Basic information",
-    "Add company",
-    "Generate W9 certificate",
-    "Add bank accounts",
-    "Add representatives",
-  ];
+  const stepsHeader = ["Basic information", "Add company", "Add bank accounts"];
+  // "Generate W9 certificate",
+  // "Add representatives",
   const headerText = stepsHeader.filter((header, index) => {
-    if (totalSteps === 5) {
+    if (totalSteps === 3) {
       if (step === index + 1) {
         return header;
       }
-    } else if (totalSteps === 4) {
+    } else if (totalSteps === 2) {
       if (step === 1 && index === 0) {
         return header;
       } else if (step === index && index !== 1) {
@@ -106,21 +90,21 @@ const Page = () => {
           </button> */}
           <h1 className="text-primary text-3xl">
             <span>{headerText}</span>
-            {headerText[0] === stepsHeader[3] && (
+            {headerText[0] === stepsHeader[2] && (
               <p className="text-sm max-w-sm text-muted mt-2">
                 To securely connect your bank account, we use Plaid, you can
                 also manually add your bank account.
               </p>
             )}
           </h1>
-          {headerText[0] === stepsHeader[2] && (
+          {/* {headerText[0] === stepsHeader[2] && (
             <>
               {((step === 3 && totalSteps === 5) ||
                 (step === 2 && totalSteps === 4)) && (
                 <Step3 changeStep={changeStep} step={step} />
               )}
             </>
-          )}
+          )} */}
         </div>
         <div className="flex items-center w-1/2 py-12">
           {step === 1 && (
@@ -135,10 +119,18 @@ const Page = () => {
               setOtherUserData={setOtherUserData}
             />
           )}
-          {step === 2 && totalSteps === 5 && (
+          {step === 2 && totalSteps === 3 && (
             <Step2 changeStep={changeStep} step={step} />
           )}
-          {((step === 3 && totalSteps === 5) ||
+          {((step === 2 && totalSteps === 2) ||
+            (step === 3 && totalSteps === 3)) && (
+            <Step4
+              changeStep={changeStep}
+              userdata={userdata}
+              step={step}
+            />
+          )}
+          {/* {((step === 3 && totalSteps === 5) ||
             (step === 2 && totalSteps === 4)) && <div className="h-sm"></div>}
           {((step === 4 && totalSteps === 5) ||
             (step === 3 && totalSteps === 4)) && (
@@ -157,7 +149,7 @@ const Page = () => {
               otherUserData={otherUserData}
               step={step}
             />
-          )}
+          )} */}
         </div>
       </div>
     </div>

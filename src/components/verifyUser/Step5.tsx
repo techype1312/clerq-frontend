@@ -16,7 +16,7 @@ import { AutoFormInputComponentProps } from "../ui/auto-form/types";
 import { FormControl, FormItem, FormLabel } from "../ui/form";
 import AutoFormEnum from "../ui/auto-form/fields/enum";
 import FormSelect from "../ui/FormSelect";
-import { MainContext } from "@/context/Main";
+import { UserContext } from "@/context/User";
 
 const Step5 = ({
   changeStep,
@@ -33,7 +33,7 @@ const Step5 = ({
   const [dropdown, setDropdown] = useState<any>({});
   const [fetchingDropdown, setFetchingDropdown] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { refetchUser } = useContext(MainContext);
+  const { refetchUser } = useContext(UserContext);
   useEffect(() => {
     const fetchDropdown = async () => {
       const res = await supabase.from("dropdown").select("*");

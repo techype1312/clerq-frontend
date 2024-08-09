@@ -5,36 +5,44 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Image from "next/image";
 import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
 import { supabase } from "@/utils/supabase/client";
+import BankingApis from "@/actions/apis/BankingApis";
+import CompanyApis from "@/actions/apis/CompanyApis";
+import AuthApis from "@/actions/apis/AuthApis";
 
 const Step4 = ({
   changeStep,
   userdata,
-  otherUserData,
   step,
 }: {
   changeStep: (step: number) => void;
-  userdata: User;
-  otherUserData: any;
+  userdata: any;
   step: number;
 }) => {
   const [token, setToken] = useState<string>("");
   const body = {
-    userId: userdata?.id,
-    clientName:
-      userdata?.user_metadata.first_name +
-      " " +
-      userdata?.user_metadata.last_name,
+    companyId: userdata?.id,
   };
   const config: PlaidLinkOptions = {
     onSuccess: (public_token, metadata) => {
-      supabase.functions
-        .invoke("plaid-success", {
-          method: "POST",
-          body: { public_token, user_id: userdata?.id },
+      // supabase.functions
+      //   .invoke("plaid-success", {
+      //     method: "POST",
+      //     body: { public_token, user_id: userdata?.id },
+      //   })
+      BankingApis.exchangePublicToken(
+        JSON.stringify({
+          publicToken: public_token,
+          company: {
+            id: userdata?.id,
+          },
         })
-        .then((res) => {
-          changeStep(step + 1);
-        });
+      ).then((res) => {
+        console.log(res);
+        // This will update the user as verified
+        // AuthApis.updateUser({
+        //   isUserVerified: true,
+        // })
+      });
     },
     onExit: (err, metadata) => {
       changeStep(step + 1);
@@ -45,19 +53,30 @@ const Step4 = ({
   const { open, exit, ready } = usePlaidLink(config);
 
   useEffect(() => {
-    if (body.userId && !token) {
+    if (body.companyId && !token) {
       console.log(userdata);
-      supabase.functions
-        .invoke("plaid", {
-          method: "POST",
-          body: body,
-        })
-        .then(async (res) => {
-          console.log(res);
-          setToken(res.data.link_token);
-        });
+      const fetchCompanyData = async () => {
+        const res = await CompanyApis.getAllCompanies();
+        console.log(res.data);
+      };
+
+      fetchCompanyData();
+      BankingApis.generateLinkToken(JSON.stringify(body)).then((res) => {
+        console.log(res);
+        setToken(res.data.link_token);
+      });
+      // supabase.functions
+      //   .invoke("plaid", {
+      //     method: "POST",
+      //     body: body,
+      //   })
+      //   .then(async (res) => {
+      //     console.log(res);
+      //     setToken(res.data.link_token);
+      //   });
     }
-  }, [body.userId]);
+  }, [body.companyId]);
+
   return (
     <>
       <Card
