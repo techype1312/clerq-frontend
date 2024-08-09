@@ -38,12 +38,12 @@ export const getResponse = async (
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(token !== null, token);
+  const headers = getHeader(null, token);
   return axios(URL, {
     params,
     method: "GET",
     headers: headers,
-    withCredentials: true,
+    withCredentials: false,
   })
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
@@ -51,23 +51,23 @@ export const getResponse = async (
         if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
           console.log(res);
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return getResponse(
                 url,
                 params,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
           } else {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
             return res;
           }
         } else if (error.response) {
@@ -94,23 +94,23 @@ export const putResponse = async (
       if (error) {
         if (error?.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return putResponse(
                 url,
                 payload,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         } else if (error.response) {
           toast.error(error.response.data.message);
@@ -137,23 +137,23 @@ export const deleteResponse = async (
       if (error) {
         if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return deleteResponse(
                 url,
                 params,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         } else if (error.response) {
           toast.error(error.response.data.message);
@@ -185,25 +185,23 @@ export const postResponse = async (
       if (error) {
         if (
           error?.response?.status === 401 &&
-          url !== "v1/users/verify-refresh-token" &&
-          url !== "v1/users/"
+          url !== "auth/refresh" 
         ) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.token);
-            Cookies.set("refreshToken", res?.data?.data?.refreshToken, {
-              expires: res?.data?.data?.tokenExpiry,
-            });
+          if (res && res?.data && res?.status === 200) {
+            console.log(res.data);
+            Cookies.set("token", res?.data?.token);
+            Cookies.set("refreshToken", res?.data?.refreshToken, {expires: res?.data?.expiresIn});
             if (!retry) {
               // Retry the request with the new token
-              return postResponse(url, payload, res?.data?.data?.token, true);
+              return postResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         } else if (error?.response?.status === 400) {
           toast.error(error.response.data.error.message);
@@ -239,23 +237,23 @@ export const postResponseUpdated = async (
       if (error) {
         if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return postResponse(
                 url,
                 payload,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         }
       } else if (error.response) {
@@ -283,23 +281,23 @@ export const patchResponse = async (
       if (error.response) {
         if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return patchResponse(
                 url,
                 payload,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         }
       } else {
@@ -326,23 +324,23 @@ export const patchResponseFormData = async (
       if (error.response) {
         if (error.response?.status === 401 && !error.response.success) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return patchResponse(
                 url,
                 payload,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         }
       } else {
@@ -366,18 +364,18 @@ export const postResponseFormData = async (
       if (error.response) {
         if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return postResponseFormData(url, payload, true);
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         }
       } else if (error.response) {
@@ -439,23 +437,23 @@ export const getResponseWithQueryParams = async (
       if (error) {
         if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
-          if (res && res?.data && res.status === 202) {
-            Cookies.set("jwtToken", res?.data?.data?.accessToken);
+          if (res && res?.data && res?.status === 200) {
+            Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
               return getResponseWithQueryParams(
                 url,
                 params,
-                res?.data?.data?.accessToken,
+                res?.data?.token,
                 true
               );
             }
-          } else if (res.status === 401 && !res.response.success) {
-            localStorage.clear();
-            Cookies.remove("jwtToken");
-            Cookies.remove("refreshToken");
-            Cookies.remove("userType");
-            window.location.href = "/";
+          } else if (res?.status === 401 && !res.response.success) {
+            // localStorage.clear();
+            // Cookies.remove("token");
+            // Cookies.remove("refreshToken");
+            // Cookies.remove("userType");
+            // window.location.href = "/";
           }
         }
       } else if (error.response) {

@@ -2,8 +2,8 @@ import * as ApiCalls from "../ApiCalls";
 import { getCookie } from "../cookieUtils";
 
 const getCheck = (payload: any) => {
-  const jwtToken = getCookie("jwtToken") || null;
-  return ApiCalls.getResponse(`users/`, payload, jwtToken);
+  const token = getCookie("token") || null;
+  return ApiCalls.getResponse(`users/`, payload, token);
 };
 
 const login = (searchParams: string, payload: any) => {
@@ -32,26 +32,25 @@ const signOut = () => {
   return ApiCalls.getResponse(
     `v1/users/logout/`,
     {},
-    getCookie("jwtToken") || ""
+    getCookie("token") || ""
   );
 };
 
 const profile = () => {
-  const a = ApiCalls.getResponse(`auth/me`, {}, getCookie("jwtToken") || "");
-  return a;
+  return ApiCalls.getResponse(`auth/me`, {}, getCookie("token") || "");
 };
 
 const deleteAccount = (payload: string) => {
   return ApiCalls.deleteResponse(
     `v1/users/${payload}`,
     null,
-    getCookie("jwtToken") || ""
+    getCookie("token") || ""
   );
 };
 
 const verifyRefreshToken = () => {
   return ApiCalls.postResponse(
-    `v1/users/verify-refresh-token`,
+    `auth/refresh`,
     {},
     getCookie("refreshToken") || ""
   );
@@ -67,7 +66,7 @@ const inviteTeamMember = (payload: InviteTeamMemberPayload) => {
   return ApiCalls.postResponse(
     `v1/users/invite-team-member`,
     payload,
-    getCookie("jwtToken") || ""
+    getCookie("token") || ""
   );
 };
 
@@ -83,12 +82,20 @@ const confirmEmail = (payload: any) => {
 };
 
 const verifyMagicLinkHash = (hash: string) => {
-  return ApiCalls.getResponse(`auth/email/verify/magic-link`, hash, null);
+  return ApiCalls.postResponse(
+    `auth/email/verify/magic-link`,
+    { hash: hash },
+    null
+  );
 };
 
 const updateUser = (payload: any) => {
-  return ApiCalls.patchResponse(`auth/me`, payload, getCookie("jwtToken") || "");
-}
+  return ApiCalls.patchResponse(
+    `auth/me`,
+    payload,
+    getCookie("token") || ""
+  );
+};
 
 const AuthApis = {
   getCheck,
@@ -105,7 +112,7 @@ const AuthApis = {
   healthCheck,
   confirmEmail,
   verifyMagicLinkHash,
-  updateUser
+  updateUser,
 };
 
 export default AuthApis;
