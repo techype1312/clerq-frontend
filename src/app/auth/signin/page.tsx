@@ -12,7 +12,6 @@ import { formatPhone } from "@/utils/utils";
 const Page = () => {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
-  const hash = searchParams.get("hash");
   const hasShownError = useRef(false);
   const router = useRouter();
 
@@ -24,12 +23,7 @@ const Page = () => {
       router.push("/auth/signin");
     }
   }, [error]);
-  useEffect(() => {
-    const res = async () => {
-      return await AuthApis.confirmEmail({ hash });
-    };
-    res();
-  }, [hash]);
+
   return (
     <div className="flex h-screen w-full gap-12">
       <div className="background-placeholder w-1/2"></div>
@@ -74,12 +68,12 @@ const Page = () => {
           </AutoForm>
           <AutoForm
             formSchema={signInSchema}
-             formAction={login}
-            //onSubmit={async (e) => {
-            //  const searchParams = "magic_link=true";
-            //  const res = await AuthApis.login(searchParams, e);
-            //  console.log(res.data);
-            //}}
+            //  formAction={login}
+            onSubmit={async (e) => {
+              const searchParams = "magic_link=true";
+              const res = await AuthApis.login(searchParams, e);
+              console.log(res.data);
+            }}
             className="flex flex-col gap-4 max-w-lg"
             withSubmitButton={false}
             labelClass="text-label"

@@ -4,7 +4,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "react-toastify";
-import { MainContext } from "@/context/Main";
 import { UserContext } from "@/context/User";
 
 const DashboardTop = () => {

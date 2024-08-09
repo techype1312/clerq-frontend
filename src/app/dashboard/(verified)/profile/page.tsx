@@ -1,14 +1,11 @@
 "use client";
-import ProfileRow from "@/components/dashboard/profile/ProfileRow";
 import ProfileRowContainer from "@/components/dashboard/profile/ProfileRowContainer";
-import { MainContext } from "@/context/Main";
-import { supabase } from "@/utils/supabase/client";
+import { UserContext } from "@/context/User";
 import Image from "next/image";
-import { title } from "process";
 import React, { useContext, useEffect, useState } from "react";
 
 const Page = () => {
-  const { userdata, otherUserData } = useContext(MainContext);
+  const { userdata, otherUserData } = useContext(UserContext);
   const [rowData, setRowData] = useState<any>([]);
   useEffect(()=>{
     setRowData([

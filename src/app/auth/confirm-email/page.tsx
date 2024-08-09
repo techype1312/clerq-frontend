@@ -5,11 +5,11 @@ import React, { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
 import Cookies from "js-cookie";
-import { MainContext } from "@/context/Main";
+import { UserContext } from "@/context/User";
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {userdata, setuserdata} = useContext(MainContext);
+  const {userdata, setuserdata} = useContext(UserContext);
   const error = searchParams.get("error");
   const hash = searchParams.get("hash");
   const error_description = searchParams.get("error_description");
@@ -21,15 +21,17 @@ const Page = () => {
           "&error_description=" +
           error_description
       );
-    } else if (hash) {
+    } 
+    if (hash) {
       const verifyMagicLinkHash = async () => {
         const res = await AuthApis.verifyMagicLinkHash(hash);
+        console.log(res, "res", hash);
         if (res.status === 200) {
-          if (res.data && res.data.jwtToken && res.data.refreshToken) {
+          if (res.data && res.data.token && res.data.refreshToken) {
             Cookies.set("refreshToken", res.data.refreshToken, {
               expires: res.data.tokenExpiry,
             });
-            Cookies.set("token", res.data.jwtToken);
+            Cookies.set("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             setuserdata(res.data.user)
             router.push('/dashboard')
@@ -39,6 +41,7 @@ const Page = () => {
       verifyMagicLinkHash();
     }
   }, [searchParams]);
+  
   return (
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
       <Loader2Icon className="animate-spin" size={"48px"} />

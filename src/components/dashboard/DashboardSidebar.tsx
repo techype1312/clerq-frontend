@@ -1,13 +1,6 @@
 "use client";
 
 import {
-  CreditCard,
-  DollarSignIcon,
-  HomeIcon,
-  LandmarkIcon,
-  Settings,
-  SettingsIcon,
-  Users,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -15,14 +8,14 @@ import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
-import { MainContext } from "@/context/Main";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/User";
 
 const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const router = useRouter();
   const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number>(300);
-  const { userdata } = useContext(MainContext);
+  const { userdata } = useContext(UserContext);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

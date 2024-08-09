@@ -1,5 +1,4 @@
 'use client'
-import { MainContext } from "@/context/Main";
 import { UserContext } from "@/context/User";
 import React, { useEffect } from "react";
 

@@ -1,8 +1,6 @@
 "use client";
 import { login, resendLogin } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import { MainContext } from "@/context/Main";
-import { supabase } from "@/utils/supabase/client";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useContext, useEffect } from "react";

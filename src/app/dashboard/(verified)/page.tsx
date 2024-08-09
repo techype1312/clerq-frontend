@@ -12,11 +12,10 @@ import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
-import Step4 from "@/components/verifyUser/Step4";
-import { MainContext } from "@/context/Main";
+import { UserContext } from "@/context/User";
 
 const Page = () => {
-  const {userdata} = useContext(MainContext)
+  const {userdata} = useContext(UserContext)
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
     {
       title: "Last 7 days",

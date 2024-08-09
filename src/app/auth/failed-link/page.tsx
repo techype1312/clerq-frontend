@@ -1,7 +1,6 @@
 "use client";
 import { login } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import { MainContext } from "@/context/Main";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useContext, useEffect, useRef, useState } from "react";
