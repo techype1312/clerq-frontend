@@ -159,29 +159,6 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       <div className="flex flex-col mt-4 gap-4">
         <div className="flex flex-col gap-4">{items}</div>
       </div>
-      <div
-        onClick={() => {
-          router.push("/dashboard/profile");
-        }}
-        className="mt-auto flex gap-4 cursor-pointer"
-      >
-        <div className="flex items-center">
-          <Image
-            src="/profile.png"
-            className="rounded-full"
-            alt="logo"
-            width={40}
-            height={40}
-          />
-        </div>
-        <div className="flex flex-col">
-          <p className="text-label">
-            {userdata?.user_metadata?.first_name}{" "}
-            {userdata?.user_metadata?.last_name}
-          </p>
-          <p className="text-muted">{userdata?.email}</p>
-        </div>
-      </div>
     </div>
   );
 };

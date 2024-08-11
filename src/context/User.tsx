@@ -4,7 +4,6 @@ export const UserContext = createContext<any>(null);
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import AuthApis from "@/actions/apis/AuthApis";
-import { supabase } from "@/utils/supabase/client";
 
 export const UserContextProvider = ({
   children,

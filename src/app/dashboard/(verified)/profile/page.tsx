@@ -4,10 +4,47 @@ import { UserContext } from "@/context/User";
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
 
+const RoleItem = ({ label }: { label: string }) => {
+  return (
+    <div
+      className="flex w-full items-center justify-between"
+      style={{
+        width: "160px",
+      }}
+    >
+      <div
+        className="flex flex-col justify-center"
+        style={{
+          borderRadius: "4px",
+          whiteSpace: "nowrap",
+          color: "#1e1e2a",
+          textTransform: "capitalize",
+        }}
+      >
+        <span
+          style={{
+            border: "1px solid #cce8ea",
+            borderRadius: "4px",
+            padding: "0 8px",
+            fontWeight: 400,
+            fontSize: "12px",
+            letterSpacing: ".2px",
+            lineHeight: "20px",
+          }}
+          className="hover:bg-teal-100"
+        >
+          {label}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const Page = () => {
   const { userdata, otherUserData } = useContext(UserContext);
   const [rowData, setRowData] = useState<any>([]);
-  useEffect(()=>{
+
+  useEffect(() => {
     setRowData([
       {
         title: "Email",
@@ -15,86 +52,79 @@ const Page = () => {
         isEditable: false,
       },
       {
-        title: "Point of contact",
-        value: [userdata?.email ?? ""
-          // otherUserData?.point_of_contact &&
-            // otherUserData?.point_of_contact?.length > 0 &&
-            // otherUserData?.point_of_contact[0],
-          // otherUserData?.point_of_contact &&
-            // otherUserData?.point_of_contact?.length > 1 &&
-            // otherUserData?.point_of_contact[1],
-        ],
+        title: "Preferred name",
+        value: [userdata?.legalFirstName + " " + userdata?.legalLastName],
         isEditable: true,
       },
       {
         title: "Legal name",
+        value: [userdata?.legalFirstName + " " + userdata?.legalLastName],
+        isEditable: true,
+      },
+      // {
+      //   title: "Date of birth",
+      //   value: [otherUserData?.dob],
+      //   type: "date",
+      //   isEditable: true,
+      // },
+      {
+        title: "Phone no.",
         value: [
-          userdata?.user_metadata?.first_name +
-            " " +
-            userdata?.user_metadata?.last_name,
+          userdata?.phone !== "" ? userdata?.phone : otherUserData?.phone,
         ],
+        type: "phone",
+        isEditable: true,
+      },
+      {
+        title: "Mailing Address",
+        value: [userdata?.legal_address],
+        isEditable: true,
+      },
+      {
+        title: "Legal Address",
+        value: [userdata?.legal_address],
         isEditable: true,
       },
       {
         title: "Instagram",
-        value: [userdata?.user_metadata?.instagram ?? "https://www.instagram.com/google"], // needs to be an array
+        value: [userdata?.instagram ?? "https://www.instagram.com/google"],
         type: "social-link",
         isEditable: true,
       },
       {
         title: "Social",
-        value: [userdata?.user_metadata?.social], // needs to be an array
+        value: [userdata?.social],
         type: "social",
         isEditable: true,
       },
-      {
-        title: "Date of birth",
-        value: [otherUserData?.date_of_birth], // needs to be an array
-        type: "date",
-        isEditable: true,
-      },
-      {
-        title: "Phone no.",
-        value: [userdata?.phone !== '' ? userdata?.phone : otherUserData?.phone], // needs to be an array
-        type: "phone",
-        isEditable: true,
-      },
-      {
-        title: "Address",
-        value: [userdata?.user_metadata?.address], // needs to be an array
-        isEditable: true,
-      },
     ]);
-  },[userdata, otherUserData])
+  }, [userdata, otherUserData]);
+
+  if (!userdata) return null;
+
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-primary text-2xl font-medium ml-1">Profile</h1>
-      <div className="mt-auto flex gap-4 cursor-pointer items-center">
+    <div className="flex flex-col gap-4 lg:mx-20">
+      <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
         <Image
           src="/profile.png"
-          className="rounded-full"
+          className="rounded-lg"
           alt="logo"
           width={40}
           height={40}
         />
-        <p className="text-primary font-semibold">
-          {userdata?.user_metadata?.first_name}{" "}
-          {userdata?.user_metadata?.last_name}
+        <p
+          className="ml-2"
+          style={{
+            fontSize: "28px",
+            lineHeight: "36px",
+            fontWeight: 380,
+          }}
+        >
+          {userdata?.firstName}{" "}
+          {userdata?.lastName}
         </p>
-        <div className="ml-2 background-muted text-primary px-2 py-1 rounded-md">
-          {userdata?.user_metadata.role ?? "Admin"}
-        </div>
+        <RoleItem label={userdata?.role?.name ?? ""}/>
       </div>
-      {/* <ProfileRow
-        rowData={{
-          title: "First Name",
-          value: [
-            userdata?.user_metadata?.first_name ?? "",
-            userdata?.user_metadata?.last_name ?? "",
-          ],
-          isEditable: true,
-        }}
-      /> */}
       <ProfileRowContainer profileData={rowData} />
     </div>
   );

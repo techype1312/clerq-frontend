@@ -146,7 +146,7 @@ const Page = () => {
           height={40}
         />
         <p
-          className=""
+          className="ml-2"
           style={{
             fontSize: "28px",
             lineHeight: "36px",

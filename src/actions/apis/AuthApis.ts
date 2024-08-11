@@ -18,7 +18,7 @@ const loginWithOtp = (payload: any) => {
 };
 
 const verifyOtp = (payload: any) => {
-  return ApiCalls.patchResponse(`v1/users/verify-otp`, payload, null);
+  return ApiCalls.patchResponse(`auth/phone/verify/otp`, payload, null);
 };
 
 // const signIn = (payload: any) => {
@@ -29,8 +29,8 @@ const signUp = (payload: any) => {
 };
 
 const signOut = () => {
-  return ApiCalls.getResponse(
-    `v1/users/logout/`,
+  return ApiCalls.postResponse(
+    `auth/logout/`,
     {},
     getCookie("token") || ""
   );

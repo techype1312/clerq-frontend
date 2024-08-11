@@ -1,10 +1,10 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import Cookies from "js-cookie";
 import Link from "next/link";
-import { supabase } from "@/utils/supabase/client";
-import { toast } from "react-toastify";
 import { UserContext } from "@/context/User";
+import AuthApis from "@/actions/apis/AuthApis";
+import { Button } from "../ui/button";
 
 const Header = () => {
   const { userdata, refreshUser } = useContext(UserContext);
@@ -16,16 +16,16 @@ const Header = () => {
       setIsLoggedIn(false);
     }
   }, [userdata]);
+  
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.log("Error logging out:", error.message);
-      toast.error("Error logging out");
-      return;
-    } else {
-      refreshUser();
-    }
+    return AuthApis.signOut().then(() => {
+      Cookies.remove('token')
+      Cookies.remove('refreshToken')
+      Cookies.remove('onboarding_completed')
+      localStorage.clear();
+    })
   };
+
   return (
     <div className="p-2">
       <div className="ml-auto w-fit mr-2">

@@ -38,8 +38,8 @@ const Page = () => {
             const data = {
               email: e.email,
               password: e.password,
-              firstName: e.name.first_name,
-              lastName: e.name.last_name,
+              firstName: e.name.firstName,
+              lastName: e.name.lastName,
               phone: e.phone,
               country_code: 91,
             };

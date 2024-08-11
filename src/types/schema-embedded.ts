@@ -5,10 +5,10 @@ import validator from "validator";
 export const signUpSchema = z
   .object({
     name: z.object({
-      first_name: z.string({
+      firstName: z.string({
         required_error: "First Name is required",
       }),
-      last_name: z.string({
+      lastName: z.string({
         required_error: "Last Name is required",
       }),
     }),
@@ -239,10 +239,10 @@ export const step5Schema = z.object({
 
 export const inviteUserSchema = z.object({
   name: z.object({
-    first_name: z.string({
+    firstName: z.string({
       required_error: "First Name is required",
     }),
-    last_name: z.string({
+    lastName: z.string({
       required_error: "Last Name is required",
     }),
   }),

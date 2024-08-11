@@ -32,6 +32,7 @@ const Page = () => {
               expires: res.data.tokenExpiry,
             });
             Cookies.set("token", res.data.token);
+            Cookies.set("onboarding_completed", res?.data?.user?.onboarding_completed ? "true" : "false");
             localStorage.setItem("user", JSON.stringify(res.data.user));
             setuserdata(res.data.user)
             router.push('/dashboard')
