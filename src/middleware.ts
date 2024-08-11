@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
-  const isUserOnboard = request.cookies.get("isUserOnboard")?.value ?? "false";
+  const isUserOnboard = request.cookies.get("onboarding_completed")?.value ?? "false";
   if (
     token &&
     isUserOnboard === "false" &&

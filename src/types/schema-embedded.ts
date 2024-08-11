@@ -73,10 +73,10 @@ const customErrorMap: z.ZodErrorMap = (issue, ctx) => ({
 
 export const step1Schema = z.object({
   name: z.object({
-    firstName: z.string({
+    legalFirstName: z.string({
       required_error: "First Name is required",
     }),
-    lastName: z.string({
+    legalLastName: z.string({
       required_error: "Last Name is required",
     }),
   }),
@@ -145,7 +145,7 @@ export const step1Schema = z.object({
   // lng: z.number(),
   // lat1: z.number(),
   // lng1: z.number(),
-  country_of_tax_residence: z.enum(["United States (US)"], {
+  tax_residence_country: z.enum(["United States (US)"], {
     errorMap: customErrorMap,
   }),
   company: z.enum(["Yes", "No"]).optional(),
@@ -155,10 +155,10 @@ export type Step1Schema = z.infer<typeof step1Schema>;
 export type Address = Step1Schema["address"];
 
 export const step2Schema = z.object({
-  company_name: z.string({
+  name: z.string({
     required_error: "Company Name is required",
   }),
-  company_email: z
+  email: z
     .string({
       required_error: "Company Email is required",
     })
@@ -211,10 +211,10 @@ export const step2Schema = z.object({
   ein: z.string({
     required_error: "EIN is required",
   }),
-  country_of_tax_residence: z.enum(["United States (US)"], {
+  tax_residence_country: z.enum(["United States (US)"], {
     errorMap: customErrorMap,
   }),
-  federal_tax_classification: z.enum([
+  tax_classification: z.enum([
     "Individual/sole proprietor or single-member LLC",
     "C Corporation",
     "S Corporation",

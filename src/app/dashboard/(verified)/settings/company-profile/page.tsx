@@ -36,9 +36,9 @@ ${country}`;
 const Page = () => {
   const userdata = {
     legal_name: "Clerq, Incroporated",
-    company_name: "Clerq",
-    fedral_ein: "123456789",
-    company_email: "anurag@joinclerq.com",
+    name: "Clerq",
+    ein: "123456789",
+    email: "anurag@joinclerq.com",
     company_logo: "",
     phone: "8000000000",
     country_code: 1,
@@ -76,18 +76,18 @@ const Page = () => {
       isEditable: false,
     },
     {
-      id: "fedral_ein",
+      id: "ein",
       title: "Fedral EIN",
-      value: userdata.fedral_ein,
+      value: userdata.ein,
       type: "text",
       isEditable: false,
     },
     {
-      id: "company_name",
+      id: "name",
       title: "Company name",
       description:
         "This is the name that appears on Clerq and in your notifications.",
-      value: userdata.company_name,
+      value: userdata.name,
       type: "text",
       isEditable: true,
     },
@@ -107,11 +107,11 @@ const Page = () => {
       isEditable: true,
     },
     {
-      id: "company_email",
+      id: "email",
       title: "Company Email",
       description:
         "Team members and pre-authorized vendors can forward invoices directly to your Payments page via this address.",
-      value: userdata.company_email,
+      value: userdata.email,
       type: "email",
       isEditable: true,
     },
@@ -153,7 +153,7 @@ const Page = () => {
             fontWeight: 380,
           }}
         >
-          {userdata.company_name}
+          {userdata.name}
         </p>
       </div>
       <CompanyProfileRowContainer profileData={rowData} />

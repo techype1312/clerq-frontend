@@ -49,10 +49,20 @@ const Step2 = ({
       // if (companyData) await updateCompanyData(e);
       // else await insertCompanyData(e, address);
       let res;
-      if (companyData && companyId)
-        res = await CompanyApis.updateCompany(companyId, companyData);
-      else res = await CompanyApis.createCompany(companyData);
+      if (companyData && companyId) {
+        let companyUpdateData: any = e;
+        companyUpdateData.country_code = 91;
+        delete companyUpdateData.address;
+        delete companyUpdateData.mailing_address;
+        delete companyUpdateData.address_id;
+        delete companyUpdateData.mailing_address_id;
+        delete companyUpdateData.is_mailing_address_same;
+        res = await CompanyApis.updateCompany(companyId, companyUpdateData);
+      } else {
+        res = await CompanyApis.createCompany(companyData);
+      }
 
+      setCompanyData(res);
       setLoading(false);
       if (res && res.data && res.status === 200) changeStep(step + 1);
     } catch (error: any) {
@@ -71,7 +81,6 @@ const Step2 = ({
       CompanyApis.getAllCompanies().then((res) => {
         setCompanyData(res.data.data[0]);
         setCompanyId(res.data.data[0].id);
-        console.log(res.data.data);
       });
     };
     fetchData();
@@ -110,7 +119,6 @@ const Step2 = ({
       };
       updateAddress();
     }
-    console.log(addressId, mailingAddressId, isMailingAddressSame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMailingAddressSame, addressId, mailingAddressId]);
   useEffect(() => {
@@ -126,10 +134,8 @@ const Step2 = ({
         user?.company?.permanent_address?.id !==
           user?.company?.mailing_address?.id
       ) {
-        console.log("here ");
         setIsMailingAddressSame(false);
       } else {
-        console.log("here 1");
         setIsMailingAddressSame(true);
       }
       if (user?.permanent_address) setAddress(user?.permanent_address);
@@ -143,12 +149,12 @@ const Step2 = ({
         formSchema={step2Schema}
         onSubmit={(e) => handleSubmit(e)}
         fieldConfig={{
-          company_name: {
+          name: {
             inputProps: {
               placeholder: "Value",
             },
           },
-          company_email: {
+          email: {
             inputProps: {
               placeholder: "Value",
             },
@@ -160,7 +166,7 @@ const Step2 = ({
               placeholder: "(123)-456-7890",
             },
           },
-          country_of_tax_residence: {
+          tax_residence_country: {
             inputProps: {
               placeholder: "Select country",
               disabled: true,
@@ -176,7 +182,7 @@ const Step2 = ({
               placeholder: "Value",
             },
           },
-          federal_tax_classification: {
+          tax_classification: {
             inputProps: {
               placeholder: "Individual/sole proprietor or single-member LLC",
             },
@@ -205,7 +211,6 @@ const Step2 = ({
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={() => {
-                          console.log(field.value);
                           if (!field.value) setIsMailingAddressSame(true);
                           field.onChange(!field.value);
                         }}
@@ -246,12 +251,12 @@ const Step2 = ({
           },
         }}
         values={{
-          company_name: companyData?.name ?? "",
+          name: companyData?.name ?? "",
           ein: companyData?.ein ?? "",
-          company_email: companyData?.email ?? "",
-          federal_tax_classification: companyData?.tax_classification,
+          email: companyData?.email ?? "",
+          tax_classification: companyData?.tax_classification,
           phone: companyData?.phone ?? "",
-          country_of_tax_residence: "United States (US)",
+          tax_residence_country: "United States (US)",
           address: {
             address_line_1: address ? address?.address_line_1 : "",
             address_line_2: address ? address?.address_line_2 : "",
@@ -274,7 +279,7 @@ const Step2 = ({
           },
         }}
         defaultValues={{
-          country_of_tax_residence: "United States (US)",
+          tax_residence_country: "United States (US)",
         }}
         dependencies={[
           {

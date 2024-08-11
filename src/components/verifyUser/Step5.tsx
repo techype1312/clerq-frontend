@@ -87,7 +87,7 @@ const Step5 = ({
       await updateUserData({
         id: userdata.id,
         ...userdata.user_metadata,
-        is_user_verified: true,
+        onboarding_completed: true,
       });
       refetchUser();
       router.push("/dashboard");

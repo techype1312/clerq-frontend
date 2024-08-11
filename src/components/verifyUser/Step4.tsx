@@ -8,6 +8,8 @@ import { supabase } from "@/utils/supabase/client";
 import BankingApis from "@/actions/apis/BankingApis";
 import CompanyApis from "@/actions/apis/CompanyApis";
 import AuthApis from "@/actions/apis/AuthApis";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Step4 = ({
   changeStep,
@@ -18,64 +20,51 @@ const Step4 = ({
   userdata: any;
   step: number;
 }) => {
-  const [token, setToken] = useState<string>("");
-  const body = {
-    companyId: userdata?.id,
-  };
+  const router = useRouter();
+  const [linkToken, setLinkToken] = useState<string>("");
+  const [companyId, setCompanyId] = useState<string>("");
   const config: PlaidLinkOptions = {
     onSuccess: (public_token, metadata) => {
-      // supabase.functions
-      //   .invoke("plaid-success", {
-      //     method: "POST",
-      //     body: { public_token, user_id: userdata?.id },
-      //   })
       BankingApis.exchangePublicToken(
         JSON.stringify({
           publicToken: public_token,
           company: {
-            id: userdata?.id,
+            id: companyId,
           },
         })
-      ).then((res) => {
-        console.log(res);
+    ).then((res) => {
+        Cookies.set("onboarding_completed", "true");
         // This will update the user as verified
-        // AuthApis.updateUser({
-        //   isUserVerified: true,
-        // })
+        router.push('/dashboard')
       });
     },
     onExit: (err, metadata) => {
       changeStep(step + 1);
     },
     onEvent: (eventName, metadata) => {},
-    token: token,
+    token: linkToken,
   };
   const { open, exit, ready } = usePlaidLink(config);
 
   useEffect(() => {
-    if (body.companyId && !token) {
-      console.log(userdata);
+    if (userdata?.id && !companyId) {
       const fetchCompanyData = async () => {
         const res = await CompanyApis.getAllCompanies();
-        console.log(res.data);
+        setCompanyId(res.data?.data[0]?.id);
       };
 
       fetchCompanyData();
-      BankingApis.generateLinkToken(JSON.stringify(body)).then((res) => {
-        console.log(res);
-        setToken(res.data.link_token);
-      });
-      // supabase.functions
-      //   .invoke("plaid", {
-      //     method: "POST",
-      //     body: body,
-      //   })
-      //   .then(async (res) => {
-      //     console.log(res);
-      //     setToken(res.data.link_token);
-      //   });
     }
-  }, [body.companyId]);
+  }, [userdata?.id, companyId]);
+
+  useEffect(() => {
+    if (companyId && !linkToken) {
+      const body = { companyId };
+      BankingApis.generateLinkToken(JSON.stringify(body)).then((res) => {
+        setLinkToken(res.data.link_token);
+      });
+    }
+  }, [companyId, linkToken]);
 
   return (
     <>

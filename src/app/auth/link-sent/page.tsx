@@ -62,25 +62,6 @@ const Page = () => {
           <button
             type="submit"
             disabled={loading}
-            // onClick={async () => {
-            //   setLoading(true);
-            //   const redirectTo =
-            //     process.env.NEXT_BASE_URL + "/auth/confirm-email";
-            //   const { error } = await supabase.auth.signInWithOtp({
-            //     email: email as string,
-            //     options: {
-            //       shouldCreateUser: false,
-            //       emailRedirectTo: redirectTo,
-            //     },
-            //   });
-            //   if (error) {
-            //     setLoading(false);
-            //     toast.error("An error occurred");
-            //   } else {
-            //     setLoading(false);
-            //     toast.success("Check your inbox email sent successfully");
-            //   }
-            // }}
             className="text-white bg-primary py-2 px-8 rounded-full w-fit focus:outline-none"
           >
             {loading ? <Loader2Icon className="animate-spin" /> : "Resend"}

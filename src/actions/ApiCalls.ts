@@ -192,6 +192,7 @@ export const postResponse = async (
             console.log(res.data);
             Cookies.set("token", res?.data?.token);
             Cookies.set("refreshToken", res?.data?.refreshToken, {expires: res?.data?.expiresIn});
+            Cookies.set("onboarding_completed", res?.user?.onboarding_completed ? "true" : "false");
             if (!retry) {
               // Retry the request with the new token
               return postResponse(url, payload, res?.data?.token, true);

@@ -63,29 +63,32 @@ const Step1 = ({
     try {
       setLoading(true);
       let userData: any = e;
-      console.log(companyData, userData.company, "here");
-      if (userData?.company === "No" && companyData?.length === 0) {
-        const resCompany = await CompanyApis.createCompany({
+      if (userData?.company === "Yes" && companyData?.length === 0) {
+        // Create Company with empty details
+        await CompanyApis.createCompany({});
+      }
+      else if (userData?.company === "No" && companyData?.length === 0) {
+        // Create Company with User details
+        await CompanyApis.createCompany({
           email: userData?.email,
-          name: `${userData?.firstName} ${userData?.lastName}`,
+          name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
           phone: userdata?.phone,
           country_code: 91, // change to 1
           ein: userdata?.phone,
           tax_residence_country: "US",
           tax_classification: "Individual/Sole Proprietor",
         });
-        console.log(resCompany)
       } else if (userData?.company === "No" && companyData?.length > 0) {
-        const resCompany = await CompanyApis.updateCompany(companyData[0].id, {
+        // Update Existings company details
+        await CompanyApis.updateCompany(companyData[0].id, {
           email: userData?.email,
-          name: `${userdata?.firstName} ${userdata?.lastName}`,
+          name: `${userdata?.legalFirstName} ${userdata?.legalLastName}`,
           phone: userdata?.phone,
           country_code: 91, // change to 1
           ein: userdata?.phone,
           tax_residence_country: "US",
           tax_classification: "Individual/Sole Proprietor",
         });
-        console.log(resCompany)
       }
       delete userData.address;
       delete userData.mailing_address;
@@ -93,11 +96,11 @@ const Step1 = ({
       delete userData.address_id;
       delete userData.mailing_address_id;
       delete userData.company;
-      userData.firstName = e.name.firstName;
-      userData.lastName = e.name.lastName;
+      userData.legalFirstName = e.name.legalFirstName;
+      userData.legalLastName = e.name.legalLastName;
       delete userData.name;
       (userData.tax_residence_country = "US"),
-        delete userData.country_of_tax_residence;
+        delete userData.tax_residence_country;
       delete userData.email;
       delete userData.phone;
       userData.dob = e.date_of_birth.toUTCString();
@@ -155,7 +158,6 @@ const Step1 = ({
       };
       updateAddress();
     }
-    console.log(addressId, mailingAddressId, isMailingAddressSame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMailingAddressSame, addressId, mailingAddressId]);
 
@@ -194,12 +196,12 @@ const Step1 = ({
       }}
       fieldConfig={{
         name: {
-          firstName: {
+          legalFirstName: {
             inputProps: {
               placeholder: "John",
             },
           },
-          lastName: {
+          legalLastName: {
             inputProps: {
               placeholder: "Doe",
             },
@@ -208,7 +210,6 @@ const Step1 = ({
         date_of_birth: {
           inputProps: {
             onChange: (e: any) => {
-              console.log(e);
               setOtherUserData({
                 ...otherUserData,
                 date_of_birth: e.currentTarget.value,
@@ -240,7 +241,6 @@ const Step1 = ({
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={() => {
-                        console.log(field.value);
                         if (!field.value) setIsMailingAddressSame(true);
                         field.onChange(!field.value);
                       }}
@@ -275,7 +275,7 @@ const Step1 = ({
             },
           },
         },
-        country_of_tax_residence: {
+        tax_residence_country: {
           inputProps: {
             placeholder: "Select country",
             disabled: true,
@@ -387,12 +387,12 @@ const Step1 = ({
       ]}
       values={{
         name: {
-          firstName: userdata?.firstName ? userdata?.firstName : "",
-          lastName: userdata?.lastName ? userdata?.lastName : "",
+          legalFirstName: userdata?.legalFirstName ? userdata?.legalFirstName : "",
+          legalLastName: userdata?.legalLastName ? userdata?.legalLastName : "",
         },
         email: userdata?.email ?? "",
         phone: userdata?.phone ?? "",
-        country_of_tax_residence: "United States (US)",
+        tax_residence_country: "United States (US)",
         date_of_birth: userdata?.dob
           ? new Date(userdata?.dob ?? "")
           : undefined,

@@ -1,15 +1,16 @@
 "use client";
 import AuthApis from "@/actions/apis/AuthApis";
-import { signup } from "@/app/auth/signin/actions";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signUpSchema } from "@/types/schema-embedded";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = React.useState(searchParams.get("email") || "");
+
   React.useEffect(() => {
     setEmail(searchParams.get("email") || "");
     // const res = async () => {
@@ -19,11 +20,12 @@ const Page = () => {
     // };
     // res();
   }, [searchParams]);
+
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="max-w-2xl flex flex-col gap-12">
+    <div className="flex items-center justify-center mt-4">
+      <div className="max-w-2xl flex flex-col gap-8">
         <div className="flex flex-col gap-4 text-center">
-          <h1 className="text-5xl">Simplified finances with Clerq</h1>
+          <h1 className="text-4xl">Simplified finances with Clerq</h1>
           <p className="text-secondary">
             Apply in 10 minutes for Simple finances that transforms how you
             operate.
@@ -32,7 +34,7 @@ const Page = () => {
         <AutoForm
           formSchema={signUpSchema}
           // formAction={signup}
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             const data = {
               email: e.email,
               password: e.password,
@@ -41,7 +43,10 @@ const Page = () => {
               phone: e.phone,
               country_code: 91,
             };
-            const res = AuthApis.signUp(data);
+            const res = await AuthApis.signUp(data);
+            if (res.status === 200) {
+              router.push(`/auth/confirm-email`);
+            }
             console.log(res);
           }}
           fieldConfig={{
@@ -54,6 +59,9 @@ const Page = () => {
               inputProps: {
                 type: "password",
               },
+            },
+            phone: {
+              fieldType: "phone",
             },
           }}
           defaultValues={{ email }}
