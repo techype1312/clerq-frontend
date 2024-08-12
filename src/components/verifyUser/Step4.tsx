@@ -1,15 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Image from "next/image";
 import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
-import { supabase } from "@/utils/supabase/client";
 import BankingApis from "@/actions/apis/BankingApis";
 import CompanyApis from "@/actions/apis/CompanyApis";
-import AuthApis from "@/actions/apis/AuthApis";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const Step4 = ({
   changeStep,
@@ -39,7 +37,8 @@ const Step4 = ({
       });
     },
     onExit: (err, metadata) => {
-      changeStep(step + 1);
+      // changeStep(step );
+      toast.info("Banking connection failed");
     },
     onEvent: (eventName, metadata) => {},
     token: linkToken,
@@ -72,7 +71,7 @@ const Step4 = ({
         onClick={() => {
           open();
         }}
-        className="p-4 flex gap-2 bg-[#FAFBFD] border-none cursor-pointer"
+        className={`${!linkToken ? "cursor-wait" : "cursor-pointer"} p-4 flex gap-2 bg-[#FAFBFD] border-none`}
       >
         <div className="my-auto">
           <Image

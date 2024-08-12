@@ -13,7 +13,6 @@ export const UserContextProvider = ({
   const router = useRouter();
   const pathname = usePathname();
   const [userdata, setuserdata] = useState<any | null>(null);
-  const [otherUserData, setOtherUserData] = useState<any>(null);
   const [refetchUserData, setRefetchUserData] = useState<boolean>(false);
   const refreshUser = useCallback(async () => {
     const token = Cookies.get("token");
@@ -65,7 +64,11 @@ export const UserContextProvider = ({
 
   useEffect(() => {
     if (!userdata) {
-      refreshUser();
+      if (localStorage.getItem("user")) { 
+        setuserdata(JSON.parse(localStorage.getItem("user") as string));
+      } else{
+        refreshUser(); //This causes the search params to be cleared
+      }
     }
   }, []);
 
@@ -76,7 +79,6 @@ export const UserContextProvider = ({
           userdata,
           setuserdata,
           refreshUser,
-          otherUserData,
           refetchUserData,
           setRefetchUserData,
         } as any

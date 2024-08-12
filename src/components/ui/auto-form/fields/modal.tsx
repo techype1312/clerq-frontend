@@ -84,6 +84,36 @@ export default function AutoFormModal({
   }, [form.getValues("address_id")]);
 
   useEffect(() => {
+    if (
+      name === "mailing_address" &&
+      form.getValues("mailing_address_id") &&
+      form.getValues("mailing_address_id") !== form.getValues("address_id")
+    )
+      setValue({
+        label:
+          form.getValues()?.mailing_address?.address_line_1 +
+          "," +
+          form.getValues()?.mailing_address?.address_line_2 +
+          "," +
+          form.getValues()?.mailing_address?.city +
+          "," +
+          form.getValues()?.mailing_address?.state +
+          "," +
+          form.getValues()?.mailing_address?.postal_code,
+        value:
+          form.getValues()?.mailing_address?.address_line_1 +
+          "," +
+          form.getValues()?.mailing_address?.address_line_2 +
+          "," +
+          form.getValues()?.mailing_address?.city +
+          "," +
+          form.getValues()?.mailing_address?.state +
+          "," +
+          form.getValues()?.mailing_address?.postal_code,
+      });
+  }, [form.getValues("mailing_address_id")]);
+
+  useEffect(() => {
     if (update) {
       setUpdate(false);
       if (name === "address") {
@@ -96,11 +126,22 @@ export default function AutoFormModal({
           console.log(res);
         };
         updateAddress();
+      } else {
+        const updateAddress = async () => {
+          const res = await OnboardingApis.updateAddress(
+            form.getValues("mailing_address_id"),
+            form.getValues(name)
+          );
+          console.log(res);
+        };
+        updateAddress();
       }
     }
   }, [update]);
 
   const handlePlaceSelect = (value: any) => {
+    console.log(value);
+    setValue(value);
     if (!value) return;
     geocodeByAddress(value?.label)
       .then((results) => getLatLng(results[0]))
@@ -135,7 +176,6 @@ export default function AutoFormModal({
               city: res.data.city,
               state: res.data.state,
               postal_code: res.data.postal_code,
-              mailing_address: form.getValues(name).mailing_address,
             });
           }
         } else if (
@@ -168,35 +208,35 @@ export default function AutoFormModal({
               city: res.data.city,
               state: res.data.state,
               postal_code: res.data.postal_code,
-              mailing_address: form.getValues(name).mailing_address,
             });
           }
         }
         setSaved(true);
       });
+      console.log(name)
   };
-  useEffect(() => {
-    if (loadedValue) {
-      handlePlaceSelect(value);
-    } else {
-      setLoadedValue(true);
-    }
-  }, [value]);
+  // useEffect(() => {
+  //   // if (loadedValue) {
+  //     handlePlaceSelect(value);
+  //   // } else {
+  //   //   setLoadedValue(true);
+  //   // }
+  // }, [value]);
 
-  useEffect(() => {
-    if (update) {
-      const updateAddress = async () => {
-        const res = await OnboardingApis.updateAddress(
-          name === "address"
-            ? form.getValues("address_id")
-            : form.getValues("mailing_address_id"),
-          form.getValues(name)
-        );
-        console.log(res.data);
-      };
-      updateAddress();
-    }
-  }, [update]);
+  // useEffect(() => {
+  //   if (update) {
+  //     const updateAddress = async () => {
+  //       const res = await OnboardingApis.updateAddress(
+  //         name === "address"
+  //           ? form.getValues("address_id")
+  //           : form.getValues("mailing_address_id"),
+  //         form.getValues(name)
+  //       );
+  //       console.log(res.data);
+  //     };
+  //     updateAddress();
+  //   }
+  // }, [update]);
 
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
@@ -212,6 +252,9 @@ export default function AutoFormModal({
               <div className="w-full">
                 <GooglePlacesAutocomplete
                   apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
+                  onLoadFailed={(error) => {
+                    console.error("Could not load Google API", error);
+                  }}
                   autocompletionRequest={{
                     bounds: [
                       { lat: 50, lng: 50 },
@@ -224,7 +267,7 @@ export default function AutoFormModal({
                   apiOptions={{ language: "en", region: "us" }}
                   selectProps={{
                     value,
-                    onChange: setValue,
+                    onChange: handlePlaceSelect,
                     className:
                       "w-full border !important:border-input rounded-md focus:outline-none focus:border-primary",
                   }}

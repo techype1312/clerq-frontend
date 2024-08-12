@@ -18,6 +18,7 @@ import {
 } from "../ui/auto-form/types";
 import { FormControl, FormItem } from "../ui/form";
 import { Checkbox } from "../ui/checkbox";
+import OnboardingApis from "@/actions/apis/OnboardingApis";
 
 const Step2 = ({
   changeStep,
@@ -105,40 +106,74 @@ const Step2 = ({
   }, [changedAddress]);
 
   useEffect(() => {
-    if (isMailingAddressSame && addressId !== mailingAddressId && companyId) {
+    if (addressId && mailingAddressId && companyId) {
+      const updateAndFetchAddress = async () => {
+        await CompanyApis.updateCompany(companyId, {
+          legal_address: {
+            id: addressId,
+          },
+          mailing_address: {
+            id: mailingAddressId,
+          },
+        });
+        const res = await OnboardingApis.getAddress(addressId);
+        if (res && res.status === 200) {
+          setAddress(res.data);
+        }
+        const res1 = await OnboardingApis.getAddress(mailingAddressId);
+        if (res1 && res1.status === 200) {
+          setMailingAddress(res1.data);
+        }
+        if (addressId === mailingAddressId) {
+          setIsMailingAddressSame(true);
+        } else {
+          setIsMailingAddressSame(false);
+        }
+      };
+      updateAndFetchAddress();
+    }
+  }, [addressId, companyId, mailingAddressId]);
+
+  useEffect(() => {
+    if (
+      isMailingAddressSame &&
+      addressId !== mailingAddressId &&
+      companyId &&
+      addressId
+    ) {
       const updateAddress = async () => {
         const res = await CompanyApis.updateCompany(companyId, {
           mailing_address: {
             id: addressId,
           },
         });
-        if (res && res.data.status === 200) {
-          setMailingAddress(address);
+        const fetchMailingAddress = await OnboardingApis.getAddress(addressId);
+        if (res && res.status === 200) {
+          setMailingAddress(fetchMailingAddress.data);
           setMailingAddressId(addressId);
         }
       };
       updateAddress();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMailingAddressSame, addressId, mailingAddressId]);
+  }, [isMailingAddressSame]);
+
   useEffect(() => {
     if (!user) {
       return setRefetchUserData(!refetchUserData);
     } else {
-      if (user?.permanent_address?.id)
-        setAddressId(user?.permanent_address?.id);
+      if (user?.legal_address?.id) setAddressId(user?.legal_address?.id);
       if (user?.mailing_address?.id)
         setMailingAddressId(user?.mailing_address?.id);
       if (
-        user?.company?.permanent_address?.id !== null &&
-        user?.company?.permanent_address?.id !==
-          user?.company?.mailing_address?.id
+        user?.company?.legal_address?.id !== null &&
+        user?.company?.legal_address?.id !== user?.company?.mailing_address?.id
       ) {
         setIsMailingAddressSame(false);
       } else {
         setIsMailingAddressSame(true);
       }
-      if (user?.permanent_address) setAddress(user?.permanent_address);
+      if (user?.legal_address) setAddress(user?.legal_address);
       if (user?.mailing_address) setMailingAddress(user?.mailing_address);
     }
   }, [user]);
@@ -197,13 +232,7 @@ const Step2 = ({
             fieldType: "modal",
           },
           is_mailing_address_same: {
-            fieldType: ({
-              label,
-              isRequired,
-              field,
-              fieldConfigItem,
-              fieldProps,
-            }: AutoFormInputComponentProps) => (
+            fieldType: ({ field, fieldProps }: AutoFormInputComponentProps) => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center justify-between">
@@ -263,7 +292,7 @@ const Step2 = ({
             country: "United States (US)",
             city: address ? address?.city : "",
             state: address ? address?.state : "",
-            postal_code: address?.postal_code ?? 0,
+            postal_code: address?.postal_code ?? "",
           },
           mailing_address: {
             address_line_1: mailingAddress
@@ -275,7 +304,7 @@ const Step2 = ({
             country: "United States (US)",
             city: mailingAddress ? mailingAddress?.city : "",
             state: mailingAddress ? mailingAddress?.state : "",
-            postal_code: mailingAddress?.postal_code ?? 0,
+            postal_code: mailingAddress?.postal_code ?? "",
           },
         }}
         defaultValues={{
