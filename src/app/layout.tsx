@@ -7,9 +7,9 @@ import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
 import "react-material-symbols/rounded";
 import { Toaster } from "@/components/ui/toaster";
-import { HelpCenter } from "@/components/help";
 import { UserContextProvider } from "@/context/User";
 import Script from "next/script";
+
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -40,7 +40,6 @@ export default function RootLayout({
             )}
           >
             {children}
-            <HelpCenter />
             <ToastContainer />
             <Toaster />
           </body>

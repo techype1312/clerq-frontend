@@ -7,9 +7,18 @@ import {
   useEffect,
   useState,
 } from "react";
+import _ from "lodash";
 import Cookies from "js-cookie";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import CompanyApis from "@/actions/apis/CompanyApis";
+import { ErrorProps } from "@/types/general";
+import {
+  Dialog,
+  DialogContentWithoutClose,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 // Create a context
 export const CompanySessionContext = createContext<any>(null);
@@ -24,67 +33,94 @@ export const CompanySessionProvider = ({
   const [myCompanyMappings, setMyCompanyMappings] = useState<
     Record<string, any>[]
   >([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [openSwitchDialog, setopenSwitchDialog] = useState(false);
   const [selectedUcrm, setSelectedUcrm] = useState<string>();
 
-  const switchCompany = (ucrmId: string) => {
+  const onError = (err: string | ErrorProps) => {
+    setError(_.isObject(err) ? err.message : err);
+    setLoading(false);
+  };
+
+  const setUcrmCookie = (ucrmId: string) => {
+    Cookies.set("otto_ucrm", ucrmId);
+  };
+
+  const handleUcrmSwitch = (ucrmId: string) => {
     setSelectedUcrm(ucrmId);
-    refreshUcrm(ucrmId);
+    setUcrmCookie(ucrmId);
   };
 
-  const updateCompanyMappingsList = (ucrms: Record<string, any>[]) => {
-    setMyCompanyMappings(ucrms);
-  };
-
-  const refreshUcrm = useCallback(async (ucrmId: string) => {
-    const token = Cookies.get("token");
-    if (token && ucrmId) {
-      try {
-        await CompanyApis.getUCRM(ucrmId).then((res) => {
-          Cookies.set("otto_ucrm", res?.data?.id);
-          router.refresh();
-        });
-      } catch (error) {
-        console.log(error);
-      }
+  const onFetchUCRMSuccess = (res: any) => {
+    if (res.data) {
+      handleUcrmSwitch(res?.data?.id);
+      toast.success(`you've switched to ${res?.data?.company?.name}`, {
+        delay: 500,
+        pauseOnHover: false,
+        autoClose: 3000,
+        closeButton: false,
+        position: "bottom-center",
+        hideProgressBar: true,
+        icon: <SymbolIcon icon="check_circle" size={24} color="#28BC97" />,
+        style: {
+          background: "black",
+          color: "white",
+        },
+      });
     }
-  }, [router]);
+    setLoading(false);
+    setopenSwitchDialog(false);
+    router.refresh();
+  };
+
+  const fetchUcrm = (ucrmId: string) => {
+    setLoading(true);
+    CompanyApis.getUCRM(ucrmId).then(onFetchUCRMSuccess, onError);
+  };
+
+  const switchCompany = (ucrmId: string) => {
+    setopenSwitchDialog(true);
+    setLoading(true);
+    fetchUcrm(ucrmId);
+  };
+
+  const onFetchUCRMListSuccess = (res: any) => {
+    if (res.data) {
+      setMyCompanyMappings(res?.data.data);
+    }
+    setLoading(false);
+  };
 
   const refreshUcrmList = useCallback(async () => {
-    const token = Cookies.get("token");
-    if (token) {
-      try {
-        const res = await CompanyApis.getMyAllUCRMs();
-        updateCompanyMappingsList(res?.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    console.log(loading);
+    if (loading) return;
+    setLoading(true);
+    CompanyApis.getMyAllUCRMs().then(onFetchUCRMListSuccess, onError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const token = Cookies.get("token");
     const ucrmFromCookie = Cookies.get("otto_ucrm");
     if (!myCompanyMappings.length) return;
-    if (token && ucrmFromCookie) {
+    if (ucrmFromCookie) {
       const currentUcrm = myCompanyMappings.find(
         (ucrm) => ucrm.id === ucrmFromCookie
       );
       if (currentUcrm) {
-        setSelectedUcrm(ucrmFromCookie);
-        Cookies.set("otto_ucrm", ucrmFromCookie);
+        handleUcrmSwitch(ucrmFromCookie);
       } else {
-        setSelectedUcrm(myCompanyMappings[0].id);
-        Cookies.set("otto_ucrm", myCompanyMappings[0].id);
+        handleUcrmSwitch(myCompanyMappings[0].id);
       }
     }
-    if (token && !ucrmFromCookie) {
-      setSelectedUcrm(myCompanyMappings[0].id);
-      Cookies.set("otto_ucrm", myCompanyMappings[0].id);
+    if (!ucrmFromCookie) {
+      handleUcrmSwitch(myCompanyMappings[0].id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myCompanyMappings]);
 
   useEffect(() => {
-    refreshUcrmList()
+    refreshUcrmList();
   }, [refreshUcrmList]);
 
   return (
@@ -96,7 +132,28 @@ export const CompanySessionProvider = ({
       }}
     >
       {children}
+      <SwitchUcrmDialog
+        nextUcrm={myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm)}
+        open={loading && openSwitchDialog}
+      />
     </CompanySessionContext.Provider>
+  );
+};
+
+const SwitchUcrmDialog = ({
+  nextUcrm,
+  open,
+}: {
+  nextUcrm?: Record<string, any>;
+  open: boolean;
+}) => {
+  if (!nextUcrm) return null;
+  return (
+    <Dialog open={open}>
+      <DialogContentWithoutClose className="sm:max-w-lg">
+        <DialogDescription className="p-12">{`Switching to ${nextUcrm?.company?.name} ...`}</DialogDescription>
+      </DialogContentWithoutClose>
+    </Dialog>
   );
 };
 

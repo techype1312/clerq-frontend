@@ -5,12 +5,13 @@ import { useCompanySession } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import _, { isEmpty } from "lodash";
+import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 
 const Page = () => {
-  const [error, setError] = useState("");
   const { currentUcrm } = useCompanySession();
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [companyData, setCompanyData] = useState<Record<string, any>>();
   const [rowData, setRowData] = useState<any>([]);
@@ -38,7 +39,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchCompanyData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -122,7 +123,21 @@ const Page = () => {
     }
   }, [companyData]);
 
-  if (!companyData) return null;
+  if (loading) {
+    return (
+      <div className="w-full flex items-center h-12 justify-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (!loading && !companyData) {
+    return (
+      <div className="w-full flex items-center h-12 justify-center">
+        No data found
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 lg:mx-20">
@@ -142,7 +157,7 @@ const Page = () => {
             fontWeight: 380,
           }}
         >
-          {companyData.name}
+          {companyData?.name}
         </p>
       </div>
       <ProfileRowContainer profileData={rowData} />

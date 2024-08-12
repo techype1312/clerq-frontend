@@ -98,7 +98,13 @@ const Page = () => {
     ]);
   }, [userdata, otherUserData]);
 
-  if (!userdata) return null;
+  if (!userdata) {
+    return (
+      <div className="w-full flex items-center h-12 justify-center">
+        No data found
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 lg:mx-20">
