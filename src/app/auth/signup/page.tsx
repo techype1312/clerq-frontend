@@ -44,8 +44,8 @@ const Page = () => {
               country_code: 91,
             };
             const res = await AuthApis.signUp(data);
-            if (res.status === 200) {
-              router.push(`/auth/confirm-email`);
+            if (res.status === 204) {
+              router.push(`/auth/link-sent?email=${e.email}&newUser=true`);
             }
             console.log(res);
           }}
