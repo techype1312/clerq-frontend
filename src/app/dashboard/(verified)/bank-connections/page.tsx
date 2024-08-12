@@ -15,7 +15,6 @@ const Page = () => {
         method: "POST",
       })
       .then((res) => {
-        console.log(res);
         setBankAccounts(
           res.data.accounts.filter((item: any) => {
             return item.type === "depository";

@@ -11,7 +11,7 @@ export type rowData = {
   isEditable: boolean;
 };
 
-const CompanyProfileItem = ({ rowData }: { rowData: rowData }) => {
+const ProfileItem = ({ rowData }: { rowData: rowData }) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="text-primary flex flex-col gap-1 w-64">
@@ -40,12 +40,18 @@ const CompanyProfileItem = ({ rowData }: { rowData: rowData }) => {
         {rowData.isEditable && rowData.value && (
           <button className="flex items-center text-background-primary gap-1">
             <span>Edit</span>
-            <SymbolIcon icon="chevron_right" size={20} />
+            <SymbolIcon icon="chevron_right" color="#5265EB" size={20} />
           </button>
+        )}
+        {rowData.isEditable && !rowData.value && (
+          <button className="flex items-center text-background-primary gap-1">
+            <span>Add</span>
+            <SymbolIcon icon="chevron_right" color="#5265EB" size={20} />
+        </button>
         )}
       </div>
     </div>
   );
 };
 
-export default CompanyProfileItem;
+export default ProfileItem;

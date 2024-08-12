@@ -7,9 +7,7 @@ export const insertAddressData = async (data: any, company: boolean) => {
   if (!user) {
     return null;
   }
-  console.log(data);
   const { data: insertedData, error } = await supabase.from("address").insert(data).select("id");
-  console.log(insertedData);
   if(company){
     updateCompanyData({ address_id: insertedData && insertedData[0]?.id });
   } else{
@@ -29,7 +27,6 @@ export async function getCompanyAddressData() {
     return null;
   }
   const companyData = await getCompanyData();
-  console.log(companyData, "companyData");
   const { data, error } = await supabase
     .from("address")
     .select("*")

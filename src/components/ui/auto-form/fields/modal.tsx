@@ -88,12 +88,10 @@ export default function AutoFormModal({
       setUpdate(false);
       if (name === "address") {
         const updateAddress = async () => {
-          console.log(form.getValues("address_id"));
           const res = await OnboardingApis.updateAddress(
             form.getValues("address_id"),
             form.getValues(name)
           );
-          console.log(res);
         };
         updateAddress();
       }
@@ -192,7 +190,6 @@ export default function AutoFormModal({
             : form.getValues("mailing_address_id"),
           form.getValues(name)
         );
-        console.log(res.data);
       };
       updateAddress();
     }

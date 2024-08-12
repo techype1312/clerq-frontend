@@ -57,9 +57,39 @@ export function formatPhone(phone: string) {
   
   const countryCode = phone.slice(0, countryCodeLength);
   const localNumber = phone.slice(countryCodeLength);
-  
-  console.log("Country Code:", countryCode);
-  console.log("Local Number:", localNumber);
 
   return { countryCode, localNumber };
 }
+
+export const formatPhoneNumber = (phone: string, countryCode: number | string) => {
+  if (!phone || !countryCode) return '';
+
+  const phoneStr = phone.toString();
+  const formattedPhone = `(${phoneStr.slice(0, 3)}) ${phoneStr.slice(
+    3,
+    6
+  )}-${phoneStr.slice(6)}`;
+
+  const result = `+${countryCode} ${formattedPhone}`;
+  return result;
+};
+
+interface Address {
+  country: string;
+  address_line_1: string;
+  address_line_2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+}
+
+export const formatAddress = (address: Address) => {
+  if (!address) return '';
+  const { country, address_line_1, address_line_2, city, state, postal_code } =
+    address;
+
+  return `${address_line_1}
+${address_line_2}
+${city}, ${state} ${postal_code}
+${country}`;
+};

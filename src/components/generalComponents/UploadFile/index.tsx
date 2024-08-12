@@ -35,7 +35,6 @@ const UploadFile = () => {
   }, []);
 
   const onDropRejected = (errs: FileRejection[]) => {
-    console.log("onDropRejected");
     const uniqueErrorCodes = _.uniqBy(_.flatMap(errs, "errors"), "code").map(
       (error) => error.code
     );

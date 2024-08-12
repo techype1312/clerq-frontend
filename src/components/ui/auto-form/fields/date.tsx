@@ -32,7 +32,7 @@ export default function AutoFormDate({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  console.log("field", field.value);
+
   return (
     <FormItem className="flex flex-col gap-2" ref={dropdownRef}>
       <AutoFormLabel

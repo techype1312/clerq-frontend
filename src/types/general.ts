@@ -69,3 +69,7 @@ export type monthlyGraphDataType = {
   amt: number;
   month?: string;
 };
+
+export interface ErrorProps {
+  message: string;
+}

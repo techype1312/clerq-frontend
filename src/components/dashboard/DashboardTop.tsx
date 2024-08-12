@@ -67,17 +67,29 @@ const DashboardTop = () => {
             <DropdownMenuItem
               className="py-2 cursor-pointer"
               onClick={() => {
-                router.push("/dashboard/profile");
+                router.push("/dashboard/settings/my-profile");
               }}
             >
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem className="py-2 cursor-pointer">Settings</DropdownMenuItem>
+            <DropdownMenuItem
+              className="py-2 cursor-pointer"
+              onClick={() => {
+                router.push("/dashboard/settings/company-profile");
+              }}
+            >
+              Settings
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="py-2 cursor-pointer">Support</DropdownMenuItem>
+          <DropdownMenuItem className="py-2 cursor-pointer">
+            Support
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout} className="py-4 cursor-pointer">
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="py-4 cursor-pointer"
+          >
             Log out
           </DropdownMenuItem>
         </DropdownMenuContent>

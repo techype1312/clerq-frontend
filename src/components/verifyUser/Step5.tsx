@@ -50,7 +50,6 @@ const Step5 = ({
   const handleSubmit = async (e: any) => {
     try {
       setLoading(true);
-      console.log(e);
       await e.management_company
         .filter(
           (item: string) => !dropdown[0]?.management_company.includes(item)

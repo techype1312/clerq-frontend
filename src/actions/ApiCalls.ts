@@ -50,7 +50,6 @@ export const getResponse = async (
       if (error) {
         if (error.response?.status === 401) {
           const res = await AuthApis.verifyRefreshToken();
-          console.log(res);
           if (res && res?.data && res?.status === 200) {
             Cookies.set("token", res?.data?.token);
             if (!retry) {
@@ -181,7 +180,6 @@ export const postResponse = async (
   })
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
-      console.log(error, error.response, error.response?.status);
       if (error) {
         if (
           error?.response?.status === 401 &&
@@ -189,7 +187,6 @@ export const postResponse = async (
         ) {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res?.status === 200) {
-            console.log(res.data);
             Cookies.set("token", res?.data?.token);
             Cookies.set("refreshToken", res?.data?.refreshToken, {expires: res?.data?.expiresIn});
             Cookies.set("onboarding_completed", res?.data?.user?.onboarding_completed ? "true" : "false");
@@ -426,7 +423,6 @@ export const getResponseWithQueryParams = async (
         experienceTo: params.experience.to || 0,
       }),
   };
-  console.log("Search Params", paramsString, params);
   const headers = getHeader(token !== null, token);
   return axios(URL, {
     params: paramsString,

@@ -71,13 +71,6 @@ const Step2 = ({
   };
   useEffect(() => {
     const fetchData = async () => {
-      if (user?.company && user.company?.id) {
-        const companyRes = await CompanyApis.getCompany(user.company.id);
-        if (companyRes && companyRes.data && companyRes.status === 200) {
-          setCompanyData(companyRes.data);
-          setCompanyId(companyRes.data.id);
-        }
-      }
       CompanyApis.getAllCompanies().then((res) => {
         setCompanyData(res.data.data[0]);
         setCompanyId(res.data.data[0].id);

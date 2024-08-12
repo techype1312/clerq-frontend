@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
 import { createContext, useCallback, useEffect, useState } from "react";
-export const UserContext = createContext<any>(null);
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import AuthApis from "@/actions/apis/AuthApis";
+
+export const UserContext = createContext<any>(null);
 
 export const UserContextProvider = ({
   children,
@@ -15,6 +18,7 @@ export const UserContextProvider = ({
   const [userdata, setuserdata] = useState<any | null>(null);
   const [otherUserData, setOtherUserData] = useState<any>(null);
   const [refetchUserData, setRefetchUserData] = useState<boolean>(false);
+
   const refreshUser = useCallback(async () => {
     const token = Cookies.get("token");
     if (token) {
@@ -37,31 +41,6 @@ export const UserContextProvider = ({
       }
     }
   }, [refetchUserData]);
-  // const refreshUser = async () => {
-  //   const { data, error } = await supabase.auth.refreshSession();
-  //   if (data) {
-  //     setuserdata(data.user);
-  //     supabase
-  //       .from("other_user_info")
-  //       .select("*")
-  //       .eq("user_id", data?.user?.id)
-  //       .then(({ data, error }) => {
-  //         if (data) {
-  //           console.log(data);
-  //           setOtherUserData(data[0]);
-  //         } else {
-  //           console.log(error);
-  //         }
-  //       });
-  //     // if (pathname.startsWith("/auth") && data.user) {
-  //     //   router.push("/dashboard");
-  //     // } else if (pathname.startsWith("/dashboard") && !data.user) {
-  //     //   router.push("/auth/signin");
-  //     // }
-  //   } else {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     if (!userdata) {

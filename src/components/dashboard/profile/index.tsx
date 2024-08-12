@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import CompanyProfileItem, { rowData } from "./item";
+import ProfileItem, { rowData } from "./item";
 
-const CompanyProfileRowContainer = ({
+const ProfileRowContainer = ({
   profileData,
 }: {
   profileData: rowData[];
@@ -11,11 +11,11 @@ const CompanyProfileRowContainer = ({
     <div className="flex flex-col">
       {profileData.map((data, index) => (
         <div className="border-b p-4 pl-0" key={index}>
-          <CompanyProfileItem rowData={data} />
+          <ProfileItem rowData={data} />
         </div>
       ))}
     </div>
   );
 };
 
-export default CompanyProfileRowContainer;
+export default ProfileRowContainer;

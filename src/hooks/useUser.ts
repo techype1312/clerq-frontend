@@ -17,7 +17,6 @@ export const insertUserData = async (data: any, address: any) => {
   delete data.company;
   data.phone = data.phone.toString();
   data.date_of_birth = new Date(data.date_of_birth).toISOString();
-  console.log(data);
   const { data: insertedData, error } = await supabase
     .from("other_user_info")
     .insert(data)

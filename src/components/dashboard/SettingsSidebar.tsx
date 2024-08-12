@@ -1,13 +1,11 @@
 "use client";
 
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { X } from "lucide-react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/User";
 import CompanyToggleDrawer from "./company-toggle-drawer";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
@@ -20,7 +18,7 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
     <Link
       className={`${
         isActive ? "text-black font-medium" : "text-primary background-light"
-      } px-4 rounded py-2`}
+      } px-4 rounded py-1 ml-7`}
       href={href}
       onClick={() => {
         setOpen(false);
@@ -31,11 +29,30 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   );
 };
 
-const DashboardSidebar = ({ isOpen, setOpen }: any) => {
-  const router = useRouter();
+const BackSidebarLink = ({ pathname, href, setOpen, children }: any) => {
+  const isActive =
+    pathname === href ||
+    (pathname.startsWith(href) &&
+      pathname !== "/dashboard" &&
+      href !== "/dashboard");
+  return (
+    <Link
+      className={`${
+        isActive ? "text-black font-medium" : "text-primary background-light"
+      } px-4 rounded py-1`}
+      href={href}
+      onClick={() => {
+        setOpen(false);
+      }}
+    >
+      <p className="flex items-center gap-2">{children}</p>
+    </Link>
+  );
+};
+
+const SettingsSidebar = ({ isOpen, setOpen }: any) => {
   const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number>(300);
-  const { userdata } = useContext(UserContext);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,77 +69,54 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       });
     };
   }, []);
+
   const items = pathname.startsWith("/dashboard") ? (
     <>
-      <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
-        <SymbolIcon
-          icon="home"
-          color={pathname === "/dashboard" ? "#5266EB" : ""}
-        />
-        Home
+      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        <SymbolIcon icon="apartment" size={24} />
+        <span>Company</span>
+      </div>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/settings/company-profile"
+        setOpen={setOpen}
+      >
+        Company Profile
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/deal-tracker"
+        href="/dashboard/settings/team"
         setOpen={setOpen}
       >
-        <Image src="/dollarWithArrow.svg" alt="a" width={24} height={24} />
-        Deal tracker
+        Team
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/transactions"
+        href="/dashboard/settings/controls"
         setOpen={setOpen}
       >
-        <SymbolIcon
-          icon="attach_money"
-          color={pathname === "/dashboard/transactions" ? "#5266EB" : ""}
-        />
-        Transactions
+        Controls
+      </SidebarLink>
+
+      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        <SymbolIcon icon="person" size={24} />
+        <span>Personal</span>
+      </div>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/settings/my-profile"
+        setOpen={setOpen}
+      >
+        My profile
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
-        href="/dashboard/income-statement"
+        href="/dashboard/settings/notifications"
         setOpen={setOpen}
       >
-        <SymbolIcon
-          icon="import_contacts"
-          color={pathname === "/dashboard/income-statement" ? "#5266EB" : ""}
-        />
-        Income statements
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/balance-sheet"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="monitoring"
-          color={pathname === "/dashboard/balance-sheet" ? "#5266EB" : ""}
-        />
-        Balance sheets
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/documents"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="article"
-          color={pathname === "/dashboard/documents" ? "#5266EB" : ""}
-        />
-        Documents
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/bank-connections"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="account_balance"
-          color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""}
-        />
-        Bank connections
+        Notifications
       </SidebarLink>
     </>
   ) : (
@@ -138,7 +132,6 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       } `}
     >
       <div className="flex justify-between items-center pb-4 lg:hidden">
-        {/* <div>Icon will go here</div> */}
         <button
           className="block"
           onClick={() => {
@@ -150,10 +143,23 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </div>
       <div className="flex flex-col mt-0 gap-4">
         <CompanyToggleDrawer />
-        <div className="flex flex-col gap-4 px-2">{items}</div>
+
+        <BackSidebarLink
+          pathname={pathname}
+          href="/dashboard"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="arrow_back"
+            color={pathname === "/dashboard" ? "#5266EB" : ""}
+            size={24}
+          />
+          Settings
+        </BackSidebarLink>
+        <div className="flex flex-col gap-4 px-2 overflow-scroll">{items}</div>
       </div>
     </div>
   );
 };
 
-export default DashboardSidebar;
+export default SettingsSidebar;

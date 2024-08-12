@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
 import Cookies from "js-cookie";
 import { UserContext } from "@/context/User";
+
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -25,7 +26,6 @@ const Page = () => {
     if (hash) {
       const verifyMagicLinkHash = async () => {
         const res = await AuthApis.verifyMagicLinkHash(hash);
-        console.log(res, "res", hash);
         if (res.status === 200) {
           if (res.data && res.data.token && res.data.refreshToken) {
             Cookies.set("refreshToken", res.data.refreshToken, {

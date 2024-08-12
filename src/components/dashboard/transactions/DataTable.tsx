@@ -104,7 +104,6 @@ export function DataTable<TData, TValue>({
     // const rowData = rows.map((row: any) => row.original);
     const rowData = rows.map((row: any) => {
       // Extract desired data from row.original
-      console.log(row.original);
       const {
         date,
         merchant_name,
@@ -199,14 +198,6 @@ export function DataTable<TData, TValue>({
                             ? "text-primary bg-muted"
                             : " text-label hover:text-label"
                         } justify-between`}
-                        // onMouseEnter={() => {
-                        //   console.log("hover");
-                        //   hover = true;
-                        // }}
-                        // onMouseLeave={() => {
-                        //   console.log("hover");
-                        //   if (openedFilter !== category.value) hover = false;
-                        // }}
                       >
                         {category.label}{" "}
                         <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />

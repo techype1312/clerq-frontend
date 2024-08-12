@@ -15,7 +15,6 @@ const Page = () => {
     setEmail(searchParams.get("email") || "");
     // const res = async () => {
     //   const res1 = await AuthApis.healthCheck();
-    //   console.log(res1);
     //   return res1;
     // };
     // res();
@@ -47,7 +46,6 @@ const Page = () => {
             if (res.status === 200) {
               router.push(`/auth/confirm-email`);
             }
-            console.log(res);
           }}
           fieldConfig={{
             password: {

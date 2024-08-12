@@ -17,14 +17,33 @@ const updateCompany = (id: string, payload: any) => {
 };
 
 const getAllCompanies = () => {
-    const token = getCookie("token") || null;
-    return ApiCalls.getResponse(`companies`, null, token);
-}
+  const token = getCookie("token") || null;
+  return ApiCalls.getResponse(`companies`, null, token);
+};
+
+const getMyAllUCRMs = () => {
+  const token = getCookie("token") || null;
+  return ApiCalls.getResponse(`ucrms/me`, null, token);
+};
+
+const getAllUCRMs = () => {
+  const token = getCookie("token") || null;
+  return ApiCalls.getResponse(`ucrms`, null, token);
+};
+
+const getUCRM = (id: string) => {
+  const token = getCookie("token") || null;
+  return ApiCalls.getResponse(`ucrms/${id}`, null, token);
+};
 
 const CompanyApis = {
   getCompany,
   createCompany,
   updateCompany,
-  getAllCompanies
+  getAllCompanies,
+  getUCRM,
+  getAllUCRMs,
+  getMyAllUCRMs,
 };
+
 export default CompanyApis;
