@@ -54,19 +54,14 @@ export const getResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return getResponse(
-                url,
-                params,
-                res?.data?.token,
-                true
-              );
+              return getResponse(url, params, res?.data?.token, true);
             }
           } else {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
             return res;
           }
         } else if (error.response) {
@@ -97,19 +92,14 @@ export const putResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return putResponse(
-                url,
-                payload,
-                res?.data?.token,
-                true
-              );
+              return putResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         } else if (error.response) {
           toast.error(error.response.data.message);
@@ -140,19 +130,14 @@ export const deleteResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return deleteResponse(
-                url,
-                params,
-                res?.data?.token,
-                true
-              );
+              return deleteResponse(url, params, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         } else if (error.response) {
           toast.error(error.response.data.message);
@@ -181,25 +166,27 @@ export const postResponse = async (
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
       if (error) {
-        if (
-          error?.response?.status === 401 &&
-          url !== "auth/refresh" 
-        ) {
+        if (error?.response?.status === 401 && url !== "auth/refresh") {
           const res = await AuthApis.verifyRefreshToken();
           if (res && res?.data && res?.status === 200) {
             Cookies.set("token", res?.data?.token);
-            Cookies.set("refreshToken", res?.data?.refreshToken, {expires: res?.data?.expiresIn});
-            Cookies.set("onboarding_completed", res?.data?.user?.onboarding_completed ? "true" : "false");
+            Cookies.set("refreshToken", res?.data?.refreshToken, {
+              expires: res?.data?.expiresIn,
+            });
+            Cookies.set(
+              "onboarding_completed",
+              res?.data?.user?.onboarding_completed ? "true" : "false"
+            );
             if (!retry) {
               // Retry the request with the new token
               return postResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         } else if (error?.response?.status === 400) {
           toast.error(error.response.data.error.message);
@@ -239,19 +226,14 @@ export const postResponseUpdated = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return postResponse(
-                url,
-                payload,
-                res?.data?.token,
-                true
-              );
+              return postResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         }
       } else if (error.response) {
@@ -283,19 +265,14 @@ export const patchResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return patchResponse(
-                url,
-                payload,
-                res?.data?.token,
-                true
-              );
+              return patchResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         }
       } else {
@@ -326,19 +303,14 @@ export const patchResponseFormData = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return patchResponse(
-                url,
-                payload,
-                res?.data?.token,
-                true
-              );
+              return patchResponse(url, payload, res?.data?.token, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         }
       } else {
@@ -368,12 +340,12 @@ export const postResponseFormData = async (
               // Retry the request with the new token
               return postResponseFormData(url, payload, true);
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         }
       } else if (error.response) {
@@ -445,12 +417,12 @@ export const getResponseWithQueryParams = async (
                 true
               );
             }
-          } else if (res?.status === 401 && !res.response.success) {
-            // localStorage.clear();
-            // Cookies.remove("token");
-            // Cookies.remove("refreshToken");
-            // Cookies.remove("userType");
-            // window.location.href = "/";
+          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+            localStorage.clear();
+            Cookies.remove("token");
+            Cookies.remove("refreshToken");
+            Cookies.remove("userType");
+            window.location.href = "/";
           }
         }
       } else if (error.response) {

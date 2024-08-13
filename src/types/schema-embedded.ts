@@ -87,9 +87,9 @@ export const step1Schema = z.object({
     })
     .refine(
       (value) =>
-        value < new Date(new Date().setFullYear(new Date().getFullYear() - 16)),
+        value < new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
       {
-        message: "Date of birth cannot be less than 16 years ago",
+        message: "Date of birth cannot be less than 18 years ago",
       }
     ),
   email: z
@@ -99,9 +99,6 @@ export const step1Schema = z.object({
     .email(),
   phone: z.string(),
   address: z.object({
-    country: z.enum(["United States (US)"], {
-      errorMap: customErrorMap,
-    }),
     address_line_1: z.string({
       required_error: "Street is required",
     }),
@@ -114,15 +111,17 @@ export const step1Schema = z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    postal_code: z.number({
-      required_error: "Zip code is required",
+    postal_code: z.string({
+      required_error: "Postal code is required",
+    }).refine((val) => /^\d+$/.test(val), {
+      message: "Postal code must only contain numbers",
+    }),
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
     }),
   }).optional(),
   is_mailing_address_same: z.boolean().optional(),
   mailing_address: z.object({
-    country: z.enum(["United States (US)"], {
-      errorMap: customErrorMap,
-    }),
     address_line_1: z.string({
       required_error: "Street is required",
     }),
@@ -135,19 +134,18 @@ export const step1Schema = z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    postal_code: z.number({
-      required_error: "Zip code is required",
+    postal_code: z.string({
+      required_error: "Postal code is required",
+    }).refine((val) => /^\d+$/.test(val), {
+      message: "Postal code must only contain numbers",
+    }),
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
     }),
   }).optional(),
   address_id: z.string().optional(),
   mailing_address_id: z.string().optional(),
-  // lat: z.number(),
-  // lng: z.number(),
-  // lat1: z.number(),
-  // lng1: z.number(),
-  tax_residence_country: z.enum(["United States (US)"], {
-    errorMap: customErrorMap,
-  }),
+  tax_residence_country: z.string(),
   company: z.enum(["Yes", "No"]).optional(),
 });
 
@@ -166,9 +164,6 @@ export const step2Schema = z.object({
   phone: z.string(),
   //Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid
   address: z.object({
-    country: z.enum(["United States (US)"], {
-      errorMap: customErrorMap,
-    }),
     address_line_1: z.string({
       required_error: "Street is required",
     }),
@@ -181,15 +176,17 @@ export const step2Schema = z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    postal_code: z.number({
-      required_error: "Zip code is required",
+    postal_code: z.string({
+      required_error: "Postal code is required",
+    }).refine((val) => /^\d+$/.test(val), {
+      message: "Postal code must only contain numbers",
+    }),
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
     }),
   }).optional(),
   is_mailing_address_same: z.boolean().optional(),
   mailing_address: z.object({
-    country: z.enum(["United States (US)"], {
-      errorMap: customErrorMap,
-    }),
     address_line_1: z.string({
       required_error: "Street is required",
     }),
@@ -202,8 +199,13 @@ export const step2Schema = z.object({
     state: z.string({
       required_error: "State is required",
     }),
-    postal_code: z.number({
-      required_error: "Zip code is required",
+    postal_code: z.string({
+      required_error: "Postal code is required",
+    }).refine((val) => /^\d+$/.test(val), {
+      message: "Postal code must only contain numbers",
+    }),
+    country: z.enum(["United States (US)"], {
+      errorMap: customErrorMap,
     }),
   }).optional(),
   address_id: z.string().optional(),

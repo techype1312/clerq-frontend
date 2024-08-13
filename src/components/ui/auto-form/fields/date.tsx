@@ -5,7 +5,7 @@ import { AutoFormInputComponentProps } from "../types";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useEffect, useRef, useState } from "react";
-import { format } from "date-fns";
+import { format, isDate } from "date-fns";
 
 export default function AutoFormDate({
   label,
@@ -46,7 +46,7 @@ export default function AutoFormDate({
             className="border p-2 rounded-md cursor-pointer text-sm"
             onClick={() => setIsEdit(!isEdit)}
           >
-            {field?.value && format(field?.value, "yyyy-MM-dd")}
+            {field?.value && isDate(field?.value) && format(field?.value, "yyyy-MM-dd")}
             {!field.value && <p className="text-muted">1990-01-01</p>}
           </div>
           {isEdit && (
@@ -56,7 +56,7 @@ export default function AutoFormDate({
                 month={month}
                 onMonthChange={setMonth}
                 selected={field.value}
-                onSelect={field.onChange}
+                onSelect={(e) => field.onChange(e)}
                 showOutsideDays
                 fixedWeeks
                 captionLayout="dropdown-buttons"

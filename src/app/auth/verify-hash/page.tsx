@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
 import Cookies from "js-cookie";
 import { UserContext } from "@/context/User";
-import { toast } from "react-toastify";
-
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,6 +14,7 @@ const Page = () => {
   const hash = searchParams.get("hash");
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
+
   useEffect(() => {
     if (hasRunRef.current) return;
     if (error) {
@@ -28,26 +27,33 @@ const Page = () => {
     }
     if (hash) {
       hasRunRef.current = true;
-      const confirmEmail = async () => {
-        const res = await AuthApis.confirmEmail(hash);
-        if (res?.status === 204) {
-          toast.success("Email confirmed successfully, please login");
-          router.push("/auth/signin");
+      const verifyMagicLinkHash = async () => {
+        const res = await AuthApis.verifyMagicLinkHash(hash);
+        console.log(res, "res", hash);
+        if (res.status === 200) {
+          if (res.data && res.data.token && res.data.refreshToken) {
+            Cookies.set("refreshToken", res.data.refreshToken, {
+              expires: res.data.tokenExpiry,
+            });
+            Cookies.set("token", res.data.token);
+            Cookies.set(
+              "onboarding_completed",
+              res?.data?.user?.onboarding_completed ? "true" : "false"
+            );
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+            setuserdata(res.data.user);
+            router.push("/dashboard");
+          }
         }
       };
-      confirmEmail();
+      verifyMagicLinkHash();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, hash, error, error_description]);
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
       <Loader2Icon className="animate-spin" size={"48px"} />
-      <div className="flex flex-col gap-2">
-        <h2 className="text-center text-xl font-medium">
-          Confirming Email <br />
-        </h2>
-      </div>
+      <p>Logging in with magic link</p>
     </div>
   );
 };

@@ -39,7 +39,7 @@ const Page = () => {
               const searchParams = "magic_link=true";
               const res = await AuthApis.login(searchParams, e);
               if (res.status === 200) {
-                router.push(`/auth/link-sent`);
+                router.push(`/auth/link-sent?email=${e.email}`);
               }
             }}
             className="flex flex-col gap-4 max-w-lg"

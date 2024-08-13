@@ -3,17 +3,6 @@ import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
-import {
-  // getUserData,
-  insertUserData,
-  updateOtherUserData,
-} from "@/hooks/useUser";
-// import {
-//   getUserAddressData,
-//   insertAddressData,
-//   updateAddressData,
-// } from "@/hooks/useAddress";
 import {
   AutoFormInputComponentProps,
   DependencyType,
@@ -29,97 +18,85 @@ import CompanyApis from "@/actions/apis/CompanyApis";
 const Step1 = ({
   changeStep,
   userdata,
-  otherUserData,
+  setuserdata,
   setTotalSteps,
   totalSteps,
   staticForFirstTime,
   setStaticForFirstTime,
-  setOtherUserData,
 }: {
   changeStep: (step: number) => void;
   userdata: any;
-  otherUserData: any;
+  setuserdata: any;
   setTotalSteps: (steps: number) => void;
   totalSteps: number;
   staticForFirstTime: boolean;
   setStaticForFirstTime: (value: boolean) => void;
-  setOtherUserData: (data: any) => void;
 }) => {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<Address | any | undefined>();
   const [mailingAddress, setMailingAddress] = useState<
     Address | any | undefined
   >();
-  const [otherData, setOtherData] = useState<any>();
-  const {
-    userdata: user,
-    refetchUserData,
-    setRefetchUserData,
-  } = useContext(UserContext);
+  const { refetchUserData, setRefetchUserData, refreshUser } = useContext(UserContext);
 
   const [companyData, setCompanyData] = useState<any>();
 
   const handleSubmit = async (e: Step1Schema) => {
-    try {
-      setLoading(true);
-      let userData: any = e;
-      if (userData?.company === "Yes" && companyData?.length === 0) {
-        // Create Company with empty details
-        await CompanyApis.createCompany({});
-      }
-      else if (userData?.company === "No" && companyData?.length === 0) {
-        // Create Company with User details
-        await CompanyApis.createCompany({
-          email: userData?.email,
-          name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
-          phone: userdata?.phone,
-          country_code: 91, // change to 1
-          ein: userdata?.phone,
-          tax_residence_country: "US",
-          tax_classification: "Individual/Sole Proprietor",
-        });
-      } else if (userData?.company === "No" && companyData?.length > 0) {
-        // Update Existings company details
-        await CompanyApis.updateCompany(companyData[0].id, {
-          email: userData?.email,
-          name: `${userdata?.legalFirstName} ${userdata?.legalLastName}`,
-          phone: userdata?.phone,
-          country_code: 91, // change to 1
-          ein: userdata?.phone,
-          tax_residence_country: "US",
-          tax_classification: "Individual/Sole Proprietor",
-        });
-      }
-      delete userData.address;
-      delete userData.mailing_address;
-      delete userData.is_mailing_address_same;
-      delete userData.address_id;
-      delete userData.mailing_address_id;
-      delete userData.company;
-      userData.legalFirstName = e.name.legalFirstName;
-      userData.legalLastName = e.name.legalLastName;
-      delete userData.name;
-      (userData.tax_residence_country = "US"),
-        delete userData.tax_residence_country;
-      delete userData.email;
-      delete userData.phone;
-      userData.dob = e.date_of_birth.toUTCString();
-      delete userData.date_of_birth;
+    setLoading(true);
+    console.log(e);
+    let userData: any = e;
+    if (userData?.company === "Yes" && companyData?.length === 0) {
+      // Create Company with empty details
+      await CompanyApis.createCompany({});
+    } else if (userData?.company === "No" && companyData?.length === 0) {
+      // Create Company with User details
+      await CompanyApis.createCompany({
+        email: userData?.email,
+        name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
+        phone: userdata?.phone,
+        country_code: 91, // change to 1
+        ein: userdata?.phone,
+        tax_residence_country: "US",
+        tax_classification: "Individual/Sole Proprietor",
+      });
+    } else if (userData?.company === "No" && companyData?.length > 0) {
+      // Update Existings company details
+      await CompanyApis.updateCompany(companyData[0].id, {
+        email: userData?.email,
+        name: `${userdata?.legalFirstName} ${userdata?.legalLastName}`,
+        phone: userdata?.phone,
+        country_code: 91, // change to 1
+        ein: userdata?.phone,
+        tax_residence_country: "US",
+        tax_classification: "Individual/Sole Proprietor",
+      });
+    }
+    delete userData.address;
+    delete userData.mailing_address;
+    delete userData.is_mailing_address_same;
+    delete userData.address_id;
+    delete userData.mailing_address_id;
+    delete userData.company;
+    userData.legalFirstName = e.name.legalFirstName;
+    userData.legalLastName = e.name.legalLastName;
+    delete userData.name;
+    (userData.tax_residence_country = "US"),
+      delete userData.tax_residence_country;
+    delete userData.email;
+    delete userData.phone;
+    userData.dob = e.date_of_birth.toUTCString();
+    delete userData.date_of_birth;
 
-      // delete userData.lat;
-      // delete userData.lng;
-      // delete userData.lat1;
-      // delete userData.lng1;
-      const res = await AuthApis.updateUser(userData);
+    // delete userData.lat;
+    // delete userData.lng;
+    // delete userData.lat1;
+    // delete userData.lng1;
+    const res = await AuthApis.updateUser(userData);
 
-      if (res && res.status === 200) {
-        changeStep(2);
-      }
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
+    if (res && res.status === 200) {
       changeStep(2);
     }
+    setLoading(false);
   };
   const [addressId, setAddressId] = useState<string | null>(null);
   const [mailingAddressId, setMailingAddressId] = useState<string | null>(null);
@@ -127,23 +104,39 @@ const Step1 = ({
   const [isMailingAddressSame, setIsMailingAddressSame] = useState(true);
 
   useEffect(() => {
-    if (addressId && mailingAddressId)
-      AuthApis.updateUser({
-        permanent_address: {
-          id: addressId,
-        },
-        mailing_address: {
-          id: mailingAddressId,
-        },
-      });
-  }, [changedAddress]);
+    if (addressId && mailingAddressId) {
+      const updateAndFetchAddress = async () => {
+        await AuthApis.updateUser({
+          legal_address: {
+            id: addressId,
+          },
+          mailing_address: {
+            id: mailingAddressId,
+          },
+        });
+        const res = await OnboardingApis.getAddress(addressId);
+        if (res && res.data.status === 200) {
+          setAddress(res.data);
+        }
+        const res1 = await OnboardingApis.getAddress(mailingAddressId);
+        if (res1 && res1.data.status === 200) {
+          setMailingAddress(res1.data);
+        }
+        if (addressId === mailingAddressId) {
+          setIsMailingAddressSame(true);
+        } else {
+          setIsMailingAddressSame(false);
+        }
+      };
+      updateAndFetchAddress();
+    }
+  }, [addressId, mailingAddressId]);
 
   useEffect(() => {
     if (
       isMailingAddressSame &&
       addressId !== mailingAddressId &&
-      addressId &&
-      mailingAddressId
+      addressId
     ) {
       const updateAddress = async () => {
         const res = await AuthApis.updateUser({
@@ -151,40 +144,49 @@ const Step1 = ({
             id: addressId,
           },
         });
-        if (res && res.data.status === 200) {
-          setMailingAddress(address);
+        const fetchMailingAddress = await OnboardingApis.getAddress(addressId);
+        if (res && res.status === 200 && fetchMailingAddress) {
+          console.log("here inside update address", fetchMailingAddress.data);
+          setMailingAddress(fetchMailingAddress.data);
           setMailingAddressId(addressId);
         }
       };
       updateAddress();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMailingAddressSame, addressId, mailingAddressId]);
+  }, [isMailingAddressSame]);
 
+  const [addressDataLoaded, setAddressDataLoaded] = useState(false);
+  const [userRefetch, setUserRefetch] = useState(false);
   useEffect(() => {
-    if (!user) {
-      return setRefetchUserData(!refetchUserData);
-    } else {
-      if (user?.permanent_address?.id)
-        setAddressId(user?.permanent_address?.id);
-      if (user?.mailing_address?.id)
-        setMailingAddressId(user?.mailing_address?.id);
+    if (!userRefetch) {
+      setUserRefetch(true);
+      setRefetchUserData(!refetchUserData);
+      return;
+    } else if (!addressDataLoaded) {
+      if (userdata?.legal_address?.id)
+        setAddressId(userdata?.legal_address?.id);
+      if (userdata?.mailing_address?.id)
+        setMailingAddressId(userdata?.mailing_address?.id);
       if (
-        user?.permanent_address &&
-        user?.permanent_address?.id !== user?.mailing_address.id
+        userdata?.legal_address &&
+        userdata?.legal_address?.id !== userdata?.mailing_address.id
       ) {
         setIsMailingAddressSame(false);
       } else {
+        console.log("here inside is mailing address same");
         setIsMailingAddressSame(true);
       }
-      if (user?.permanent_address) setAddress(user?.permanent_address);
-      if (user?.mailing_address) setMailingAddress(user?.mailing_address);
+      if (userdata?.legal_address) setAddress(userdata?.legal_address);
+      if (userdata?.mailing_address)
+        setMailingAddress(userdata?.mailing_address);
+      setAddressDataLoaded(true);
     }
-  }, [user]);
+  }, [userdata, userRefetch, addressDataLoaded, refreshUser]);
 
   useEffect(() => {
     CompanyApis.getAllCompanies().then((res) => {
-      setCompanyData(res.data.data);
+      setCompanyData(res.data?.data);
     });
   }, []);
 
@@ -199,20 +201,33 @@ const Step1 = ({
           legalFirstName: {
             inputProps: {
               placeholder: "John",
+              onChange: (e: any) => {
+                setuserdata({
+                  ...userdata,
+                  legalFirstName: e.target.value,
+                });
+              },
             },
           },
           legalLastName: {
             inputProps: {
               placeholder: "Doe",
+              onChange: (e: any) => {
+                setuserdata({
+                  ...userdata,
+                  legalLastName: e.target.value,
+                });
+              },
             },
           },
         },
         date_of_birth: {
           inputProps: {
-            onChange: (e: any) => {
-              setOtherUserData({
-                ...otherUserData,
-                date_of_birth: e.currentTarget.value,
+            // date component uses onSelect instead of onChange
+            onSelect: (e: any) => {
+              setuserdata({
+                ...userdata,
+                dob: e,
               });
             },
           },
@@ -220,28 +235,25 @@ const Step1 = ({
         mailing_address: {
           label: "Mailing address",
           inputProps: {
+            isPresent: mailingAddress ? true : false,
             onChange: (e: any) => {
-              setChangedAddress(!changedAddress);
+              setMailingAddress(e);
             },
           },
           fieldType: "modal",
         },
         is_mailing_address_same: {
-          fieldType: ({
-            label,
-            isRequired,
-            field,
-            fieldConfigItem,
-            fieldProps,
-          }: AutoFormInputComponentProps) => (
-            <FormItem>
+          fieldType: ({ field, fieldProps }: AutoFormInputComponentProps) => (
+            <FormItem id="is_mailing_address_same">
               <FormControl>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={() => {
-                        if (!field.value) setIsMailingAddressSame(true);
+                        if (!field.value) {
+                          setIsMailingAddressSame(true);
+                        }
                         field.onChange(!field.value);
                       }}
                       {...fieldProps}
@@ -272,6 +284,7 @@ const Step1 = ({
             isPresent: address ? true : false,
             onChange: (e: any) => {
               setChangedAddress(!changedAddress);
+              setAddress(e);
             },
           },
         },
@@ -279,6 +292,12 @@ const Step1 = ({
           inputProps: {
             placeholder: "Select country",
             disabled: true,
+            onChange: (e: any) => {
+              setuserdata({
+                ...userdata,
+                tax_residence_country: e.currentTarget.value,
+              });
+            },
           },
         },
         email: {
@@ -288,7 +307,8 @@ const Step1 = ({
         },
         address_id: {
           inputProps: {
-            onChange: (e: any) => {
+            onChangeCapture: (e: any) => {
+              setChangedAddress(!changedAddress);
               setAddressId(e.target.value);
             },
           },
@@ -296,6 +316,7 @@ const Step1 = ({
         mailing_address_id: {
           inputProps: {
             onChange: (e: any) => {
+              setChangedAddress(!changedAddress);
               setMailingAddressId(e.target.value);
             },
           },
@@ -304,13 +325,8 @@ const Step1 = ({
           fieldType: "phone",
           label: "Phone number",
           inputProps: {
+            disabled: true,
             placeholder: "(123)-456-7890",
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-              setOtherUserData({
-                ...otherUserData,
-                phone: e?.target?.value,
-              });
-            },
           },
         },
         company: {
@@ -352,57 +368,30 @@ const Step1 = ({
             return true;
           },
         },
-        // {
-        //   sourceField: "lat",
-        //   type: DependencyType.HIDES,
-        //   targetField: "lat",
-        //   when: () => {
-        //     return true;
-        //   },
-        // },
-        // {
-        //   sourceField: "lat1",
-        //   type: DependencyType.HIDES,
-        //   targetField: "lat1",
-        //   when: () => {
-        //     return true;
-        //   },
-        // },
-        // {
-        //   sourceField: "lng",
-        //   type: DependencyType.HIDES,
-        //   targetField: "lng",
-        //   when: () => {
-        //     return true;
-        //   },
-        // },
-        // {
-        //   sourceField: "lng1",
-        //   type: DependencyType.HIDES,
-        //   targetField: "lng1",
-        //   when: () => {
-        //     return true;
-        //   },
-        // },
       ]}
       values={{
         name: {
-          legalFirstName: userdata?.legalFirstName ? userdata?.legalFirstName : "",
-          legalLastName: userdata?.legalLastName ? userdata?.legalLastName : "",
+          legalFirstName: userdata?.legalFirstName
+            ? userdata?.legalFirstName
+            : userdata?.firstName,
+          legalLastName: userdata?.legalLastName
+            ? userdata?.legalLastName
+            : userdata?.lastName,
         },
-        email: userdata?.email ?? "",
+        email: userdata?.email,
         phone: userdata?.phone ?? "",
-        tax_residence_country: "United States (US)",
+        tax_residence_country:
+          userdata?.tax_residence_country ?? "United States (US)",
         date_of_birth: userdata?.dob
           ? new Date(userdata?.dob ?? "")
           : undefined,
         address: {
           address_line_1: address ? address?.address_line_1 : "",
           address_line_2: address ? address?.address_line_2 : "",
-          country: "United States (US)",
           city: address ? address?.city : "",
           state: address ? address?.state : "",
-          postal_code: address?.postal_code ?? 0,
+          postal_code: address?.postal_code ?? "",
+          country: "United States (US)",
         },
         is_mailing_address_same: isMailingAddressSame,
         mailing_address: {
@@ -410,11 +399,12 @@ const Step1 = ({
           address_line_2: mailingAddress ? mailingAddress?.address_line_2 : "",
           city: mailingAddress ? mailingAddress?.city : "",
           state: mailingAddress ? mailingAddress?.state : "",
-          postal_code: mailingAddress?.postal_code ?? 0,
+          postal_code: mailingAddress?.postal_code ?? "",
           country: "United States (US)",
         },
         address_id: addressId ?? "",
-        mailing_address_id: mailingAddressId ?? "",
+        mailing_address_id:
+          mailingAddressId !== addressId ? mailingAddressId ?? "" : "",
         company: totalSteps === 3 ? "Yes" : "No",
         // lat: address?.latitude ?? 0,
         // lng: address?.longitude ?? 0,
@@ -424,6 +414,14 @@ const Step1 = ({
       className="flex flex-col gap-4 mx-auto max-w-lg"
       zodItemClass="flex flex-row gap-4 space-y-0"
       labelClass="text-label"
+      onValuesChange={(values) => {
+        if (values.address_id) {
+          setAddressId(values.address_id);
+        }
+        if (values.mailing_address_id) {
+          setMailingAddressId(values.mailing_address_id);
+        }
+      }}
     >
       <AutoFormSubmit
         disabled={loading}

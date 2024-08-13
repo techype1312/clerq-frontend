@@ -1,11 +1,11 @@
 "use client";
 import Step1 from "@/components/verifyUser/Step1";
 import Step2 from "@/components/verifyUser/Step2";
-import Step3 from "@/components/verifyUser/Step3";
+// import Step3 from "@/components/verifyUser/Step3";
 import { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Step4 from "@/components/verifyUser/Step4";
-import Step5 from "@/components/verifyUser/Step5";
+// import Step5 from "@/components/verifyUser/Step5";
 import { UserContext } from "@/context/User";
 
 const Page = () => {
@@ -13,9 +13,10 @@ const Page = () => {
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [totalSteps, setTotalSteps] = useState(2);
-  const { userdata, refetchUserData, setRefetchUserData } =
+  const { userdata, setuserdata, refetchUserData, setRefetchUserData } =
     useContext(UserContext);
   const changeStep = (step: number) => {
+    console.log("caleed", step);
     setStep(step);
     if (totalSteps === 3) {
       router.push(
@@ -25,25 +26,24 @@ const Page = () => {
       router.push("/dashboard/verify-user?step=" + step);
     }
   };
-  const [otherUserData, setOtherUserData] = useState(null);
   const [staticForFirstTime, setStaticForFirstTime] = useState(false); // Need this for a very specific use case which is causing infinite loop
 
   useEffect(() => {
     setRefetchUserData(!refetchUserData);
-  }, []);
+  }, [setRefetchUserData]);
+
+  // const searchParamStep = parseInt(searchParams.get("step") ?? "1");
 
   useEffect(() => {
-    if (searchParams) {
-      if (searchParams.get("step")) {
-        const steps = parseInt(searchParams.get("step") ?? "1");
-        setStep(steps);
-      }
-      if (searchParams.get("totalSteps")) {
-        const totalStep = parseInt(searchParams.get("totalSteps") ?? "2");
-        if (totalStep === 3) {
-          setStaticForFirstTime(true);
-          setTotalSteps(totalStep);
-        }
+    if (searchParams.get("step")) {
+      const steps = parseInt(searchParams.get("step") ?? "1");
+      setStep(steps);
+    }
+    if (searchParams.get("totalSteps")) {
+      const totalStep = parseInt(searchParams.get("totalSteps") ?? "2");
+      if (totalStep === 3) {
+        setStaticForFirstTime(true);
+        setTotalSteps(totalStep);
       }
     }
   }, [searchParams]);
@@ -64,7 +64,6 @@ const Page = () => {
       }
     }
   });
-
   return (
     <div className="flex px-12 h-screen items-center">
       <div className="flex gap-4 h-[80vh] items-center w-full">
@@ -111,12 +110,11 @@ const Page = () => {
             <Step1
               changeStep={changeStep}
               userdata={userdata}
-              otherUserData={otherUserData}
+              setuserdata={setuserdata}
               setTotalSteps={setTotalSteps}
               totalSteps={totalSteps}
               staticForFirstTime={staticForFirstTime}
               setStaticForFirstTime={setStaticForFirstTime}
-              setOtherUserData={setOtherUserData}
             />
           )}
           {step === 2 && totalSteps === 3 && (
@@ -124,11 +122,7 @@ const Page = () => {
           )}
           {((step === 2 && totalSteps === 2) ||
             (step === 3 && totalSteps === 3)) && (
-            <Step4
-              changeStep={changeStep}
-              userdata={userdata}
-              step={step}
-            />
+            <Step4 changeStep={changeStep} userdata={userdata} step={step} />
           )}
           {/* {((step === 3 && totalSteps === 5) ||
             (step === 2 && totalSteps === 4)) && <div className="h-sm"></div>}

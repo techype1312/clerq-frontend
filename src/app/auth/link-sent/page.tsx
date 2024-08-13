@@ -7,6 +7,7 @@ import React, { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useFormState, useFormStatus } from "react-dom";
 import { UserContext } from "@/context/User";
+import AuthApis from "@/actions/apis/AuthApis";
 
 const initialState = {
   message: "",
@@ -14,7 +15,7 @@ const initialState = {
 
 const Page = () => {
   const { pending } = useFormStatus();
-  const [state, formAction] = useFormState(resendLogin, initialState);
+  // const [state, formAction] = useFormState(resendLogin, initialState);
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const newUser = searchParams.get("newUser") === "true" ? true : false;
@@ -30,13 +31,26 @@ const Page = () => {
       window.removeEventListener("focus", handleFocus);
     };
   }, [refreshUser]);
-  useEffect(() => {
-    if (state.message === "Email sent") {
+  // useEffect(() => {
+  //   if (state.message === "Email sent") {
+  //     toast.success("Check your inbox email sent successfully");
+  //   } else if (state.message === "Error sending email") {
+  //     toast.error("An error occurred");
+  //   }
+  // }, [state]);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    const searchParams = "magic_link=true";
+    const res = await AuthApis.login(searchParams, e);
+    console.log(res);
+    if (res && res.status === 200) {
       toast.success("Check your inbox email sent successfully");
-    } else if (state.message === "Error sending email") {
+    } else {
       toast.error("An error occurred");
     }
-  }, [state]);
+    setLoading(false);
+  };
 
   return (
     <div className="text-center flex gap-20 h-screen max-h-screen flex-col items-center justify-center">
@@ -57,7 +71,10 @@ const Page = () => {
           If it&apos;s not in your inbox or spam folder, click the button below
           and we&apos;ll send you another one.
         </p>
-        <form action={formAction}>
+        <form
+          onSubmit={handleSubmit}
+          // action={formAction}
+        >
           <input name="email" type="hidden" defaultValue={email ?? ""} />
           <button
             type="submit"

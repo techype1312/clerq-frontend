@@ -77,8 +77,8 @@ const acceptInvite = (id: string) => {
 const healthCheck = () => {
   return ApiCalls.getResponse(``, {}, null);
 };
-const confirmEmail = (payload: any) => {
-  return ApiCalls.postResponse(`auth/email/confirm`, payload, null);
+const confirmEmail = (hash: string) => {
+  return ApiCalls.postResponse(`auth/email/confirm`, {hash:hash}, null);
 };
 
 const verifyMagicLinkHash = (hash: string) => {
