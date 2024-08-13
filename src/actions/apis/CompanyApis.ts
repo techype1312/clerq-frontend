@@ -26,11 +26,6 @@ const getMyAllUCRMs = () => {
   return ApiCalls.getResponse(`ucrms/me`, null, token);
 };
 
-const getAllUCRMs = () => {
-  const token = getCookie("token") || null;
-  return ApiCalls.getResponse(`ucrms`, null, token);
-};
-
 const getUCRM = (id: string) => {
   const token = getCookie("token") || null;
   return ApiCalls.getResponse(`ucrms/${id}`, null, token);
@@ -42,7 +37,6 @@ const CompanyApis = {
   updateCompany,
   getAllCompanies,
   getUCRM,
-  getAllUCRMs,
   getMyAllUCRMs,
 };
 
