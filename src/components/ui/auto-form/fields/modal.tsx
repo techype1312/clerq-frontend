@@ -80,7 +80,7 @@ export default function AutoFormModal({
           "," +
           form.getValues()?.address?.postal_code,
       });
-  }, [form.getValues("address_id")]);
+  }, [form.getValues("address_id"), form.getValues("address")]);
 
   useEffect(() => {
     if (
@@ -167,7 +167,7 @@ export default function AutoFormModal({
             if (form.getValues("is_mailing_address_same")) {
               form.setValue("mailing_address_id", res.data.id);
             }
-            form.setValue(name, {
+            form.setValue("address", {
               address_line_1: res.data.address_line_1,
               address_line_2: res.data.address_line_1,
               city: res.data.city,
@@ -199,7 +199,7 @@ export default function AutoFormModal({
           }
           if (res && res.data && (res.status === 201 || res.status === 200)) {
             form.setValue("mailing_address_id", res.data.id);
-            form.setValue(name, {
+            form.setValue("mailing_address", {
               address_line_1: res.data.address_line_1,
               address_line_2: res.data.address_line_1,
               city: res.data.city,

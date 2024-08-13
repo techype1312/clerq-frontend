@@ -31,6 +31,7 @@ const Step2 = ({
   const [companyData, setCompanyData] = useState<
     Step2Schema | any | undefined
   >();
+  const [localCompanyData, setLocalCompanyData] = useState<Step2Schema | any>();
   const {
     userdata: user,
     refetchUserData,
@@ -80,23 +81,17 @@ const Step2 = ({
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (
-      addressId &&
-      mailingAddressId &&
-      companyId &&
-      addressId &&
-      mailingAddressId
-    )
-      CompanyApis.updateCompany(companyId, {
-        permanent_address: {
-          id: addressId,
-        },
-        mailing_address: {
-          id: mailingAddressId,
-        },
-      });
-  }, [changedAddress]);
+  // useEffect(() => {
+  //   if (addressId && mailingAddressId && companyId)
+  //     CompanyApis.updateCompany(companyId, {
+  //       legal_address: {
+  //         id: addressId,
+  //       },
+  //       mailing_address: {
+  //         id: mailingAddressId,
+  //       },
+  //     });
+  // }, [changedAddress]);
 
   useEffect(() => {
     if (addressId && mailingAddressId && companyId) {
@@ -152,24 +147,27 @@ const Step2 = ({
   }, [isMailingAddressSame]);
 
   useEffect(() => {
-    if (!user) {
+    if (!companyData) {
       return setRefetchUserData(!refetchUserData);
     } else {
-      if (user?.legal_address?.id) setAddressId(user?.legal_address?.id);
-      if (user?.mailing_address?.id)
-        setMailingAddressId(user?.mailing_address?.id);
+      if (companyData?.legal_address?.id)
+        setAddressId(companyData?.legal_address?.id);
+      if (companyData?.mailing_address?.id)
+        setMailingAddressId(companyData?.mailing_address?.id);
       if (
-        user?.company?.legal_address?.id !== null &&
-        user?.company?.legal_address?.id !== user?.company?.mailing_address?.id
+        companyData?.company?.legal_address?.id !== null &&
+        companyData?.company?.legal_address?.id !==
+          companyData?.company?.mailing_address?.id
       ) {
         setIsMailingAddressSame(false);
       } else {
         setIsMailingAddressSame(true);
       }
-      if (user?.legal_address) setAddress(user?.legal_address);
-      if (user?.mailing_address) setMailingAddress(user?.mailing_address);
+      if (companyData?.legal_address) setAddress(companyData?.legal_address);
+      if (companyData?.mailing_address)
+        setMailingAddress(companyData?.mailing_address);
     }
-  }, [user]);
+  }, [companyData]);
 
   return (
     <div className="w-full">
@@ -180,11 +178,17 @@ const Step2 = ({
           name: {
             inputProps: {
               placeholder: "Value",
+              onChange: (e: any) => {
+                setLocalCompanyData({ ...companyData, name: e.target.value });
+              },
             },
           },
           email: {
             inputProps: {
               placeholder: "Value",
+              onChange: (e: any) => {
+                setLocalCompanyData({ ...companyData, email: e.target.value });
+              },
             },
           },
           phone: {
@@ -192,6 +196,10 @@ const Step2 = ({
             label: "Phone number",
             inputProps: {
               placeholder: "(123)-456-7890",
+              onChange: (e: any) => {
+                console.log(e);
+                setLocalCompanyData({ ...companyData, phone: e });
+              },
             },
           },
           tax_residence_country: {
@@ -203,23 +211,41 @@ const Step2 = ({
           address: {
             label: "Company Address",
             fieldType: "modal",
+            inputProps: {
+              isPresent: address ? true : false,
+              onChange: (e: any) => {
+                setChangedAddress(!changedAddress);
+                setAddress(e);
+              },
+            },
           },
           ein: {
             label: "EIN (Employer Identification no.)",
             inputProps: {
               placeholder: "Value",
+              onChange: (e: any) => {
+                setLocalCompanyData({ ...companyData, ein: e.target.value });
+              },
             },
           },
           tax_classification: {
             inputProps: {
               placeholder: "Individual/sole proprietor or single-member LLC",
+              onChange: (e: any) => {
+                setLocalCompanyData({
+                  ...companyData,
+                  tax_classification: e.target.value,
+                });
+              },
             },
           },
           mailing_address: {
             label: "Mailing address",
             inputProps: {
+              isPresent: mailingAddress ? true : false,
               onChange: (e: any) => {
                 setChangedAddress(!changedAddress);
+                setMailingAddress(e);
               },
             },
             fieldType: "modal",
@@ -273,19 +299,30 @@ const Step2 = ({
           },
         }}
         values={{
-          name: companyData?.name ?? "",
-          ein: companyData?.ein ?? "",
-          email: companyData?.email ?? "",
-          tax_classification: companyData?.tax_classification,
-          phone: companyData?.phone ?? "",
+          name: localCompanyData?.name
+            ? localCompanyData?.name
+            : companyData?.name,
+          ein: localCompanyData?.ein
+            ? localCompanyData?.ein
+            : companyData?.ein ?? "",
+          email: localCompanyData?.email
+            ? localCompanyData?.email
+            : companyData?.email ?? "",
+          tax_classification: localCompanyData?.tax_classification
+            ? localCompanyData?.tax_classification
+            : companyData?.tax_classification,
+          phone: localCompanyData?.phone
+            ? localCompanyData?.phone
+            : companyData?.phone ?? "",
           tax_residence_country: "United States (US)",
+          is_mailing_address_same: isMailingAddressSame,
           address: {
             address_line_1: address ? address?.address_line_1 : "",
             address_line_2: address ? address?.address_line_2 : "",
-            country: "United States (US)",
             city: address ? address?.city : "",
             state: address ? address?.state : "",
             postal_code: address?.postal_code ?? "",
+            country: "United States (US)",
           },
           mailing_address: {
             address_line_1: mailingAddress
@@ -294,11 +331,14 @@ const Step2 = ({
             address_line_2: mailingAddress
               ? mailingAddress?.address_line_2
               : "",
-            country: "United States (US)",
             city: mailingAddress ? mailingAddress?.city : "",
             state: mailingAddress ? mailingAddress?.state : "",
             postal_code: mailingAddress?.postal_code ?? "",
+            country: "United States (US)",
           },
+          address_id: addressId ?? "",
+          mailing_address_id:
+            mailingAddressId !== addressId ? mailingAddressId ?? "" : "",
         }}
         defaultValues={{
           tax_residence_country: "United States (US)",
@@ -330,6 +370,14 @@ const Step2 = ({
         className="flex flex-col gap-4 mx-auto max-w-lg"
         zodItemClass="flex flex-row gap-4 space-y-0"
         labelClass="text-label"
+        onValuesChange={(values) => {
+          if (values.address_id) {
+            setAddressId(values.address_id);
+          }
+          if (values.mailing_address_id) {
+            setMailingAddressId(values.mailing_address_id);
+          }
+        }}
       >
         <div className="flex gap-4">
           <Button

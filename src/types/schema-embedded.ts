@@ -113,9 +113,11 @@ export const step1Schema = z.object({
     }),
     postal_code: z.string({
       required_error: "Postal code is required",
-    }).refine((val) => /^\d+$/.test(val), {
-      message: "Postal code must only contain numbers",
-    }),
+    })
+    // .refine((val) => /^\d+$/.test(val), {
+    //   message: "Postal code must only contain numbers",
+    // })
+    ,
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
@@ -136,9 +138,11 @@ export const step1Schema = z.object({
     }),
     postal_code: z.string({
       required_error: "Postal code is required",
-    }).refine((val) => /^\d+$/.test(val), {
-      message: "Postal code must only contain numbers",
-    }),
+    })
+    // .refine((val) => /^\d+$/.test(val), {
+    //   message: "Postal code must only contain numbers",
+    // })
+    ,
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
@@ -178,9 +182,11 @@ export const step2Schema = z.object({
     }),
     postal_code: z.string({
       required_error: "Postal code is required",
-    }).refine((val) => /^\d+$/.test(val), {
-      message: "Postal code must only contain numbers",
-    }),
+    })
+    // .refine((val) => /^\d+$/.test(val), {
+    //   message: "Postal code must only contain numbers",
+    // })
+    ,
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
@@ -201,9 +207,11 @@ export const step2Schema = z.object({
     }),
     postal_code: z.string({
       required_error: "Postal code is required",
-    }).refine((val) => /^\d+$/.test(val), {
-      message: "Postal code must only contain numbers",
-    }),
+    })
+    // .refine((val) => /^\d+$/.test(val), {
+    //   message: "Postal code must only contain numbers",
+    // })
+    ,
     country: z.enum(["United States (US)"], {
       errorMap: customErrorMap,
     }),
