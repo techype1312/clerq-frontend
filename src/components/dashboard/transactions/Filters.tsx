@@ -1,10 +1,40 @@
-import {
-  categories,
-  glCode,
-} from "@/app/dashboard/(verified)/transactions/page";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
+
+const glCodes = [
+  "230 - Electric Bills",
+  "120 - Accounts Receivable",
+  "400 - Inventory",
+  "440 - Raw Materials",
+  "503 - Debt Service Prep",
+  "620 - Entertainment",
+  "664 - Utilities",
+];
+
+const categories = [
+  "Advertising",
+  "Bank Charges",
+  "Business Meals",
+  "Cleaning",
+  "Consulting",
+  "Dues & Subscriptions",
+  "Education & Training",
+  "Equipment",
+  "Freight & Delivery",
+  "Insurance",
+  "Interest",
+  "Legal & Professional Fees",
+  "Maintenance & Repairs",
+  "Meals & Entertainment",
+  "Office Supplies",
+  "Other",
+  "Rent",
+  "Salaries & Wages",
+  "Taxes & Licenses",
+  "Travel",
+  "Utilities",
+];
 
 const Filters = ({
   openedFilter,
@@ -87,7 +117,7 @@ const Filters = ({
       )}
       {openedFilter === "gl_code" && (
         <div>
-          {glCode.map((value, index) => {
+          {glCodes.map((value, index) => {
             return (
               <div
                 key={value + index}

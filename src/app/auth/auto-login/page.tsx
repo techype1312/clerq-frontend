@@ -1,8 +1,10 @@
+"use client";
+
 import { supabase } from "@/utils/supabase/client";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
-const Page = () => {
+const AutoLoginPage = () => {
   const searchParams = useSearchParams();
   const autoLogin = async () => {
     const { error } = await supabase.auth.signInWithOtp({
@@ -24,4 +26,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <AutoLoginPage />
+    </Suspense>
+  );
+}

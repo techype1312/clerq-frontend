@@ -1,14 +1,13 @@
 "use client";
+
+import { Suspense, useContext, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Step1 from "@/components/verifyUser/Step1";
 import Step2 from "@/components/verifyUser/Step2";
-// import Step3 from "@/components/verifyUser/Step3";
-import { useContext, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import Step4 from "@/components/verifyUser/Step4";
-// import Step5 from "@/components/verifyUser/Step5";
 import { UserContext } from "@/context/User";
 
-const Page = () => {
+const VerifyUserPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
@@ -150,4 +149,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <VerifyUserPage />
+    </Suspense>
+  );
+}

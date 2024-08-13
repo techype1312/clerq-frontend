@@ -4,9 +4,9 @@ import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signUpSchema } from "@/types/schema-embedded";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
-const Page = () => {
+const SignupPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = React.useState(searchParams.get("email") || "");
@@ -98,4 +98,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <SignupPage />
+    </Suspense>
+  );
+}

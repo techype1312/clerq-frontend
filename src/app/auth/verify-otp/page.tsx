@@ -2,11 +2,11 @@
 import AuthApis from "@/actions/apis/AuthApis";
 import OtpPage from "@/components/generalComponents/OTP";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-const Page = () => {
+const VerifyOtpPage = () => {
   const router = useRouter();
   const [otp, setOtp] = React.useState("");
   const [otpError, setOtpError] = React.useState("");
@@ -68,4 +68,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <VerifyOtpPage />
+    </Suspense>
+  );
+}

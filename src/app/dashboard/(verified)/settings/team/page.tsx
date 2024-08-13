@@ -26,7 +26,7 @@ import Permissions from "@/components/generalComponents/Permissions";
 import AutoForm from "@/components/ui/auto-form";
 import { inviteUserSchema } from "@/types/schema-embedded";
 
-export const roles = [
+const roles = [
   "owner",
   "admin",
   "accountant",
@@ -387,7 +387,7 @@ const ColumnRoleItem = ({ label, row }: { label: string; row: any }) => {
   );
 };
 
-export const teamsColumns: ColumnDef<any>[] = [
+const teamsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "name",
     header: "Name",

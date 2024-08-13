@@ -41,7 +41,7 @@ type merchant = {
 //   return [lastMonth, endOfLastMonth];
 // };
 
-export const glCode = [
+const glCodes = [
   "230 - Electric Bills",
   "120 - Accounts Receivable",
   "400 - Inventory",
@@ -51,7 +51,7 @@ export const glCode = [
   "664 - Utilities",
 ];
 
-export const categories = [
+const categories = [
   "Advertising",
   "Bank Charges",
   "Business Meals",
@@ -75,7 +75,7 @@ export const categories = [
   "Utilities",
 ];
 
-export const transactionsColumns: ColumnDef<any>[] = [
+const transactionsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "date",
     // header: "Date",
@@ -208,7 +208,7 @@ export const transactionsColumns: ColumnDef<any>[] = [
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="p-2 cursor-pointer">
-          {glCode.map((value, index) => (
+          {glCodes.map((value, index) => (
             <SelectItem className="px-2 py-2 border-b" value={value ?? "undefined"} key={value + index}>
               {value ?? "Undefined value"}
             </SelectItem>

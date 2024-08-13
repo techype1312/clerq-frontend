@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signInSchema, signInWithPhoneSchema } from "@/types/schema-embedded";
 import { login } from "./actions";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import AuthApis from "@/actions/apis/AuthApis";
 import { formatPhone } from "@/utils/utils";
 
-const Page = () => {
+const SigninPage = () => {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const hasShownError = useRef(false);
@@ -98,4 +98,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <SigninPage />
+    </Suspense>
+  );
+}

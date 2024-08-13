@@ -3,7 +3,7 @@ import { login, resendLogin } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { useContext, useEffect } from "react";
+import React, { Suspense, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useFormState, useFormStatus } from "react-dom";
 import { UserContext } from "@/context/User";
@@ -13,7 +13,7 @@ const initialState = {
   message: "",
 };
 
-const Page = () => {
+const LinkSentPage = () => {
   const { pending } = useFormStatus();
   // const [state, formAction] = useFormState(resendLogin, initialState);
   const searchParams = useSearchParams();
@@ -89,4 +89,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <LinkSentPage />
+    </Suspense>
+  );
+}

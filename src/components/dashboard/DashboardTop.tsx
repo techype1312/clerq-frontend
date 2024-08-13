@@ -23,11 +23,12 @@ const DashboardTop = () => {
 
   const handleLogout = async () => {
     return AuthApis.signOut().then(() => {
+      localStorage.clear();
       Cookies.remove("token");
       Cookies.remove("refreshToken");
       Cookies.remove("onboarding_completed");
-      localStorage.clear();
       router.replace("/auth/signin");
+      router.refresh()
     });
   };
 

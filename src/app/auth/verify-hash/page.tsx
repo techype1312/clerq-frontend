@@ -1,12 +1,14 @@
 "use client";
+
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { Suspense, useContext, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
 import Cookies from "js-cookie";
 import { UserContext } from "@/context/User";
-const Page = () => {
+
+const VerifyHashPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { userdata, setuserdata } = useContext(UserContext);
@@ -58,4 +60,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense>
+      <VerifyHashPage />
+    </Suspense>
+  );
+}

@@ -55,7 +55,7 @@ const ColumnItem = ({ label }: { label: string }) => {
   );
 };
 
-export const transactionsColumns: ColumnDef<any>[] = [
+const documentColumns: ColumnDef<any>[] = [
   {
     accessorKey: "receipt_title",
     header: "receipt_title",
@@ -236,7 +236,7 @@ const Page = () => {
                 <DataTable
                   showPagination={false}
                   showHeader={false}
-                  columns={transactionsColumns}
+                  columns={documentColumns}
                   showDownloadButton={false}
                   showUploadButton={true}
                   onUpload={toggleUploadSection}
