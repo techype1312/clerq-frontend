@@ -377,6 +377,13 @@ const Step2 = ({
           if (values.mailing_address_id) {
             setMailingAddressId(values.mailing_address_id);
           }
+          if(values.address){
+            console.log(values.address);
+            setAddress(values.address)
+          }
+          if(values.mailing_address){
+            setMailingAddress(values.mailing_address)
+          }
         }}
       >
         <div className="flex gap-4">

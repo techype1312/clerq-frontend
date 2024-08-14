@@ -422,6 +422,7 @@ const Step1 = ({
           setMailingAddressId(values.mailing_address_id);
         }
         if(values.address){
+          console.log(values.address);
           setAddress(values.address)
         }
         if(values.mailing_address){

@@ -20,7 +20,6 @@ import GooglePlacesAutocomplete, {
   getLatLng,
 } from "react-google-places-autocomplete";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
-import AuthApis from "@/actions/apis/AuthApis";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -80,7 +79,7 @@ export default function AutoFormModal({
           "," +
           form.getValues()?.address?.postal_code,
       });
-  }, [form.getValues("address_id"), form.getValues("address")]);
+  }, [form.getValues("address_id")]);
 
   useEffect(() => {
     if (
