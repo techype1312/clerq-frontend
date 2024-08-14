@@ -400,6 +400,7 @@ export const getResponseWithQueryParams = async (
   url: string,
   params: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
@@ -473,7 +474,7 @@ export const getResponseWithQueryParams = async (
 
   paramsString.filters = JSON.stringify(newFilters);
 
-  const headers: any = getHeader(token !== null, token);
+  const headers: any = getHeader(token !== null, token, ucrmKey);
   return axios(URL, {
     params: paramsString,
     method: "GET",
@@ -492,7 +493,8 @@ export const getResponseWithQueryParams = async (
                 url,
                 params,
                 res?.data?.token,
-                true
+                ucrmKey,
+                true,
               );
             }
           } else if (

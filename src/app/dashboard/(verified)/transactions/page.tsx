@@ -288,6 +288,7 @@ const Page = () => {
           setTransactions={setTransactions}
           setLoading={setLoading}
           currentUcrm={currentUcrm}
+          showFilter={true}
         />
       ) : (
         <div className="flex justify-center items-center h-96">
