@@ -34,6 +34,28 @@ export const formatDateRange = (startDate: string, endDate: string): string => {
 
   return `${startMonth} ${startYear}-${endYear.toString().slice(-2)}`;
 };
+export const formatDateRangeWithDay = (startDate: string, endDate: string): string => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const startDay = start.getDate();
+  const startMonth = start.toLocaleString("default", { month: "short" });
+  const startYear = start.getFullYear();
+
+  const endDay = end.getDate();
+  const endMonth = end.toLocaleString("default", { month: "short" });
+  const endYear = end.getFullYear();
+
+  if(startMonth === endMonth){
+    return `${startMonth} ${startDay} - ${endDay} , ${endYear}`;
+
+  }else if (startYear !== endYear){
+    return `${startMonth} ${startDay} , ${startYear} - ${endMonth} ${endDay} , ${endYear}`;
+    
+  }else{
+    return `${startMonth} ${startDay}  - ${endMonth} ${endDay} , ${endYear}`;
+  }
+};
 
 export const formatFilterId = (id: string): string => {
   return id.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
@@ -92,4 +114,40 @@ export const formatAddress = (address: Address) => {
 ${address_line_2}
 ${city}, ${state} ${postal_code}
 ${country}`;
+};
+
+
+export const calculateDateRange = (value: string) => {
+  const today = new Date();
+  let from: Date, to: Date;
+
+  if (value === 'last_30_days') {
+    to = today;
+    from = new Date(today);
+    from.setDate(today.getDate() - 30);
+  } else if (value === 'this_month') {
+    from = new Date(today.getFullYear(), today.getMonth(), 1);
+    to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  } else if (value === 'last_month') {
+    from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    to = new Date(today.getFullYear(), today.getMonth(), 0);
+  } else if (value === 'last_4_financial_quarters') {
+    const currentQuarter = Math.floor((today.getMonth() + 3) / 3);
+    const startQuarter = currentQuarter - 4;
+    from = new Date(today.getFullYear(), (startQuarter - 1) * 3, 1);
+    to = new Date(today.getFullYear(), currentQuarter * 3, 0);
+  } else if (value === 'this_year') {
+    from = new Date(today.getFullYear(), 0, 1);
+    to = new Date(today.getFullYear(), 11, 31);
+  } else if (value === 'last_year') {
+    from = new Date(today.getFullYear() - 1, 0, 1);
+    to = new Date(today.getFullYear() - 1, 11, 31);
+  } else if (value === 'all') {
+    from = new Date(1970, 0, 1); // Arbitrary start date
+    to = today;
+  } else {
+    from = to = today;
+  }
+
+  return { from, to };
 };
