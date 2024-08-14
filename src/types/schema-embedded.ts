@@ -268,3 +268,11 @@ export const inviteUserSchema = z.object({
     }
   ),
 });
+
+export const shareDocumentsSchema = z.object({
+  recipient_email: z
+    .string({
+      required_error: "Email is required",
+    })
+    .email(),
+});

@@ -6,17 +6,20 @@ import Cookies from "js-cookie";
 
 const BaseUrl = Servers.LiveServer;
 
-const getHeader = (formData: any, token: string | null) => {
+const getHeader = (formData: any, token: string | null, ucrmKey?: string | null) => {
   const headers = {
     Accept: formData ? "multipart/form-data" : "application/json",
     "Content-Type": formData ? "multipart/form-data" : "application/json",
     Authorization: "",
+    "x_otto_ucrm": "",
   };
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
-
+  if (ucrmKey) {
+    headers["x_otto_ucrm"] = ucrmKey;
+  }
   return headers;
 };
 
@@ -35,10 +38,11 @@ export const getResponse = async (
   url: string,
   params: any,
   token: string | null,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(null, token);
+  const headers = getHeader(null, token, ucrmKey);
   return axios(URL, {
     params,
     method: "GET",
@@ -54,7 +58,7 @@ export const getResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return getResponse(url, params, res?.data?.token, true);
+              return getResponse(url, params, res?.data?.token, ucrmKey, true);
             }
           } else {
             localStorage.clear();
@@ -75,12 +79,13 @@ export const putResponse = async (
   url: string,
   payload: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
   return axios(URL, {
     method: "PUT",
-    headers: await getHeader(false, token),
+    headers: await getHeader(false, token, ucrmKey),
     data: payload,
   })
     .then((response) => response)
@@ -92,7 +97,7 @@ export const putResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return putResponse(url, payload, res?.data?.token, true);
+              return putResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();
@@ -113,13 +118,14 @@ export const deleteResponse = async (
   url: string,
   params: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
   return axios(URL, {
     params,
     method: "DELETE",
-    headers: await getHeader(false, token),
+    headers: await getHeader(false, token, ucrmKey),
   })
     .then((response) => response)
     .catch(async (error: any): Promise<any> => {
@@ -130,7 +136,7 @@ export const deleteResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return deleteResponse(url, params, res?.data?.token, true);
+              return deleteResponse(url, params, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();
@@ -151,12 +157,13 @@ export const postResponse = async (
   url: string,
   payload: any,
   token: string | null,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
   let headers;
   if (token) {
-    headers = getHeader(false, token);
+    headers = getHeader(false, token, ucrmKey);
   }
   return axios(URL, {
     method: "POST",
@@ -179,7 +186,7 @@ export const postResponse = async (
             );
             if (!retry) {
               // Retry the request with the new token
-              return postResponse(url, payload, res?.data?.token, true);
+              return postResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();
@@ -208,10 +215,11 @@ export const postResponseUpdated = async (
   url: string,
   payload: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(false, token);
+  const headers = getHeader(false, token, ucrmKey);
   return axios(URL, {
     method: "POST",
     headers: headers,
@@ -226,7 +234,7 @@ export const postResponseUpdated = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return postResponse(url, payload, res?.data?.token, true);
+              return postResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();
@@ -247,10 +255,11 @@ export const patchResponse = async (
   url: string,
   payload: any,
   token: string | null,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(false, token);
+  const headers = getHeader(false, token, ucrmKey);
   return axios(URL, {
     method: "PATCH",
     headers: headers,
@@ -265,7 +274,7 @@ export const patchResponse = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return patchResponse(url, payload, res?.data?.token, true);
+              return patchResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();
@@ -285,10 +294,11 @@ export const patchResponseFormData = async (
   url: string,
   payload: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(true, token);
+  const headers = getHeader(true, token, ucrmKey);
   return axios(URL, {
     method: "PATCH",
     headers: headers,
@@ -303,7 +313,7 @@ export const patchResponseFormData = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return patchResponse(url, payload, res?.data?.token, true);
+              return patchResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
             localStorage.clear();

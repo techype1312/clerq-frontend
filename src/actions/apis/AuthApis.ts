@@ -29,15 +29,13 @@ const signUp = (payload: any) => {
 };
 
 const signOut = () => {
-  return ApiCalls.postResponse(
-    `auth/logout/`,
-    {},
-    getCookie("token") || ""
-  );
+  return ApiCalls.postResponse(`auth/logout/`, {}, getCookie("token") || "");
 };
 
 const profile = () => {
-  return ApiCalls.getResponse(`auth/me`, {}, getCookie("token") || "");
+  const token = getCookie("token") || null;
+  const ucrmKey = getCookie("otto_ucrm") || null;
+  return ApiCalls.getResponse(`auth/me`, {}, token, ucrmKey);
 };
 
 const deleteAccount = (payload: string) => {
@@ -78,7 +76,7 @@ const healthCheck = () => {
   return ApiCalls.getResponse(``, {}, null);
 };
 const confirmEmail = (hash: string) => {
-  return ApiCalls.postResponse(`auth/email/confirm`, {hash:hash}, null);
+  return ApiCalls.postResponse(`auth/email/confirm`, { hash: hash }, null);
 };
 
 const verifyMagicLinkHash = (hash: string) => {
@@ -90,11 +88,9 @@ const verifyMagicLinkHash = (hash: string) => {
 };
 
 const updateUser = (payload: any) => {
-  return ApiCalls.patchResponse(
-    `auth/me`,
-    payload,
-    getCookie("token") || ""
-  );
+  const token = getCookie("token") || null;
+  const ucrmKey = getCookie("otto_ucrm") || null;
+  return ApiCalls.patchResponse(`auth/me`, payload, token, ucrmKey);
 };
 
 const AuthApis = {

@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   showUploadButton?: boolean;
   showHeader?: boolean;
   showPagination?: boolean;
+  showFilter?: boolean;
   onUpload?: () => void;
 }
 // import {
@@ -87,6 +88,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   onUpload,
+  showFilter = false,
   showDownloadButton = true,
   showUploadButton = false,
   showHeader = true,
@@ -165,14 +167,16 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between w-full">
         <div className="flex gap-2">
           <Popover>
-            <PopoverTrigger asChild>
-              <Button className="h-8 gap-2 px-2 flex items-center">
-                <span className="-mb-1">
-                  <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
-                </span>
-                <span>Filter</span>
-              </Button>
-            </PopoverTrigger>
+            {showFilter && (
+              <PopoverTrigger asChild>
+                <Button className="h-8 gap-2 px-2 flex items-center">
+                  <span className="-mb-1">
+                    <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
+                  </span>
+                  <span>Filter</span>
+                </Button>
+              </PopoverTrigger>
+            )}
             <PopoverContent
               style={{
                 width: "480px",
@@ -284,7 +288,7 @@ export function DataTable<TData, TValue>({
             )}
           </div>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end space-x-2">
           {showPagination && (
             <Fragment>
               <div>

@@ -74,6 +74,10 @@ export const formatPhoneNumber = (phone: string, countryCode: number | string) =
   return result;
 };
 
+export function formatStringWithCount(count: number, word: string) {
+  return `${word}${count > 1 ? 's' : ''}`;
+}
+
 interface Address {
   country: string;
   address_line_1: string;
