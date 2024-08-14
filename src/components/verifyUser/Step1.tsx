@@ -115,6 +115,7 @@ const Step1 = ({
             id: mailingAddressId,
           },
         });
+        refreshUser()
         const res = await OnboardingApis.getAddress(addressId);
         if (res && res.data.status === 200) {
           setAddress(res.data);
@@ -179,7 +180,7 @@ const Step1 = ({
         setMailingAddress(userdata?.mailing_address);
       setAddressDataLoaded(true);
     }
-  }, [userdata, userRefetch, addressDataLoaded, refreshUser]);
+  }, [userdata, userRefetch, addressDataLoaded]);
 
   useEffect(() => {
     CompanyApis.getAllCompanies().then((res) => {
