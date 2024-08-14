@@ -16,10 +16,11 @@ const getBankAccounts = (companyId: string) => {
     return ApiCalls.getResponse(`banking/accounts/${companyId}`, null, token);
 }
 
-const getBankTransactions = (companyId: string) => {
-    const token = getCookie("token") || null;
-    return ApiCalls.getResponse(`banking/transactions/${companyId}`, null, token);
+const getBankTransactions = (companyId: string, searchParams: any) => {
+    const token = getCookie("token") || "";
+    return ApiCalls.getResponseWithQueryParams(`banking/transactions/${companyId}`, searchParams, token);
 }
+
 
 const BankingApis = {
     generateLinkToken,
