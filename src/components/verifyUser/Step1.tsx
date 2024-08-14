@@ -37,7 +37,8 @@ const Step1 = ({
   const [mailingAddress, setMailingAddress] = useState<
     Address | any | undefined
   >();
-  const { refetchUserData, setRefetchUserData, refreshUser } = useContext(UserContext);
+  const { refetchUserData, setRefetchUserData, refreshUser } =
+    useContext(UserContext);
 
   const [companyData, setCompanyData] = useState<any>();
 
@@ -133,11 +134,7 @@ const Step1 = ({
   }, [addressId, mailingAddressId]);
 
   useEffect(() => {
-    if (
-      isMailingAddressSame &&
-      addressId !== mailingAddressId &&
-      addressId
-    ) {
+    if (isMailingAddressSame && addressId !== mailingAddressId && addressId) {
       const updateAddress = async () => {
         const res = await AuthApis.updateUser({
           mailing_address: {
@@ -421,12 +418,26 @@ const Step1 = ({
         if (values.mailing_address_id) {
           setMailingAddressId(values.mailing_address_id);
         }
-        // if(values.address){
-        //   setAddress(values.address)
-        // }
-        // if(values.mailing_address){
-        //   setMailingAddress(values.mailing_address)
-        // }
+        if (!addressDataLoaded) {
+          if (values.address) {
+            setAddress({
+              address_line_1: values.address.address_line_1,
+              address_line_2: values.address.address_line_2,
+              city: values.address.city,
+              state: values.address.state,
+              postal_code: values.address.postal_code,
+            });
+          }
+          if (values.mailing_address) {
+            setMailingAddress({
+              address_line_1: values.mailing_address.address_line_1,
+              address_line_2: values.mailing_address.address_line_2,
+              city: values.mailing_address.city,
+              state: values.mailing_address.state,
+              postal_code: values.mailing_address.postal_code,
+            });
+          }
+        }
       }}
     >
       <AutoFormSubmit
