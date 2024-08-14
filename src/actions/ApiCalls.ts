@@ -490,7 +490,7 @@ export const getResponseWithQueryParams = async (
                 params,
                 res?.data?.token,
                 ucrmKey,
-                true
+                true,
               );
             }
           } else if (

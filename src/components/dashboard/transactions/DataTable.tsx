@@ -437,7 +437,30 @@ export function DataTable<TData, TValue>({
                 </p>
               </div>
             )}
-            {columnFilters.length > 0 && (
+            {amountFilter && amountFilter?.value && (
+              <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
+                <p className="text-primary-alt">
+                  ${amountFilter?.value}
+                  {/* {Array.isArray(filter?.value)
+                      ? filter?.value.length > 1
+                      ? formatFilterId(filter?.id) +
+                      ` (${filter?.value.length})`
+                      : filter?.value
+                      : (filter.id === "amount" ? "$" : "") +
+                      " " +
+                      filter?.value} */}
+                </p>
+                <p
+                  className="cursor-pointer h-5"
+                  onClick={() => {
+                    setAmountFilter({});
+                  }}
+                >
+                  <SymbolIcon icon="close" color="#535460" size={20} />
+                </p>
+              </div>
+            )}
+            {(columnFilters.length > 0 || dateFilter?.value || amountFilter?.value) && (
               <Button
                 variant="ghost"
                 onClick={() => {
