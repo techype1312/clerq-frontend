@@ -391,7 +391,7 @@ const Step1 = ({
           city: address ? address?.city : "",
           state: address ? address?.state : "",
           postal_code: address?.postal_code ?? "",
-          country: "United States (US)",
+          country: "United States",
         },
         is_mailing_address_same: isMailingAddressSame,
         mailing_address: {
@@ -400,7 +400,7 @@ const Step1 = ({
           city: mailingAddress ? mailingAddress?.city : "",
           state: mailingAddress ? mailingAddress?.state : "",
           postal_code: mailingAddress?.postal_code ?? "",
-          country: "United States (US)",
+          country: "United States",
         },
         address_id: addressId ?? "",
         mailing_address_id:
@@ -420,6 +420,12 @@ const Step1 = ({
         }
         if (values.mailing_address_id) {
           setMailingAddressId(values.mailing_address_id);
+        }
+        if(values.address){
+          setAddress(values.address)
+        }
+        if(values.mailing_address){
+          setMailingAddress(values.mailing_address)
         }
       }}
     >
