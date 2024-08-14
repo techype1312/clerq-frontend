@@ -77,8 +77,8 @@ const Step1 = ({
     delete userData.address_id;
     delete userData.mailing_address_id;
     delete userData.company;
-    userData.legalFirstName = e.name.legalFirstName;
-    userData.legalLastName = e.name.legalLastName;
+    userData.legalFirstName = e.name.legalFirstName ?? userdata.firstName;
+    userData.legalLastName = e.name.legalLastName ?? userdata.lastName;
     delete userData.name;
     (userData.tax_residence_country = "US"),
       delete userData.tax_residence_country;
