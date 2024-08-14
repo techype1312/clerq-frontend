@@ -1,16 +1,18 @@
 "use client";
+import BankingApis from "@/actions/apis/BankingApis";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { TableCell } from "@/components/ui/table";
+import { CompanySessionContext } from "@/context/CompanySession";
 import { supabase } from "@/utils/supabase/client";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 
 type merchant = {
@@ -133,8 +135,8 @@ const transactionsColumns: ColumnDef<any>[] = [
       return (
         <div className="flex text-label text-base">
           <SymbolIcon icon="account_balance" />
-          {(cell.getValue() as any).name} ••
-          {(cell.getValue() as any).mask}
+          {(cell.getValue() as any)?.name} ••
+          {(cell.getValue() as any)?.mask}
         </div>
       );
     },
@@ -164,6 +166,9 @@ const transactionsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "category",
     header: "Category",
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId));
+    },
   },
   {
     accessorKey: "clerq_category",
@@ -183,7 +188,11 @@ const transactionsColumns: ColumnDef<any>[] = [
         </SelectTrigger>
         <SelectContent className="p-2 cursor-pointer">
           {categories.map((value, index) => (
-            <SelectItem className="px-2 py-2 border-b" value={value ?? "undefined"} key={value + index}>
+            <SelectItem
+              className="px-2 py-2 border-b"
+              value={value ?? "undefined"}
+              key={value + index}
+            >
               {value ?? "Undefined value"}
             </SelectItem>
           ))}
@@ -209,7 +218,11 @@ const transactionsColumns: ColumnDef<any>[] = [
         </SelectTrigger>
         <SelectContent className="p-2 cursor-pointer">
           {glCodes.map((value, index) => (
-            <SelectItem className="px-2 py-2 border-b" value={value ?? "undefined"} key={value + index}>
+            <SelectItem
+              className="px-2 py-2 border-b"
+              value={value ?? "undefined"}
+              key={value + index}
+            >
               {value ?? "Undefined value"}
             </SelectItem>
           ))}
@@ -222,17 +235,19 @@ const transactionsColumns: ColumnDef<any>[] = [
     header: "Receipt",
     cell: ({ cell }) => (
       <Button
-      onClick={()=>{
-        if(cell.getValue()){
-          console.log("Receipt")
-        } else {
-          toast.error("No receipt available")
-        }
-      }}
-      variant="ghost" className="text-label">
+        onClick={() => {
+          if (cell.getValue()) {
+            console.log("Receipt");
+          } else {
+            toast.error("No receipt available");
+          }
+        }}
+        variant="ghost"
+        className="text-label"
+      >
         {cell.getValue() ? (
           <SymbolIcon icon="receipt_long" />
-        ): (
+        ) : (
           <SymbolIcon icon="inactive_order" />
         )}
       </Button>
@@ -241,38 +256,51 @@ const transactionsColumns: ColumnDef<any>[] = [
 ];
 
 const Page = () => {
+  const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const { currentUcrm } = useContext(CompanySessionContext);
   useEffect(() => {
-    supabase.functions.invoke("plaid-transactions").then((res) => {
+    if (!currentUcrm) return;
+    BankingApis.getBankAccounts(currentUcrm?.company?.id).then(async (res) => {
       if (res.data) {
-        setTransactions(
-          res.data?.transactions?.map((transaction: any, index: number) => {
-            return {
-              ...transaction,
-              merchant: {
-                merchant_name: transaction.merchant_name,
-                merchant_logo: transaction.logo_url,
-              },
-              gl_code: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
-              clerq_category: index === 0 ? "Cleaning" : "Advertising",
-              account: res.data.accounts.filter((account: any) => {
-                if (account.account_id === transaction.account_id) {
-                  return account;
-                }
-              })[0],
-            };
-          })
-        );
+        console.log(res.data);
+        setAccounts(res.data);
       }
     });
-  }, []);
+  }, [currentUcrm]);
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-primary text-2xl font-medium ml-1">Transaction</h1>
-      {transactions.length !== 0 && (
-        <DataTable columns={transactionsColumns} data={transactions} />
+      {/* {loading ? (
+        <div className="h-[70vh] w-full flex items-center justify-center">
+          <Loader2Icon className="animate-spin" />
+        </div>
+      ) : (
+        <> */}
+      {/* {transactions.length !== 0 ? ( */}
+      {accounts?.length !== 0 ? (
+        <DataTable
+          columns={transactionsColumns}
+          data={transactions}
+          accounts={accounts}
+          setTransactions={setTransactions}
+          setLoading={setLoading}
+          currentUcrm={currentUcrm}
+        />
+      ) : (
+        <div className="flex justify-center items-center h-96">
+          <h1 className="text-2xl text-muted">No Accounts connected</h1>
+        </div>
       )}
+      {/* ) : (
+            <div className="flex justify-center items-center h-96">
+              <h1 className="text-2xl text-muted">No transactions available</h1>
+            </div>
+          )} */}
+      {/* </>
+      )} */}
     </div>
   );
 };

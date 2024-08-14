@@ -1,6 +1,9 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
+import "react-day-picker/dist/style.css";
+import DateFilter from "./DateFilter";
 
 const glCodes = [
   "230 - Electric Bills",
@@ -21,6 +24,7 @@ const categories = [
   "Dues & Subscriptions",
   "Education & Training",
   "Equipment",
+  "Food and Drink",
   "Freight & Delivery",
   "Insurance",
   "Interest",
@@ -36,14 +40,26 @@ const categories = [
   "Utilities",
 ];
 
+const amount = ["All", "0-50", "50-200", "200-500", "500-1000", "1000+"];
+
+const sub_categories = ["Taxi", "Hotel", "Flight", "Train"];
+
 const Filters = ({
   openedFilter,
   columnFilters,
   setColumnFilters,
+  dateFilter,
+  setDateFilter,
+  amountFilter,
+  setAmountFilter,
 }: {
   openedFilter: string;
   columnFilters: ColumnFiltersState;
   setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
+  dateFilter: any;
+  setDateFilter: any;
+  setAmountFilter: any;
+  amountFilter: any;
 }) => {
   const handleCheckboxClick = (value: string, isChecked: boolean) => {
     setColumnFilters((prevFilters) => {
@@ -90,11 +106,14 @@ const Filters = ({
   useEffect(() => {
     setFilter(columnFilters.filter((filter) => filter.id === openedFilter));
   }, [columnFilters, openedFilter]);
+  console.log(filter[0], "filter");
   return (
-    <div className="p-2">
-      {openedFilter === "date" && <div>Date</div>}
-      {openedFilter === "clerq_category" && (
-        <div>
+    <div className="p-2 w-full">
+      {openedFilter === "date" && (
+        <DateFilter dateFilter={dateFilter} setDateFilter={setDateFilter} />
+      )}
+      {openedFilter === "category" && (
+        <div className="h-80 w-full">
           {categories.map((value, index) => (
             <div
               key={value + index}
@@ -116,7 +135,7 @@ const Filters = ({
         </div>
       )}
       {openedFilter === "gl_code" && (
-        <div>
+        <div className="h-80 w-full">
           {glCodes.map((value, index) => {
             return (
               <div
@@ -137,6 +156,57 @@ const Filters = ({
               </div>
             );
           })}
+        </div>
+      )}
+      {openedFilter === "sub_categories" && (
+        <div className="h-80 w-full">
+          {sub_categories.map((value, index) => {
+            return (
+              <div
+                key={value + index}
+                className="flex gap-2 items-center pl-4 text-label"
+              >
+                <Checkbox
+                  checked={
+                    filter.length !== 0
+                      ? (filter[0]?.value as string[])?.includes(value)
+                      : false
+                  }
+                  onCheckedChange={(checked: boolean) => {
+                    handleCheckboxClick(value, checked);
+                  }}
+                />
+                {value ?? "Undefined value"}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {openedFilter === "amount" && (
+        <div className="h-80 w-full px-2">
+          <RadioGroup
+            onValueChange={(e) => {
+              console.log(e);
+              if (e === "All") {
+                setAmountFilter({});
+                return;
+              }
+              setAmountFilter({ id: "amount", value: e });
+            }}
+            defaultValue={amountFilter?.value || "All"}
+          >
+            {amount.map((value, index) => {
+              return (
+                <div
+                  key={value}
+                  className="mb-2 flex items-center gap-3 space-y-0"
+                >
+                  <RadioGroupItem value={value} />
+                  <label className="font-normal">{value}</label>
+                </div>
+              );
+            })}
+          </RadioGroup>
         </div>
       )}
     </div>

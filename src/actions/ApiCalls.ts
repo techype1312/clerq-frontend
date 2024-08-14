@@ -99,7 +99,10 @@ export const putResponse = async (
               // Retry the request with the new token
               return putResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -138,7 +141,10 @@ export const deleteResponse = async (
               // Retry the request with the new token
               return deleteResponse(url, params, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -188,7 +194,10 @@ export const postResponse = async (
               // Retry the request with the new token
               return postResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -236,7 +245,10 @@ export const postResponseUpdated = async (
               // Retry the request with the new token
               return postResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -276,7 +288,10 @@ export const patchResponse = async (
               // Retry the request with the new token
               return patchResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -315,7 +330,10 @@ export const patchResponseFormData = async (
               // Retry the request with the new token
               return patchResponse(url, payload, res?.data?.token, ucrmKey, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -350,7 +368,10 @@ export const postResponseFormData = async (
               // Retry the request with the new token
               return postResponseFormData(url, payload, true);
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");
@@ -382,30 +403,77 @@ export const getResponseWithQueryParams = async (
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  // && params.industry[0] !== "All"
-  //&& params.certification[0] !== "All"
+
+  let newFilters = {};
   const paramsString: any = {
-    ...(params.searchKeyWord && { fullName: params.searchKeyWord }),
-    ...(params.industry &&
-      params.industry.length > 0 && { industry: params.industry.join(",") }),
-    ...(params.certification &&
-      params.certification.length > 0 && {
-        certification: params.certification.join(","),
-      }),
-    ...(params.salary &&
-      (params.salary.from || params.salary.to) &&
-      (params.salary.from > 0 || params.salary.to < 501) && {
-        salaryFrom: params.salary.from,
-        salaryTo: params.salary.to || 0,
-      }),
-    ...(params.experience &&
-      (params.experience.from || params.experience.to) &&
-      (params.experience.from > 0 || params.experience.to < 30) && {
-        experienceFrom: params.experience.from || 0,
-        experienceTo: params.experience.to || 0,
-      }),
+    page: params.page || 1,
+    limit: params.limit || 10,
+    filters: newFilters,
   };
-  const headers = getHeader(token !== null, token);
+  if (params.sort) {
+    paramsString.sort = JSON.stringify(params.sort);
+  }
+  console.log(params?.filters);
+  if (params.amountFilter && Object.keys(params.amountFilter).length !== 0) {
+    const amount = params.amountFilter.value;
+    let amount_from = amount.split("-")[0];
+    let amount_to = amount.split("-")[1];
+    if (amount_from === amount) {
+      amount_from = amount.split("+")[0];
+      amount_to = null;
+    }
+    newFilters = {
+      ...newFilters,
+      ...(amount_from && amount_to
+        ? { amount_from, amount_to }
+        : amount_from
+        ? { amount_from }
+        : {}),
+    };
+  }
+
+  console.log(params.filters.find((filter: any) => filter.id === "category"));
+
+  if (
+    params.filters &&
+    params.filters.find((filter: any) => filter.id === "category")
+  ) {
+    const category = params?.filters.filter(
+      (filter: any) => filter.id === "category"
+    )[0].value;
+    newFilters = {
+      ...newFilters,
+      ...(category ? { category } : {}),
+    };
+  }
+
+  if (
+    params.filters &&
+    params?.filters.find((filter: any) => filter.id === "sub_categories")
+  ) {
+    const sub_categories = params?.filters.filter(
+      (filter: any) => filter.id === "sub_categories"
+    )[0].value;
+    console.log(sub_categories);
+    newFilters = {
+      ...newFilters,
+      ...(sub_categories ? { sub_categories } : {}),
+    };
+  }
+
+  if (params.dateFilter) {
+    newFilters = {
+      ...newFilters,
+      ...(params.dateFilter && {
+        created_at_from: params.dateFilter.from,
+        created_at_to: params.dateFilter.to,
+      }),
+    };
+  }
+
+  paramsString.filters = JSON.stringify(newFilters);
+
+  const headers: any = getHeader(token !== null, token);
   return axios(URL, {
     params: paramsString,
     method: "GET",
@@ -427,7 +495,10 @@ export const getResponseWithQueryParams = async (
                 true
               );
             }
-          } else if ((res?.status === 401 || res?.status === 403) && !res.response.success) {
+          } else if (
+            (res?.status === 401 || res?.status === 403) &&
+            !res.response.success
+          ) {
             localStorage.clear();
             Cookies.remove("token");
             Cookies.remove("refreshToken");

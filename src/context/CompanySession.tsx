@@ -122,11 +122,18 @@ export const CompanySessionProvider = ({
     refreshUcrmList();
   }, [refreshUcrmList]);
 
+  const [currentUcrm, setCurrentUcrm] = useState(myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm));
+
+  useEffect(() => {
+    setCurrentUcrm(myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm));
+  }, [myCompanyMappings, selectedUcrm]);
+
+
   return (
     <CompanySessionContext.Provider
       value={{
         myCompanyMappings,
-        currentUcrm: myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm),
+        currentUcrm,
         switchCompany,
       }}
     >

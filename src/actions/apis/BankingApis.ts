@@ -19,11 +19,12 @@ const getBankAccounts = (companyId: string) => {
   return ApiCalls.getResponse(`banking/accounts/${companyId}`, null, token, ucrmKey);
 };
 
-const getBankTransactions = (companyId: string) => {
-  const token = getCookie("token") || null;
+const getBankTransactions = (companyId: string, searchParams: any) => {
+  const token = getCookie("token") || "";
   const ucrmKey = getCookie("otto_ucrm") || null;
-  return ApiCalls.getResponse(`banking/transactions/${companyId}`, null, token, ucrmKey);
+  return ApiCalls.getResponseWithQueryParams(`banking/transactions/${companyId}`, searchParams, token, ucrmKey);
 };
+
 
 const BankingApis = {
   generateLinkToken,

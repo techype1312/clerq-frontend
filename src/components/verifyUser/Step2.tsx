@@ -179,7 +179,7 @@ const Step2 = ({
             inputProps: {
               placeholder: "Value",
               onChange: (e: any) => {
-                setLocalCompanyData({ ...companyData, name: e.target.value });
+                setLocalCompanyData({ ...localCompanyData, name: e.target.value });
               },
             },
           },
@@ -187,7 +187,7 @@ const Step2 = ({
             inputProps: {
               placeholder: "Value",
               onChange: (e: any) => {
-                setLocalCompanyData({ ...companyData, email: e.target.value });
+                setLocalCompanyData({ ...localCompanyData, email: e.target.value });
               },
             },
           },
@@ -198,7 +198,7 @@ const Step2 = ({
               placeholder: "(123)-456-7890",
               onChange: (e: any) => {
                 console.log(e);
-                setLocalCompanyData({ ...companyData, phone: e });
+                setLocalCompanyData({ ...localCompanyData, phone: e });
               },
             },
           },
@@ -224,7 +224,7 @@ const Step2 = ({
             inputProps: {
               placeholder: "Value",
               onChange: (e: any) => {
-                setLocalCompanyData({ ...companyData, ein: e.target.value });
+                setLocalCompanyData({ ...localCompanyData, ein: e.target.value });
               },
             },
           },
@@ -233,7 +233,7 @@ const Step2 = ({
               placeholder: "Individual/sole proprietor or single-member LLC",
               onChange: (e: any) => {
                 setLocalCompanyData({
-                  ...companyData,
+                  ...localCompanyData,
                   tax_classification: e.target.value,
                 });
               },
@@ -301,7 +301,7 @@ const Step2 = ({
         values={{
           name: localCompanyData?.name
             ? localCompanyData?.name
-            : companyData?.name,
+            : "",
           ein: localCompanyData?.ein
             ? localCompanyData?.ein
             : companyData?.ein ?? "",
