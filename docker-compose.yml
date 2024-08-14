@@ -5,12 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: otto-staging
+    image: otto-app-staging
     ports:
       - "3001:3001"
     environment:
       - NODE_ENV=production
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm run start

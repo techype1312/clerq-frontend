@@ -37,7 +37,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 
-export enum DocumentTypes {
+enum DocumentTypes {
   FORM_W9 = "form_w9",
   FORM_1099 = "form_1099",
   TAX_PAYMENTS = "tax_payment",
@@ -47,7 +47,7 @@ export enum DocumentTypes {
   OTHERS = "other",
 }
 
-const documentTypes = [
+const documentDetails = [
   {
     id: DocumentTypes.FORM_1099,
     label: "Form 1099",
@@ -252,7 +252,7 @@ const Page = () => {
   const [documents, setDocuments] = useState<any>([]);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
 
-  const currentDocTypeDetails = documentTypes.find(
+  const currentDocTypeDetails = documentDetails.find(
     (dt) => dt.id === currentType
   );
 
@@ -401,7 +401,7 @@ const Page = () => {
           Documents
         </h1>
         <div className="mt-8">
-          {documentTypes.map((dt) => (
+          {documentDetails.map((dt) => (
             <div
               key={dt.id}
               style={{
