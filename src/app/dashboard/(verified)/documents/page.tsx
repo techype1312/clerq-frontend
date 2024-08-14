@@ -97,7 +97,6 @@ const ColumnItem = ({
   checked: boolean;
   onCheck: (checked: boolean, id: string) => void;
 }) => {
-  const { toast } = useToast();
   return (
     <div
       className="flex w-full items-center justify-between px-2"
@@ -146,8 +145,45 @@ const ShareDocumentsDialog = ({
   selectedDocuments: Record<string, any>[];
   trigger?: "button" | "icon";
 }) => {
+  const { toast, dismiss: dismissToast } = useToast();
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setError(_.isObject(err) ? err.message : err);
+    setLoading(false);
+  };
+
+  const onSuccess = (res: any) => {
+    if (res.status === 204) {
+      console.log("Email sent!");
+      setOpen(false);
+
+      toast({
+        duration: 4000,
+        title: 'Document email sent',
+        description: `${selectedDocuments.length} shared documents`,
+      });
+    }
+    setLoading(false);
+  };
+
+  const handleShareDocuments = ({
+    recipient_email,
+  }: {
+    recipient_email: string;
+  }) => {
+    if (loading || !recipient_email) return false;
+    setLoading(true);
+    return DocumentApis.shareDocuments({
+      email: recipient_email,
+      documents: selectedDocuments.map((doc) => doc.id),
+    }).then(onSuccess, onError);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger === "button" ? (
           <Button className="gap-2 rounded-full" variant="outline">
@@ -181,60 +217,65 @@ const ShareDocumentsDialog = ({
             submitButtonText="Get started"
             submitButtonClass="background-primary"
             labelClass="text-primary"
-          ></AutoForm>
-          <Card className="w-full mb-5">
-            <CardHeader className="p-3 border-b border-[#F7F7F9]">
-              <CardTitle className="text-sm">{`Sharing ${selectedDocuments.length} document`}</CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 flex flex-col gap-2">
-              {selectedDocuments.map((doc: Record<string, any>) => {
-                return (
-                  <div key={doc.id} className="mb-2 flex-col gap-1">
-                    <p className="text-base first-letter:capitalize">{`${doc.type} - ${doc.name}`}</p>
-                    <p className="text-sm text-[#70707d]">{`${format(
-                      new Date(doc.createdAt),
-                      "MM-dd-yyyy"
-                    )}`}</p>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-          <Alert className="p-3 bg-[#F7F7F9]">
-            <AlertDescription className="gap-2 flex">
-              <SymbolIcon size={24} icon="info" />
-              <span>
-                Shared documents may include sensitive information like account
-                numbers, routing numbers, and transaction details.
-              </span>
-            </AlertDescription>
-          </Alert>
-          <DialogFooter className="flex flex-col w-full items-center sm:justify-end min-w-64 mt-6 mb-4 my-2 h-12 gap-2">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                className="background-muted text-label hover:!background-muted h-8 px-10 rounded-full"
-              >
-                {"Back"}
-              </Button>
-            </DialogClose>
-            <Button
-              type="button"
-              className="background-primary px-10 rounded-full h-8"
-            >
-              {"Share via email"}
-            </Button>
-          </DialogFooter>
-          <p
-            style={{
-              fontSize: "13px",
-              lineHeight: "20px",
-            }}
+            onSubmit={handleShareDocuments}
           >
-            An email will be sent to your recipient with a link allowing them to
-            download the statements shown above for 30 days.
-          </p>
+            <Card className="w-full mb-5">
+              <CardHeader className="p-3 border-b border-[#F7F7F9]">
+                <CardTitle className="text-sm">{`Sharing ${selectedDocuments.length} document`}</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 flex flex-col gap-2">
+                {selectedDocuments.map((doc: Record<string, any>) => {
+                  return (
+                    <div key={doc.id} className="mb-2 flex-col gap-1">
+                      <p className="text-base first-letter:capitalize">{`${doc.type} - ${doc.name}`}</p>
+                      <p className="text-sm text-[#70707d]">{`${format(
+                        new Date(doc.createdAt),
+                        "MM-dd-yyyy"
+                      )}`}</p>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+            <Alert className="p-3 bg-[#F7F7F9]">
+              <AlertDescription className="gap-2 flex">
+                <SymbolIcon size={24} icon="info" />
+                <span>
+                  Shared documents may include sensitive information like
+                  account numbers, routing numbers, and transaction details.
+                </span>
+              </AlertDescription>
+            </Alert>
+            <DialogFooter className="flex flex-col w-full items-center sm:justify-end min-w-64 mt-6 mb-4 my-2 h-12 gap-2">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="background-muted text-label hover:!background-muted h-8 px-10 rounded-full"
+                  disabled={loading}
+                >
+                  {"Back"}
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="background-primary px-10 rounded-full h-8 gap-2"
+                disabled={loading}
+              >
+                {loading && <Loader2Icon className="animate-spin" />}
+                {"Share via email"}
+              </Button>
+            </DialogFooter>
+            <p
+              style={{
+                fontSize: "13px",
+                lineHeight: "20px",
+              }}
+            >
+              An email will be sent to your recipient with a link allowing them
+              to download the statements shown above for 30 days.
+            </p>
+          </AutoForm>
         </div>
       </DialogContent>
     </Dialog>

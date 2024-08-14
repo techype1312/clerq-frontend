@@ -93,7 +93,6 @@ export const CompanySessionProvider = ({
   };
 
   const refreshUcrmList = useCallback(async () => {
-    console.log(loading);
     if (loading) return;
     setLoading(true);
     CompanyApis.getMyAllUCRMs().then(onFetchUCRMListSuccess, onError);
