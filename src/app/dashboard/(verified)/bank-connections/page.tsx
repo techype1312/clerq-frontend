@@ -26,19 +26,19 @@ const Page = () => {
     setLoading(false);
   };
 
-  const fetchBankAccounts = useCallback(async () => {
+  const fetchBankAccounts = () => {
     if (loading || !currentUcrm?.company?.id) return false;
     setLoading(true);
     return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
       onFetchAccountsSuccess,
       onError
     );
-  }, [currentUcrm?.company?.id, loading]);
+  };
 
   useEffect(() => {
     fetchBankAccounts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentUcrm?.company?.id]);
 
   return (
     <div className="flex flex-col gap-4">

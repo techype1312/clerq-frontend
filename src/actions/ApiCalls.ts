@@ -400,6 +400,7 @@ export const getResponseWithQueryParams = async (
   url: string,
   params: any,
   token: string,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
@@ -413,7 +414,6 @@ export const getResponseWithQueryParams = async (
   if (params.sort) {
     paramsString.sort = JSON.stringify(params.sort);
   }
-  console.log(params?.filters);
   if (params.amountFilter && Object.keys(params.amountFilter).length !== 0) {
     const amount = params.amountFilter.value;
     let amount_from = amount.split("-")[0];
@@ -431,8 +431,6 @@ export const getResponseWithQueryParams = async (
         : {}),
     };
   }
-
-  console.log(params.filters.find((filter: any) => filter.id === "category"));
 
   if (
     params.filters &&
@@ -454,7 +452,6 @@ export const getResponseWithQueryParams = async (
     const sub_categories = params?.filters.filter(
       (filter: any) => filter.id === "sub_categories"
     )[0].value;
-    console.log(sub_categories);
     newFilters = {
       ...newFilters,
       ...(sub_categories ? { sub_categories } : {}),
@@ -473,7 +470,7 @@ export const getResponseWithQueryParams = async (
 
   paramsString.filters = JSON.stringify(newFilters);
 
-  const headers: any = getHeader(token !== null, token);
+  const headers: any = getHeader(token !== null, token, ucrmKey);
   return axios(URL, {
     params: paramsString,
     method: "GET",
@@ -492,6 +489,7 @@ export const getResponseWithQueryParams = async (
                 url,
                 params,
                 res?.data?.token,
+                ucrmKey,
                 true
               );
             }

@@ -106,7 +106,7 @@ const Filters = ({
   useEffect(() => {
     setFilter(columnFilters.filter((filter) => filter.id === openedFilter));
   }, [columnFilters, openedFilter]);
-  console.log(filter[0], "filter");
+
   return (
     <div className="p-2 w-full">
       {openedFilter === "date" && (
@@ -186,7 +186,6 @@ const Filters = ({
         <div className="h-80 w-full px-2">
           <RadioGroup
             onValueChange={(e) => {
-              console.log(e);
               if (e === "All") {
                 setAmountFilter({});
                 return;

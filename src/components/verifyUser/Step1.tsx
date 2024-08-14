@@ -43,7 +43,6 @@ const Step1 = ({
 
   const handleSubmit = async (e: Step1Schema) => {
     setLoading(true);
-    console.log(e);
     let userData: any = e;
     if (userData?.company === "Yes" && companyData?.length === 0) {
       // Create Company with empty details
@@ -146,7 +145,6 @@ const Step1 = ({
         });
         const fetchMailingAddress = await OnboardingApis.getAddress(addressId);
         if (res && res.status === 200 && fetchMailingAddress) {
-          console.log("here inside update address", fetchMailingAddress.data);
           setMailingAddress(fetchMailingAddress.data);
           setMailingAddressId(addressId);
         }
@@ -174,7 +172,6 @@ const Step1 = ({
       ) {
         setIsMailingAddressSame(false);
       } else {
-        console.log("here inside is mailing address same");
         setIsMailingAddressSame(true);
       }
       if (userdata?.legal_address) setAddress(userdata?.legal_address);

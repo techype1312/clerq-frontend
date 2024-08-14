@@ -129,7 +129,6 @@ export default function AutoFormModal({
             form.getValues("mailing_address_id"),
             form.getValues(name)
           );
-          console.log(res);
         };
         updateAddress();
       }
@@ -137,7 +136,6 @@ export default function AutoFormModal({
   }, [update]);
 
   const handlePlaceSelect = (value: any) => {
-    console.log(value);
     setValue(value);
     if (!value) return;
     geocodeByAddress(value?.label)
@@ -210,7 +208,6 @@ export default function AutoFormModal({
         }
         setSaved(true);
       });
-      console.log(name)
   };
 
   return (

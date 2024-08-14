@@ -197,7 +197,6 @@ const Step2 = ({
             inputProps: {
               placeholder: "(123)-456-7890",
               onChange: (e: any) => {
-                console.log(e);
                 setLocalCompanyData({ ...localCompanyData, phone: e });
               },
             },

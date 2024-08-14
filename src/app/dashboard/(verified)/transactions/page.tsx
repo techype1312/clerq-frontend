@@ -264,7 +264,6 @@ const Page = () => {
     if (!currentUcrm) return;
     BankingApis.getBankAccounts(currentUcrm?.company?.id).then(async (res) => {
       if (res.data) {
-        console.log(res.data);
         setAccounts(res.data);
       }
     });

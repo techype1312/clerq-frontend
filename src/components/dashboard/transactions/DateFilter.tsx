@@ -36,7 +36,6 @@ const DateFilter = ({
         className="z-50"
         options={options}
         onChange={(e) => {
-          console.log(e);
           setDateFilter({ value: e?.value, label: e?.label });
         }}
       />
