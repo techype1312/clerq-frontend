@@ -37,7 +37,8 @@ const Step1 = ({
   const [mailingAddress, setMailingAddress] = useState<
     Address | any | undefined
   >();
-  const { refetchUserData, setRefetchUserData, refreshUser } = useContext(UserContext);
+  const { refetchUserData, setRefetchUserData, refreshUser } =
+    useContext(UserContext);
 
   const [companyData, setCompanyData] = useState<any>();
 
@@ -113,6 +114,7 @@ const Step1 = ({
             id: mailingAddressId,
           },
         });
+        refreshUser()
         const res = await OnboardingApis.getAddress(addressId);
         if (res && res.data.status === 200) {
           setAddress(res.data);
@@ -132,11 +134,7 @@ const Step1 = ({
   }, [addressId, mailingAddressId]);
 
   useEffect(() => {
-    if (
-      isMailingAddressSame &&
-      addressId !== mailingAddressId &&
-      addressId
-    ) {
+    if (isMailingAddressSame && addressId !== mailingAddressId && addressId) {
       const updateAddress = async () => {
         const res = await AuthApis.updateUser({
           mailing_address: {
@@ -179,7 +177,7 @@ const Step1 = ({
         setMailingAddress(userdata?.mailing_address);
       setAddressDataLoaded(true);
     }
-  }, [userdata, userRefetch, addressDataLoaded, refreshUser]);
+  }, [userdata, userRefetch, addressDataLoaded]);
 
   useEffect(() => {
     CompanyApis.getAllCompanies().then((res) => {
@@ -388,7 +386,7 @@ const Step1 = ({
           city: address ? address?.city : "",
           state: address ? address?.state : "",
           postal_code: address?.postal_code ?? "",
-          country: "United States (US)",
+          country: "United States",
         },
         is_mailing_address_same: isMailingAddressSame,
         mailing_address: {
@@ -397,7 +395,7 @@ const Step1 = ({
           city: mailingAddress ? mailingAddress?.city : "",
           state: mailingAddress ? mailingAddress?.state : "",
           postal_code: mailingAddress?.postal_code ?? "",
-          country: "United States (US)",
+          country: "United States",
         },
         address_id: addressId ?? "",
         mailing_address_id:
@@ -417,6 +415,26 @@ const Step1 = ({
         }
         if (values.mailing_address_id) {
           setMailingAddressId(values.mailing_address_id);
+        }
+        if (!addressDataLoaded) {
+          if (values.address) {
+            setAddress({
+              address_line_1: values.address.address_line_1,
+              address_line_2: values.address.address_line_2,
+              city: values.address.city,
+              state: values.address.state,
+              postal_code: values.address.postal_code,
+            });
+          }
+          if (values.mailing_address) {
+            setMailingAddress({
+              address_line_1: values.mailing_address.address_line_1,
+              address_line_2: values.mailing_address.address_line_2,
+              city: values.mailing_address.city,
+              state: values.mailing_address.state,
+              postal_code: values.mailing_address.postal_code,
+            });
+          }
         }
       }}
     >

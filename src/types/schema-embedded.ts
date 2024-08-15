@@ -118,7 +118,7 @@ export const step1Schema = z.object({
     //   message: "Postal code must only contain numbers",
     // })
     ,
-    country: z.enum(["United States (US)"], {
+    country: z.enum(["United States"], {
       errorMap: customErrorMap,
     }),
   }).optional(),
@@ -143,7 +143,7 @@ export const step1Schema = z.object({
     //   message: "Postal code must only contain numbers",
     // })
     ,
-    country: z.enum(["United States (US)"], {
+    country: z.enum(["United States"], {
       errorMap: customErrorMap,
     }),
   }).optional(),
@@ -187,7 +187,7 @@ export const step2Schema = z.object({
     //   message: "Postal code must only contain numbers",
     // })
     ,
-    country: z.enum(["United States (US)"], {
+    country: z.enum(["United States"], {
       errorMap: customErrorMap,
     }),
   }).optional(),
@@ -212,7 +212,7 @@ export const step2Schema = z.object({
     //   message: "Postal code must only contain numbers",
     // })
     ,
-    country: z.enum(["United States (US)"], {
+    country: z.enum(["United States"], {
       errorMap: customErrorMap,
     }),
   }).optional(),
