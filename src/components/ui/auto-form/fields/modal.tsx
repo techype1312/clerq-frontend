@@ -202,6 +202,7 @@ export default function AutoFormModal({
               city: res.data.city,
               state: res.data.state,
               postal_code: res.data.postal_code,
+              country: res.data.country,
             });
           }
         }
@@ -251,9 +252,6 @@ export default function AutoFormModal({
                     saved ? "" : "hidden"
                   } background-muted text-background-primary hover:!background-muted `}
                   variant={"ghost"}
-                  // onClick={() => {
-                  //   setUpdate(!update);
-                  // }}
                 >
                   {saved ? "Edit" : ""}
                 </Button>
@@ -279,7 +277,6 @@ export default function AutoFormModal({
                 <DialogClose asChild>
                   <Button
                     onClick={() => {
-                      // setSaved(true);
                       setUpdate(true);
                     }}
                     type="button"
@@ -291,13 +288,6 @@ export default function AutoFormModal({
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          {/* <Button
-              onClick={() => setIsOpen(true)}
-              className="background-muted text-background-primary hover:!background-muted "
-              variant={"ghost"}
-            >
-              Add {fieldConfigItem?.label || label}
-            </Button> */}
         </FormControl>
         <FormMessage />
       </FormItem>

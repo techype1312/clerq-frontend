@@ -18,8 +18,8 @@ import {
   getBaseType,
   zodToHtmlInputProps,
 } from "../utils";
-import AutoFormArray from "./array";
 import AutoFormModal from "./modal";
+import AutoFormAddressModal from "./address_modal";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
@@ -101,7 +101,8 @@ export default function AutoFormObject<
 
         if (
           zodBaseType === "ZodObject" &&
-          fieldConfigItem.fieldType !== "modal"
+          fieldConfigItem.fieldType !== "modal" &&
+          fieldConfigItem.fieldType !== "address_modal"
         ) {
           return (
             <AccordionItem value={name} key={key} className="border-none mt-0">
@@ -121,6 +122,26 @@ export default function AutoFormObject<
           );
         }
         if (
+          zodBaseType === "ZodObject" &&
+          fieldConfigItem.fieldType === "address_modal"
+        ) {
+          console.log("here");
+          return (
+            <AccordionItem value={name} key={key} className="border-none mt-0">
+              {/* Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid */}
+              <AutoFormAddressModal
+                name={name}
+                item={item as unknown as z.ZodObject<any, any>}
+                form={form}
+                fieldConfig={fieldConfig}
+                label={fieldConfigItem.label ?? itemName}
+                path={[...path, name]}
+                labelClass={labelClass}
+                isPresent={fieldConfigItem.inputProps?.isPresent}
+              />
+            </AccordionItem>
+          );
+        } else if (
           zodBaseType === "ZodObject" &&
           fieldConfigItem.fieldType === "modal"
         ) {
@@ -195,7 +216,7 @@ export default function AutoFormObject<
                 labelclass: labelClass,
               };
 
-              if (InputComponent === undefined) {
+              if (InputComponent === undefined || field.name === "address.address_line_1") {
                 return <></>;
               }
               return (
