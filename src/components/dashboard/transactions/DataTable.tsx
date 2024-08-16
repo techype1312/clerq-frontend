@@ -536,7 +536,7 @@ export function DataTable<TData, TValue>({
               className="p-1"
             >
               <SymbolIcon icon="upload" />
-              Upload
+              Upload New
             </Button>
           )}
         </div>

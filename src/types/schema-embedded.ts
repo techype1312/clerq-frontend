@@ -98,55 +98,57 @@ export const step1Schema = z.object({
     })
     .email(),
   phone: z.string(),
-  address: z.object({
-    address_line_1: z.string({
-      required_error: "Street is required",
-    }),
-    address_line_2: z.string({
-      required_error: "City is required",
-    }),
-    city: z.string({
-      required_error: "City is required",
-    }),
-    state: z.string({
-      required_error: "State is required",
-    }),
-    postal_code: z.string({
-      required_error: "Postal code is required",
+  address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      // .refine((val) => /^\d+$/.test(val), {
+      //   message: "Postal code must only contain numbers",
+      // })
+      country: z.enum(["United States"], {
+        errorMap: customErrorMap,
+      }),
     })
-    // .refine((val) => /^\d+$/.test(val), {
-    //   message: "Postal code must only contain numbers",
-    // })
-    ,
-    country: z.enum(["United States"], {
-      errorMap: customErrorMap,
-    }),
-  }).optional(),
+    .optional(),
   is_mailing_address_same: z.boolean().optional(),
-  mailing_address: z.object({
-    address_line_1: z.string({
-      required_error: "Street is required",
-    }),
-    address_line_2: z.string({
-      required_error: "City is required",
-    }),
-    city: z.string({
-      required_error: "City is required",
-    }),
-    state: z.string({
-      required_error: "State is required",
-    }),
-    postal_code: z.string({
-      required_error: "Postal code is required",
+  mailing_address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      // .refine((val) => /^\d+$/.test(val), {
+      //   message: "Postal code must only contain numbers",
+      // })
+      country: z.enum(["United States"], {
+        errorMap: customErrorMap,
+      }),
     })
-    // .refine((val) => /^\d+$/.test(val), {
-    //   message: "Postal code must only contain numbers",
-    // })
-    ,
-    country: z.enum(["United States"], {
-      errorMap: customErrorMap,
-    }),
-  }).optional(),
+    .optional(),
   address_id: z.string().optional(),
   mailing_address_id: z.string().optional(),
   tax_residence_country: z.string(),
@@ -167,55 +169,57 @@ export const step2Schema = z.object({
     .email(),
   phone: z.string(),
   //Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid
-  address: z.object({
-    address_line_1: z.string({
-      required_error: "Street is required",
-    }),
-    address_line_2: z.string({
-      required_error: "City is required",
-    }),
-    city: z.string({
-      required_error: "City is required",
-    }),
-    state: z.string({
-      required_error: "State is required",
-    }),
-    postal_code: z.string({
-      required_error: "Postal code is required",
+  address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      // .refine((val) => /^\d+$/.test(val), {
+      //   message: "Postal code must only contain numbers",
+      // })
+      country: z.enum(["United States"], {
+        errorMap: customErrorMap,
+      }),
     })
-    // .refine((val) => /^\d+$/.test(val), {
-    //   message: "Postal code must only contain numbers",
-    // })
-    ,
-    country: z.enum(["United States"], {
-      errorMap: customErrorMap,
-    }),
-  }).optional(),
+    .optional(),
   is_mailing_address_same: z.boolean().optional(),
-  mailing_address: z.object({
-    address_line_1: z.string({
-      required_error: "Street is required",
-    }),
-    address_line_2: z.string({
-      required_error: "City is required",
-    }),
-    city: z.string({
-      required_error: "City is required",
-    }),
-    state: z.string({
-      required_error: "State is required",
-    }),
-    postal_code: z.string({
-      required_error: "Postal code is required",
+  mailing_address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      // .refine((val) => /^\d+$/.test(val), {
+      //   message: "Postal code must only contain numbers",
+      // })
+      country: z.enum(["United States"], {
+        errorMap: customErrorMap,
+      }),
     })
-    // .refine((val) => /^\d+$/.test(val), {
-    //   message: "Postal code must only contain numbers",
-    // })
-    ,
-    country: z.enum(["United States"], {
-      errorMap: customErrorMap,
-    }),
-  }).optional(),
+    .optional(),
   address_id: z.string().optional(),
   mailing_address_id: z.string().optional(),
   ein: z.string({
@@ -275,4 +279,10 @@ export const shareDocumentsSchema = z.object({
       required_error: "Email is required",
     })
     .email(),
+});
+
+export const updateDocumentsSchema = z.object({
+  title: z.string({
+    required_error: "Title is required",
+  }),
 });

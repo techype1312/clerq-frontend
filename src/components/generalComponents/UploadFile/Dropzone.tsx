@@ -76,7 +76,7 @@ const Dropzone = ({
           {`OR browse from your device by clicking on “Upload”.`}
         </span>
       </div>
-      <Button className="flex items-center gap-2 mt-6 rounded-full px-10">
+      <Button className="flex items-center gap-2 mt-6 rounded-full px-10" variant="outline" type="button">
         Upload
       </Button>
     </div>
