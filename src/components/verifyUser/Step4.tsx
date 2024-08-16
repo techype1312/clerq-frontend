@@ -8,6 +8,7 @@ import CompanyApis from "@/actions/apis/CompanyApis";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import AuthApis from "@/actions/apis/AuthApis";
 
 const Step4 = ({
   changeStep,
@@ -30,10 +31,13 @@ const Step4 = ({
             id: companyId,
           },
         })
-    ).then((res) => {
+      ).then((res) => {
         Cookies.set("onboarding_completed", "true");
         // This will update the user as verified
-        router.push('/dashboard')
+        AuthApis.updateUser({
+          onboarding_completed: true,
+        });
+        router.push("/dashboard");
       });
     },
     onExit: (err, metadata) => {
@@ -71,7 +75,9 @@ const Step4 = ({
         onClick={() => {
           open();
         }}
-        className={`${!linkToken ? "cursor-wait" : "cursor-pointer"} p-4 flex gap-2 bg-[#FAFBFD] border-none`}
+        className={`${
+          !linkToken ? "cursor-wait" : "cursor-pointer"
+        } p-4 flex gap-2 bg-[#FAFBFD] border-none`}
       >
         <div className="my-auto">
           <Image
