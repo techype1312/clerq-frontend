@@ -11,7 +11,7 @@ export type FieldConfigItem = {
   label?: string;
   fieldType?:
     | keyof typeof INPUT_COMPONENTS
-    | React.FC<AutoFormInputComponentProps> | 'modal';
+    | React.FC<AutoFormInputComponentProps> | 'modal' | 'address_modal';
 
   renderParent?: (props: {
     children: React.ReactNode;
