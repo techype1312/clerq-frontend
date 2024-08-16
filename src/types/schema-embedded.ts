@@ -286,3 +286,27 @@ export const updateDocumentsSchema = z.object({
     required_error: "Title is required",
   }),
 });
+
+export const addressSchema = z.object({
+  address: z.object({
+    address_line_1: z.string({
+      required_error: "Street is required",
+    }),
+    address_line_2: z.string({
+      required_error: "City is required",
+    }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    state: z.string({
+      required_error: "State is required",
+    }),
+    postal_code: z.string({
+      required_error: "Postal code is required",
+    }),
+    country: z.enum(["United States"], {
+      errorMap: customErrorMap,
+    }),
+  }),
+  address_id: z.string().optional(),
+});
