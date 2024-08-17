@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/tooltip";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import UploadFile from "@/components/generalComponents/UploadFile";
+import UploadFile from "@/components/documents/UploadFile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";

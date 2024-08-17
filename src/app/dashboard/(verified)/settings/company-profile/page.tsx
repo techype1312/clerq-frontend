@@ -1,6 +1,7 @@
 "use client";
 import CompanyApis from "@/actions/apis/CompanyApis";
 import ProfileRowContainer from "@/components/dashboard/profile";
+import ProfilePhoto from "@/components/profile-photo";
 import { useCompanySession } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
@@ -8,6 +9,11 @@ import _, { isEmpty } from "lodash";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
+
+interface Photo {
+  id: string;
+  path: string;
+}
 
 const Page = () => {
   const { currentUcrm } = useCompanySession();
@@ -35,12 +41,35 @@ const Page = () => {
       onFetchCompanyDetailsSuccess,
       onError
     );
-  }, [currentUcrm?.company?.id, loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUcrm?.company?.id]);
+
+  const onUpdateCompanyDataSuccess = (res: any) => {
+    if (res.data) {
+      setCompanyData(res.data);
+    }
+  };
+
+  const updateCompanyData = async (p0: { logo: {} }) => {
+    if (!currentUcrm?.company?.id) return false;
+    return CompanyApis.updateCompany(currentUcrm?.company?.id, p0).then(
+      onUpdateCompanyDataSuccess,
+      onError
+    );
+  };
+
+  const updatePhoto = async (logo: Photo) => {
+    return updateCompanyData({ logo });
+  };
+
+  const removePhoto = async () => {
+    return updateCompanyData({ logo: {} });
+  };
 
   useEffect(() => {
     fetchCompanyData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentUcrm?.company?.id]);
 
   useEffect(() => {
     if (isEmpty(companyData)) {
@@ -81,9 +110,16 @@ const Page = () => {
           id: "company_logo",
           title: "Company logo",
           description: "This will appear on Clerq next to your company name.",
-          value: companyData.company_logo,
-          type: "logo",
+          value: {
+            logo: companyData.logo,
+            name: companyData.name,
+          },
+          type: "photo",
           isEditable: true,
+          actions: {
+            updatePhoto: updatePhoto,
+            removePhoto: updatePhoto,
+          },
         },
         {
           id: "phone",
@@ -121,6 +157,7 @@ const Page = () => {
         },
       ]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyData]);
 
   if (loading) {
@@ -141,13 +178,14 @@ const Page = () => {
 
   return (
     <div className="flex flex-col gap-4 lg:mx-20">
-      <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
-        <Image
-          src="/profile.png"
-          className="rounded-lg"
-          alt="logo"
-          width={40}
-          height={40}
+      <div className="mt-auto flex gap-2 items-center border-b pb-4">
+        <ProfilePhoto
+          firstName={companyData?.name}
+          photo={companyData?.logo}
+          updatePhoto={updatePhoto}
+          removePhoto={removePhoto}
+          canEdit={true}
+          showButtons={false}
         />
         <p
           className="ml-2"

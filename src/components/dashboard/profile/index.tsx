@@ -1,15 +1,17 @@
 "use client";
-import React, { useContext } from "react";
-import ProfileItem, { rowData } from "./item";
-import { UserContext } from "@/context/User";
 
-const ProfileRowContainer = ({ profileData }: { profileData: rowData[] }) => {
-  const { updateLocalUserData } = useContext(UserContext);
+import React from "react";
+import ProfileItem, { RowData } from "./item";
+
+const ProfileRowContainer = ({ profileData }: { profileData: RowData[] }) => {
   return (
     <div className="flex flex-col">
       {profileData.map((data, index) => (
-        <div className={`${data.id !== "social" ? "p-4" : ""} border-b pl-0`} key={index}>
-          <ProfileItem rowData={data} updateLocalUserData={updateLocalUserData} />
+        <div
+          className={`${data.id !== "social" ? "p-4" : ""} border-b pl-0`}
+          key={index}
+        >
+          <ProfileItem rowData={data} />
         </div>
       ))}
     </div>

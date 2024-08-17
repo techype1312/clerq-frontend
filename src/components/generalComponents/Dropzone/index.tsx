@@ -7,6 +7,7 @@ import {
   Accept,
 } from "react-dropzone";
 import { Button } from "@/components/ui/button";
+import SymbolIcon from "../MaterialSymbol/SymbolIcon";
 
 const MAX_FILE_SIZE = 1000 * 1024 * 5 * 5;
 
@@ -46,39 +47,38 @@ const Dropzone = ({
   return (
     <div
       {...getRootProps({ className: "dropzone" })}
-      className="pt-6 flex flex-col"
+      className="py-6 flex flex-col gap-4 "
       style={{
         alignItems: "center",
         justifyContent: "center",
         color: "#1E1E2A",
         textAlign: "center",
+        width: "100%",
       }}
     >
       <input {...getInputProps()} />
-      <div>
+      <SymbolIcon icon="upload_file" size={24} />
+      <div className="w-full">
         <span
           style={{
-            fontSize: "20px",
+            fontSize: "15px",
             fontWeight: 400,
             lineHeight: "24px",
           }}
         >
-          {`Drag & drop files`}
+          {`Drag and drop here or click to upload`}
         </span>
         <br />
         <span
           style={{
-            fontSize: "14px",
+            fontSize: "12px",
             fontWeight: 400,
-            lineHeight: "19.6px",
+            lineHeight: "20px",
           }}
         >
-          {`OR browse from your device by clicking on “Upload”.`}
+          {`You may upload PNG or JPEG files`}
         </span>
       </div>
-      <Button className="flex items-center gap-2 mt-6 rounded-full px-10" variant="outline" type="button">
-        Upload
-      </Button>
     </div>
   );
 };

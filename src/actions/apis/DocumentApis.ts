@@ -83,7 +83,6 @@ const updateDocuments = (
 
   const formData = new FormData();
   const file = convertBase64toFile(payload.fileData.src, payload.fileData.name);
-  console.log(file);
   formData.set("document", file);
   formData.set("name", payload.name);
   formData.set("type", payload.docType);

@@ -181,6 +181,7 @@ input::placeholder {
 .custom-grid-template{
   grid-template-columns: 1fr 1fr fit-content(100%) 1fr;
 }
+
 .react-tel-input .flag-dropdown {
   background-color: transparent !important;
   border: none !important;

@@ -13,8 +13,8 @@ import { updateDocumentsSchema } from "@/types/schema-embedded";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Dropzone from "./Dropzone";
-import SymbolIcon from "../MaterialSymbol/SymbolIcon";
+import SymbolIcon from "../../generalComponents/MaterialSymbol/SymbolIcon";
+import Dropzone from "@/components/generalComponents/Dropzone";
 
 const MAX_FILES = 1;
 
@@ -135,15 +135,9 @@ const UploadFile = (props: UploadFileProps) => {
       labelClass="text-primary"
       onSubmit={handleUploadFiles}
     >
-      <Card
-        style={{
-          background: "#F7F7F8",
-          border: "1px dashed #DCDCE4",
-          padding: "50px",
-        }}
-      >
+      <Card className="border-2 border-[#DCDCE4] border-dashed hover:border-blue-700  cursor-pointer bg-[#F7F7F8]">
         <CardContent
-          className="pt-6 flex flex-col"
+          className="p-0 flex flex-col"
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -164,12 +158,14 @@ const UploadFile = (props: UploadFileProps) => {
             maxFiles={MAX_FILES}
             disabled={!MAX_FILES}
           />
-          <div className="flex-col gap-2 my-2">
-            {files.map((file) => (
-              <FileItem file={file} key={file.id} />
-            ))}
-          </div>
-          <div className="text-red-500 mt-2">{errMsg}</div>
+          {!!files.length && (
+            <div className="flex-col gap-2 mt-2 mb-4">
+              {files.map((file) => (
+                <FileItem file={file} key={file.id} />
+              ))}
+            </div>
+          )}
+          {errMsg && <div className="text-red-500 mt-2">{errMsg}</div>}
         </CardContent>
       </Card>
       <div className="flex flex-row justify-end gap-2">
