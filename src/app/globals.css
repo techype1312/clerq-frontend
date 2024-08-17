@@ -103,7 +103,7 @@
   color: var(--destructive-text);
 }
 .background-text-destructive {
-  background-color: var(--destructive-text);
+  background-color: var(--destructive-text) !important;
 }
 .text-primary {
   color: var(--primary-text);
@@ -180,4 +180,23 @@ input::placeholder {
 
 .custom-grid-template{
   grid-template-columns: 1fr 1fr fit-content(100%) 1fr;
+}
+.react-tel-input .flag-dropdown {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0.375rem;
+  border-left: 1px solid var(--input-border);
+  height: 2.4rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 0.1rem;
+}
+.flag-dropdown:hover{
+  background-color: #f5f5f5A9 !important;
+  border: none !important;
+  border-radius: 0.375rem;
+  border-left: 1px solid var(--input-border);
+  height: 2.45rem;
+  margin-top: auto;
+  margin-bottom: auto;
 }

@@ -155,3 +155,9 @@ export const calculateDateRange = (value: string) => {
 
   return { from, to };
 };
+
+export const mergeJsonArray = (newValues: Array<Record<string, any>>): Record<string, any> => {
+  return newValues.reduce((acc, current) => {
+    return { ...acc, ...current };
+  }, {});
+};

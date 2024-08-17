@@ -49,51 +49,75 @@ const Page = () => {
   useEffect(() => {
     setRowData([
       {
+        id: "email",
         title: "Email",
         value: userdata?.email ?? "",
         type: "text",
         isEditable: false,
+        company: false,
       },
       {
+        id: "firstName, lastName",
         title: "Preferred name",
         value: userdata?.firstName + " " + userdata?.lastName,
         type: "text",
         isEditable: true,
+        company: false,
       },
       {
+        id: "legalFirstName, legalLastName",
         title: "Legal name",
         value: userdata?.legalFirstName + " " + userdata?.legalLastName,
         type: "text",
         isEditable: false,
+        company: false,
       },
       {
+        id: "dob",
         title: "Date of birth",
         value: userdata?.dob,
-        type: "text",
+        type: "date",
         isEditable: true,
+        company: false,
       },
       {
+        id: "phone",
         title: "Phone no.",
-        value: formatPhoneNumber(userdata?.phone, userdata?.country_code),
-        type: "text",
+        value: userdata?.country_code + userdata?.phone, 
+        // formatPhoneNumber(userdata?.phone, userdata?.country_code),
+        type: "phone",
         isEditable: true,
+        company: false,
       },
       {
+        id: "address", // doesn't matter if it's mailing or legal address 
         title: "Mailing Address",
         value: formatAddress(userdata?.mailing_address),
-        type: "text",
+        unFormattedValue: userdata?.mailing_address,
+        type: "address_modal",
         isEditable: true,
+        company: false,
       },
       {
+        id: "address",
         title: "Legal Address",
         value: formatAddress(userdata?.legal_address),
+        unFormattedValue: userdata?.legal_address,
+        type: "address_modal", // this is the new modal for address only
         isEditable: true,
+        company: false,
       },
       {
+        id: "social",
         title: "Social",
-        value: userdata?.social,
+        // value: userdata?.social,
+        value: [
+          { facebook: "https://www.facebook.com/" },
+          { twitter: "https://www.twitter.com/" },
+        ],
         type: "text",
         isEditable: true,
+        company: false,
       },
     ]);
   }, [userdata, otherUserData]);
@@ -110,6 +134,9 @@ const Page = () => {
     <div className="flex flex-col gap-4 lg:mx-20">
       <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
         <Image
+          onClick={()=>{
+            console.log("clicked")
+          }}
           src="/profile.png"
           className="rounded-lg"
           alt="logo"

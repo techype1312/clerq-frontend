@@ -3,7 +3,7 @@ import AutoFormLabel from "../common/label";
 import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import PhoneInput from "react-phone-input-2";
-// import "react-phone-input-2/lib/style.css";
+import "react-phone-input-2/lib/style.css";
 
 export default function AutoFormPhone({
   label,
@@ -15,13 +15,18 @@ export default function AutoFormPhone({
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const baseStyle = {
     outline: "none",
-    padding: "0.5rem 1rem",
+    padding: "0.5rem 1rem 0.5rem 2.8rem",
     border: "1px solid #dcdce4",
     borderRadius: "0.375rem",
     width: "100%",
     height: "2.5rem",
     fontSize: "0.875rem",
     lineHeight: "1.25rem",
+    overflow: "hidden",
+  };
+
+  const dropdownStyle = {
+    backgroundColor: "#ffffff",
   };
 
   const disabledStyle = {
@@ -54,14 +59,13 @@ export default function AutoFormPhone({
               placeholder: "(123)-456-7890",
             }}
             inputStyle={inputStyle}
-            disableDropdown
             disabled={fieldProps.disabled}
-            countryCodeEditable={false}
             onChange={(e) => {
               fieldPropsWithoutShowLabel.onChange(e);
             }}
             value={fieldPropsWithoutShowLabel.value}
-            // {...fieldPropsWithoutShowLabel}
+            dropdownStyle={dropdownStyle}
+            dropdownClass="bg-white rounded-sm"
           />
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />

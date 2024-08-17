@@ -20,6 +20,7 @@ export const INPUT_COMPONENTS = {
   file: AutoFormFile,
   fallback: AutoFormInput,
   modal: AutoFormInput,
+  address_modal: AutoFormInput,
   phone: AutoFormPhone
 };
 

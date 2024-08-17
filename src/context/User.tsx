@@ -30,7 +30,12 @@ export const UserContextProvider = ({
         } else if (pathname.startsWith("/dashboard") && res && res.data) {
           setuserdata(res.data);
           localStorage.setItem("user", JSON.stringify(res.data));
-          router.push("/auth/signin");
+        }
+        if (res && res.status === 401) {
+          localStorage.removeItem("user");
+          Cookies.remove("token");
+          Cookies.remove("refresh_token");
+          router.push("/auth/login");
         }
       } catch (error) {
         if (localStorage.getItem("user")) {
@@ -51,6 +56,11 @@ export const UserContextProvider = ({
     }
   }, []);
 
+  const updateLocalUserData = (data: any) => {
+    setuserdata(data);
+    localStorage.setItem("user", JSON.stringify(data));
+  }
+
   return (
     <UserContext.Provider
       value={
@@ -60,6 +70,7 @@ export const UserContextProvider = ({
           refreshUser,
           refetchUserData,
           setRefetchUserData,
+          updateLocalUserData
         } as any
       }
     >
