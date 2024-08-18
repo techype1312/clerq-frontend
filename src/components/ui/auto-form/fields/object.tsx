@@ -125,7 +125,6 @@ export default function AutoFormObject<
           zodBaseType === "ZodObject" &&
           fieldConfigItem.fieldType === "address_modal"
         ) {
-          console.log("here");
           return (
             <AccordionItem value={name} key={key} className="border-none mt-0">
               {/* Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid */}

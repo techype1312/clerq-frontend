@@ -111,29 +111,31 @@ export default function AutoFormAddressModal({
       <FormItem className="flex w-full flex-col justify-start">
         <FormControl>
           <>
-            <FormLabel>Address line 1</FormLabel>
-            <GooglePlacesAutocomplete
-              apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
-              onLoadFailed={(error: any) => {
-                console.error("Could not load Google API", error);
-              }}
-              autocompletionRequest={{
-                bounds: [
-                  { lat: 50, lng: 50 },
-                  { lat: 100, lng: 100 },
-                ],
-                componentRestrictions: {
-                  country: ["us"],
-                },
-              }}
-              apiOptions={{ language: "en", region: "us" }}
-              selectProps={{
-                value,
-                onChange: handlePlaceSelect,
-                className:
-                  "w-full !important:border-input rounded-md focus:outline-none focus:border-primary",
-              }}
-            />
+            <div className="flex flex-col justify-start w-full gap-2 mb-3">
+              <FormLabel>Address line 1</FormLabel>
+              <GooglePlacesAutocomplete
+                apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
+                onLoadFailed={(error: any) => {
+                  console.error("Could not load Google API", error);
+                }}
+                autocompletionRequest={{
+                  bounds: [
+                    { lat: 50, lng: 50 },
+                    { lat: 100, lng: 100 },
+                  ],
+                  componentRestrictions: {
+                    country: ["us"],
+                  },
+                }}
+                apiOptions={{ language: "en", region: "us" }}
+                selectProps={{
+                  value,
+                  onChange: handlePlaceSelect,
+                  className:
+                    "w-full !important:border-input rounded-md focus:outline-none focus:border-primary",
+                }}
+              />
+            </div>
             <AutoFormObject
               schema={item as unknown as z.ZodObject<any, any>}
               form={form}

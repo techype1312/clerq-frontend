@@ -20,8 +20,9 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
   const [config, setConfig] = useState<any>({});
 
   useEffect(() => {
+    const configId = rowData.id?.includes('address') ? 'address' : rowData.id;
     setConfig({
-      [rowData.id]: {
+      [configId]: {
         fieldType: rowData.type,
         label: rowData.label,
       },
@@ -86,7 +87,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                 },
               ]}
             >
-              <div className="w-full flex flex-row gap-4 justify-end items-center">
+              <div className="w-full flex flex-row gap-4 justify-end items-center !mt-5">
                 <DialogClose asChild>
                   <Button className="text-primary" variant="outline">
                     Close

@@ -157,7 +157,7 @@ const Page = () => {
         },
       },
       {
-        id: "address",
+        id: "mailing_address",
         label: "Mailing Address",
         values: {
           address: {
