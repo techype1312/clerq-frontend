@@ -1,6 +1,8 @@
 "use client";
+
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
+import startCase from "lodash/startCase";
 import {
   Dialog,
   DialogClose,
@@ -21,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import _ from "lodash";
 import Permissions from "@/components/generalComponents/Permissions";
 import AutoForm from "@/components/ui/auto-form";
 import { inviteUserSchema } from "@/types/schema-embedded";
@@ -238,13 +239,13 @@ const EditUserDialog = ({ row }: { row: any }) => {
             <Select defaultValue={row.role}>
               <SelectTrigger className="flex h-8 text-black min-w-36 w-fit">
                 <SelectValue placeholder="select value">
-                  {_.startCase(row.role)}
+                  {startCase(row.role)}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {roles.map((value, index) => (
                   <SelectItem value={value ?? "undefined"} key={value + index}>
-                    {_.startCase(value)}
+                    {startCase(value)}
                   </SelectItem>
                 ))}
               </SelectContent>

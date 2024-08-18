@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import _ from "lodash";
+import React, { useEffect, useState } from "react";
+import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
 import BankingApis from "@/actions/apis/BankingApis";
 import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
@@ -15,7 +15,7 @@ const Page = () => {
   const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
 
   const onError = (err: string | ErrorProps) => {
-    setError(_.isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.message : err);
     setLoading(false);
   };
 

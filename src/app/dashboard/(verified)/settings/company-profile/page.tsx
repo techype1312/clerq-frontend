@@ -1,17 +1,18 @@
 "use client";
-import CompanyApis from "@/actions/apis/CompanyApis";
-import ProfileRowContainer from "@/components/dashboard/profile";
-import ProfilePhoto from "@/components/profile-photo";
+
+import React, { useCallback, useEffect, useState } from "react";
+import isObject from "lodash/isObject";
+import isEmpty from "lodash/isEmpty";
+import { z } from "zod";
 import { useCompanySession } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 import { addressSchema } from "@/types/schema-embedded";
 import { RowData } from "@/utils/types";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
-import _, { isEmpty } from "lodash";
 import { Loader2Icon } from "lucide-react";
-import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
-import { z } from "zod";
+import CompanyApis from "@/actions/apis/CompanyApis";
+import ProfileRowContainer from "@/components/dashboard/profile";
+import ProfilePhoto from "@/components/profile-photo";
 
 const company_name_schema = z.object({
   companyName: z.string(),
@@ -44,7 +45,7 @@ const Page = () => {
   const [rowData, setRowData] = useState<RowData[]>([]);
 
   const onError = (err: string | ErrorProps) => {
-    setError(_.isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.message : err);
     setLoading(false);
   };
 

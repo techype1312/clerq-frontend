@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import _ from "lodash";
+import isObject from "lodash/isObject";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -39,7 +39,7 @@ export const CompanySessionProvider = ({
   const [selectedUcrm, setSelectedUcrm] = useState<string>();
 
   const onError = (err: string | ErrorProps) => {
-    setError(_.isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.message : err);
     setLoading(false);
   };
 
