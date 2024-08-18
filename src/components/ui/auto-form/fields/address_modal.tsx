@@ -16,6 +16,7 @@ import GooglePlacesAutocomplete, {
 } from "react-google-places-autocomplete";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import { UserContext } from "@/context/User";
+import { Servers } from "../../../../../config";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -114,7 +115,7 @@ export default function AutoFormAddressModal({
             <div className="flex flex-col justify-start w-full gap-2 mb-3">
               <FormLabel>Address line 1</FormLabel>
               <GooglePlacesAutocomplete
-                apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
+                apiKey={Servers.GoogleAPIkey}
                 onLoadFailed={(error: any) => {
                   console.error("Could not load Google API", error);
                 }}

@@ -20,6 +20,7 @@ import GooglePlacesAutocomplete, {
   getLatLng,
 } from "react-google-places-autocomplete";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
+import { Servers } from "../../../../../config";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -223,7 +224,7 @@ export default function AutoFormModal({
             <div className="flex gap-4">
               <div className="w-full">
                 <GooglePlacesAutocomplete
-                  apiKey="AIzaSyDOQ7N0NgZt8OFcioja-gHnX5hKjk-Su_8"
+                  apiKey={Servers.GoogleAPIkey}
                   onLoadFailed={(error: any) => {
                     console.error("Could not load Google API", error);
                   }}
