@@ -2,9 +2,12 @@
 
 import ProfileRowContainer from "@/components/dashboard/profile";
 import { UserContext } from "@/context/User";
+import { addressSchema } from "@/types/schema-embedded";
+import { RowData } from "@/utils/types";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
+import { z } from "zod";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -42,83 +45,173 @@ const RoleItem = ({ label }: { label: string }) => {
   );
 };
 
+const preferred_name_schema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+});
+const legal_name_schema = z.object({
+  legalFirstName: z.string(),
+  legalLastName: z.string(),
+});
+const dob_schem = z.object({
+  dob: z
+    .date()
+    .min(new Date("1900-01-01"), {
+      message: "A valid date of birth is required",
+    })
+    .refine(
+      (value) =>
+        value < new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+      {
+        message: "Date of birth cannot be less than 18 years ago",
+      }
+    ),
+});
+const phone_schema = z.object({ phone: z.string() });
+
 const Page = () => {
   const { userdata, otherUserData } = useContext(UserContext);
-  const [rowData, setRowData] = useState<any>([]);
+  const [rowData, setRowData] = useState<RowData[]>([]);
 
   useEffect(() => {
     setRowData([
       {
         id: "email",
-        title: "Email",
-        value: userdata?.email ?? "",
+        label: "Email",
+        formattedValue: userdata?.email ?? "",
+        values: { email: userdata?.email ?? "" },
         type: "text",
         isEditable: false,
-        company: false,
       },
       {
-        id: "firstName, lastName",
-        title: "Preferred name",
-        value: userdata?.firstName + " " + userdata?.lastName,
+        id: "preferred_name",
+        label: "Preferred name",
+        formattedValue: userdata?.firstName + " " + userdata?.lastName,
         type: "text",
         isEditable: true,
-        company: false,
+        values: {
+          firstName: userdata?.firstName,
+          lastName: userdata?.lastName,
+        },
+        schema: preferred_name_schema,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
       },
       {
-        id: "legalFirstName, legalLastName",
-        title: "Legal name",
-        value: userdata?.legalFirstName + " " + userdata?.legalLastName,
+        id: "legal_name",
+        label: "Legal name",
+        formattedValue:
+          userdata?.legalFirstName + " " + userdata?.legalLastName,
+        values: {
+          legalFirstName: userdata?.legalFirstName,
+          legalLastName: userdata?.legalLastName,
+        },
         type: "text",
-        isEditable: false,
-        company: false,
+        isEditable: true,
+        schema: legal_name_schema,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
+      },
+      {
+        id: "photo",
+        label: "Profile Image",
+        description: "This will appear on Otto next to your profile name.",
+        values: {
+          logo: userdata?.logo,
+          name: userdata?.firstName,
+        },
+        type: "photo",
+        isEditable: true,
+        actions: {
+          updatePhoto: async (data: any) => console.log(data),
+          removePhoto: async (data: any) => console.log(data),
+        },
       },
       {
         id: "dob",
-        title: "Date of birth",
-        value: userdata?.dob,
+        label: "Date of birth",
+        formattedValue: userdata?.dob,
+        values: { dob: userdata?.dob },
         type: "date",
         isEditable: true,
-        company: false,
+        schema: dob_schem,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
       },
       {
         id: "phone",
-        title: "Phone no.",
-        value: userdata?.country_code + userdata?.phone, 
-        // formatPhoneNumber(userdata?.phone, userdata?.country_code),
+        label: "Phone no.",
+        values: {
+          country_code: userdata?.country_code,
+          phone: userdata?.phone,
+        },
+        formattedValue: userdata?.country_code + userdata?.phone,
         type: "phone",
         isEditable: true,
-        company: false,
-      },
-      {
-        id: "address", // doesn't matter if it's mailing or legal address 
-        title: "Mailing Address",
-        value: formatAddress(userdata?.mailing_address),
-        unFormattedValue: userdata?.mailing_address,
-        type: "address_modal",
-        isEditable: true,
-        company: false,
+        schema: phone_schema,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
       },
       {
         id: "address",
-        title: "Legal Address",
-        value: formatAddress(userdata?.legal_address),
-        unFormattedValue: userdata?.legal_address,
-        type: "address_modal", // this is the new modal for address only
+        label: "Mailing Address",
+        values: {
+          address: {
+            country: "United States",
+            address_line_1: userdata?.mailing_address?.address_line_1,
+            address_line_2: userdata?.mailing_address?.address_line_2,
+            city: userdata?.mailing_address?.city,
+            postal_code: userdata?.mailing_address?.postal_code,
+            state: userdata?.mailing_address?.state,
+          },
+          address_id: userdata?.mailing_address?.id,
+        },
+        formattedValue: formatAddress(userdata?.mailing_address),
+        type: "address_modal",
         isEditable: true,
-        company: false,
+        schema: addressSchema,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
       },
       {
-        id: "social",
-        title: "Social",
-        // value: userdata?.social,
-        value: [
-          { facebook: "https://www.facebook.com/" },
-          { twitter: "https://www.twitter.com/" },
-        ],
-        type: "text",
+        id: "legal_address",
+        label: "Legal Address",
+        values: {
+          address: {
+            country: "United States",
+            address_line_1: userdata?.legal_address?.address_line_1,
+            address_line_2: userdata?.legal_address?.address_line_2,
+            city: userdata?.legal_address?.city,
+            postal_code: userdata?.legal_address?.postal_code,
+            state: userdata?.legal_address?.state,
+          },
+          address_id: userdata?.legal_address?.id,
+        },
+        formattedValue: formatAddress(userdata?.legal_address),
+        type: "address_modal",
         isEditable: true,
-        company: false,
+        schema: addressSchema,
+        actions: {
+          onUpdate: async (data: any) => console.log(data),
+        },
       },
+      // {
+      //   id: "social",
+      //   label: "Social",
+      //   // value: userdata?.social,
+      //   value: [
+      //     { facebook: "https://www.facebook.com/" },
+      //     { twitter: "https://www.twitter.com/" },
+      //   ],
+      //   type: "text",
+      //   isEditable: true,
+      //   company: false,
+      // },
     ]);
   }, [userdata, otherUserData]);
 
@@ -134,8 +227,8 @@ const Page = () => {
     <div className="flex flex-col gap-4 lg:mx-20">
       <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
         <Image
-          onClick={()=>{
-            console.log("clicked")
+          onClick={() => {
+            console.log("clicked");
           }}
           src="/profile.png"
           className="rounded-lg"

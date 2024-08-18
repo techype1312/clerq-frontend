@@ -4,11 +4,32 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import ProfilePhoto from "@/components/profile-photo";
 import { useCompanySession } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
+import { addressSchema } from "@/types/schema-embedded";
+import { RowData } from "@/utils/types";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import _, { isEmpty } from "lodash";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
+import { z } from "zod";
+
+const company_name_schema = z.object({
+  companyName: z.string(),
+});
+
+const dba_name_schema = z.object({
+  dbaName: z.string(),
+});
+
+const legal_name_schema = z.object({
+  legalName: z.string(),
+});
+
+const ein_schema = z.object({
+  fedralEin: z.string(),
+});
+
+const phone_schema = z.object({ phone: z.string() });
 
 interface Photo {
   id: string;
@@ -20,7 +41,7 @@ const Page = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [companyData, setCompanyData] = useState<Record<string, any>>();
-  const [rowData, setRowData] = useState<any>([]);
+  const [rowData, setRowData] = useState<RowData[]>([]);
 
   const onError = (err: string | ErrorProps) => {
     setError(_.isObject(err) ? err.message : err);
@@ -50,19 +71,29 @@ const Page = () => {
     }
   };
 
-  const updateCompanyData = async (p0: { logo: {} }) => {
+  const updateCompanyData = async (payload: Record<string, any>) => {
     if (!currentUcrm?.company?.id) return false;
-    return CompanyApis.updateCompany(currentUcrm?.company?.id, p0).then(
+    return CompanyApis.updateCompany(currentUcrm?.company?.id, payload).then(
       onUpdateCompanyDataSuccess,
       onError
     );
   };
 
-  const updatePhoto = async (logo: Photo) => {
+  const updateCompanyDetails = async (values: any) => {
+    const payload: Record<string, any> = {};
+    if (values.companyName) {
+      payload.name = values.companyName;
+    }
+    if (!isEmpty(payload)) {
+      return updateCompanyData(payload);
+    }
+  };
+
+  const updateCompanyLogo = async (logo: Photo) => {
     return updateCompanyData({ logo });
   };
 
-  const removePhoto = async () => {
+  const removeCompanyLogo = async () => {
     return updateCompanyData({ logo: {} });
   };
 
@@ -78,82 +109,148 @@ const Page = () => {
       setRowData([
         {
           id: "legal_name",
-          title: "Legal Name",
-          value: companyData.name,
+          label: "Legal Name",
+          formattedValue: companyData.name,
           type: "text",
           isEditable: false,
+          values: {
+            legalName: companyData.name,
+          },
+          schema: legal_name_schema,
+          actions: {
+            onUpdate: updateCompanyDetails,
+          },
         },
         {
           id: "dba_name",
-          title: "Doing business as (DBA)",
-          value: companyData.name,
+          label: "Doing business as (DBA)",
+          formattedValue: companyData.name,
           type: "text",
           isEditable: false,
+          values: {
+            dbaName: companyData.name,
+          },
+          schema: dba_name_schema,
+          actions: {
+            onUpdate: updateCompanyDetails,
+          },
         },
         {
           id: "ein",
-          title: "Fedral EIN",
-          value: companyData.ein,
+          label: "Fedral EIN",
+          formattedValue: companyData.ein,
           type: "text",
-          isEditable: false,
+          isEditable: true,
+          values: {
+            fedralEin: companyData.ein,
+          },
+          schema: ein_schema,
+          actions: {
+            onUpdate: updateCompanyDetails,
+          },
         },
         {
           id: "name",
-          title: "Company name",
+          label: "Company name",
           description:
             "This is the name that appears on Clerq and in your notifications.",
-          value: companyData.name,
+          formattedValue: companyData.name,
           type: "text",
           isEditable: true,
+          values: {
+            companyName: companyData.name,
+          },
+          schema: company_name_schema,
+          actions: {
+            onUpdate: updateCompanyDetails,
+          },
         },
         {
           id: "company_logo",
-          title: "Company logo",
+          label: "Company logo",
           description: "This will appear on Clerq next to your company name.",
-          value: {
+          values: {
             logo: companyData.logo,
             name: companyData.name,
           },
           type: "photo",
           isEditable: true,
           actions: {
-            updatePhoto: updatePhoto,
-            removePhoto: updatePhoto,
+            updatePhoto: updateCompanyLogo,
+            removePhoto: removeCompanyLogo,
           },
         },
         {
           id: "phone",
-          title: "Phone number",
-          value: formatPhoneNumber(companyData.phone, companyData.country_code),
+          label: "Phone number",
+          formattedValue: formatPhoneNumber(companyData.phone, companyData.country_code),
           type: "phone",
           isEditable: true,
+          values: {
+            country_code: companyData.country_code,
+            phone: companyData.phone,
+          },
+          schema: phone_schema,
+          actions: {
+            onUpdate: updateCompanyDetails,
+          },
         },
         {
           id: "email",
-          title: "Company Email",
+          label: "Company Email",
           description:
             "Team members and pre-authorized vendors can forward invoices directly to your Payments page via this address.",
-          value: companyData.email,
-          type: "email",
-          isEditable: true,
+          formattedValue: companyData.email,
+          type: "text",
+          isEditable: false,
         },
         {
-          id: "mailing_address",
-          title: "Company mailing address",
+          id: "address",
+          label: "Company mailing address",
           description:
             "We’ll send physical cards and surprise gifts to this address.",
-          value: formatAddress(companyData.mailing_address),
-          type: "address",
+          formattedValue: formatAddress(companyData.mailing_address),
+          type: "address_modal",
           isEditable: true,
+          values: {
+            address: {
+              country: "United States",
+              address_line_1: companyData.mailing_address?.address_line_1,
+              address_line_2: companyData.mailing_address?.address_line_2,
+              city: companyData.mailing_address?.city,
+              postal_code: companyData.mailing_address?.postal_code,
+              state: companyData.mailing_address?.state,
+            },
+            address_id: companyData.mailing_address?.id,
+          },
+          schema: addressSchema,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
         },
         {
           id: "legal_address",
-          title: "Company legal address",
+          label: "Company legal address",
           description:
             "The billing address for your cards that will appear on bank documents.",
-          value: formatAddress(companyData.legal_address),
-          type: "address",
+          formattedValue: formatAddress(companyData.legal_address),
+          type: "address_modal",
           isEditable: true,
+          values: {
+            address: {
+              country: "United States",
+              address_line_1: companyData.legal_address?.address_line_1,
+              address_line_2: companyData.legal_address?.address_line_2,
+              city: companyData.legal_address?.city,
+              postal_code: companyData.legal_address?.postal_code,
+              state: companyData.legal_address?.state,
+            },
+            address_id: companyData.legal_address?.id,
+          },
+          schema: addressSchema,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
         },
       ]);
     }
@@ -182,8 +279,8 @@ const Page = () => {
         <ProfilePhoto
           firstName={companyData?.name}
           photo={companyData?.logo}
-          updatePhoto={updatePhoto}
-          removePhoto={removePhoto}
+          updatePhoto={updateCompanyLogo}
+          removePhoto={removeCompanyLogo}
           canEdit={true}
           showButtons={false}
         />

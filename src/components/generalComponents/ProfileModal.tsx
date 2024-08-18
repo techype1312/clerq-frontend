@@ -23,10 +23,18 @@ const ProfileModal = ({ rowData }: { rowData: any }) => {
   const [values, setValues] = useState<any>({});
   const [config, setConfig] = useState<any>({});
   const { updateLocalUserData } = useContext(UserContext);
+
   useEffect(() => {
-    if (rowData.title === "Preferred name")
+    setConfig({
+      [rowData.id]: {
+        fieldType: rowData.type,
+        label: rowData.title,
+      },
+    });
+
+    if (rowData.title === "Preferred name") {
       setSchema(z.object({ firstName: z.string(), lastName: z.string() }));
-    else if (rowData.id === "dob") {
+    } else if (rowData.id === "dob") {
       setSchema(
         z.object({
           dob: z
@@ -49,12 +57,7 @@ const ProfileModal = ({ rowData }: { rowData: any }) => {
     else if (rowData.id === "address" || rowData.id === "mailing_address") {
       setSchema(addressSchema);
     }
-    setConfig({
-      [rowData.id]: {
-        fieldType: rowData.type,
-        label: rowData.title,
-      },
-    });
+
     if (rowData.id === "address" || rowData.id === "mailing_address") {
       return setValues({
         address: {

@@ -19,7 +19,7 @@ interface Photo {
   path: string;
 }
 
-const ProfilePhoto = ({
+const ProfilePhotoEditModel = ({
   updatePhoto,
   removePhoto,
   photo,
@@ -28,8 +28,8 @@ const ProfilePhoto = ({
   canEdit,
   showButtons,
 }: {
-  updatePhoto: (logo: Photo) => Promise<false | void>;
-  removePhoto: () => Promise<false | void>;
+  updatePhoto?: ((logo: Photo) => Promise<false | void>);
+  removePhoto?: () => Promise<false | void>;
   photo?: Photo;
   firstName?: string;
   lastName?: string;
@@ -40,6 +40,7 @@ const ProfilePhoto = ({
   const [loading, setLoading] = useState(false);
 
   const handleUpdatePhoto = async (logo: Photo) => {
+    if (!updatePhoto) return;
     setOpen(false);
     setLoading(true);
     return updatePhoto(logo).then(() => {
@@ -48,6 +49,7 @@ const ProfilePhoto = ({
   };
 
   const handleRemovePhoto = async () => {
+    if (!removePhoto) return;
     setLoading(true);
     return removePhoto().then(() => {
       setLoading(false);
@@ -57,7 +59,7 @@ const ProfilePhoto = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="cursor-pointer h-10 w-10 relative">
+        <div className="cursor-pointer h-8 w-8 relative">
           {loading && (
             <Loader2Icon className="animate-spin absolute top-0 left-0 w-full h-full stroke-blue-600" />
           )}
@@ -165,4 +167,4 @@ const ProfilePhoto = ({
   );
 };
 
-export default ProfilePhoto;
+export default ProfilePhotoEditModel;

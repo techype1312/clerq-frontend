@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import ProfileItem, { RowData } from "./item";
+import ProfileItem from "./item";
+import { RowData } from "@/utils/types";
 
 const ProfileRowContainer = ({ profileData }: { profileData: RowData[] }) => {
   return (
