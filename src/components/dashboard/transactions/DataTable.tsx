@@ -216,7 +216,6 @@ export function DataTable<TData, TValue>({
           amountFilter: amountFilter && amountFilter,
         }
       );
-      console.log(columnFilters);
     } else {
       response = true;
     }
@@ -322,8 +321,6 @@ export function DataTable<TData, TValue>({
     setFiltersChanged(true);
     setPagesVisited([]);
   }, [amountFilter]);
-
-  console.log(openedFilter);
 
   return (
     <>
@@ -539,7 +536,7 @@ export function DataTable<TData, TValue>({
               className="p-1"
             >
               <SymbolIcon icon="upload" />
-              Upload
+              Upload New
             </Button>
           )}
         </div>

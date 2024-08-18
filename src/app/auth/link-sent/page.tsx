@@ -43,7 +43,6 @@ const LinkSentPage = () => {
     setLoading(true);
     const searchParams = "magic_link=true";
     const res = await AuthApis.login(searchParams, e);
-    console.log(res);
     if (res && res.status === 200) {
       toast.success("Check your inbox email sent successfully");
     } else {

@@ -308,7 +308,7 @@ export const patchResponse = async (
 export const patchResponseFormData = async (
   url: string,
   payload: any,
-  token: string,
+  token: string | null,
   ucrmKey?: string | null,
   retry: boolean = false
 ) => {
@@ -351,10 +351,12 @@ export const patchResponseFormData = async (
 export const postResponseFormData = async (
   url: string,
   payload: any,
+  token: string | null,
+  ucrmKey?: string | null,
   retry: boolean = false
 ) => {
   const URL = BaseUrl + url;
-  const headers = getHeader(true, null);
+  const headers = getHeader(true, token, ucrmKey);
   return axios
     .post(URL, payload, { headers: headers })
     .then((response) => response)
@@ -366,7 +368,7 @@ export const postResponseFormData = async (
             Cookies.set("token", res?.data?.token);
             if (!retry) {
               // Retry the request with the new token
-              return postResponseFormData(url, payload, true);
+              return postResponseFormData(url, payload, res?.data?.token, ucrmKey, true);
             }
           } else if (
             (res?.status === 401 || res?.status === 403) &&
@@ -414,7 +416,6 @@ export const getResponseWithQueryParams = async (
   if (params.sort) {
     paramsString.sort = JSON.stringify(params.sort);
   }
-  console.log(params?.filters);
   if (params.amountFilter && Object.keys(params.amountFilter).length !== 0) {
     const amount = params.amountFilter.value;
     let amount_from = amount.split("-")[0];
@@ -432,8 +433,6 @@ export const getResponseWithQueryParams = async (
         : {}),
     };
   }
-
-  console.log(params.filters.find((filter: any) => filter.id === "category"));
 
   if (
     params.filters &&
@@ -455,7 +454,6 @@ export const getResponseWithQueryParams = async (
     const sub_categories = params?.filters.filter(
       (filter: any) => filter.id === "sub_categories"
     )[0].value;
-    console.log(sub_categories);
     newFilters = {
       ...newFilters,
       ...(sub_categories ? { sub_categories } : {}),

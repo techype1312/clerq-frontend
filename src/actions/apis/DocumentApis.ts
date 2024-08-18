@@ -1,5 +1,7 @@
+import { convertBase64toFile } from "@/utils/file";
 import * as ApiCalls from "../ApiCalls";
 import { getCookie } from "../cookieUtils";
+import { DocumentTypes } from "@/utils/types/document";
 
 const getAllDocuments = (query: {
   page?: number;
@@ -34,10 +36,64 @@ const shareDocuments = (payload: { documents: string[]; email: string }) => {
   return ApiCalls.postResponse(`documents/send`, payload, token, ucrmKey);
 };
 
-const uploadDocuments = (payload: { documents: string[]; email: string }) => {
+interface IFile {
+  id: number;
+  src: string;
+  name: string;
+  size: string;
+  type: string;
+}
+
+const uploadDocuments = ({
+  fileData,
+  docType,
+  name,
+}: {
+  fileData: IFile;
+  docType: DocumentTypes;
+  name: string;
+}) => {
   const token = getCookie("token") || null;
   const ucrmKey = getCookie("otto_ucrm") || null;
-  return ApiCalls.postResponse(`documents/upload`, payload, token, ucrmKey);
+
+  const formData = new FormData();
+  const file = convertBase64toFile(fileData.src, fileData.name);
+  formData.set("document", file);
+  formData.set("name", name);
+  formData.set("type", docType);
+
+  return ApiCalls.postResponseFormData(
+    `documents/upload`,
+    formData,
+    token,
+    ucrmKey
+  );
+};
+
+const updateDocuments = (
+  id: string,
+  payload: {
+    docType: DocumentTypes;
+    name: string;
+    fileData: IFile;
+  }
+) => {
+  const token = getCookie("token") || null;
+  const ucrmKey = getCookie("otto_ucrm") || null;
+
+  const formData = new FormData();
+  const file = convertBase64toFile(payload.fileData.src, payload.fileData.name);
+  console.log(file);
+  formData.set("document", file);
+  formData.set("name", payload.name);
+  formData.set("type", payload.docType);
+
+  return ApiCalls.patchResponseFormData(
+    `documents/upload/${id}`,
+    formData,
+    token,
+    ucrmKey
+  );
 };
 
 const generateDocuments = (docType: string) => {
@@ -56,6 +112,7 @@ const DocumentApis = {
   uploadDocuments,
   getAllDocuments,
   shareDocuments,
+  updateDocuments,
 };
 
 export default DocumentApis;

@@ -281,6 +281,12 @@ export const shareDocumentsSchema = z.object({
     .email(),
 });
 
+export const updateDocumentsSchema = z.object({
+  title: z.string({
+    required_error: "Title is required",
+  }),
+});
+
 export const addressSchema = z.object({
   address: z.object({
     address_line_1: z.string({

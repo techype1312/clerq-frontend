@@ -31,7 +31,6 @@ const VerifyHashPage = () => {
       hasRunRef.current = true;
       const verifyMagicLinkHash = async () => {
         const res = await AuthApis.verifyMagicLinkHash(hash);
-        console.log(res, "res", hash);
         if (res.status === 200) {
           if (res.data && res.data.token && res.data.refreshToken) {
             Cookies.set("refreshToken", res.data.refreshToken, {

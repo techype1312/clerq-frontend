@@ -23,7 +23,6 @@ const W9Form = () => {
       const pdfDoc = await PDFDocument.load(formPdfBytes);
 
       const form = pdfDoc.getForm();
-      console.log(form.getFields(), form.getFields()[22].getName());
       const nameField = form.getTextField(
         "topmostSubform[0].Page1[0].f1_01[0]"
       );
@@ -67,7 +66,6 @@ const W9Form = () => {
     try {
       createPdf();
       //   const response = await axios.post('/api/w9', formData);
-      //   console.log('Data submitted successfully:', response.data);
     } catch (error) {
       console.error("Error submitting data:", error);
     }

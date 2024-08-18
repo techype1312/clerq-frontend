@@ -15,7 +15,6 @@ const VerifyUserPage = () => {
   const { userdata, setuserdata, refetchUserData, setRefetchUserData } =
     useContext(UserContext);
   const changeStep = (step: number) => {
-    console.log("caleed", step);
     setStep(step);
     if (totalSteps === 3) {
       router.push(
