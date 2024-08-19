@@ -67,7 +67,7 @@ const DashboardTop = () => {
             <DropdownMenuItem
               className="py-2 cursor-pointer"
               onClick={() => {
-                router.push("/dashboard/settings/my-profile");
+                router.push("/dashboard/my-profile");
               }}
             >
               Profile
@@ -75,7 +75,7 @@ const DashboardTop = () => {
             <DropdownMenuItem
               className="py-2 cursor-pointer"
               onClick={() => {
-                router.push("/dashboard/settings/company-profile");
+                router.push("/dashboard/company-profile");
               }}
             >
               Settings

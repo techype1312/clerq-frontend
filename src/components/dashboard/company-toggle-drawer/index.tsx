@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 const CompanyToggleDrawer = () => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const {
     myCompanyMappings = [],
@@ -26,7 +27,7 @@ const CompanyToggleDrawer = () => {
 
   return (
     <Fragment>
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
@@ -50,36 +51,11 @@ const CompanyToggleDrawer = () => {
                 {currentUcrm.company.name}
               </p>
             </div>
-            <SymbolIcon icon="unfold_more" />
+            {open ? <SymbolIcon icon="keyboard_arrow_up" /> : <SymbolIcon icon="keyboard_arrow_down" />}
+            
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 ml-4">
-          <DropdownMenuGroup className="my-3">
-            <DropdownMenuItem
-              className="my-2 cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/settings/company-profile");
-              }}
-            >
-              Company Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="my-2 cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/settings/controls");
-              }}
-            >
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="my-2 cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/documents");
-              }}
-            >
-              Documents
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
           <p className="text-muted px-2 py-1">{"Switch accounts"}</p>
           <DropdownMenuSeparator />
           <DropdownMenuGroup className="my-3">
@@ -118,13 +94,6 @@ const CompanyToggleDrawer = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem className="my-2 cursor-pointer">
             Add new account
-          </DropdownMenuItem>
-          <DropdownMenuItem className="my-2 cursor-pointer">
-            Support
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="my-3 cursor-pointer">
-            Log out
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

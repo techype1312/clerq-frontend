@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useUserContext } from "@/context/User";
 import CompanyToggleDrawer from "./company-toggle-drawer";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
@@ -19,23 +17,21 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   return (
     <Link
       className={`${
-        isActive ? "text-black font-medium" : "text-primary background-light"
-      } px-4 rounded py-2`}
+        isActive ? "text-black font-normal" : "text-primary background-light"
+      } px-4 rounded py-1 ml-7`}
       href={href}
       onClick={() => {
         setOpen(false);
       }}
     >
-      <p className="flex items-center gap-2">{children}</p>
+      <p className="flex items-center gap-2 text-sm">{children}</p>
     </Link>
   );
 };
 
 const DashboardSidebar = ({ isOpen, setOpen }: any) => {
-  const router = useRouter();
   const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number>(300);
-  const { userData } = useUserContext();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,12 +48,19 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       });
     };
   }, []);
+
   const items = pathname.startsWith("/dashboard") ? (
     <>
+      {/* Company Section */}
+      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        <SymbolIcon icon="apartment" size={24} />
+        <span>Company</span>
+      </div>
       <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
         <SymbolIcon
           icon="home"
           color={pathname === "/dashboard" ? "#5266EB" : ""}
+          size={20}
         />
         Home
       </SidebarLink>
@@ -66,7 +69,11 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         href="/dashboard/deal-tracker"
         setOpen={setOpen}
       >
-        <Image src="/dollarWithArrow.svg" alt="a" width={24} height={24} />
+        <SymbolIcon
+          icon="mintmark"
+          color={pathname === "/dashboard/deal-tracker" ? "#5266EB" : ""}
+          size={20}
+        />
         Deal tracker
       </SidebarLink>
       <SidebarLink
@@ -77,6 +84,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         <SymbolIcon
           icon="attach_money"
           color={pathname === "/dashboard/transactions" ? "#5266EB" : ""}
+          size={20}
         />
         Transactions
       </SidebarLink>
@@ -88,6 +96,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         <SymbolIcon
           icon="import_contacts"
           color={pathname === "/dashboard/income-statement" ? "#5266EB" : ""}
+          size={20}
         />
         Income statements
       </SidebarLink>
@@ -99,6 +108,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         <SymbolIcon
           icon="monitoring"
           color={pathname === "/dashboard/balance-sheet" ? "#5266EB" : ""}
+          size={20}
         />
         Balance sheets
       </SidebarLink>
@@ -110,6 +120,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         <SymbolIcon
           icon="article"
           color={pathname === "/dashboard/documents" ? "#5266EB" : ""}
+          size={20}
         />
         Documents
       </SidebarLink>
@@ -121,8 +132,82 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         <SymbolIcon
           icon="account_balance"
           color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""}
+          size={20}
         />
         Bank connections
+      </SidebarLink>
+
+      {/* Settings Section */}
+      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        <SymbolIcon icon="settings" size={24} />
+        <span>Settings</span>
+      </div>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/company-profile"
+        setOpen={setOpen}
+      >
+        <SymbolIcon
+          icon="source_environment"
+          color={pathname === "/dashboard/company-profile" ? "#5266EB" : ""}
+          size={20}
+        />
+        Company Profile
+      </SidebarLink>
+
+      <SidebarLink pathname={pathname} href="/dashboard/team" setOpen={setOpen}>
+        <SymbolIcon
+          icon="group"
+          color={pathname === "/dashboard/team" ? "#5266EB" : ""}
+          size={20}
+        />
+        Team
+      </SidebarLink>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/controls"
+        setOpen={setOpen}
+      >
+        <SymbolIcon
+          icon="tune"
+          color={pathname === "/dashboard/controls" ? "#5266EB" : ""}
+          size={20}
+        />
+        Controls
+      </SidebarLink>
+
+      {/* User Section */}
+      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        <SymbolIcon icon="person" size={24} />
+        <span>Personal</span>
+      </div>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/my-profile"
+        setOpen={setOpen}
+      >
+        <SymbolIcon
+          icon="account_box"
+          color={pathname === "/dashboard/my-profile" ? "#5266EB" : ""}
+          size={20}
+        />
+        My profile
+      </SidebarLink>
+
+      <SidebarLink
+        pathname={pathname}
+        href="/dashboard/notifications"
+        setOpen={setOpen}
+      >
+        <SymbolIcon
+          icon="edit_notifications"
+          color={pathname === "/dashboard/notifications" ? "#5266EB" : ""}
+          size={20}
+        />
+        Notifications
       </SidebarLink>
     </>
   ) : (
@@ -150,7 +235,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </div>
       <div className="flex flex-col mt-0 gap-4">
         <CompanyToggleDrawer />
-        <div className="flex flex-col gap-4 px-2">{items}</div>
+        <div className="flex flex-col gap-3 px-2">{items}</div>
       </div>
     </div>
   );
