@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { useCompanySession } from "@/context/CompanySession";
+import { useCompanySessionContext } from "@/context/CompanySession";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
@@ -20,7 +20,7 @@ const CompanyToggleDrawer = () => {
     myCompanyMappings = [],
     currentUcrm,
     switchCompany,
-  } = useCompanySession();
+  } = useCompanySessionContext();
 
   if (!currentUcrm || !myCompanyMappings.length) return null;
 

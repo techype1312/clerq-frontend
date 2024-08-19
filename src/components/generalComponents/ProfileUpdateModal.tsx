@@ -13,14 +13,17 @@ import AutoForm from "../ui/auto-form";
 import { toast } from "react-toastify";
 import { DependencyType } from "../ui/auto-form/types";
 import { RowData } from "@/types/general";
+import { Loader2Icon } from "lucide-react";
 
 const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
   const [schema, setSchema] = useState<any>({});
   const [values, setValues] = useState<any>({});
   const [config, setConfig] = useState<any>({});
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const configId = rowData.id?.includes('address') ? 'address' : rowData.id;
+    const configId = rowData.id?.includes("address") ? "address" : rowData.id;
     setConfig({
       [configId]: {
         fieldType: rowData.type,
@@ -37,7 +40,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
   }, [rowData]);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant={"ghost"}
@@ -58,9 +61,15 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                 if (rowData.id.includes("address")) {
                   return;
                 } else {
+                  setLoading(true);
                   return rowData.actions?.onUpdate(values).then((res: any) => {
                     if (res?.status === 200) {
-                      toast.success(`Successfully updated ${rowData.label}`);
+                      setOpen(false);
+                      setLoading(false);
+                      toast.success(`Successfully updated ${rowData.label}`, {
+                        position: "bottom-center",
+                        hideProgressBar: true,
+                      });
                     }
                   });
                 }
@@ -88,12 +97,17 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
               ]}
             >
               <div className="w-full flex flex-row gap-4 justify-end items-center !mt-5">
-                <DialogClose asChild>
+                <DialogClose asChild disabled={loading}>
                   <Button className="text-primary" variant="outline">
                     Close
                   </Button>
                 </DialogClose>
-                <Button className="background-primary" type="submit">
+                <Button
+                  className="background-primary"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading && <Loader2Icon className="animate-spin" />}
                   Save
                 </Button>
               </div>

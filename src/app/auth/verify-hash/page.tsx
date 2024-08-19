@@ -2,16 +2,16 @@
 
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useContext, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
 import Cookies from "js-cookie";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 
 const VerifyHashPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userdata, setuserdata } = useContext(UserContext);
+  const { updateUserLocalData } = useUserContext();
   const error = searchParams.get("error");
   const hash = searchParams.get("hash");
   const error_description = searchParams.get("error_description");
@@ -42,7 +42,7 @@ const VerifyHashPage = () => {
               res?.data?.user?.onboarding_completed ? "true" : "false"
             );
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            setuserdata(res.data.user);
+            updateUserLocalData(res.data.user);
             router.push("/dashboard");
           }
         }

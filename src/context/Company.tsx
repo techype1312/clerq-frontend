@@ -11,8 +11,9 @@ import isEmpty from "lodash/isEmpty";
 import isObject from "lodash/isObject";
 import CompanyApis from "@/actions/apis/CompanyApis";
 import { ErrorProps } from "@/types/general";
-import { useCompanySession } from "./CompanySession";
-import { ICompany, ICompanyContext, IImageFileType } from "@/types/company";
+import { useCompanySessionContext } from "./CompanySession";
+import { ICompany, ICompanyContext } from "@/types/company";
+import { IImageFileType } from "@/types/file";
 
 export const CompanyContext = createContext<ICompanyContext>({} as ICompanyContext);
 
@@ -22,7 +23,7 @@ export const CompanyContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { currentUcrm } = useCompanySession();
+  const { currentUcrm } = useCompanySessionContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [companyData, setCompanyData] = useState<ICompany>();
@@ -53,6 +54,7 @@ export const CompanyContextProvider = ({
     if (res.data) {
       setCompanyData(res.data);
     }
+    return res;
   };
 
   const updateCompanyData = async (payload: Record<string, any>) => {

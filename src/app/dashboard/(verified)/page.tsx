@@ -1,6 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { supabase } from "@/utils/supabase/client";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   bookKeepingStatusType,
@@ -12,10 +11,10 @@ import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 
 const Page = () => {
-  const {userdata} = useContext(UserContext)
+  const {userData} = useUserContext()
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
     {
       title: "Last 7 days",
@@ -161,7 +160,7 @@ const Page = () => {
       </div>
       <TopExpenses topExpenses={topExpenses} />
       <ProfitNLoss profitNLoss={profitNLoss} />
-      {/* <Step4 userdata={userdata} /> */}
+      {/* <Step4 userData={userData} /> */}
     </div>
   );
 };

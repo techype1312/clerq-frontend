@@ -12,11 +12,11 @@ import AuthApis from "@/actions/apis/AuthApis";
 
 const Step4 = ({
   changeStep,
-  userdata,
+  userData,
   step,
 }: {
   changeStep: (step: number) => void;
-  userdata: any;
+  userData: any;
   step: number;
 }) => {
   const router = useRouter();
@@ -50,7 +50,7 @@ const Step4 = ({
   const { open, exit, ready } = usePlaidLink(config);
 
   useEffect(() => {
-    if (userdata?.id && !companyId) {
+    if (userData?.id && !companyId) {
       const fetchCompanyData = async () => {
         const res = await CompanyApis.getAllCompanies();
         setCompanyId(res.data?.data[0]?.id);
@@ -58,7 +58,7 @@ const Step4 = ({
 
       fetchCompanyData();
     }
-  }, [userdata?.id, companyId]);
+  }, [userData?.id, companyId]);
 
   useEffect(() => {
     if (companyId && !linkToken) {

@@ -3,11 +3,11 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import CompanyToggleDrawer from "./company-toggle-drawer";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
@@ -35,7 +35,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const router = useRouter();
   const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number>(300);
-  const { userdata } = useContext(UserContext);
+  const { userData } = useUserContext();
 
   useEffect(() => {
     if (typeof window !== "undefined") {

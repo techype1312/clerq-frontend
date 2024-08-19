@@ -1,13 +1,14 @@
 "use client";
 
-import ProfileRowContainer from "@/components/dashboard/profile";
-import { UserContext } from "@/context/User";
-import { addressSchema } from "@/types/schema-embedded";
+import React, { useEffect, useState } from "react";
+import isEmpty from "lodash/isEmpty";
+import Image from "next/image";
+import { useUserContext } from "@/context/User";
 import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
-import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
-import { z } from "zod";
+import { UserUpdateSchema } from "@/types/schemas/user";
+import ProfileRowContainer from "@/components/dashboard/profile";
+import { Loader2Icon } from "lucide-react";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -45,177 +46,183 @@ const RoleItem = ({ label }: { label: string }) => {
   );
 };
 
-const preferred_name_schema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-});
-const legal_name_schema = z.object({
-  legalFirstName: z.string(),
-  legalLastName: z.string(),
-});
-const dob_schem = z.object({
-  dob: z
-    .date()
-    .min(new Date("1900-01-01"), {
-      message: "A valid date of birth is required",
-    })
-    .refine(
-      (value) =>
-        value < new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
-      {
-        message: "Date of birth cannot be less than 18 years ago",
-      }
-    ),
-});
-const phone_schema = z.object({ phone: z.string() });
-
 const Page = () => {
-  const { userdata, otherUserData } = useContext(UserContext);
+  const {
+    loading,
+    error,
+    userData,
+    updateUserPhoto,
+    removeUserPhoto,
+    updateUserData,
+  } = useUserContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
   useEffect(() => {
-    setRowData([
-      {
-        id: "email",
-        label: "Email",
-        formattedValue: userdata?.email ?? "",
-        values: { email: userdata?.email ?? "" },
-        type: "text",
-        isEditable: false,
-      },
-      {
-        id: "preferred_name",
-        label: "Preferred name",
-        formattedValue: userdata?.firstName + " " + userdata?.lastName,
-        type: "text",
-        isEditable: true,
-        values: {
-          firstName: userdata?.firstName,
-          lastName: userdata?.lastName,
+    if (isEmpty(userData)) {
+      setRowData([]);
+    } else {
+      setRowData([
+        {
+          id: "email",
+          label: "Email",
+          formattedValue: userData?.email ?? "",
+          values: { email: userData?.email ?? "" },
+          type: "text",
+          isEditable: false,
         },
-        schema: preferred_name_schema,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "legal_name",
-        label: "Legal name",
-        formattedValue:
-          userdata?.legalFirstName + " " + userdata?.legalLastName,
-        values: {
-          legalFirstName: userdata?.legalFirstName,
-          legalLastName: userdata?.legalLastName,
-        },
-        type: "text",
-        isEditable: true,
-        schema: legal_name_schema,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "photo",
-        label: "Profile Image",
-        description: "This will appear on Otto next to your profile name.",
-        values: {
-          logo: userdata?.logo,
-          name: userdata?.firstName,
-        },
-        type: "photo",
-        isEditable: true,
-        actions: {
-          updatePhoto: async (data: any) => console.log(data),
-          removePhoto: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "dob",
-        label: "Date of birth",
-        formattedValue: userdata?.dob,
-        values: { dob: userdata?.dob },
-        type: "date",
-        isEditable: true,
-        schema: dob_schem,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "phone",
-        label: "Phone no.",
-        values: {
-          country_code: userdata?.country_code,
-          phone: userdata?.phone,
-        },
-        formattedValue: userdata?.country_code + userdata?.phone,
-        type: "phone",
-        isEditable: true,
-        schema: phone_schema,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "mailing_address",
-        label: "Mailing Address",
-        values: {
-          address: {
-            country: "United States",
-            address_line_1: userdata?.mailing_address?.address_line_1,
-            address_line_2: userdata?.mailing_address?.address_line_2,
-            city: userdata?.mailing_address?.city,
-            postal_code: userdata?.mailing_address?.postal_code,
-            state: userdata?.mailing_address?.state,
+        {
+          id: "legal_name",
+          label: "Legal name",
+          formattedValue:
+            userData?.legalFirstName + " " + userData?.legalLastName,
+          values: {
+            legalFirstName: userData?.legalFirstName,
+            legalLastName: userData?.legalLastName,
           },
-          address_id: userdata?.mailing_address?.id,
-        },
-        formattedValue: formatAddress(userdata?.mailing_address),
-        type: "address_modal",
-        isEditable: true,
-        schema: addressSchema,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
-        },
-      },
-      {
-        id: "legal_address",
-        label: "Legal Address",
-        values: {
-          address: {
-            country: "United States",
-            address_line_1: userdata?.legal_address?.address_line_1,
-            address_line_2: userdata?.legal_address?.address_line_2,
-            city: userdata?.legal_address?.city,
-            postal_code: userdata?.legal_address?.postal_code,
-            state: userdata?.legal_address?.state,
+          type: "text",
+          isEditable: true,
+          schema: UserUpdateSchema.legalName,
+          actions: {
+            onUpdate: updateUserData,
           },
-          address_id: userdata?.legal_address?.id,
         },
-        formattedValue: formatAddress(userdata?.legal_address),
-        type: "address_modal",
-        isEditable: true,
-        schema: addressSchema,
-        actions: {
-          onUpdate: async (data: any) => console.log(data),
+        {
+          id: "preferred_name",
+          label: "Preferred name",
+          formattedValue: userData?.firstName + " " + userData?.lastName,
+          type: "text",
+          isEditable: true,
+          values: {
+            firstName: userData?.firstName,
+            lastName: userData?.lastName,
+          },
+          schema: UserUpdateSchema.preferredName,
+          actions: {
+            onUpdate: updateUserData,
+          },
         },
-      },
-      // {
-      //   id: "social",
-      //   label: "Social",
-      //   // value: userdata?.social,
-      //   value: [
-      //     { facebook: "https://www.facebook.com/" },
-      //     { twitter: "https://www.twitter.com/" },
-      //   ],
-      //   type: "text",
-      //   isEditable: true,
-      //   company: false,
-      // },
-    ]);
-  }, [userdata, otherUserData]);
+        {
+          id: "photo",
+          label: "Profile Image",
+          description: "This will appear on Otto next to your profile name.",
+          values: {
+            logo: userData?.photo,
+            name: userData?.firstName,
+          },
+          type: "photo",
+          isEditable: true,
+          actions: {
+            updatePhoto: updateUserPhoto,
+            removePhoto: removeUserPhoto,
+          },
+        },
+        {
+          id: "dob",
+          label: "Date of birth",
+          formattedValue: userData?.dob,
+          values: { dob: userData?.dob },
+          type: "date",
+          isEditable: true,
+          schema: UserUpdateSchema.dob,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
+        },
+        {
+          id: "phone",
+          label: "Phone no.",
+          values: {
+            phone: {
+              phoneWithDialCode: `${userData?.country_code} ${userData?.phone}`,
+              countryCode: userData?.country_code,
+              phone: userData?.phone,
+            },
+          },
+          formattedValue: formatPhoneNumber(
+            userData?.phone,
+            userData?.country_code
+          ),
+          type: "phone",
+          isEditable: true,
+          schema: UserUpdateSchema.phone,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
+        },
+        {
+          id: "mailing_address",
+          label: "Mailing Address",
+          values: {
+            address: {
+              country: "United States",
+              address_line_1: userData?.mailing_address?.address_line_1,
+              address_line_2: userData?.mailing_address?.address_line_2,
+              city: userData?.mailing_address?.city,
+              postal_code: userData?.mailing_address?.postal_code,
+              state: userData?.mailing_address?.state,
+            },
+            address_id: userData?.mailing_address?.id,
+          },
+          formattedValue: userData.mailing_address
+            ? formatAddress(userData.mailing_address)
+            : "",
+          type: "address_modal",
+          isEditable: true,
+          schema: UserUpdateSchema.address,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
+        },
+        {
+          id: "legal_address",
+          label: "Legal Address",
+          values: {
+            address: {
+              country: "United States",
+              address_line_1: userData?.legal_address?.address_line_1,
+              address_line_2: userData?.legal_address?.address_line_2,
+              city: userData?.legal_address?.city,
+              postal_code: userData?.legal_address?.postal_code,
+              state: userData?.legal_address?.state,
+            },
+            address_id: userData?.legal_address?.id,
+          },
+          formattedValue: userData.legal_address
+            ? formatAddress(userData.legal_address)
+            : "",
+          type: "address_modal",
+          isEditable: true,
+          schema: UserUpdateSchema.address,
+          actions: {
+            onUpdate: async (data: any) => console.log(data),
+          },
+        },
+        // {
+        //   id: "social",
+        //   label: "Social",
+        //   // value: userData?.social,
+        //   value: [
+        //     { facebook: "https://www.facebook.com/" },
+        //     { twitter: "https://www.twitter.com/" },
+        //   ],
+        //   type: "text",
+        //   isEditable: true,
+        //   company: false,
+        // },
+      ]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData]);
 
-  if (!userdata) {
+  if (loading) {
+    return (
+      <div className="w-full flex items-center h-12 justify-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (!loading && !userData) {
     return (
       <div className="w-full flex items-center h-12 justify-center">
         No data found
@@ -227,9 +234,6 @@ const Page = () => {
     <div className="flex flex-col gap-4 lg:mx-20">
       <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
         <Image
-          onClick={() => {
-            console.log("clicked");
-          }}
           src="/profile.png"
           className="rounded-lg"
           alt="logo"
@@ -244,9 +248,9 @@ const Page = () => {
             fontWeight: 380,
           }}
         >
-          {userdata?.firstName} {userdata?.lastName}
+          {userData?.firstName} {userData?.lastName}
         </p>
-        <RoleItem label={userdata?.role?.name ?? ""} />
+        <RoleItem label={userData?.role?.name ?? ""} />
       </div>
       <ProfileRowContainer profileData={rowData} />
     </div>

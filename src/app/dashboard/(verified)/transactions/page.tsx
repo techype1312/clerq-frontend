@@ -4,15 +4,13 @@ import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
-import { TableCell } from "@/components/ui/table";
-import { CompanySessionContext } from "@/context/CompanySession";
-import { supabase } from "@/utils/supabase/client";
+import { useCompanySessionContext } from "@/context/CompanySession";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowUpDown, Loader2Icon } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import Image from "next/image";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 type merchant = {
@@ -259,7 +257,7 @@ const Page = () => {
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const { currentUcrm } = useContext(CompanySessionContext);
+  const { currentUcrm } = useCompanySessionContext();
   useEffect(() => {
     if (!currentUcrm) return;
     BankingApis.getBankAccounts(currentUcrm?.company?.id).then(async (res) => {

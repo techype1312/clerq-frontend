@@ -1,11 +1,10 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -19,7 +18,7 @@ import {
 
 const DashboardTop = () => {
   const router = useRouter();
-  const { userdata } = useContext(UserContext);
+  const { userData } = useUserContext();
 
   const handleLogout = async () => {
     return AuthApis.signOut().then(() => {
@@ -58,9 +57,9 @@ const DashboardTop = () => {
           <DropdownMenuLabel className="py-2">
             <div className="flex flex-col">
               <p className="text-label">
-                {userdata?.firstName} {userdata?.lastName}
+                {userData?.firstName} {userData?.lastName}
               </p>
-              <p className="text-muted">{userdata?.email}</p>
+              <p className="text-muted">{userData?.email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

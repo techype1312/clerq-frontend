@@ -1,16 +1,14 @@
 "use client";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useContext, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import AuthApis from "@/actions/apis/AuthApis";
-import { UserContext } from "@/context/User";
 import { toast } from "react-toastify";
 
 const ConfirmEmailPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userdata, setuserdata } = useContext(UserContext);
   const error = searchParams.get("error");
   const hash = searchParams.get("hash");
   const error_description = searchParams.get("error_description");

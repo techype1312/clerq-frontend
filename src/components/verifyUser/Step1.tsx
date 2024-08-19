@@ -2,7 +2,7 @@
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AutoFormInputComponentProps,
   DependencyType,
@@ -12,21 +12,21 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import AuthApis from "@/actions/apis/AuthApis";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/apis/CompanyApis";
 
 const Step1 = ({
   changeStep,
-  userdata,
-  setuserdata,
+  userData,
+  updateUserLocalData,
   setTotalSteps,
   totalSteps,
   staticForFirstTime,
   setStaticForFirstTime,
 }: {
   changeStep: (step: number) => void;
-  userdata: any;
-  setuserdata: any;
+  userData: any;
+  updateUserLocalData: any;
   setTotalSteps: (steps: number) => void;
   totalSteps: number;
   staticForFirstTime: boolean;
@@ -38,7 +38,7 @@ const Step1 = ({
     Address | any | undefined
   >();
   const { refetchUserData, setRefetchUserData, refreshUser } =
-    useContext(UserContext);
+    useUserContext();
 
   const [companyData, setCompanyData] = useState<any>();
 
@@ -53,9 +53,9 @@ const Step1 = ({
       await CompanyApis.createCompany({
         email: userData?.email,
         name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
-        phone: userdata?.phone,
+        phone: userData?.phone,
         country_code: 91, // change to 1
-        ein: userdata?.phone,
+        ein: userData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
       });
@@ -63,10 +63,10 @@ const Step1 = ({
       // Update Existings company details
       await CompanyApis.updateCompany(companyData[0].id, {
         email: userData?.email,
-        name: `${userdata?.legalFirstName} ${userdata?.legalLastName}`,
-        phone: userdata?.phone,
+        name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
+        phone: userData?.phone,
         country_code: 91, // change to 1
-        ein: userdata?.phone,
+        ein: userData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
       });
@@ -77,8 +77,8 @@ const Step1 = ({
     delete userData.address_id;
     delete userData.mailing_address_id;
     delete userData.company;
-    userData.legalFirstName = e.name.legalFirstName ?? userdata.firstName;
-    userData.legalLastName = e.name.legalLastName ?? userdata.lastName;
+    userData.legalFirstName = e.name.legalFirstName ?? userData.firstName;
+    userData.legalLastName = e.name.legalLastName ?? userData.lastName;
     delete userData.name;
     (userData.tax_residence_country = "US"),
       delete userData.tax_residence_country;
@@ -160,24 +160,24 @@ const Step1 = ({
       setRefetchUserData(!refetchUserData);
       return;
     } else if (!addressDataLoaded) {
-      if (userdata?.legal_address?.id)
-        setAddressId(userdata?.legal_address?.id);
-      if (userdata?.mailing_address?.id)
-        setMailingAddressId(userdata?.mailing_address?.id);
+      if (userData?.legal_address?.id)
+        setAddressId(userData?.legal_address?.id);
+      if (userData?.mailing_address?.id)
+        setMailingAddressId(userData?.mailing_address?.id);
       if (
-        userdata?.legal_address &&
-        userdata?.legal_address?.id !== userdata?.mailing_address.id
+        userData?.legal_address &&
+        userData?.legal_address?.id !== userData?.mailing_address.id
       ) {
         setIsMailingAddressSame(false);
       } else {
         setIsMailingAddressSame(true);
       }
-      if (userdata?.legal_address) setAddress(userdata?.legal_address);
-      if (userdata?.mailing_address)
-        setMailingAddress(userdata?.mailing_address);
+      if (userData?.legal_address) setAddress(userData?.legal_address);
+      if (userData?.mailing_address)
+        setMailingAddress(userData?.mailing_address);
       setAddressDataLoaded(true);
     }
-  }, [userdata, userRefetch, addressDataLoaded]);
+  }, [userData, userRefetch, addressDataLoaded]);
 
   useEffect(() => {
     CompanyApis.getAllCompanies().then((res) => {
@@ -197,8 +197,8 @@ const Step1 = ({
             inputProps: {
               placeholder: "John",
               onChange: (e: any) => {
-                setuserdata({
-                  ...userdata,
+                updateUserLocalData({
+                  ...userData,
                   legalFirstName: e.target.value,
                 });
               },
@@ -208,8 +208,8 @@ const Step1 = ({
             inputProps: {
               placeholder: "Doe",
               onChange: (e: any) => {
-                setuserdata({
-                  ...userdata,
+                updateUserLocalData({
+                  ...userData,
                   legalLastName: e.target.value,
                 });
               },
@@ -220,8 +220,8 @@ const Step1 = ({
           inputProps: {
             // date component uses onSelect instead of onChange
             onSelect: (e: any) => {
-              setuserdata({
-                ...userdata,
+              updateUserLocalData({
+                ...userData,
                 dob: e,
               });
             },
@@ -288,8 +288,8 @@ const Step1 = ({
             placeholder: "Select country",
             disabled: true,
             onChange: (e: any) => {
-              setuserdata({
-                ...userdata,
+              updateUserLocalData({
+                ...userData,
                 tax_residence_country: e.currentTarget.value,
               });
             },
@@ -366,19 +366,19 @@ const Step1 = ({
       ]}
       values={{
         name: {
-          legalFirstName: userdata?.legalFirstName
-            ? userdata?.legalFirstName
-            : userdata?.firstName,
-          legalLastName: userdata?.legalLastName
-            ? userdata?.legalLastName
-            : userdata?.lastName,
+          legalFirstName: userData?.legalFirstName
+            ? userData?.legalFirstName
+            : userData?.firstName,
+          legalLastName: userData?.legalLastName
+            ? userData?.legalLastName
+            : userData?.lastName,
         },
-        email: userdata?.email,
-        phone: userdata?.phone ?? "",
+        email: userData?.email,
+        phone: userData?.phone ?? "",
         tax_residence_country:
-          userdata?.tax_residence_country ?? "United States (US)",
-        date_of_birth: userdata?.dob
-          ? new Date(userdata?.dob ?? "")
+          userData?.tax_residence_country ?? "United States (US)",
+        date_of_birth: userData?.dob
+          ? new Date(userData?.dob ?? "")
           : undefined,
         address: {
           address_line_1: address ? address?.address_line_1 : "",

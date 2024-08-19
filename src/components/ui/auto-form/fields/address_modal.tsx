@@ -5,8 +5,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { FieldConfig } from "../types";
-import { useContext, useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import AutoFormObject from "./object";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -15,7 +14,7 @@ import GooglePlacesAutocomplete, {
   getLatLng,
 } from "react-google-places-autocomplete";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import { Servers } from "../../../../../config";
 
 type AutoFormModalComponentProps = {
@@ -42,7 +41,7 @@ export default function AutoFormAddressModal({
   isPresent = false,
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
-  const { refreshUser } = useContext(UserContext);
+  const { refreshUser } = useUserContext();
   useEffect(() => {
     if (isPresent) {
       setSaved(true);

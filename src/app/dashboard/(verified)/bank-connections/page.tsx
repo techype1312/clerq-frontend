@@ -5,11 +5,11 @@ import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
 import BankingApis from "@/actions/apis/BankingApis";
 import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
-import { useCompanySession } from "@/context/CompanySession";
+import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 
 const Page = () => {
-  const { currentUcrm } = useCompanySession();
+  const { currentUcrm } = useCompanySessionContext();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
@@ -55,7 +55,7 @@ const Page = () => {
         ) : (
           <AccountsTable
             accounts={bankAccounts}
-            companyId={currentUcrm?.company?.id}
+            companyId={currentUcrm?.company?.id as string}
           />
         )}
       </div>

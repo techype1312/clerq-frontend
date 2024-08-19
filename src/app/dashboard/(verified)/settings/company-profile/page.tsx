@@ -35,7 +35,7 @@ const CompanyContainer = () => {
           values: {
             legalName: companyData.name,
           },
-          schema: CompanyUpdateSchema.legal_name,
+          schema: CompanyUpdateSchema.legalName,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -49,7 +49,7 @@ const CompanyContainer = () => {
           values: {
             dbaName: companyData.name,
           },
-          schema: CompanyUpdateSchema.dba_name,
+          schema: CompanyUpdateSchema.dbaName,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -79,7 +79,7 @@ const CompanyContainer = () => {
           values: {
             companyName: companyData.name,
           },
-          schema: CompanyUpdateSchema.company_name,
+          schema: CompanyUpdateSchema.companyName,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -109,12 +109,15 @@ const CompanyContainer = () => {
           type: "phone",
           isEditable: true,
           values: {
-            country_code: companyData.country_code,
-            phone: companyData.phone,
+            phone: {
+              phoneWithDialCode: `${companyData.country_code} ${companyData.phone}`,
+              countryCode: companyData.country_code,
+              phone: companyData.phone,
+            },
           },
           schema: CompanyUpdateSchema.phone,
           actions: {
-            onUpdate: updateCompanyDetails,
+            onUpdate: async (values) => console.log(values),
           },
         },
         {

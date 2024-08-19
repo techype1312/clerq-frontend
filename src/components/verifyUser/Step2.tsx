@@ -2,16 +2,10 @@
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step2Schema, step2Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import {
-  getCompanyData,
-  insertCompanyData,
-  updateCompanyData,
-} from "@/hooks/useCompany";
-import { getCompanyAddressData, insertAddressData } from "@/hooks/useAddress";
 import CompanyApis from "@/actions/apis/CompanyApis";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import {
   AutoFormInputComponentProps,
   DependencyType,
@@ -33,10 +27,10 @@ const Step2 = ({
   >();
   const [localCompanyData, setLocalCompanyData] = useState<Step2Schema | any>();
   const {
-    userdata: user,
+    userData: user,
     refetchUserData,
     setRefetchUserData,
-  } = useContext(UserContext);
+  } = useUserContext();
   const [address, setAddress] = useState<Address | undefined>();
   const [mailingAddress, setMailingAddress] = useState<Address | undefined>();
   const [addressId, setAddressId] = useState<string | null>(null);
