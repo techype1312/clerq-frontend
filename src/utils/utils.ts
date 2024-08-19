@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, addYears } from "date-fns";
+import { IAddress } from "@/types/address";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -100,16 +101,7 @@ export function formatStringWithCount(count: number, word: string) {
   return `${word}${count > 1 ? 's' : ''}`;
 }
 
-interface Address {
-  country: string;
-  address_line_1: string;
-  address_line_2: string;
-  city: string;
-  state: string;
-  postal_code: string;
-}
-
-export const formatAddress = (address: Address) => {
+export const formatAddress = (address: IAddress) => {
   if (!address) return '';
   const { country, address_line_1, address_line_2, city, state, postal_code } =
     address;

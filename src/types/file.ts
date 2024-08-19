@@ -15,3 +15,16 @@ export enum DocumentUploadStatusEnum {
   FAILED = "failed",
   RETRYING = "retrying",
 }
+
+export interface IImageFileType {
+  id: string;
+  path: string;
+}
+
+export interface ILocalFile {
+  id: number;
+  src: string;
+  name: string;
+  size: string;
+  type: string;
+}

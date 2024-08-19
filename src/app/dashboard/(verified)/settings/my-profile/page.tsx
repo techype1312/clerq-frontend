@@ -3,7 +3,7 @@
 import ProfileRowContainer from "@/components/dashboard/profile";
 import { UserContext } from "@/context/User";
 import { addressSchema } from "@/types/schema-embedded";
-import { RowData } from "@/utils/types";
+import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";

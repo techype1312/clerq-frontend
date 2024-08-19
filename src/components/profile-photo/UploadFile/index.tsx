@@ -14,32 +14,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Dropzone from "@/components/generalComponents/Dropzone";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import { IImageFileType, ILocalFile } from "@/types/file";
 
 const MAX_FILES = 1;
 
-interface IFile {
-  id: number;
-  src: string;
-  name: string;
-  size: string;
-  type: string;
-}
-
-interface Photo {
-  id: string;
-  path: string;
-}
-
 interface UploadFileProps {
-  onUploadSuccess?: (photo: Photo) => void;
+  onUploadSuccess?: (photo: IImageFileType) => void;
 }
 
 const UploadProfilePhoto = (props: UploadFileProps) => {
-  const [files, setFiles] = useState<IFile[]>([]);
+  const [files, setFiles] = useState<ILocalFile[]>([]);
   const [errMsg, setErrMsg] = useState("");
   const [uploadError, setUploadError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fileRes, setFileResponse] = useState<Photo | null>(null);
+  const [fileRes, setFileResponse] = useState<IImageFileType | null>(null);
 
   const fileTooLargeErrMsg = `The overall size of the pdf should not exceed 25mb.`;
 

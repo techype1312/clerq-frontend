@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { Fragment, useState } from "react";
+import { Loader2Icon } from "lucide-react";
+import { IImageFileType } from "@/types/file";
 import {
   Dialog,
   DialogContent,
@@ -11,13 +14,6 @@ import {
 import { Button } from "../ui/button";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import UploadProfilePhoto from "./UploadFile";
-import { Fragment, useState } from "react";
-import { Loader2Icon } from "lucide-react";
-
-interface Photo {
-  id: string;
-  path: string;
-}
 
 const ProfilePhotoEditModel = ({
   updatePhoto,
@@ -28,9 +24,9 @@ const ProfilePhotoEditModel = ({
   canEdit,
   showButtons,
 }: {
-  updatePhoto?: ((logo: Photo) => Promise<false | void>);
+  updatePhoto?: ((logo: IImageFileType) => Promise<false | void>);
   removePhoto?: () => Promise<false | void>;
-  photo?: Photo;
+  photo?: IImageFileType;
   firstName?: string;
   lastName?: string;
   canEdit?: boolean;
@@ -39,7 +35,7 @@ const ProfilePhotoEditModel = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleUpdatePhoto = async (logo: Photo) => {
+  const handleUpdatePhoto = async (logo: IImageFileType) => {
     if (!updatePhoto) return;
     setOpen(false);
     setLoading(true);

@@ -7,18 +7,18 @@ import isObject from "lodash/isObject";
 import { FileRejection } from "react-dropzone";
 import DocumentApis from "@/actions/apis/DocumentApis";
 import { convertFileSize } from "@/utils/file";
-import { DocumentTypes } from "@/utils/types/document";
+import { DocumentTypes, ILocalFile } from "@/types/file";
 import { ErrorProps } from "@/types/general";
 import { updateDocumentsSchema } from "@/types/schema-embedded";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import SymbolIcon from "../../generalComponents/MaterialSymbol/SymbolIcon";
 import Dropzone from "@/components/generalComponents/Dropzone";
+import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 const MAX_FILES = 1;
 
-const FileItem = ({ file }: { file: IFile }) => {
+const FileItem = ({ file }: { file: ILocalFile }) => {
   return (
     <div className="flex flex-row gap-2 items-center border-2 rounded-md py-1 px-6">
       <SymbolIcon icon="draft" />
@@ -30,14 +30,6 @@ const FileItem = ({ file }: { file: IFile }) => {
   );
 };
 
-interface IFile {
-  id: number;
-  src: string;
-  name: string;
-  size: string;
-  type: string;
-}
-
 interface UploadFileProps {
   docType: DocumentTypes;
   hideCloseBtn?: boolean;
@@ -47,7 +39,7 @@ interface UploadFileProps {
 }
 
 const UploadFile = (props: UploadFileProps) => {
-  const [files, setFiles] = useState<IFile[]>([]);
+  const [files, setFiles] = useState<ILocalFile[]>([]);
   const [errMsg, setErrMsg] = useState("");
   const [uploadError, setUploadError] = useState("");
   const [loading, setLoading] = useState(false);

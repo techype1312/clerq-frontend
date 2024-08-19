@@ -11,7 +11,7 @@ import { formatStringWithCount } from "@/utils/utils";
 import {
   DocumentTypes,
   DocumentUploadStatusEnum,
-} from "@/utils/types/document";
+} from "@/types/file";
 import { documentDetails } from "@/utils/constants/document";
 import { useToast } from "@/components/ui/use-toast";
 import {

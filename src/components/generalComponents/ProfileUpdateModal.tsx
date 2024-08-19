@@ -12,7 +12,7 @@ import {
 import AutoForm from "../ui/auto-form";
 import { toast } from "react-toastify";
 import { DependencyType } from "../ui/auto-form/types";
-import { RowData } from "@/utils/types";
+import { RowData } from "@/types/general";
 
 const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
   const [schema, setSchema] = useState<any>({});

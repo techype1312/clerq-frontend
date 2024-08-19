@@ -1,107 +1,25 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import isObject from "lodash/isObject";
+import React, { useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { z } from "zod";
-import { useCompanySession } from "@/context/CompanySession";
-import { ErrorProps } from "@/types/general";
-import { addressSchema } from "@/types/schema-embedded";
-import { RowData } from "@/utils/types";
+import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import { Loader2Icon } from "lucide-react";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import ProfileRowContainer from "@/components/dashboard/profile";
 import ProfilePhoto from "@/components/profile-photo";
+import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
+import { CompanyUpdateSchema } from "@/types/schemas/company";
 
-const company_name_schema = z.object({
-  companyName: z.string(),
-});
-
-const dba_name_schema = z.object({
-  dbaName: z.string(),
-});
-
-const legal_name_schema = z.object({
-  legalName: z.string(),
-});
-
-const ein_schema = z.object({
-  fedralEin: z.string(),
-});
-
-const phone_schema = z.object({ phone: z.string() });
-
-interface Photo {
-  id: string;
-  path: string;
-}
-
-const Page = () => {
-  const { currentUcrm } = useCompanySession();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [companyData, setCompanyData] = useState<Record<string, any>>();
+const CompanyContainer = () => {
+  const {
+    loading,
+    error,
+    companyData,
+    updateCompanyLogo,
+    removeCompanyLogo,
+    updateCompanyDetails,
+  } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
-
-  const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
-    setLoading(false);
-  };
-
-  const onFetchCompanyDetailsSuccess = (res: any) => {
-    if (res.data) {
-      setCompanyData(res.data);
-    }
-    setLoading(false);
-  };
-
-  const fetchCompanyData = useCallback(async () => {
-    if (loading || !currentUcrm?.company?.id) return false;
-    setLoading(true);
-    return CompanyApis.getCompany(currentUcrm?.company?.id).then(
-      onFetchCompanyDetailsSuccess,
-      onError
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
-
-  const onUpdateCompanyDataSuccess = (res: any) => {
-    if (res.data) {
-      setCompanyData(res.data);
-    }
-  };
-
-  const updateCompanyData = async (payload: Record<string, any>) => {
-    if (!currentUcrm?.company?.id) return false;
-    return CompanyApis.updateCompany(currentUcrm?.company?.id, payload).then(
-      onUpdateCompanyDataSuccess,
-      onError
-    );
-  };
-
-  const updateCompanyDetails = async (values: any) => {
-    const payload: Record<string, any> = {};
-    if (values.companyName) {
-      payload.name = values.companyName;
-    }
-    if (!isEmpty(payload)) {
-      return updateCompanyData(payload);
-    }
-  };
-
-  const updateCompanyLogo = async (logo: Photo) => {
-    return updateCompanyData({ logo });
-  };
-
-  const removeCompanyLogo = async () => {
-    return updateCompanyData({ logo: {} });
-  };
-
-  useEffect(() => {
-    fetchCompanyData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
 
   useEffect(() => {
     if (isEmpty(companyData)) {
@@ -117,7 +35,7 @@ const Page = () => {
           values: {
             legalName: companyData.name,
           },
-          schema: legal_name_schema,
+          schema: CompanyUpdateSchema.legal_name,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -131,7 +49,7 @@ const Page = () => {
           values: {
             dbaName: companyData.name,
           },
-          schema: dba_name_schema,
+          schema: CompanyUpdateSchema.dba_name,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -145,7 +63,7 @@ const Page = () => {
           values: {
             fedralEin: companyData.ein,
           },
-          schema: ein_schema,
+          schema: CompanyUpdateSchema.ein,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -161,7 +79,7 @@ const Page = () => {
           values: {
             companyName: companyData.name,
           },
-          schema: company_name_schema,
+          schema: CompanyUpdateSchema.company_name,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -184,14 +102,17 @@ const Page = () => {
         {
           id: "phone",
           label: "Phone number",
-          formattedValue: formatPhoneNumber(companyData.phone, companyData.country_code),
+          formattedValue: formatPhoneNumber(
+            companyData.phone,
+            companyData.country_code
+          ),
           type: "phone",
           isEditable: true,
           values: {
             country_code: companyData.country_code,
             phone: companyData.phone,
           },
-          schema: phone_schema,
+          schema: CompanyUpdateSchema.phone,
           actions: {
             onUpdate: updateCompanyDetails,
           },
@@ -210,7 +131,9 @@ const Page = () => {
           label: "Company mailing address",
           description:
             "We’ll send physical cards and surprise gifts to this address.",
-          formattedValue: formatAddress(companyData.mailing_address),
+          formattedValue: companyData.mailing_address
+            ? formatAddress(companyData.mailing_address)
+            : "",
           type: "address_modal",
           isEditable: true,
           values: {
@@ -224,7 +147,7 @@ const Page = () => {
             },
             address_id: companyData.mailing_address?.id,
           },
-          schema: addressSchema,
+          schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => console.log(data),
           },
@@ -234,7 +157,9 @@ const Page = () => {
           label: "Company legal address",
           description:
             "The billing address for your cards that will appear on bank documents.",
-          formattedValue: formatAddress(companyData.legal_address),
+          formattedValue: companyData.legal_address
+            ? formatAddress(companyData.legal_address)
+            : "",
           type: "address_modal",
           isEditable: true,
           values: {
@@ -248,14 +173,14 @@ const Page = () => {
             },
             address_id: companyData.legal_address?.id,
           },
-          schema: addressSchema,
+          schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => console.log(data),
           },
         },
       ]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyData]);
 
   if (loading) {
@@ -298,6 +223,14 @@ const Page = () => {
       </div>
       <ProfileRowContainer profileData={rowData} />
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <CompanyContextProvider>
+      <CompanyContainer />
+    </CompanyContextProvider>
   );
 };
 

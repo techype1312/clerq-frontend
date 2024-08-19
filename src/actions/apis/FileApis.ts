@@ -1,17 +1,9 @@
 import { convertBase64toFile } from "@/utils/file";
-import * as ApiCalls from "../ApiCalls";
+import { ILocalFile } from "@/types/file";
 import { getCookie } from "../cookieUtils";
-import { DocumentTypes } from "@/utils/types/document";
+import * as ApiCalls from "../ApiCalls";
 
-interface IFile {
-  id: number;
-  src: string;
-  name: string;
-  size: string;
-  type: string;
-}
-
-const uploadFile = ({ fileData }: { fileData: IFile }) => {
+const uploadFile = ({ fileData }: { fileData: ILocalFile }) => {
   const token = getCookie("token") || null;
   const ucrmKey = getCookie("otto_ucrm") || null;
 
