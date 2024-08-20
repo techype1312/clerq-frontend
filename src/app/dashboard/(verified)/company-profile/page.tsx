@@ -111,7 +111,7 @@ const CompanyContainer = () => {
           values: {
             phone: {
               phoneWithDialCode: `${companyData.country_code} ${companyData.phone}`,
-              countryCode: companyData.country_code,
+              country_code: companyData.country_code,
               phone: companyData.phone,
             },
           },

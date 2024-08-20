@@ -58,10 +58,10 @@ export const UserContextProvider = ({
   };
 
   const refreshUser = useCallback(async () => {
-    const token = Cookies.get("token");
-    if (loading || !token) return false;
-    setLoading(true);
-    return AuthApis.profile().then(
+      const token = Cookies.get("token");
+      if (loading || !token) return false;
+      setLoading(true);
+      return AuthApis.profile().then(
       onFetchUserDetailsSuccess,
       onFetchUserDetailsError
     );
@@ -111,6 +111,13 @@ export const UserContextProvider = ({
     }
     if (values.legalLastName) {
       payload.legalLastName = values.legalLastName;
+    }
+    if (values.phone) {
+      payload.phone = values.phone;
+      payload.country_code = values.country_code;
+    }
+    if (values.dob) {
+      payload.dob = values.dob;
     }
     if (!isEmpty(payload)) {
       return updateUserDataDetails(payload);

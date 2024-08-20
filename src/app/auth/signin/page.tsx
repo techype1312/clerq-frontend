@@ -3,11 +3,10 @@ import Link from "next/link";
 import React, { Suspense, useEffect, useRef } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signInSchema, signInWithPhoneSchema } from "@/types/schema-embedded";
-import { login } from "./actions";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import AuthApis from "@/actions/apis/AuthApis";
-import { formatPhone } from "@/utils/utils";
+import { DependencyType } from "@/components/ui/auto-form/types";
 
 const SigninPage = () => {
   const searchParams = useSearchParams();
@@ -61,23 +60,34 @@ const SigninPage = () => {
             formSchema={signInWithPhoneSchema}
             // formAction={login}
             onSubmit={async (e) => {
-              const { localNumber, countryCode } = formatPhone(e.phone);
-              const data = {
-                phone: localNumber,
-                country_code: 91, //countryCode,
-              };
-              const res = await AuthApis.loginWithOtp(data);
-              if (res.status === 200) {
-                router.push(
-                  `/auth/verify-otp?phone=${localNumber}&country_code=${countryCode}`
-                );
-              }
+              // const { localNumber, country_code } = formatPhone(e.phone);
+              console.log(e);
+               const data = {
+                 phone: e.phone,
+                 country_code: e.country_code, //country_code,
+               };
+               const res = await AuthApis.loginWithOtp(data);
+               if (res.status === 200) {
+                 router.push(
+                   `/auth/verify-otp?phone=${e.phone}&country_code=${e.country_code}`
+                 );
+               }
             }}
             fieldConfig={{
               phone: {
                 fieldType: "phone",
               },
             }}
+            dependencies={[
+              {
+                sourceField: "country_code",
+                type: DependencyType.HIDES,
+                targetField: "country_code",
+                when: () => {
+                  return true;
+                },
+              },
+            ]}
             className="flex flex-col gap-4 max-w-lg"
             withSubmitButton={false}
             labelClass="text-label"
