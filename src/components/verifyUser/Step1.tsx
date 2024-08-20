@@ -3,13 +3,7 @@ import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import {
-  AutoFormInputComponentProps,
-  DependencyType,
-} from "../ui/auto-form/types";
-import { FormControl, FormItem } from "../ui/form";
-import { Checkbox } from "../ui/checkbox";
-import { Button } from "../ui/button";
+import { DependencyType } from "../ui/auto-form/types";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import AuthApis from "@/actions/apis/AuthApis";
 import { useUserContext } from "@/context/User";
@@ -37,8 +31,7 @@ const Step1 = ({
   const [mailingAddress, setMailingAddress] = useState<
     Address | any | undefined
   >();
-  const { refetchUserData, setRefetchUserData, refreshUser } =
-    useUserContext();
+  const { refetchUserData, setRefetchUserData, refreshUser } = useUserContext();
 
   const [companyData, setCompanyData] = useState<any>();
 
@@ -47,25 +40,27 @@ const Step1 = ({
     let userData: any = e;
     if (userData?.company === "Yes" && companyData?.length === 0) {
       // Create Company with empty details
-      await CompanyApis.createCompany({});
+      await CompanyApis.createCompany({
+        email: userData?.email, // added email as passing nothing was giving error
+      });
     } else if (userData?.company === "No" && companyData?.length === 0) {
       // Create Company with User details
       await CompanyApis.createCompany({
         email: userData?.email,
         name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
         phone: userData?.phone,
-        country_code: 91, // change to 1
+        country_code: e.country_code, // change to 1
         ein: userData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
       });
     } else if (userData?.company === "No" && companyData?.length > 0) {
-      // Update Existings company details
+      // Update Existing company details
       await CompanyApis.updateCompany(companyData[0].id, {
         email: userData?.email,
         name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
         phone: userData?.phone,
-        country_code: 91, // change to 1
+        country_code: e.country_code, // change to 1
         ein: userData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
@@ -87,10 +82,6 @@ const Step1 = ({
     userData.dob = e.date_of_birth.toUTCString();
     delete userData.date_of_birth;
 
-    // delete userData.lat;
-    // delete userData.lng;
-    // delete userData.lat1;
-    // delete userData.lng1;
     const res = await AuthApis.updateUser(userData);
 
     if (res && res.status === 200) {
@@ -101,56 +92,34 @@ const Step1 = ({
   const [addressId, setAddressId] = useState<string | null>(null);
   const [mailingAddressId, setMailingAddressId] = useState<string | null>(null);
   const [changedAddress, setChangedAddress] = useState(false);
-  const [isMailingAddressSame, setIsMailingAddressSame] = useState(true);
-
+  const [createdAddress, setCreatedAddress] = useState(false);
   useEffect(() => {
-    if (addressId && mailingAddressId) {
-      const updateAndFetchAddress = async () => {
+    const updateAndFetchAddress = async () => {
+      if (addressId && createdAddress) {
         await AuthApis.updateUser({
           legal_address: {
             id: addressId,
           },
+        });
+        refreshUser();
+        setCreatedAddress(false);
+      }
+    };
+    updateAndFetchAddress();
+  }, [addressId, createdAddress]);
+  useEffect(() => {
+    const updateAndFetchAddress = async () => {
+      if (mailingAddressId && createdAddress) {
+        await AuthApis.updateUser({
           mailing_address: {
             id: mailingAddressId,
           },
         });
-        refreshUser()
-        const res = await OnboardingApis.getAddress(addressId);
-        if (res && res.data.status === 200) {
-          setAddress(res.data);
-        }
-        const res1 = await OnboardingApis.getAddress(mailingAddressId);
-        if (res1 && res1.data.status === 200) {
-          setMailingAddress(res1.data);
-        }
-        if (addressId === mailingAddressId) {
-          setIsMailingAddressSame(true);
-        } else {
-          setIsMailingAddressSame(false);
-        }
-      };
-      updateAndFetchAddress();
-    }
-  }, [addressId, mailingAddressId]);
-
-  useEffect(() => {
-    if (isMailingAddressSame && addressId !== mailingAddressId && addressId) {
-      const updateAddress = async () => {
-        const res = await AuthApis.updateUser({
-          mailing_address: {
-            id: addressId,
-          },
-        });
-        const fetchMailingAddress = await OnboardingApis.getAddress(addressId);
-        if (res && res.status === 200 && fetchMailingAddress) {
-          setMailingAddress(fetchMailingAddress.data);
-          setMailingAddressId(addressId);
-        }
-      };
-      updateAddress();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMailingAddressSame]);
+        setCreatedAddress(false);
+      }
+    };
+    updateAndFetchAddress();
+  }, [mailingAddressId, createdAddress]);
 
   const [addressDataLoaded, setAddressDataLoaded] = useState(false);
   const [userRefetch, setUserRefetch] = useState(false);
@@ -160,18 +129,11 @@ const Step1 = ({
       setRefetchUserData(!refetchUserData);
       return;
     } else if (!addressDataLoaded) {
+      console.log("userData", userData);
       if (userData?.legal_address?.id)
         setAddressId(userData?.legal_address?.id);
       if (userData?.mailing_address?.id)
         setMailingAddressId(userData?.mailing_address?.id);
-      if (
-        userData?.legal_address &&
-        userData?.legal_address?.id !== userData?.mailing_address.id
-      ) {
-        setIsMailingAddressSame(false);
-      } else {
-        setIsMailingAddressSame(true);
-      }
       if (userData?.legal_address) setAddress(userData?.legal_address);
       if (userData?.mailing_address)
         setMailingAddress(userData?.mailing_address);
@@ -184,6 +146,21 @@ const Step1 = ({
       setCompanyData(res.data?.data);
     });
   }, []);
+
+  // const clearAddress = async () => {
+  //   setAddress(undefined);
+  //   setMailingAddress(undefined);
+  //   setAddressId(null);
+  //   setMailingAddressId(null);
+  //   await AuthApis.updateUser({
+  //     legal_address: {
+  //       id: null,
+  //     },
+  //     mailing_address: {
+  //       id: null,
+  //     },
+  //   });
+  // };
 
   return (
     <AutoForm
@@ -237,42 +214,8 @@ const Step1 = ({
           },
           fieldType: "modal",
         },
-        is_mailing_address_same: {
-          fieldType: ({ field, fieldProps }: AutoFormInputComponentProps) => (
-            <FormItem id="is_mailing_address_same">
-              <FormControl>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={() => {
-                        if (!field.value) {
-                          setIsMailingAddressSame(true);
-                        }
-                        field.onChange(!field.value);
-                      }}
-                      {...fieldProps}
-                    />
-                    Set as mailing address
-                  </div>
-                  {field.value && (
-                    <Button
-                      onClick={() => {
-                        field.onChange(!field.value);
-                        setIsMailingAddressSame(false);
-                      }}
-                      variant={"ghost"}
-                      className="text-label"
-                    >
-                      + Add mailing address
-                    </Button>
-                  )}
-                </div>
-              </FormControl>
-            </FormItem>
-          ),
-        },
         address: {
+          label: "Legal address",
           fieldType: "modal",
           inputProps: {
             showLabel: false,
@@ -342,12 +285,6 @@ const Step1 = ({
       }}
       dependencies={[
         {
-          sourceField: "is_mailing_address_same",
-          type: DependencyType.HIDES,
-          targetField: "mailing_address",
-          when: (is_mailing_address_same) => is_mailing_address_same,
-        },
-        {
           sourceField: "address_id",
           type: DependencyType.HIDES,
           targetField: "address_id",
@@ -359,6 +296,46 @@ const Step1 = ({
           sourceField: "mailing_address_id",
           type: DependencyType.HIDES,
           targetField: "mailing_address_id",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "country_code",
+          type: DependencyType.HIDES,
+          targetField: "country_code",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "long",
+          type: DependencyType.HIDES,
+          targetField: "long",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "lat",
+          type: DependencyType.HIDES,
+          targetField: "lat",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "long1",
+          type: DependencyType.HIDES,
+          targetField: "long1",
+          when: () => {
+            return true;
+          },
+        },
+        {
+          sourceField: "lat1",
+          type: DependencyType.HIDES,
+          targetField: "lat1",
           when: () => {
             return true;
           },
@@ -375,8 +352,8 @@ const Step1 = ({
         },
         email: userData?.email,
         phone: userData?.phone ?? "",
-        tax_residence_country:
-          userData?.tax_residence_country ?? "United States (US)",
+        country_code: userData?.country_code ?? 1,
+        tax_residence_country: userData?.tax_residence_country ?? "US",
         date_of_birth: userData?.dob
           ? new Date(userData?.dob ?? "")
           : undefined,
@@ -386,37 +363,34 @@ const Step1 = ({
           city: address ? address?.city : "",
           state: address ? address?.state : "",
           postal_code: address?.postal_code ?? "",
-          country: "United States",
+          country: address?.country ?? "US",
         },
-        is_mailing_address_same: isMailingAddressSame,
         mailing_address: {
           address_line_1: mailingAddress ? mailingAddress?.address_line_1 : "",
           address_line_2: mailingAddress ? mailingAddress?.address_line_2 : "",
           city: mailingAddress ? mailingAddress?.city : "",
           state: mailingAddress ? mailingAddress?.state : "",
           postal_code: mailingAddress?.postal_code ?? "",
-          country: "United States",
+          country: mailingAddress?.country ?? "US",
         },
         address_id: addressId ?? "",
         mailing_address_id:
           mailingAddressId !== addressId ? mailingAddressId ?? "" : "",
         company: totalSteps === 3 ? "Yes" : "No",
-        // lat: address?.latitude ?? 0,
-        // lng: address?.longitude ?? 0,
-        // lat1: mailingAddress?.latitude ?? 0,
-        // lng1: mailingAddress?.longitude ?? 0,
+        long: address ? address.longitude : "",
+        lat: address ? address.latitude : "",
+        long1: mailingAddress ? mailingAddress.longitude : "",
+        lat1: mailingAddress ? mailingAddress.latitude : "",
       }}
       className="flex flex-col gap-4 mx-auto max-w-lg"
       zodItemClass="flex flex-row gap-4 space-y-0"
       labelClass="text-label"
       onValuesChange={(values) => {
-        if (values.address_id) {
-          setAddressId(values.address_id);
-        }
-        if (values.mailing_address_id) {
-          setMailingAddressId(values.mailing_address_id);
-        }
-        if (!addressDataLoaded) {
+        if (!addressDataLoaded || values.address_id) {
+          if (values.address_id !== addressId && values.address_id) {
+            setAddressId(values.address_id);
+            setCreatedAddress(true);
+          }
           if (values.address) {
             setAddress({
               address_line_1: values.address.address_line_1,
@@ -424,7 +398,28 @@ const Step1 = ({
               city: values.address.city,
               state: values.address.state,
               postal_code: values.address.postal_code,
+              longitude: values.long,
+              latitude: values.lat,
             });
+            updateUserLocalData({
+              ...userData,
+              legal_address: {
+                id: values.address_id,
+                address_line_1: values.address.address_line_1,
+                address_line_2: values.address.address_line_2,
+                city: values.address.city,
+                state: values.address.state,
+                postal_code: values.address.postal_code,
+                longitude: values.long,
+                latitude: values.lat,
+              },
+            });
+          }
+        }
+        if (!addressDataLoaded || values.mailing_address_id) {
+          if (values.mailing_address_id !== mailingAddressId && values.mailing_address_id) {
+            setMailingAddressId(values.mailing_address_id);
+            setCreatedAddress(true);
           }
           if (values.mailing_address) {
             setMailingAddress({
@@ -433,6 +428,21 @@ const Step1 = ({
               city: values.mailing_address.city,
               state: values.mailing_address.state,
               postal_code: values.mailing_address.postal_code,
+              longitude: values.long1,
+              latitude: values.lat1,
+            });
+            updateUserLocalData({
+              ...userData,
+              mailing_address: {
+                id: values.mailing_address_id,
+                address_line_1: values.mailing_address.address_line_1,
+                address_line_2: values.mailing_address.address_line_2,
+                city: values.mailing_address.city,
+                state: values.mailing_address.state,
+                postal_code: values.mailing_address.postal_code,
+                longitude: values.long1,
+                latitude: values.lat1,
+              },
             });
           }
         }
@@ -444,6 +454,14 @@ const Step1 = ({
       >
         {loading ? <Loader2Icon className="animate-spin" /> : "Next"}
       </AutoFormSubmit>
+      {/* <button
+        onClick={(e) => {
+          e.preventDefault();
+          clearAddress();
+        }}
+      >
+        clearAddress
+      </button> */}
     </AutoForm>
   );
 };

@@ -20,6 +20,7 @@ import {
 } from "../utils";
 import AutoFormModal from "./modal";
 import AutoFormAddressModal from "./address_modal";
+import AutoFormPhone from "./phone";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
@@ -102,7 +103,8 @@ export default function AutoFormObject<
         if (
           zodBaseType === "ZodObject" &&
           fieldConfigItem.fieldType !== "modal" &&
-          fieldConfigItem.fieldType !== "address_modal"
+          fieldConfigItem.fieldType !== "address_modal" &&
+          fieldConfigItem.fieldType !== "phone"
         ) {
           return (
             <AccordionItem value={name} key={key} className="border-none mt-0">
@@ -182,7 +184,6 @@ export default function AutoFormObject<
         if (overrideOptions) {
           item = z.enum(overrideOptions) as unknown as z.ZodAny;
         }
-
         return (
           <FormField
             control={form.control}
@@ -215,23 +216,40 @@ export default function AutoFormObject<
                 labelclass: labelClass,
               };
 
-              if (InputComponent === undefined || field.name === "address.address_line_1") {
+              if (
+                InputComponent === undefined ||
+                field.name.endsWith("address.address_line_1")
+              ) {
                 return <></>;
               }
               return (
                 <ParentElement key={`${key}.parent`}>
                   {edit ? (
                     <>
-                      <InputComponent
-                        zodInputProps={zodInputProps}
-                        field={field}
-                        fieldConfigItem={fieldConfigItem}
-                        label={itemName}
-                        isRequired={isRequired}
-                        zodItem={item}
-                        fieldProps={fieldProps}
-                        className={fieldProps.className}
-                      />
+                      {fieldConfigItem.fieldType === "phone" ? (
+                        <AutoFormPhone
+                          zodInputProps={zodInputProps}
+                          field={field}
+                          fieldConfigItem={fieldConfigItem}
+                          label={itemName}
+                          isRequired={isRequired}
+                          zodItem={item}
+                          fieldProps={fieldProps}
+                          className={fieldProps.className}
+                          form={form}
+                        />
+                      ) : (
+                        <InputComponent
+                          zodInputProps={zodInputProps}
+                          field={field}
+                          fieldConfigItem={fieldConfigItem}
+                          label={itemName}
+                          isRequired={isRequired}
+                          zodItem={item}
+                          fieldProps={fieldProps}
+                          className={fieldProps.className}
+                        />
+                      )}
                     </>
                   ) : (
                     <FormItem className="flex flex-col gap-2">

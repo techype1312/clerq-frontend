@@ -58,8 +58,18 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
           {schema && values && (
             <AutoForm
               onSubmit={async (values) => {
-                if (rowData.id.includes("address")) {
-                  return;
+                if (rowData.id.endsWith("address")) {
+                  setLoading(true);
+                  return rowData.actions?.onUpdate(values).then((res: any) => {
+                    if (res?.status === 200) {
+                      setOpen(false);
+                      setLoading(false);
+                      toast.success(`Successfully updated ${rowData.label}`, {
+                        position: "bottom-center",
+                        hideProgressBar: true,
+                      });
+                    }
+                  });
                 } else {
                   setLoading(true);
                   return rowData.actions?.onUpdate(values).then((res: any) => {
@@ -90,6 +100,14 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                   sourceField: `address.address_line_1`,
                   type: DependencyType.HIDES,
                   targetField: "address_id",
+                  when: () => {
+                    return true;
+                  },
+                },
+                {
+                  sourceField: `country_code`,
+                  type: DependencyType.HIDES,
+                  targetField: "country_code",
                   when: () => {
                     return true;
                   },

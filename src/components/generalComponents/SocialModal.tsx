@@ -40,31 +40,32 @@ const SocialModal = ({
               <ProfileItem
                 rowData={{
                   id: key,
-                  title: key,
-                  value: value,
+                  label: key,
+                  values: value,
                   isEditable: false,
+                  type: "text",
                 }}
-                updateLocalUserData={updateLocalUserData}
-                editButton={
-                  <DialogTrigger asChild>
-                    <Button
-                      onClick={() => {
-                        setOpenedState(true);
-                        setLink(value);
-                        setPlatform(key);
-                      }}
-                      className="w-fit pl-0 hover:bg-transparent flex items-center text-background-primary gap-1"
-                      variant={"ghost"}
-                    >
-                      Edit
-                      <SymbolIcon
-                        icon="chevron_right"
-                        color="#5265EB"
-                        size={20}
-                      />
-                    </Button>
-                  </DialogTrigger>
-                }
+                // updateLocalUserData={updateLocalUserData}
+                // editButton={
+                //   <DialogTrigger asChild>
+                //     <Button
+                //       onClick={() => {
+                //         setOpenedState(true);
+                //         setLink(value);
+                //         setPlatform(key);
+                //       }}
+                //       className="w-fit pl-0 hover:bg-transparent flex items-center text-background-primary gap-1"
+                //       variant={"ghost"}
+                //     >
+                //       Edit
+                //       <SymbolIcon
+                //         icon="chevron_right"
+                //         color="#5265EB"
+                //         size={20}
+                //       />
+                //     </Button>
+                //   </DialogTrigger>
+                // }
               />
             </div>
           );

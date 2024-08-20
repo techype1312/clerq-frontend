@@ -25,7 +25,7 @@ const UserUpdateSchema = {
         }
       ),
   }),
-  phone: z.object({ phone: z.string() }),
+  phone: z.object({ phone: z.string(),country_code: z.number() }),
   address: addressSchema,
 };
 
