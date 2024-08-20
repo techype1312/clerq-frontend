@@ -1,15 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useState } from "react";
 import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
-import BankingApis from "@/actions/apis/BankingApis";
+import { Loader2Icon } from "lucide-react";
+import isObject from "lodash/isObject";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import BankingApis from "@/actions/apis/BankingApis";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Card } from "@/components/ui/card";
 import { ErrorProps } from "@/types/general";
-import _ from "lodash";
-import { Loader2Icon } from "lucide-react";
 
 const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const { open, ready } = usePlaidLink(config);
 
   const onError = (err: string | ErrorProps) => {
-    setError(_.isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.message : err);
     setLoading(false);
   };
 

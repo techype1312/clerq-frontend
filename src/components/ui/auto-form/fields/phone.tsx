@@ -2,7 +2,7 @@ import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import AutoFormLabel from "../common/label";
 import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
-import PhoneInput from "react-phone-input-2";
+import PhoneInput, { CountryData } from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 export default function AutoFormPhone({
@@ -52,18 +52,22 @@ export default function AutoFormPhone({
         )}
         <FormControl>
           <PhoneInput
-            country="us"
+            country="in"
             specialLabel=""
-            onlyCountries={["us"]}
+            onlyCountries={["us", "in"]}
             inputProps={{
               placeholder: "(123)-456-7890",
             }}
             inputStyle={inputStyle}
             disabled={fieldProps.disabled}
-            onChange={(e) => {
-              fieldPropsWithoutShowLabel.onChange(e);
+            onChange={(val, data: CountryData) => {
+              fieldPropsWithoutShowLabel.onChange({
+                phoneWithDialCode: val,
+                countryCode: data.dialCode,
+                phone: val.slice(data.dialCode.length),
+              });
             }}
-            value={fieldPropsWithoutShowLabel.value}
+            value={`${fieldPropsWithoutShowLabel.value.countryCode}${fieldPropsWithoutShowLabel.value.phone}`}
             dropdownStyle={dropdownStyle}
             dropdownClass="bg-white rounded-sm"
           />

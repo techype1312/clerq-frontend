@@ -2,7 +2,7 @@
 
 import React, { Fragment } from "react";
 import { format } from "date-fns";
-import { DocumentUploadStatusEnum } from "@/utils/types/document";
+import { DocumentUploadStatusEnum } from "@/types/file";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Checkbox } from "@/components/ui/checkbox";
 import UploadDocumentDialog from "@/components/documents/UploadDocumentDialog";

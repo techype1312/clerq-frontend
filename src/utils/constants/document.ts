@@ -1,4 +1,4 @@
-import { DocumentTypes } from "../types/document";
+import { DocumentTypes } from "../../types/file";
 
 export const documentDetails = [
   {

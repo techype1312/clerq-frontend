@@ -1,7 +1,7 @@
 import { convertBase64toFile } from "@/utils/file";
 import * as ApiCalls from "../ApiCalls";
 import { getCookie } from "../cookieUtils";
-import { DocumentTypes } from "@/utils/types/document";
+import { DocumentTypes, ILocalFile } from "@/types/file";
 
 const getAllDocuments = (query: {
   page?: number;
@@ -36,20 +36,12 @@ const shareDocuments = (payload: { documents: string[]; email: string }) => {
   return ApiCalls.postResponse(`documents/send`, payload, token, ucrmKey);
 };
 
-interface IFile {
-  id: number;
-  src: string;
-  name: string;
-  size: string;
-  type: string;
-}
-
 const uploadDocuments = ({
   fileData,
   docType,
   name,
 }: {
-  fileData: IFile;
+  fileData: ILocalFile;
   docType: DocumentTypes;
   name: string;
 }) => {
@@ -75,7 +67,7 @@ const updateDocuments = (
   payload: {
     docType: DocumentTypes;
     name: string;
-    fileData: IFile;
+    fileData: ILocalFile;
   }
 ) => {
   const token = getCookie("token") || null;
@@ -83,7 +75,6 @@ const updateDocuments = (
 
   const formData = new FormData();
   const file = convertBase64toFile(payload.fileData.src, payload.fileData.name);
-  console.log(file);
   formData.set("document", file);
   formData.set("name", payload.name);
   formData.set("type", payload.docType);

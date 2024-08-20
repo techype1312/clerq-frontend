@@ -3,10 +3,10 @@ import { login, resendLogin } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useContext, useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useFormState, useFormStatus } from "react-dom";
-import { UserContext } from "@/context/User";
+import { useFormStatus } from "react-dom";
+import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
 
 const initialState = {
@@ -20,7 +20,7 @@ const LinkSentPage = () => {
   const email = searchParams.get("email");
   const newUser = searchParams.get("newUser") === "true" ? true : false;
   const [loading, setLoading] = React.useState(false);
-  const { refreshUser } = useContext(UserContext);
+  const { refreshUser } = useUserContext();
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();

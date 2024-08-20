@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import _ from "lodash";
+import isObject from "lodash/isObject";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -19,9 +19,12 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import { IUcrm, IUCRMContext } from "@/types/ucrm";
 
 // Create a context
-export const CompanySessionContext = createContext<any>(null);
+export const CompanySessionContext = createContext<IUCRMContext>(
+  {} as IUCRMContext
+);
 
 // Create a provider component
 export const CompanySessionProvider = ({
@@ -30,29 +33,27 @@ export const CompanySessionProvider = ({
   children: React.ReactNode;
 }) => {
   const router = useRouter();
-  const [myCompanyMappings, setMyCompanyMappings] = useState<
-    Record<string, any>[]
-  >([]);
+  const [myCompanyMappings, setMyCompanyMappings] = useState<IUcrm[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openSwitchDialog, setopenSwitchDialog] = useState(false);
-  const [selectedUcrm, setSelectedUcrm] = useState<string>();
+  const [selectedUcrm, setSelectedUcrm] = useState<IUcrm["id"]>();
 
   const onError = (err: string | ErrorProps) => {
-    setError(_.isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.message : err);
     setLoading(false);
   };
 
-  const setUcrmCookie = (ucrmId: string) => {
+  const setUcrmCookie = (ucrmId: IUcrm["id"]) => {
     Cookies.set("otto_ucrm", ucrmId);
   };
 
-  const handleUcrmSwitch = (ucrmId: string) => {
+  const handleUcrmSwitch = (ucrmId: IUcrm["id"]) => {
     setSelectedUcrm(ucrmId);
     setUcrmCookie(ucrmId);
   };
 
-  const onFetchUCRMSuccess = (res: any) => {
+  const onFetchUCRMSuccess = (res: { data: IUcrm }) => {
     if (res.data) {
       handleUcrmSwitch(res?.data?.id);
       toast.success(`you've switched to ${res?.data?.company?.name}`, {
@@ -74,20 +75,20 @@ export const CompanySessionProvider = ({
     router.refresh();
   };
 
-  const fetchUcrm = (ucrmId: string) => {
+  const fetchUcrm = async (ucrmId: IUcrm["id"]) => {
     setLoading(true);
-    CompanyApis.getUCRM(ucrmId).then(onFetchUCRMSuccess, onError);
+    return CompanyApis.getUCRM(ucrmId).then(onFetchUCRMSuccess, onError);
   };
 
-  const switchCompany = (ucrmId: string) => {
+  const switchCompany = async (ucrmId: IUcrm["id"]) => {
     setopenSwitchDialog(true);
     setLoading(true);
-    fetchUcrm(ucrmId);
+    return fetchUcrm(ucrmId);
   };
 
-  const onFetchUCRMListSuccess = (res: any) => {
+  const onFetchUCRMListSuccess = (res: { data: { data: IUcrm[] } }) => {
     if (res.data) {
-      setMyCompanyMappings(res?.data.data);
+      setMyCompanyMappings(res?.data?.data);
     }
     setLoading(false);
   };
@@ -122,16 +123,19 @@ export const CompanySessionProvider = ({
     refreshUcrmList();
   }, [refreshUcrmList]);
 
-  const [currentUcrm, setCurrentUcrm] = useState(myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm));
+  const [currentUcrm, setCurrentUcrm] = useState(
+    myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm)
+  );
 
   useEffect(() => {
     setCurrentUcrm(myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm));
   }, [myCompanyMappings, selectedUcrm]);
 
-
   return (
     <CompanySessionContext.Provider
       value={{
+        loading,
+        error,
         myCompanyMappings,
         currentUcrm,
         switchCompany,
@@ -164,4 +168,4 @@ const SwitchUcrmDialog = ({
 };
 
 // Hook to use the context
-export const useCompanySession = () => useContext(CompanySessionContext);
+export const useCompanySessionContext = () => useContext(CompanySessionContext);

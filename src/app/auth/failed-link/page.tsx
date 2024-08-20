@@ -3,18 +3,19 @@ import { login } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useContext, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 
 const FailedLinkPage = () => {
+  const { refreshUser } = useUserContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const error_description = searchParams.get("error_description");
   const [loading, setLoading] = useState(false);
-  const { refreshUser } = useContext(UserContext);
+
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();

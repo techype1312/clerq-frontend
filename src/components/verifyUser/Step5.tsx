@@ -2,7 +2,7 @@
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { step5Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import {
   insertUserData,
@@ -14,18 +14,17 @@ import { supabase } from "@/utils/supabase/client";
 import { Button } from "../ui/button";
 import { AutoFormInputComponentProps } from "../ui/auto-form/types";
 import { FormControl, FormItem, FormLabel } from "../ui/form";
-import AutoFormEnum from "../ui/auto-form/fields/enum";
 import FormSelect from "../ui/FormSelect";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 
 const Step5 = ({
   changeStep,
-  userdata,
+  userData,
   otherUserData,
   step,
 }: {
   changeStep: (step: number) => void;
-  userdata: User;
+  userData: User;
   otherUserData: any;
   step: number;
 }) => {
@@ -33,7 +32,7 @@ const Step5 = ({
   const [dropdown, setDropdown] = useState<any>({});
   const [fetchingDropdown, setFetchingDropdown] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { refetchUser } = useContext(UserContext);
+  const { refreshUser } = useUserContext();
   useEffect(() => {
     const fetchDropdown = async () => {
       const res = await supabase.from("dropdown").select("*");
@@ -77,17 +76,17 @@ const Step5 = ({
           });
         });
       await updateOtherUserData({
-        id: userdata.id,
+        id: userData.id,
         ...otherUserData,
         management_company: e.management_company,
         agency: e.agency,
         legal: e.legal,
       });
       await updateUserData({
-        id: userdata.id,
-        ...userdata.user_metadata,
+        id: userData.id,
+        ...userData.user_metadata,
       });
-      refetchUser();
+      refreshUser();
       router.push("/dashboard");
       setLoading(false);
     } catch (error: any) {

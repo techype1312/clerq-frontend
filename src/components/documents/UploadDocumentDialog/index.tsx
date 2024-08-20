@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import UploadFile from "@/components/generalComponents/UploadFile";
+import UploadFile from "@/components/documents/UploadFile";
 import { Button } from "@/components/ui/button";
 
 const UploadDocumentDialog = ({

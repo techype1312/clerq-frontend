@@ -1,19 +1,20 @@
 "use client";
 
-import { Suspense, useContext, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Step1 from "@/components/verifyUser/Step1";
 import Step2 from "@/components/verifyUser/Step2";
 import Step4 from "@/components/verifyUser/Step4";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 
 const VerifyUserPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [totalSteps, setTotalSteps] = useState(2);
-  const { userdata, setuserdata, refetchUserData, setRefetchUserData } =
-    useContext(UserContext);
+  const { userData, updateUserLocalData, refetchUserData, setRefetchUserData } =
+    useUserContext();
+
   const changeStep = (step: number) => {
     setStep(step);
     if (totalSteps === 3) {
@@ -107,8 +108,8 @@ const VerifyUserPage = () => {
           {step === 1 && (
             <Step1
               changeStep={changeStep}
-              userdata={userdata}
-              setuserdata={setuserdata}
+              userData={userData}
+              updateUserLocalData={updateUserLocalData}
               setTotalSteps={setTotalSteps}
               totalSteps={totalSteps}
               staticForFirstTime={staticForFirstTime}
@@ -120,7 +121,7 @@ const VerifyUserPage = () => {
           )}
           {((step === 2 && totalSteps === 2) ||
             (step === 3 && totalSteps === 3)) && (
-            <Step4 changeStep={changeStep} userdata={userdata} step={step} />
+            <Step4 changeStep={changeStep} userData={userData} step={step} />
           )}
           {/* {((step === 3 && totalSteps === 5) ||
             (step === 2 && totalSteps === 4)) && <div className="h-sm"></div>}
@@ -128,7 +129,7 @@ const VerifyUserPage = () => {
             (step === 3 && totalSteps === 4)) && (
             <Step4
               changeStep={changeStep}
-              userdata={userdata}
+              userData={userData}
               otherUserData={otherUserData}
               step={step}
             />
@@ -137,7 +138,7 @@ const VerifyUserPage = () => {
             (step === 4 && totalSteps === 4)) && (
             <Step5
               changeStep={changeStep}
-              userdata={userdata}
+              userData={userData}
               otherUserData={otherUserData}
               step={step}
             />

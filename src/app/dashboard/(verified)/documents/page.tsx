@@ -11,7 +11,7 @@ import { formatStringWithCount } from "@/utils/utils";
 import {
   DocumentTypes,
   DocumentUploadStatusEnum,
-} from "@/utils/types/document";
+} from "@/types/file";
 import { documentDetails } from "@/utils/constants/document";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/tooltip";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import UploadFile from "@/components/generalComponents/UploadFile";
+import UploadFile from "@/components/documents/UploadFile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";

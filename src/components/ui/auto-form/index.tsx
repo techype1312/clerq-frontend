@@ -134,6 +134,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   if (form.formState.isLoading) {
     return null;
   }
+
   return (
     <div className="w-full">
       <Form {...form}>

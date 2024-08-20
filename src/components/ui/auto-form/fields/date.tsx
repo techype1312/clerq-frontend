@@ -43,7 +43,7 @@ export default function AutoFormDate({
       <FormControl>
         <div className="relative">
           <div
-            className="border p-2 rounded-md cursor-pointer text-sm"
+            className="border p-2 rounded-md cursor-pointer text-sm min-h-10"
             onClick={() => setIsEdit(!isEdit)}
           >
             {field?.value && isDate(field?.value) && format(field?.value, "yyyy-MM-dd")}

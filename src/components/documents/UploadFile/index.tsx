@@ -7,18 +7,18 @@ import isObject from "lodash/isObject";
 import { FileRejection } from "react-dropzone";
 import DocumentApis from "@/actions/apis/DocumentApis";
 import { convertFileSize } from "@/utils/file";
-import { DocumentTypes } from "@/utils/types/document";
+import { DocumentTypes, ILocalFile } from "@/types/file";
 import { ErrorProps } from "@/types/general";
 import { updateDocumentsSchema } from "@/types/schema-embedded";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Dropzone from "./Dropzone";
-import SymbolIcon from "../MaterialSymbol/SymbolIcon";
+import Dropzone from "@/components/generalComponents/Dropzone";
+import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 const MAX_FILES = 1;
 
-const FileItem = ({ file }: { file: IFile }) => {
+const FileItem = ({ file }: { file: ILocalFile }) => {
   return (
     <div className="flex flex-row gap-2 items-center border-2 rounded-md py-1 px-6">
       <SymbolIcon icon="draft" />
@@ -30,14 +30,6 @@ const FileItem = ({ file }: { file: IFile }) => {
   );
 };
 
-interface IFile {
-  id: number;
-  src: string;
-  name: string;
-  size: string;
-  type: string;
-}
-
 interface UploadFileProps {
   docType: DocumentTypes;
   hideCloseBtn?: boolean;
@@ -47,7 +39,7 @@ interface UploadFileProps {
 }
 
 const UploadFile = (props: UploadFileProps) => {
-  const [files, setFiles] = useState<IFile[]>([]);
+  const [files, setFiles] = useState<ILocalFile[]>([]);
   const [errMsg, setErrMsg] = useState("");
   const [uploadError, setUploadError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -135,15 +127,9 @@ const UploadFile = (props: UploadFileProps) => {
       labelClass="text-primary"
       onSubmit={handleUploadFiles}
     >
-      <Card
-        style={{
-          background: "#F7F7F8",
-          border: "1px dashed #DCDCE4",
-          padding: "50px",
-        }}
-      >
+      <Card className="border-2 border-[#DCDCE4] border-dashed hover:border-blue-700  cursor-pointer bg-[#F7F7F8]">
         <CardContent
-          className="pt-6 flex flex-col"
+          className="p-0 flex flex-col"
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -164,12 +150,14 @@ const UploadFile = (props: UploadFileProps) => {
             maxFiles={MAX_FILES}
             disabled={!MAX_FILES}
           />
-          <div className="flex-col gap-2 my-2">
-            {files.map((file) => (
-              <FileItem file={file} key={file.id} />
-            ))}
-          </div>
-          <div className="text-red-500 mt-2">{errMsg}</div>
+          {!!files.length && (
+            <div className="flex-col gap-2 mt-2 mb-4">
+              {files.map((file) => (
+                <FileItem file={file} key={file.id} />
+              ))}
+            </div>
+          )}
+          {errMsg && <div className="text-red-500 mt-2">{errMsg}</div>}
         </CardContent>
       </Card>
       <div className="flex flex-row justify-end gap-2">
