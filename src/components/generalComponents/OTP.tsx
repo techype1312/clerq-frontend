@@ -30,7 +30,7 @@ const OtpPage = ({
 }: z.infer<typeof OtpPageProps>) => {
 
   return (
-    <div className="flex flex-col gap-40 items-center justify-center h-screen">
+    <div className="flex flex-col gap-40 items-center md:justify-center h-screen">
       <div className="flex flex-col items-center">
         <SymbolIcon icon="key" color="#5266EB" size={40} />
         <h1 className="text-3xl text-primary">{title}</h1>
@@ -74,7 +74,7 @@ const OtpPage = ({
         />
         <Button
           onClick={() => verifyOtp()}
-          className="border py-3 rounded-full background-primary text-white w-fit px-12"
+          className="border py-3 rounded-full background-primary box-border text-white px-12 w-40"
           disabled={disableButton}
         >
           Verify otp
@@ -91,9 +91,9 @@ const OtpPage = ({
         <Button
           onClick={() => resendOtp()}
           disabled={disableButton}
-          className="border py-3 rounded-full background-primary text-white w-fit px-12"
+          className="border py-3 rounded-full background-primary box-border text-white w-40 px-12"
         >
-          Resent
+          Resend
         </Button>
       </div>
     </div>

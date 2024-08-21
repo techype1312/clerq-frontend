@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useUserContext } from "@/context/User";
+import Image from "next/image";
 const VerifyOtpPage = () => {
   const router = useRouter();
   const { updateUserLocalData } = useUserContext();
@@ -69,17 +70,26 @@ const VerifyOtpPage = () => {
   };
 
   return (
-    <OtpPage
-      title={"Enter code"}
-      phone={phone ?? ""}
-      country_code={country_code ?? ""}
-      otp={otp}
-      setOtp={setOtp}
-      error={otpError}
-      verifyOtp={verifyOtp}
-      disableButton={disableButton}
-      resendOtp={resendOtp}
-    />
+    <div className="flex flex-col items-center justify-center mt-12 gap-28">
+      <Image
+        className="md:hidden"
+        src={"/clerq_logo.png"}
+        alt="Clerq"
+        width={75}
+        height={30}
+      />
+      <OtpPage
+        title={"Enter code"}
+        phone={phone ?? ""}
+        country_code={country_code ?? ""}
+        otp={otp}
+        setOtp={setOtp}
+        error={otpError}
+        verifyOtp={verifyOtp}
+        disableButton={disableButton}
+        resendOtp={resendOtp}
+      />
+    </div>
   );
 };
 
