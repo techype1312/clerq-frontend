@@ -203,28 +203,32 @@ const CompanyContainer = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 lg:mx-20">
-      <div className="mt-auto flex gap-2 items-center border-b pb-4">
-        <ProfilePhoto
-          firstName={companyData?.name}
-          photo={companyData?.logo}
-          updatePhoto={updateCompanyLogo}
-          removePhoto={removeCompanyLogo}
-          canEdit={true}
-          showButtons={false}
-        />
-        <p
-          className="ml-2"
-          style={{
-            fontSize: "28px",
-            lineHeight: "36px",
-            fontWeight: 380,
-          }}
-        >
-          {companyData?.name}
-        </p>
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <div className="mt-auto flex gap-2 items-center border-b pb-4">
+            <ProfilePhoto
+              firstName={companyData?.name}
+              photo={companyData?.logo}
+              updatePhoto={updateCompanyLogo}
+              removePhoto={removeCompanyLogo}
+              canEdit={true}
+              showButtons={false}
+            />
+            <p
+              className="ml-2"
+              style={{
+                fontSize: "28px",
+                lineHeight: "36px",
+                fontWeight: 380,
+              }}
+            >
+              {companyData?.name}
+            </p>
+          </div>
+          <ProfileRowContainer profileData={rowData} />
+        </div>
       </div>
-      <ProfileRowContainer profileData={rowData} />
     </div>
   );
 };

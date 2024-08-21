@@ -211,7 +211,7 @@ const Page = () => {
         // },
       ]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   if (loading) {
@@ -231,28 +231,32 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 lg:mx-20">
-      <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
-        <Image
-          src="/profile.png"
-          className="rounded-lg"
-          alt="logo"
-          width={40}
-          height={40}
-        />
-        <p
-          className="ml-2"
-          style={{
-            fontSize: "28px",
-            lineHeight: "36px",
-            fontWeight: 380,
-          }}
-        >
-          {userData?.firstName} {userData?.lastName}
-        </p>
-        <RoleItem label={userData?.role?.name ?? ""} />
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
+            <Image
+              src="/profile.png"
+              className="rounded-lg"
+              alt="logo"
+              width={40}
+              height={40}
+            />
+            <p
+              className="ml-2"
+              style={{
+                fontSize: "28px",
+                lineHeight: "36px",
+                fontWeight: 380,
+              }}
+            >
+              {userData?.firstName} {userData?.lastName}
+            </p>
+            <RoleItem label={userData?.role?.name ?? ""} />
+          </div>
+          <ProfileRowContainer profileData={rowData} />
+        </div>
       </div>
-      <ProfileRowContainer profileData={rowData} />
     </div>
   );
 };

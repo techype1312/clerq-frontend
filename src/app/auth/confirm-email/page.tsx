@@ -3,11 +3,14 @@ import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import AuthApis from "@/actions/apis/AuthApis";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import AuthApis from "@/actions/apis/AuthApis";
+import { useUserContext } from "@/context/User";
 
 const ConfirmEmailPage = () => {
   const router = useRouter();
+  const { updateUserLocalData } = useUserContext();
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const hash = searchParams.get("hash");
@@ -27,9 +30,19 @@ const ConfirmEmailPage = () => {
       hasRunRef.current = true;
       const confirmEmail = async () => {
         const res = await AuthApis.confirmEmail(hash);
-        if (res?.status === 204) {
+        if (res.data && res.data.token && res.data.refreshToken) {
           toast.success("Email confirmed successfully, please login");
-          router.push("/auth/signin");
+          Cookies.set("refreshToken", res.data.refreshToken, {
+            expires: res.data.tokenExpiry,
+          });
+          Cookies.set("token", res.data.token);
+          Cookies.set(
+            "onboarding_completed",
+            res?.data?.user?.onboarding_completed ? "true" : "false"
+          );
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          updateUserLocalData(res.data.user);
+          router.push("/dashboard");
         }
       };
       confirmEmail();

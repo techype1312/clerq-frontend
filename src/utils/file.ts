@@ -1,4 +1,5 @@
-import { map, castArray } from "lodash";
+import castArray from "lodash/castArray";
+import map from "lodash/map";
 import axios from "axios";
 
 export const MAX_IMAGE_DIMENSIONS = 512;

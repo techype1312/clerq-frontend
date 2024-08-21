@@ -1,463 +1,233 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { find, findIndex, isObject, reject } from "lodash";
+import { Loader2Icon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import startCase from "lodash/startCase";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Permissions from "@/components/generalComponents/Permissions";
-import AutoForm from "@/components/ui/auto-form";
-import { inviteUserSchema } from "@/types/schema-embedded";
-
-const roles = [
-  "owner",
-  "admin",
-  "accountant",
-  "cpa",
-  "lawyer",
-  "agency",
-  "management",
-];
-
-const rows = [
-  {
-    id: "123jdji838",
-    name: "Anurag Patel",
-    firstName: "Anurag",
-    lastName: "Patel",
-    email: "anurag@joinclerq.com",
-    role: "owner",
-    status: "active",
-    lastActive: "Today",
-  },
-  {
-    id: "123jdji8kd02",
-    name: "Jane Black",
-    firstName: "Jane",
-    lastName: "Black",
-    email: "jane@joinclerq.com",
-    role: "admin",
-    status: "active",
-    lastActive: "July 31",
-  },
-  {
-    id: "123jdji8299",
-    name: "Noel Kim",
-    firstName: "Noel",
-    lastName: "Kim",
-    email: "noel@joinclerq.com",
-    role: "accountant",
-    status: "active",
-    lastActive: "Today",
-  },
-  {
-    id: "123jdji2998",
-    name: "Phil",
-    firstName: "Kim",
-    lastName: "",
-    email: "phil@joinclerq.com",
-    role: "lawyer",
-    status: "inactive",
-    lastActive: "Yesterday",
-  },
-];
-
-const InviteNewUserDialog = () => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          className="rounded-full gap-2 px-4 py-2 h-8 hover:bg-gray-200"
-        >
-          <SymbolIcon icon="person_add" color="#535460" size={22} />
-          Invite a Team member
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{`Add member`}</DialogTitle>
-        </DialogHeader>
-        <DialogDescription>
-          <div className="flex flex-col w-full items-center min-w-64 mt-6 mb-4">
-            <AutoForm
-              formSchema={inviteUserSchema}
-              fieldConfig={{}}
-              defaultValues={{
-                role: "Owner",
-              }}
-              className="flex flex-col gap-4 max-w-lg mx-auto"
-              zodItemClass="flex flex-row grow gap-4 space-y-0 w-full"
-              withSubmitButton={false}
-              submitButtonText="Get started"
-              submitButtonClass="background-primary"
-              labelClass="text-primary"
-            ></AutoForm>
-          </div>
-          <Permissions />
-        </DialogDescription>
-        <DialogFooter className="ml-auto my-2 h-12 flex gap-2">
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="background-muted text-label hover:!background-muted h-8 px-10 rounded-full"
-            >
-              {"Close"}
-            </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-10 rounded-full h-8"
-          >
-            {"Send Invite"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const RemoveUserDialog = ({ row }: { row: any }) => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          className="rounded-full gap-1 px-2 py-1 h-6  hover:bg-red-50 text-red-600"
-          style={{
-            fontSize: "12px",
-            lineHeight: "12px",
-          }}
-        >
-          <SymbolIcon icon="delete" size={20} />
-          {`Remove`}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{`Remove ${row.firstName}?`}</DialogTitle>
-        </DialogHeader>
-        <DialogDescription>
-          {
-            "They’ll lose account access immediately and any cards will be canceled. You can easily restore access later if you change your mind."
-          }
-        </DialogDescription>
-        <DialogFooter className="ml-auto my-2 h-12 flex gap-2">
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="background-muted text-label hover:!background-muted h-8 px-10 rounded-full"
-            >
-              Close
-            </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-10 rounded-full h-8"
-          >
-            {`Remove ${row.firstName}`}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const EditUserDialog = ({ row }: { row: any }) => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          className="rounded-full gap-1 px-2 py-1 h-6 hover:bg-blue-50 text-blue-600"
-          style={{
-            fontSize: "12px",
-            lineHeight: "12px",
-          }}
-        >
-          <SymbolIcon icon="edit" size={20} />
-          {`Edit`}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <div
-            className="flex w-full items-center justify-between min-w-64 mt-6"
-            style={{
-              color: "#535460",
-              fontSize: "16px",
-              fontWeight: 400,
-              lineHeight: "22.4px",
-              textAlign: "left",
-            }}
-          >
-            <div className="flex text-label text-base gap-4 items-center min-w-52">
-              <Avatar firstName={row.firstName} lastName={row.lastName} />
-              <div className="flex flex-col justify-center">
-                <span
-                  style={{
-                    color: "#363644",
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    lineHeight: "24px",
-                  }}
-                >
-                  {`${row.firstName} ${row.lastName}`}
-                </span>
-                <span
-                  style={{
-                    color: "#70707d",
-                    fontSize: "13px",
-                    letterSpacing: ".1px",
-                    lineHeight: "20px",
-                  }}
-                >
-                  {row.email}
-                </span>
-              </div>
-            </div>
-            <Select defaultValue={row.role}>
-              <SelectTrigger className="flex h-8 text-black min-w-36 w-fit">
-                <SelectValue placeholder="select value">
-                  {startCase(row.role)}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {roles.map((value, index) => (
-                  <SelectItem value={value ?? "undefined"} key={value + index}>
-                    {startCase(value)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </DialogHeader>
-        <DialogDescription>
-          <Permissions />
-        </DialogDescription>
-        <DialogFooter className="ml-auto my-2 h-12 flex gap-2">
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="background-muted text-label hover:!background-muted h-8 px-10 rounded-full"
-            >
-              Close
-            </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-10 rounded-full h-8"
-          >
-            Update
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const Avatar = ({
-  profileUrl,
-  firstName,
-  lastName,
-}: {
-  firstName?: string;
-  lastName?: string;
-  profileUrl?: string;
-}) => {
-  return (
-    <div
-      style={{
-        fontSize: "12px",
-        height: "38px",
-        minWidth: "38px",
-        width: "38px",
-        color: "#1e1e2a",
-        borderRadius: "50%",
-        alignItems: "center",
-        display: "flex",
-        fontWeight: 480,
-        justifyContent: "center",
-        lineHeight: "24px",
-        textTransform: "uppercase",
-        userSelect: "none",
-        backgroundColor: "#cce8ea",
-      }}
-    >
-      <span>{firstName?.slice(0, 1)}</span>
-      <span>{lastName?.slice(0, 1)}</span>
-    </div>
-  );
-};
-
-const ColumnProfileItem = ({ label, row }: { label: string; row: any }) => {
-  return (
-    <div
-      className="flex w-full items-center justify-between min-w-56"
-      style={{
-        color: "#535460",
-        fontSize: "16px",
-        fontWeight: 400,
-        lineHeight: "22.4px",
-        textAlign: "left",
-      }}
-    >
-      <div className="flex text-label text-base gap-4 items-center">
-        <Avatar firstName={row.firstName} lastName={row.lastName} />
-        <div className="flex flex-col justify-center">
-          <span
-            style={{
-              color: "#363644",
-              fontSize: "15px",
-              fontWeight: 400,
-              lineHeight: "24px",
-            }}
-          >
-            {label}
-          </span>
-          <span
-            style={{
-              color: "#70707d",
-              fontSize: "13px",
-              letterSpacing: ".1px",
-              lineHeight: "20px",
-            }}
-          >
-            {row.email}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ColumnRoleItem = ({ label, row }: { label: string; row: any }) => {
-  return (
-    <div
-      className="flex w-full items-center justify-between"
-      style={{
-        width: "160px",
-      }}
-    >
-      <div
-        className="flex flex-col justify-center"
-        style={{
-          borderRadius: "4px",
-          whiteSpace: "nowrap",
-          color: "#1e1e2a",
-          textTransform: "capitalize",
-        }}
-      >
-        <span
-          style={{
-            border: "1px solid #cce8ea",
-            borderRadius: "4px",
-            padding: "0 8px",
-            fontWeight: 400,
-            fontSize: "12px",
-            letterSpacing: ".2px",
-            lineHeight: "20px",
-          }}
-          className="hover:bg-teal-100"
-        >
-          {label}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-const teamsColumns: ColumnDef<any>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ cell, row }) => {
-      return (
-        <ColumnProfileItem
-          label={cell.getValue() as string}
-          row={row.original}
-        />
-      );
-    },
-  },
-  {
-    accessorKey: "role",
-    header: "Role",
-    cell: ({ cell, row }) => {
-      return (
-        <ColumnRoleItem label={cell.getValue() as string} row={row.original} />
-      );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ cell, row }) => {
-      return (
-        <ColumnRoleItem label={cell.getValue() as string} row={row.original} />
-      );
-    },
-  },
-  {
-    accessorKey: "lastActive",
-    header: "Last Active",
-    cell: ({ cell }) => {
-      return (
-        <div className="flex flex-row gap-2">
-          <span
-            style={{
-              fontWeight: 400,
-              fontSize: "12px",
-              letterSpacing: ".2px",
-              lineHeight: "20px",
-              color: "#535461",
-            }}
-          >
-            {cell.getValue() as string}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "",
-    cell: ({ row }) => {
-      return (
-        <div className="flex flex-row gap-2 justify-end mx-2 z-10">
-          <EditUserDialog row={row.original} />
-          <RemoveUserDialog row={row.original} />
-        </div>
-      );
-    },
-  },
-];
+import { ErrorProps } from "@/types/general";
+import TeamApis from "@/actions/apis/TeamApis";
+import { useUserContext } from "@/context/User";
+import { allRoles, statuses } from "@/utils/constants";
+import InviteTeamApis from "@/actions/apis/InviteApi";
+import InviteNewMemberDialog from "@/components/teams/InviteNewMember";
+import MemberStatusUpdateDialog from "@/components/teams/MemberStatusUpdate";
+import ResendInviteButton from "@/components/teams/ResendInvite";
+import RemoveInviteDialog from "@/components/teams/RemoveInvite";
+import EditMemberDialog from "@/components/teams/EditMember";
+import ColumnProfileItem from "@/components/teams/Columns/ProfileItem";
+import ColumnRoleItem from "@/components/teams/Columns/RoleItem";
 
 const Page = () => {
+  const { userData } = useUserContext();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<Record<string, any>[]>([]);
+  const [teamInvites, setTeamInvites] = useState<Record<string, any>[]>([]);
+  const [rowData, setRowData] = useState<Record<string, any>[]>([]);
+
+  const onError = (err: string | ErrorProps) => {
+    setError(isObject(err) ? err.message : err);
+    setLoading(false);
+  };
+
+  const onStatusUpdate = (ucrmId: string, status: Record<string, any>) => {
+    const index = findIndex(teamMembers, { id: ucrmId });
+    if (index !== -1) {
+      teamMembers[index].status = status;
+    }
+    setTeamMembers(teamMembers);
+    handleRowData();
+  };
+
+  const onRolePermissionsUpdate = (
+    ucrmId: string,
+    data: Record<string, any>
+  ) => {
+    const index = findIndex(teamMembers, { id: ucrmId });
+    if (index !== -1) {
+      teamMembers[index].role = data.role;
+      teamMembers[index].permissions = data.permissions;
+    }
+    setTeamMembers(teamMembers);
+    handleRowData();
+  };
+
+  const onFetchTeamMembersSuccess = (res: any) => {
+    if (res.data && res.data?.data?.length) {
+      setTeamMembers(res.data.data);
+    }
+    setLoading(false);
+  };
+
+  const fetchTeamMembers = useCallback(() => {
+    if (loading) return false;
+    setLoading(true);
+    return TeamApis.getAllTeamMembers({}).then(
+      onFetchTeamMembersSuccess,
+      onError
+    );
+  }, [loading]);
+
+  const onRemoveInvite = (inviteId: string) => {
+    const updatedInvites = reject(teamInvites, { id: inviteId });
+    setTeamInvites(updatedInvites);
+  };
+
+  const onAddInvite = (data: Record<string, any>) => {
+    setTeamInvites([...teamInvites, data]);
+  };
+
+  const onFetchInvitesSuccess = (res: any) => {
+    if (res.data && res.data?.data?.length) {
+      setTeamInvites(res.data.data);
+    }
+  };
+
+  const fetchInvites = useCallback(() => {
+    setLoading(true);
+    return InviteTeamApis.getAllInvites({}).then(
+      onFetchInvitesSuccess,
+      onError
+    );
+  }, []);
+
+  useEffect(() => {
+    fetchTeamMembers();
+    fetchInvites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const teamsColumns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ cell, row }) => {
+        return (
+          <ColumnProfileItem
+            label={cell.getValue() as string}
+            row={row.original}
+          />
+        );
+      },
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ cell, row }) => {
+        return (
+          <ColumnRoleItem label={row.original.roleLabel} row={row.original} />
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ cell, row }) => {
+        return (
+          <ColumnRoleItem
+            label={row.original.statusLabel as string}
+            row={row.original}
+          />
+        );
+      },
+    },
+    // {
+    //   accessorKey: "lastActive",
+    //   header: "Last Active",
+    //   cell: ({ cell }) => {
+    //     return (
+    //       <div className="flex flex-row gap-2">
+    //         <span
+    //           style={{
+    //             fontWeight: 400,
+    //             fontSize: "12px",
+    //             letterSpacing: ".2px",
+    //             lineHeight: "20px",
+    //             color: "#535461",
+    //           }}
+    //         >
+    //           {cell.getValue() as string}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <div className="flex flex-row gap-2 justify-end mx-2 z-10">
+            {row.original.showEdit && (
+              <EditMemberDialog
+                row={row.original}
+                onUpdate={onRolePermissionsUpdate}
+              />
+            )}
+            {row.original.showStatusUpdate && (
+              <MemberStatusUpdateDialog
+                row={row.original}
+                onUpdate={onStatusUpdate}
+              />
+            )}
+            {row.original.showRemoveInvite && (
+              <RemoveInviteDialog
+                row={row.original}
+                onUpdate={onRemoveInvite}
+              />
+            )}
+            {row.original.showRemoveInvite && (
+              <ResendInviteButton row={row.original} />
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const handleRowData = () => {
+    const members = teamMembers.map((tm) => ({
+      id: tm.id,
+      name: [tm.user.firstName, tm.user.lastName].join(" "),
+      firstName: tm.user.firstName,
+      lastName: tm.user.lastName,
+      email: tm.user.email,
+      role: tm.role.id,
+      roleLabel: find(allRoles, { id: tm.role.id })?.name,
+      status: tm.status.id,
+      statusLabel: find(statuses, { id: tm.status.id })?.name,
+      showEdit:
+        tm.role.id !== 3 && userData?.id !== tm.user.id && tm.status.id === 1,
+      showStatusUpdate: tm.role.id !== 3 && userData?.id !== tm.user.id,
+      // lastActive: "Yesterday",
+    }));
+    const invites = teamInvites.map((im) => ({
+      id: im.id,
+      name: [im.firstName, im.lastName].join(" "),
+      firstName: im.firstName,
+      lastName: im.lastName,
+      email: im.email,
+      role: im.role.id,
+      roleLabel: find(allRoles, { id: im.role.id })?.name,
+      status: "Invited",
+      statusLabel: "Invited",
+      showEdit: false,
+      showStatusUpdate: false,
+      showResendInvite: true,
+      showRemoveInvite: true,
+    }));
+    setRowData([...members, ...invites]);
+  };
+
+  useEffect(() => {
+    handleRowData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamMembers.length, teamInvites.length]);
+
   return (
-    <div className="flex gap-24 flex-row">
-      <div className="w-full mx-16">
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-row justify-between">
           <h1
             style={{
@@ -470,18 +240,33 @@ const Page = () => {
           >
             Team
           </h1>
-          <InviteNewUserDialog />
+          <InviteNewMemberDialog onAddSuccess={onAddInvite} />
         </div>
-        <div className="mt-6 flex gap-1 flex-col items-start">
-          <DataTable
-            showPagination={false}
-            showHeader={true}
-            showDownloadButton={false}
-            showUploadButton={false}
-            columns={teamsColumns}
-            data={rows}
-          />
-        </div>
+
+        {loading && (
+          <div className="w-full flex items-center h-12 justify-center">
+            <Loader2Icon className="animate-spin" />
+          </div>
+        )}
+
+        {!loading && !rowData.length && (
+          <div className="w-full flex items-center h-12 justify-center">
+            No data found
+          </div>
+        )}
+
+        {!loading && !!rowData.length && (
+          <div className="mt-6 flex gap-1 flex-col items-start">
+            <DataTable
+              showPagination={false}
+              showHeader={true}
+              showDownloadButton={false}
+              showUploadButton={false}
+              columns={teamsColumns}
+              data={rowData}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

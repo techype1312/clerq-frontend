@@ -54,36 +54,41 @@ const Page = () => {
     });
   }, [selectedDateRange]);
   const netProfit = sheetData.title.value - sheetData1.title.value;
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
-        <h1 className="text-primary text-2xl font-medium ml-1">
-          Income statement
-        </h1>
-        <DateRangeDropdownSelect
-          dateRange={dateRange}
-          selectedDateRange={selectedDateRange}
-          setSelectedDateRange={setSelectedDateRange}
-          setSelectedDateRangeIndex={setSelectedDateRangeIndex}
-          selectedDateRangeIndex={selectedDateRangeIndex}
-        />
-      </div>
-      <HeaderCard cardDetails={cardDetails} />
-      <div className="flex flex-col gap-4 mt-4 mx-1">
-        <SheetsData sheetData={sheetData} />
-        <span className="border-b border-muted"></span>
-        <SheetsData sheetData={sheetData1} />
-        <span className="border-b border-muted"></span>
-      </div>
-      <div className="flex justify-between font-semibold text-primary mx-1">
-        <p className="text-base">Net profit</p>
-        <p className="text-base">
-          {netProfit < 0 && "-"}$
-          {Math.abs(netProfit).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </p>
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between">
+            <h1 className="text-primary text-2xl font-medium ml-1">
+              Income statement
+            </h1>
+            <DateRangeDropdownSelect
+              dateRange={dateRange}
+              selectedDateRange={selectedDateRange}
+              setSelectedDateRange={setSelectedDateRange}
+              setSelectedDateRangeIndex={setSelectedDateRangeIndex}
+              selectedDateRangeIndex={selectedDateRangeIndex}
+            />
+          </div>
+          <HeaderCard cardDetails={cardDetails} />
+          <div className="flex flex-col gap-4 mt-4 mx-1">
+            <SheetsData sheetData={sheetData} />
+            <span className="border-b border-muted"></span>
+            <SheetsData sheetData={sheetData1} />
+            <span className="border-b border-muted"></span>
+          </div>
+          <div className="flex justify-between font-semibold text-primary mx-1">
+            <p className="text-base">Net profit</p>
+            <p className="text-base">
+              {netProfit < 0 && "-"}$
+              {Math.abs(netProfit).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

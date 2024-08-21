@@ -49,6 +49,7 @@ const VerifyHashPage = () => {
       };
       verifyMagicLinkHash();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   return (

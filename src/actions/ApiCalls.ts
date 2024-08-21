@@ -120,7 +120,7 @@ export const putResponse = async (
 export const deleteResponse = async (
   url: string,
   params: any,
-  token: string,
+  token: string | null,
   ucrmKey?: string | null,
   retry: boolean = false
 ) => {

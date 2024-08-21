@@ -1,8 +1,8 @@
 import React from "react";
+import isEmpty from "lodash/isEmpty";
 import ProfilePhotoEditModel from "@/components/profile-photo";
 import ProfileUpdateModal from "@/components/generalComponents/ProfileUpdateModal";
 import { RowData } from "@/types/general";
-import { isEmpty } from "lodash";
 
 const ProfileItem = ({ rowData }: { rowData: RowData }) => {
   const renderValues = () => {

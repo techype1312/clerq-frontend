@@ -14,7 +14,7 @@ import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
 import { useUserContext } from "@/context/User";
 
 const Page = () => {
-  const {userData} = useUserContext()
+  const { userData } = useUserContext();
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
     {
       title: "Last 7 days",
@@ -131,36 +131,39 @@ const Page = () => {
   });
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
-        <h1 className="text-primary text-2xl font-medium ml-1">Overview</h1>
-        <div className="flex gap-2">
-          {overviewTimeLine.map((timeLine, index) => (
-            <Button
-              key={index}
-              variant={"ghost"}
-              className={`${
-                selectedTimeLine.value === timeLine.value
-                  ? "text-background-primary background-muted"
-                  : "text-muted"
-              } hover:text-label `}
-            >
-              {timeLine.title}
-            </Button>
-          ))}
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between">
+            <h1 className="text-primary text-2xl font-medium ml-1">Overview</h1>
+            <div className="flex gap-2">
+              {overviewTimeLine.map((timeLine, index) => (
+                <Button
+                  key={index}
+                  variant={"ghost"}
+                  className={`${
+                    selectedTimeLine.value === timeLine.value
+                      ? "text-background-primary background-muted"
+                      : "text-muted"
+                  } hover:text-label `}
+                >
+                  {timeLine.title}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
+          <div className="flex flex-col gap-4">
+            <h2 className="text-primary text-xl">Money movement</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <MoneyMovement moneyMovementData={moneyMovementData} />
+              <MoneyMovement moneyMovementData={moneyMovementData1} />
+            </div>
+          </div>
+          <TopExpenses topExpenses={topExpenses} />
+          <ProfitNLoss profitNLoss={profitNLoss} />
         </div>
       </div>
-      <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
-      <div className="flex flex-col gap-4">
-        <h2 className="text-primary text-xl">Money movement</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <MoneyMovement moneyMovementData={moneyMovementData} />
-          <MoneyMovement moneyMovementData={moneyMovementData1} />
-        </div>
-      </div>
-      <TopExpenses topExpenses={topExpenses} />
-      <ProfitNLoss profitNLoss={profitNLoss} />
-      {/* <Step4 userData={userData} /> */}
     </div>
   );
 };

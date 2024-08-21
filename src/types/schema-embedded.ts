@@ -251,27 +251,29 @@ export const step5Schema = z.object({
   legal: z.string().array().optional(),
 });
 
-export const inviteUserSchema = z.object({
-  name: z.object({
-    firstName: z.string({
-      required_error: "First Name is required",
+export const inviteUserSchema = (roles: string[]) => {
+  return z.object({
+    name: z.object({
+      firstName: z.string({
+        required_error: "First Name is required",
+      }),
+      lastName: z.string({
+        required_error: "Last Name is required",
+      }),
     }),
-    lastName: z.string({
-      required_error: "Last Name is required",
-    }),
-  }),
-  email: z
-    .string({
-      required_error: "Email is required",
-    })
-    .email(),
-  role: z.enum(
-    ["Owner", "Admin", "Accountant", "CPA", "Lawyer", "Agency", "Management"],
-    {
-      errorMap: customErrorMap,
-    }
-  ),
-});
+    email: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email(),
+    role: z.enum(
+      [roles[0], ...roles.slice(1)],
+      {
+        errorMap: customErrorMap,
+      }
+    ),
+  });
+};
 
 export const shareDocumentsSchema = z.object({
   recipient_email: z

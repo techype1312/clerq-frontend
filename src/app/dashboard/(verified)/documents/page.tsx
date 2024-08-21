@@ -8,10 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ErrorProps } from "@/types/general";
 import DocumentApis from "@/actions/apis/DocumentApis";
 import { formatStringWithCount } from "@/utils/utils";
-import {
-  DocumentTypes,
-  DocumentUploadStatusEnum,
-} from "@/types/file";
+import { DocumentTypes, DocumentUploadStatusEnum } from "@/types/file";
 import { documentDetails } from "@/utils/constants/document";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -200,123 +197,127 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex gap-24 flex-row">
-      <div>
-        <h1
-          style={{
-            fontSize: "24px",
-            fontWeight: "500",
-            lineHeight: "28.8px",
-            textAlign: "left",
-            color: "#1E1E2A",
-          }}
-        >
-          Documents
-        </h1>
-        <div className="mt-8">
-          {documentDetails.map((dt) => (
-            <div
-              key={dt.id}
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex gap-24 flex-row">
+          <div>
+            <h1
               style={{
-                cursor: "pointer",
-                fontWeight: currentType === dt.id ? "600" : "400",
-                color: currentType === dt.id ? "#1E1E2A" : "#9D9DA7",
-                padding: "2px",
-                marginBottom: "10px",
-                pointerEvents: loading ? 'none' : 'visible'
+                fontSize: "24px",
+                fontWeight: "500",
+                lineHeight: "28.8px",
+                textAlign: "left",
+                color: "#1E1E2A",
               }}
-              onClick={() => onDoctypeClick(dt.id)}
             >
-              <p
-                style={{
-                  fontSize: "14px",
-                  lineHeight: "19.6px",
-                  textAlign: "right",
-                }}
-                className="hover:text-black"
-              >
-                {dt.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="w-full">
-        {currentDocTypeDetails && (
-          <div className="flex gap-1 flex-col">
-            <div className="flex gap-1 flex-row items-center">
-              <h1
-                style={{
-                  fontSize: "18px",
-                  fontWeight: 400,
-                  lineHeight: "24px",
-                  textAlign: "left",
-                  color: "#1E1E2A",
-                }}
-              >
-                {currentDocTypeDetails.title}
-              </h1>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="flex hover:bg-accent rounded-xl">
-                    <SymbolIcon icon="info" size={20} color="#70707C" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="whitespace-break-spaces max-w-72">
-                      {currentDocTypeDetails.description}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="flex gap-1 flex-col items-start max-w-screen-md">
-              <p
-                className="whitespace-break-spaces w-full"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  lineHeight: "19.6px",
-                  textAlign: "left",
-                  color: "#9D9DA7",
-                }}
-              >
-                {currentDocTypeDetails.description}
-              </p>
-              {showUpload || (!documents.length && !loading) ? (
-                <div className="flex gap-4 flex-col mt-4 w-full">
-                  {!documents.length && !loading && (
-                    <span>No document found! Upload one.</span>
-                  )}
-                  <UploadFile
-                    docType={currentType}
-                    onClose={toggleUploadSection}
-                    hideCloseBtn={!documents.length}
-                    onUploadSuccess={uploadDocumentSuccess}
-                  />
+              Documents
+            </h1>
+            <div className="mt-8">
+              {documentDetails.map((dt) => (
+                <div
+                  key={dt.id}
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: currentType === dt.id ? "600" : "400",
+                    color: currentType === dt.id ? "#1E1E2A" : "#9D9DA7",
+                    padding: "2px",
+                    marginBottom: "10px",
+                    pointerEvents: loading ? "none" : "visible",
+                  }}
+                  onClick={() => onDoctypeClick(dt.id)}
+                >
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      lineHeight: "19.6px",
+                      textAlign: "right",
+                    }}
+                    className="hover:text-black"
+                  >
+                    {dt.label}
+                  </p>
                 </div>
-              ) : (
-                <Fragment>
-                  {loading ? (
-                    <div className="w-full flex items-center h-12 justify-center">
-                      <Loader2Icon className="animate-spin" />
-                    </div>
-                  ) : (
-                    <DataTable
-                      showFilter={false}
-                      showPagination={false}
-                      showHeader={true}
-                      columns={documentColumns}
-                      showDownloadButton={false}
-                      showUploadButton={true}
-                      onUpload={toggleUploadSection}
-                      data={documents}
-                    />
-                  )}
-                </Fragment>
-              )}
+              ))}
             </div>
           </div>
-        )}
+          <div className="w-full">
+            {currentDocTypeDetails && (
+              <div className="flex gap-1 flex-col">
+                <div className="flex gap-1 flex-row items-center">
+                  <h1
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: 400,
+                      lineHeight: "24px",
+                      textAlign: "left",
+                      color: "#1E1E2A",
+                    }}
+                  >
+                    {currentDocTypeDetails.title}
+                  </h1>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="flex hover:bg-accent rounded-xl">
+                        <SymbolIcon icon="info" size={20} color="#70707C" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="whitespace-break-spaces max-w-72">
+                          {currentDocTypeDetails.description}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <div className="flex gap-1 flex-col items-start max-w-screen-md">
+                  <p
+                    className="whitespace-break-spaces w-full"
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: "19.6px",
+                      textAlign: "left",
+                      color: "#9D9DA7",
+                    }}
+                  >
+                    {currentDocTypeDetails.description}
+                  </p>
+                  {showUpload || (!documents.length && !loading) ? (
+                    <div className="flex gap-4 flex-col mt-4 w-full">
+                      {!documents.length && !loading && (
+                        <span>No document found! Upload one.</span>
+                      )}
+                      <UploadFile
+                        docType={currentType}
+                        onClose={toggleUploadSection}
+                        hideCloseBtn={!documents.length}
+                        onUploadSuccess={uploadDocumentSuccess}
+                      />
+                    </div>
+                  ) : (
+                    <Fragment>
+                      {loading ? (
+                        <div className="w-full flex items-center h-12 justify-center">
+                          <Loader2Icon className="animate-spin" />
+                        </div>
+                      ) : (
+                        <DataTable
+                          showFilter={false}
+                          showPagination={false}
+                          showHeader={true}
+                          columns={documentColumns}
+                          showDownloadButton={false}
+                          showUploadButton={true}
+                          onUpload={toggleUploadSection}
+                          data={documents}
+                        />
+                      )}
+                    </Fragment>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

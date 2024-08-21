@@ -69,77 +69,82 @@ const Page = () => {
     });
   }, [selectedDateRange]);
   const [isOpened, setIsOpened] = useState("all");
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
-        <h1 className="text-primary text-2xl font-medium ml-1">
-          Balance sheet
-        </h1>
-        <DateRangeDropdownSelect
-          dateRange={dateRange}
-          selectedDateRange={selectedDateRange}
-          setSelectedDateRange={setSelectedDateRange}
-          setSelectedDateRangeIndex={setSelectedDateRangeIndex}
-          selectedDateRangeIndex={selectedDateRangeIndex}
-        />
-      </div>
-      <HeaderCard cardDetails={cardDetails} />
-      <div className="flex flex-col gap-4 mt-4 mx-1">
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              setIsOpened("all");
-            }}
-            className={
-              isOpened === "all"
-                ? "bg-primary text-background-muted hover:text-white"
-                : "background-muted text-label hover:text-white"
-            }
-          >
-            All
-          </Button>
-          <Button
-            onClick={() => {
-              setIsOpened("Revenue");
-            }}
-            className={
-              isOpened === "Revenue"
-                ? "bg-primary text-background-muted hover:text-white"
-                : "background-muted text-label hover:text-white"
-            }
-          >
-            Revenue
-          </Button>
-          <Button
-            onClick={() => {
-              setIsOpened("Liabilities");
-            }}
-            className={
-              isOpened === "Liabilities"
-                ? "bg-primary text-background-muted hover:text-white"
-                : "background-muted text-label hover:text-white"
-            }
-          >
-            Liabilities
-          </Button>
-          <Button
-            onClick={() => {
-              setIsOpened("Equity");
-            }}
-            className={
-              isOpened === "Equity"
-                ? "bg-primary text-background-muted hover:text-white"
-                : "background-muted text-label hover:text-white"
-            }
-          >
-            Equity
-          </Button>
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between">
+            <h1 className="text-primary text-2xl font-medium ml-1">
+              Balance sheet
+            </h1>
+            <DateRangeDropdownSelect
+              dateRange={dateRange}
+              selectedDateRange={selectedDateRange}
+              setSelectedDateRange={setSelectedDateRange}
+              setSelectedDateRangeIndex={setSelectedDateRangeIndex}
+              selectedDateRangeIndex={selectedDateRangeIndex}
+            />
+          </div>
+          <HeaderCard cardDetails={cardDetails} />
+          <div className="flex flex-col gap-4 mt-4 mx-1">
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  setIsOpened("all");
+                }}
+                className={
+                  isOpened === "all"
+                    ? "bg-primary text-background-muted hover:text-white"
+                    : "background-muted text-label hover:text-white"
+                }
+              >
+                All
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsOpened("Revenue");
+                }}
+                className={
+                  isOpened === "Revenue"
+                    ? "bg-primary text-background-muted hover:text-white"
+                    : "background-muted text-label hover:text-white"
+                }
+              >
+                Revenue
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsOpened("Liabilities");
+                }}
+                className={
+                  isOpened === "Liabilities"
+                    ? "bg-primary text-background-muted hover:text-white"
+                    : "background-muted text-label hover:text-white"
+                }
+              >
+                Liabilities
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsOpened("Equity");
+                }}
+                className={
+                  isOpened === "Equity"
+                    ? "bg-primary text-background-muted hover:text-white"
+                    : "background-muted text-label hover:text-white"
+                }
+              >
+                Equity
+              </Button>
+            </div>
+            <SheetsData sheetData={sheetData} isOpened={isOpened} />
+            <span className="border-b border-muted"></span>
+            <SheetsData sheetData={sheetData1} isOpened={isOpened} />
+            <span className="border-b border-muted"></span>
+            <SheetsData sheetData={sheetData2} isOpened={isOpened} />
+          </div>
         </div>
-        <SheetsData sheetData={sheetData} isOpened={isOpened} />
-        <span className="border-b border-muted"></span>
-        <SheetsData sheetData={sheetData1} isOpened={isOpened} />
-        <span className="border-b border-muted"></span>
-        <SheetsData sheetData={sheetData2} isOpened={isOpened} />
       </div>
     </div>
   );
