@@ -38,6 +38,7 @@ export const CompanySessionProvider = ({
   const [error, setError] = useState("");
   const [openSwitchDialog, setopenSwitchDialog] = useState(false);
   const [selectedUcrm, setSelectedUcrm] = useState<IUcrm["id"]>();
+  const [currentUcrm, setCurrentUcrm] = useState<IUcrm>();
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
@@ -102,9 +103,9 @@ export const CompanySessionProvider = ({
 
   useEffect(() => {
     const ucrmFromCookie = Cookies.get("otto_ucrm");
-    if (!myCompanyMappings.length) return;
+    if (!myCompanyMappings?.length) return;
     if (ucrmFromCookie) {
-      const currentUcrm = myCompanyMappings.find(
+      const currentUcrm = myCompanyMappings?.find(
         (ucrm) => ucrm.id === ucrmFromCookie
       );
       if (currentUcrm) {
@@ -123,12 +124,8 @@ export const CompanySessionProvider = ({
     refreshUcrmList();
   }, [refreshUcrmList]);
 
-  const [currentUcrm, setCurrentUcrm] = useState(
-    myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm)
-  );
-
   useEffect(() => {
-    setCurrentUcrm(myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm));
+    setCurrentUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === selectedUcrm));
   }, [myCompanyMappings, selectedUcrm]);
 
   return (
@@ -143,7 +140,7 @@ export const CompanySessionProvider = ({
     >
       {children}
       <SwitchUcrmDialog
-        nextUcrm={myCompanyMappings.find((ucrm) => ucrm.id === selectedUcrm)}
+        nextUcrm={myCompanyMappings?.find((ucrm) => ucrm.id === selectedUcrm)}
         open={loading && openSwitchDialog}
       />
     </CompanySessionContext.Provider>

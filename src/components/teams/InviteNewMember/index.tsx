@@ -21,7 +21,11 @@ import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
 import InviteTeamApis from "@/actions/apis/InviteApi";
 
-const InviteNewMemberDialog = ({ onAddSuccess }: { onAddSuccess: (data: Record<string, any>) => void}) => {
+const InviteNewMemberDialog = ({
+  onAddSuccess,
+}: {
+  onAddSuccess: (data: Record<string, any>) => void;
+}) => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,7 +74,12 @@ const InviteNewMemberDialog = ({ onAddSuccess }: { onAddSuccess: (data: Record<s
           Invite a Team member
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent
+        className="sm:max-w-lg"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{`Add member`}</DialogTitle>
         </DialogHeader>
