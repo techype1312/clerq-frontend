@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { IAddress } from "./address";
 import { IImageFileType } from "./file";
 import { IStatus } from "./general";
@@ -24,6 +25,7 @@ export interface ICompanyContext {
   loading: boolean;
   error: string;
   companyData?: ICompany;
+  setCompanyData: Dispatch<SetStateAction<ICompany | undefined>>;
   updateCompanyLogo: (logo: IImageFileType) => Promise<false | void>;
   removeCompanyLogo: () => Promise<false | void>;
   updateCompanyDetails: (values: ICompany) => Promise<false | void>;

@@ -11,7 +11,7 @@ const OtpPageProps = z.object({
   otp: z.string(),
   setOtp: z.function().args(z.string()).returns(z.void()),
   error: z.string().nullable(),
-  countryCode: z.string(),
+  country_code: z.string(),
   verifyOtp: z.function().args(z.void()).returns(z.void()),
   resendOtp: z.function().args(z.void()).returns(z.void()),
   disableButton: z.boolean(),
@@ -23,41 +23,19 @@ const OtpPage = ({
   otp,
   setOtp,
   error,
-  countryCode,
+  country_code,
   verifyOtp,
   disableButton,
   resendOtp,
 }: z.infer<typeof OtpPageProps>) => {
-  //   const resendOtp = async () => {
-  //     try {
-  //       const deviceId = localStorage.getItem("deviceId");
-  //       const preAuthSessionId = localStorage.getItem("preAuthSessionId");
-  //       const res = await fetch(
-  //         `${process.env.NEXT_PUBLIC_API_DOMAIN}/baseauth/signinup/code/resend`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({
-  //             deviceId: deviceId,
-  //             preAuthSessionId: preAuthSessionId,
-  //           }),
-  //         }
-  //       );
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+
   return (
     <div className="flex flex-col gap-40 items-center justify-center h-screen">
       <div className="flex flex-col items-center">
         <SymbolIcon icon="key" color="#5266EB" size={40} />
         <h1 className="text-3xl text-primary">{title}</h1>
         <p className="text-label text-xl">
-          We&apos;ve sent a code to +{countryCode + " " + phone}{" "}
+          We&apos;ve sent a code to +{country_code + " " + phone}{" "}
         </p>
         <OtpInput
           value={otp}

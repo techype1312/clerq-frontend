@@ -3,7 +3,7 @@ import { login, resendLogin } from "@/app/auth/signin/actions";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect } from "react";
+import React, { FormEvent, Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useFormStatus } from "react-dom";
 import { useUserContext } from "@/context/User";
@@ -38,11 +38,11 @@ const LinkSentPage = () => {
   //     toast.error("An error occurred");
   //   }
   // }, [state]);
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const searchParams = "magic_link=true";
-    const res = await AuthApis.login(searchParams, e);
+    const res = await AuthApis.login(searchParams, {email: email});
     if (res && res.status === 200) {
       toast.success("Check your inbox email sent successfully");
     } else {
@@ -74,7 +74,7 @@ const LinkSentPage = () => {
           onSubmit={handleSubmit}
           // action={formAction}
         >
-          <input name="email" type="hidden" defaultValue={email ?? ""} />
+          <input id="email" name="email" type="hidden" defaultValue={email ?? ""} />
           <button
             type="submit"
             disabled={loading}

@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, addYears } from "date-fns";
 import { IAddress } from "@/types/address";
+import { country } from "./constants";
+import { Country } from "country-state-city";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -76,16 +78,16 @@ export const formatNumber = (num: number): string => {
 };
 
 export function formatPhone(phone: string) {
-  const countryCodeLength = 1;
+  const country_codeLength = 1;
   
-  const countryCode = phone.slice(0, countryCodeLength);
-  const localNumber = phone.slice(countryCodeLength);
+  const country_code = phone.slice(0, country_codeLength);
+  const localNumber = phone.slice(country_codeLength);
 
-  return { countryCode, localNumber };
+  return { country_code, localNumber };
 }
 
-export const formatPhoneNumber = (phone: string, countryCode: number | string) => {
-  if (!phone || !countryCode) return '';
+export const formatPhoneNumber = (phone: string, country_code: number | string) => {
+  if (!phone || !country_code) return '';
 
   const phoneStr = phone.toString();
   const formattedPhone = `(${phoneStr.slice(0, 3)}) ${phoneStr.slice(
@@ -93,7 +95,7 @@ export const formatPhoneNumber = (phone: string, countryCode: number | string) =
     6
   )}-${phoneStr.slice(6)}`;
 
-  const result = `+${countryCode} ${formattedPhone}`;
+  const result = `+${country_code} ${formattedPhone}`;
   return result;
 };
 
@@ -105,11 +107,10 @@ export const formatAddress = (address: IAddress) => {
   if (!address) return '';
   const { country, address_line_1, address_line_2, city, state, postal_code } =
     address;
-
   return `${address_line_1}
 ${address_line_2}
 ${city}, ${state} ${postal_code}
-${country}`;
+${findCountryItem(country?.toUpperCase())}`;
 };
 
 
@@ -152,4 +153,10 @@ export const mergeJsonArray = (newValues: Array<Record<string, any>>): Record<st
   return newValues.reduce((acc, current) => {
     return { ...acc, ...current };
   }, {});
+};
+
+const countryDropdown = country.map((c) => Country.getCountryByCode(c));
+export const findCountryItem = (value: any) => {
+  const returnValue = countryDropdown.find((item) => item?.isoCode === value)?.name;
+  return returnValue ?? "United States";
 };

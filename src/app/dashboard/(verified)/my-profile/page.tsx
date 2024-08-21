@@ -9,6 +9,7 @@ import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import { UserUpdateSchema } from "@/types/schemas/user";
 import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
+import OnboardingApis from "@/actions/apis/OnboardingApis";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -54,6 +55,7 @@ const Page = () => {
     updateUserPhoto,
     removeUserPhoto,
     updateUserData,
+    updateUserLocalData,
   } = useUserContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
@@ -125,18 +127,15 @@ const Page = () => {
           isEditable: true,
           schema: UserUpdateSchema.dob,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: updateUserData,
           },
         },
         {
           id: "phone",
           label: "Phone no.",
           values: {
-            phone: {
-              phoneWithDialCode: `${userData?.country_code} ${userData?.phone}`,
-              countryCode: userData?.country_code,
-              phone: userData?.phone,
-            },
+            country_code: userData?.country_code,
+            phone: userData?.phone,
           },
           formattedValue: formatPhoneNumber(
             userData?.phone,
@@ -146,7 +145,7 @@ const Page = () => {
           isEditable: true,
           schema: UserUpdateSchema.phone,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: updateUserData,
           },
         },
         {
@@ -154,7 +153,7 @@ const Page = () => {
           label: "Mailing Address",
           values: {
             address: {
-              country: "United States",
+              country: userData?.mailing_address?.country,
               address_line_1: userData?.mailing_address?.address_line_1,
               address_line_2: userData?.mailing_address?.address_line_2,
               city: userData?.mailing_address?.city,
@@ -170,7 +169,19 @@ const Page = () => {
           isEditable: true,
           schema: UserUpdateSchema.address,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: async (data: any) => {
+              const res = await OnboardingApis.updateAddress(
+                data.address_id,
+                data.address
+              );
+              if (res && res.status === 200) {
+                updateUserLocalData({
+                  ...userData,
+                  mailing_address: res.data,
+                });
+              }
+              return res
+            },
           },
         },
         {
@@ -178,7 +189,7 @@ const Page = () => {
           label: "Legal Address",
           values: {
             address: {
-              country: "United States",
+              country: userData?.legal_address?.country,
               address_line_1: userData?.legal_address?.address_line_1,
               address_line_2: userData?.legal_address?.address_line_2,
               city: userData?.legal_address?.city,
@@ -194,7 +205,20 @@ const Page = () => {
           isEditable: true,
           schema: UserUpdateSchema.address,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: async (data: any) => {
+              console.log(data);
+              const res = await OnboardingApis.updateAddress(
+                data.address_id,
+                data.address
+              );
+              if (res && res.status === 200) {
+                updateUserLocalData({
+                  ...userData,
+                  legal_address: res.data,
+                });
+              }
+              return res;
+            },
           },
         },
         // {

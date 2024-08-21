@@ -9,18 +9,19 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import ProfilePhoto from "@/components/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
+import OnboardingApis from "@/actions/apis/OnboardingApis";
 
 const CompanyContainer = () => {
   const {
     loading,
     error,
     companyData,
+    setCompanyData,
     updateCompanyLogo,
     removeCompanyLogo,
     updateCompanyDetails,
   } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
-
   useEffect(() => {
     if (isEmpty(companyData)) {
       setRowData([]);
@@ -109,15 +110,12 @@ const CompanyContainer = () => {
           type: "phone",
           isEditable: true,
           values: {
-            phone: {
-              phoneWithDialCode: `${companyData.country_code} ${companyData.phone}`,
-              countryCode: companyData.country_code,
-              phone: companyData.phone,
-            },
+            country_code: companyData.country_code,
+            phone: companyData.phone,
           },
           schema: CompanyUpdateSchema.phone,
           actions: {
-            onUpdate: async (values) => console.log(values),
+            onUpdate: updateCompanyDetails,
           },
         },
         {
@@ -141,7 +139,7 @@ const CompanyContainer = () => {
           isEditable: true,
           values: {
             address: {
-              country: "United States",
+              country: companyData.mailing_address?.country?.toUpperCase() ?? "US",
               address_line_1: companyData.mailing_address?.address_line_1,
               address_line_2: companyData.mailing_address?.address_line_2,
               city: companyData.mailing_address?.city,
@@ -152,7 +150,19 @@ const CompanyContainer = () => {
           },
           schema: CompanyUpdateSchema.address,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: async (data: any) => {
+              const res = await OnboardingApis.updateAddress(
+                data.address_id,
+                data.address
+              );
+              if (res && res.status === 200) {
+                setCompanyData({
+                  ...companyData,
+                  mailing_address: res.data,
+                })
+              }
+              return res;
+            },
           },
         },
         {
@@ -167,7 +177,7 @@ const CompanyContainer = () => {
           isEditable: true,
           values: {
             address: {
-              country: "United States",
+              country: companyData.legal_address?.country?.toUpperCase() ?? "US",
               address_line_1: companyData.legal_address?.address_line_1,
               address_line_2: companyData.legal_address?.address_line_2,
               city: companyData.legal_address?.city,
@@ -178,7 +188,19 @@ const CompanyContainer = () => {
           },
           schema: CompanyUpdateSchema.address,
           actions: {
-            onUpdate: async (data: any) => console.log(data),
+            onUpdate: async (data: any) => {
+              const res = await OnboardingApis.updateAddress(
+                data.address_id,
+                data.address
+              );
+              if (res && res.status === 200) {
+                setCompanyData({
+                  ...companyData,
+                  legal_address: res.data,
+                });
+              }
+              return res;
+            },
           },
         },
       ]);

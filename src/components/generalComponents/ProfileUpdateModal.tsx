@@ -58,14 +58,24 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
           {schema && values && (
             <AutoForm
               onSubmit={async (values) => {
-                if (rowData.id.includes("address")) {
-                  return;
+                if (rowData.id.endsWith("address")) {
+                  setLoading(true);
+                  return rowData.actions?.onUpdate(values).then((res: any) => {
+                    if (res?.status === 200) {
+                      setLoading(false);
+                      setOpen(false);
+                      toast.success(`Successfully updated ${rowData.label}`, {
+                        position: "bottom-center",
+                        hideProgressBar: true,
+                      });
+                    }
+                  });
                 } else {
                   setLoading(true);
                   return rowData.actions?.onUpdate(values).then((res: any) => {
                     if (res?.status === 200) {
-                      setOpen(false);
                       setLoading(false);
+                      setOpen(false);
                       toast.success(`Successfully updated ${rowData.label}`, {
                         position: "bottom-center",
                         hideProgressBar: true,
@@ -94,7 +104,20 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                     return true;
                   },
                 },
+                {
+                  sourceField: `country_code`,
+                  type: DependencyType.HIDES,
+                  targetField: "country_code",
+                  when: () => {
+                    return true;
+                  },
+                },
               ]}
+              defaultValues={{
+                address: {
+                  country: "US",
+                },
+              }}
             >
               <div className="w-full flex flex-row gap-4 justify-end items-center !mt-5">
                 <DialogClose asChild disabled={loading}>

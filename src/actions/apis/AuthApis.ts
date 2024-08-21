@@ -18,7 +18,7 @@ const loginWithOtp = (payload: any) => {
 };
 
 const verifyOtp = (payload: any) => {
-  return ApiCalls.patchResponse(`auth/phone/verify/otp`, payload, null);
+  return ApiCalls.postResponse(`auth/phone/verify/otp`, payload, null);
 };
 
 // const signIn = (payload: any) => {

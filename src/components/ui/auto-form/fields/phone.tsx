@@ -4,13 +4,15 @@ import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import PhoneInput, { CountryData } from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { country } from "@/utils/constants";
 
 export default function AutoFormPhone({
   label,
   isRequired,
   fieldConfigItem,
   fieldProps,
-}: AutoFormInputComponentProps) {
+  form,
+}: AutoFormInputComponentProps & { form?: any }) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const baseStyle = {
@@ -54,22 +56,26 @@ export default function AutoFormPhone({
           <PhoneInput
             country="in"
             specialLabel=""
-            onlyCountries={["us", "in"]}
+            onlyCountries={country.map((c) => c.toLowerCase())}
             inputProps={{
               placeholder: "(123)-456-7890",
             }}
             inputStyle={inputStyle}
             disabled={fieldProps.disabled}
             onChange={(val, data: CountryData) => {
-              fieldPropsWithoutShowLabel.onChange({
-                phoneWithDialCode: val,
-                countryCode: data.dialCode,
-                phone: val.slice(data.dialCode.length),
-              });
+                form.setValue("country_code", data.dialCode);
+                form.setValue("phone", val.slice(data.dialCode.length));
+                // fieldPropsWithoutShowLabel.onChange({
+                //   country_code: data.dialCode,
+                //   phone: val.slice(data.dialCode.length),
+                // })
+              console.log(form.getValues("country_code"), form.getValues("phone"));
             }}
-            value={`${fieldPropsWithoutShowLabel.value.countryCode}${fieldPropsWithoutShowLabel.value.phone}`}
+            value={`${form.getValues("country_code")} ${form.getValues("phone")}`}
+            countryCodeEditable={false}
             dropdownStyle={dropdownStyle}
             dropdownClass="bg-white rounded-sm"
+            // disablecountry_code={true}
           />
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />

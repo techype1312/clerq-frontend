@@ -5,7 +5,7 @@ const createAddress = (payload: any) => {
   return ApiCalls.postResponse(`addresses`, payload, getCookie("token") || "");
 };
 
-const updateAddress = (id:string,payload: any) => {
+const updateAddress = (id:string, payload: any) => {
   return ApiCalls.patchResponse(
     `addresses/${id}`,
     payload,

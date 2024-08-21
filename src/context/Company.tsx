@@ -70,6 +70,12 @@ export const CompanyContextProvider = ({
     if (values.companyName) {
       payload.name = values.companyName;
     }
+    if(values.phone){
+      payload.phone = values.phone;
+    }
+    if(values.country_code){
+      payload.country_code = values.country_code;
+    }
     if (!isEmpty(payload)) {
       return updateCompanyData(payload);
     }
@@ -95,6 +101,7 @@ export const CompanyContextProvider = ({
         loading,
         error,
         companyData,
+        setCompanyData,
         updateCompanyLogo,
         removeCompanyLogo,
         updateCompanyDetails,

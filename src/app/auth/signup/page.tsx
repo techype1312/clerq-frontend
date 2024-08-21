@@ -1,6 +1,7 @@
 "use client";
 import AuthApis from "@/actions/apis/AuthApis";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
+import { DependencyType } from "@/components/ui/auto-form/types";
 import { signUpSchema } from "@/types/schema-embedded";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -62,6 +63,16 @@ const SignupPage = () => {
               fieldType: "phone",
             },
           }}
+          dependencies={[
+            {
+              sourceField: "country_code",
+              type: DependencyType.HIDES,
+              targetField: "country_code",
+              when: () => {
+                return true;
+              },
+            },
+          ]}
           defaultValues={{ email }}
           className="flex flex-col gap-4 max-w-lg items-center mx-auto"
           zodItemClass="flex flex-row grow gap-4 space-y-0 w-full"
