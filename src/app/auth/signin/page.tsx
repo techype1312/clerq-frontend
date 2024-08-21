@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import AuthApis from "@/actions/apis/AuthApis";
 import { DependencyType } from "@/components/ui/auto-form/types";
+import Image from "next/image";
 
 const SigninPage = () => {
   const searchParams = useSearchParams();
@@ -24,16 +25,20 @@ const SigninPage = () => {
   }, [error]);
 
   return (
-    <div className="flex h-screen w-full gap-12">
-      <div className="background-placeholder w-1/2"></div>
-      <div className="flex flex-col justify-center">
-        <div className="flex flex-col gap-4 w-full">
-          <h1 className="text-4xl font-normal text-primary">Log In</h1>
-          <p className="text-secondary">Log in with email or phone no</p>
+    <div className="flex h-screen w-full items-center justify-center md:items-stretch md:justify-normal gap-12">
+      <div className="hidden md:block background-placeholder w-1/2"></div>
+      <div className="flex flex-col justify-center items-center gap-24">
+        <Image className="md:hidden" src={"/clerq_logo.png"} alt="Clerq" width={75} height={30} />
+        <div className="flex flex-col gap-4 w-full items-center md:items-start">
+          <h1 className="text-2xl md:text-4xl font-normal text-primary">
+            Log In
+          </h1>
+          <p className="text-sm md:text-base text-secondary">
+            Log in with email or phone no
+          </p>
 
           <AutoForm
             formSchema={signInSchema}
-            //  formAction={login}
             onSubmit={async (e) => {
               const searchParams = "magic_link=true";
               const res = await AuthApis.login(searchParams, e);
@@ -41,37 +46,42 @@ const SigninPage = () => {
                 router.push(`/auth/link-sent?email=${e.email}`);
               }
             }}
-            className="flex flex-col gap-4 max-w-lg"
+            fieldConfig={{
+              email: {
+                inputProps:{
+                  placeholder: "your@email.com",
+                }
+              }
+            }}
+            className="flex flex-col gap-4 max-w-sm md:max-w-lg mr-2"
             withSubmitButton={false}
             labelClass="text-label"
           >
-            <AutoFormSubmit className="border py-3 rounded-full background-text-primary text-white w-fit px-12">
+            <AutoFormSubmit className="mx-auto md:m-0 border py-3 rounded-full background-text-primary text-white box-border w-48 px-12">
               Send magic link
             </AutoFormSubmit>
           </AutoForm>
 
-          <div className="flex items-center gap-1">
-            <span className="border-b border-solid w-56 border-input"></span>
+          <div className="flex items-center gap-1 mr-2">
+            <span className="border-b w-36 md:w-56 border-input"></span>
             <span className="text-muted">OR</span>
-            <span className="border-b w-56 border-input"></span>
+            <span className="border-b w-36 md:w-56 border-input"></span>
           </div>
 
           <AutoForm
             formSchema={signInWithPhoneSchema}
-            // formAction={login}
             onSubmit={async (e) => {
-              // const { localNumber, country_code } = formatPhone(e.phone);
               console.log(e);
-               const data = {
-                 phone: e.phone,
-                 country_code: e.country_code, //country_code,
-               };
-               const res = await AuthApis.loginWithOtp(data);
-               if (res.status === 200) {
-                 router.push(
-                   `/auth/verify-otp?phone=${e.phone}&country_code=${e.country_code}`
-                 );
-               }
+              const data = {
+                phone: e.phone,
+                country_code: e.country_code, //country_code,
+              };
+              const res = await AuthApis.loginWithOtp(data);
+              if (res.status === 200) {
+                router.push(
+                  `/auth/verify-otp?phone=${e.phone}&country_code=${e.country_code}`
+                );
+              }
             }}
             fieldConfig={{
               phone: {
@@ -88,15 +98,15 @@ const SigninPage = () => {
                 },
               },
             ]}
-            className="flex flex-col gap-4 max-w-lg"
+            className="flex flex-col gap-4 max-w-sm md:max-w-lg mr-2"
             withSubmitButton={false}
             labelClass="text-label"
           >
-            <AutoFormSubmit className="border py-3 rounded-full background-text-primary text-white w-fit px-12">
+            <AutoFormSubmit className="mx-auto md:m-0 border py-3 rounded-full background-text-primary text-white box-border px-12 w-48">
               Send code
             </AutoFormSubmit>
           </AutoForm>
-          <h5 className="text-label flex gap-1 mt-4">
+          <h5 className="text-sm md:text-base text-label flex gap-1 mt-4">
             Don&apos;t have an account?
             <Link href={"/auth/signup"}>
               <b className="text-black">Sign up</b> here.
