@@ -103,7 +103,7 @@ export default function AutoFormEnum({
         <FormControl>
           <RadixSelect
             onValueChange={field.onChange}
-            defaultValue={field.value}
+            value={field.value}
             {...fieldProps}
           >
             <SelectTrigger className={fieldProps.className}>
