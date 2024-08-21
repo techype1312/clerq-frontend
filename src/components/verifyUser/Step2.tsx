@@ -165,7 +165,7 @@ const Step2 = ({
             inputProps: {
               placeholder: "(123)-456-7890",
               onChange: (e: any) => {
-                setLocalCompanyData({ ...localCompanyData, phone: e });
+                setLocalCompanyData({ ...localCompanyData, phone: e.target.value });
               },
             },
           },
@@ -247,9 +247,7 @@ const Step2 = ({
           tax_classification: localCompanyData?.tax_classification
             ? localCompanyData?.tax_classification
             : companyData?.tax_classification,
-          phone: localCompanyData?.phone
-            ? localCompanyData?.phone
-            : companyData?.phone ?? "",
+          phone: localCompanyData?.phone ?? companyData?.phone,
           tax_residence_country: "US",
           address: {
             address_line_1: address ? address?.address_line_1 : "",
@@ -369,7 +367,10 @@ const Step2 = ({
             }
           }
           if (!addressDataLoaded || values.mailing_address_id) {
-            if (values.mailing_address_id && values.mailing_address_id !== mailingAddressId) {
+            if (
+              values.mailing_address_id &&
+              values.mailing_address_id !== mailingAddressId
+            ) {
               setMailingAddressId(values.mailing_address_id);
               setCreatedAddress(true);
             }
@@ -384,6 +385,19 @@ const Step2 = ({
                 latitude: values.lat1,
               });
             }
+          }
+          if(values.phone){
+            setLocalCompanyData({
+              ...localCompanyData,
+              phone: values.phone,
+              country_code: values.country_code,
+            }) 
+          }
+          if(values.tax_classification){
+            setLocalCompanyData({
+              ...localCompanyData,
+              tax_classification: values.tax_classification,
+            })
           }
         }}
       >

@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import {
-  Select,
+  Select as RadixSelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -37,12 +37,21 @@ export default function AutoFormEnum({
   function findItem(value: any) {
     return values.find((item) => item[0] === value);
   }
+  const [countryValue, setCountryValue] = useState<string | undefined>("US");
+  const [countryDisplay, setCountryDisplay] = useState<string | undefined>(
+    "United States"
+  );
+  useEffect(() => {
+    if (typeof field.value === "string") {
+      setCountryValue(field.value);
+      setCountryDisplay(findCountryItem(field.value?.toUpperCase()));
+    }
+  }, [countryDisplay, field.value]);
 
   if (
     field.name.endsWith("address.country") ||
     field.name === "tax_residence_country"
   ) {
-
     return (
       <FormItem className="flex flex-col">
         <AutoFormLabel
@@ -51,28 +60,33 @@ export default function AutoFormEnum({
           className={fieldProps.labelclass}
         />
         <FormControl>
-          <Select
+          <RadixSelect
             onValueChange={field.onChange}
-            value={field?.value}
+            value={countryValue}
             {...fieldProps}
           >
             <SelectTrigger className={fieldProps.className}>
-              <SelectValue placeholder={"Select an option"}>
-                {field.value && field.value.trim() !== ""
-                  ? findCountryItem(field?.value?.toUpperCase())
+              <SelectValue placeholder={countryDisplay ?? "Select an option"}>
+                {countryDisplay && countryDisplay.trim() !== ""
+                  ? countryDisplay
                   : "Select an option"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {countryDropdown.map(
-                (item: ICountry | undefined, index: number) => (
-                  <SelectItem value={item?.isoCode ?? ""} key={index}>
-                    {item?.name}
-                  </SelectItem>
-                )
+              {countryDropdown?.map(
+                (item: ICountry | undefined, index: number) => {
+                  return (
+                    <SelectItem
+                      value={item?.isoCode ?? ""}
+                      key={item?.isoCode ?? ""}
+                    >
+                      {item?.name}
+                    </SelectItem>
+                  );
+                }
               )}
             </SelectContent>
-          </Select>
+          </RadixSelect>
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
         <FormMessage />
@@ -87,7 +101,7 @@ export default function AutoFormEnum({
           className={fieldProps.labelclass}
         />
         <FormControl>
-          <Select
+          <RadixSelect
             onValueChange={field.onChange}
             defaultValue={field.value}
             {...fieldProps}
@@ -106,7 +120,7 @@ export default function AutoFormEnum({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </RadixSelect>
         </FormControl>
         <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
         <FormMessage />

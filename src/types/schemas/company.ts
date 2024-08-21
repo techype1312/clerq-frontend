@@ -14,7 +14,7 @@ const CompanyUpdateSchema = {
   ein: z.object({
     fedralEin: z.string(),
   }),
-  phone: z.object({ phone: z.string() }),
+  phone: z.object({ phone: z.string(), country_code: z.number() }),
   address: addressSchema,
 };
 

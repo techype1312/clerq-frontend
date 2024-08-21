@@ -157,5 +157,6 @@ export const mergeJsonArray = (newValues: Array<Record<string, any>>): Record<st
 
 const countryDropdown = country.map((c) => Country.getCountryByCode(c));
 export const findCountryItem = (value: any) => {
-  return countryDropdown.find((item) => item?.isoCode === value)?.name;
+  const returnValue = countryDropdown.find((item) => item?.isoCode === value)?.name;
+  return returnValue ?? "United States";
 };

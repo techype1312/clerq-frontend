@@ -54,8 +54,8 @@ export default function AutoFormAddressModal({
         label: form.getValues()?.address?.address_line_1,
         value: form.getValues()?.address?.address_line_1,
       });
-    if (form.getValues("address.country") !== "United States") {
-      form.setValue("address.country", "United States");
+    if (form.getValues("address.country") !== "US") {
+      form.setValue("address.country", "US");
     }
   }, [form.getValues("address_id")]);
 
@@ -92,7 +92,7 @@ export default function AutoFormAddressModal({
               city: res.data.city,
               state: res.data.state,
               postal_code: res.data.postal_code,
-              country: "United States",
+              country: "US",
             });
 
             refreshUser();
