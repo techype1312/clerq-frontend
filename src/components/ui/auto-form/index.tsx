@@ -41,7 +41,7 @@ export function AutoFormSubmit({
     <Button
       type="submit"
       disabled={disabled || formState.isSubmitting}
-      className={cn("mx-auto md:mx-0 px-20 md:px-10",className)}
+      className={cn("md:mx-0 px-20 md:px-10",className)}
     >
       {formState.isSubmitting ? (
         <Loader2Icon className="animate-spin" />
