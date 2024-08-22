@@ -9,7 +9,7 @@ const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <h1 className="text-primary text-xl">Top Expenses</h1>
-        <p className="text-sm text-muted">Compare to</p>
+        <p className="text-sm text-muted ml-auto md:ml-0">Compare to</p>
       </div>
       {topExpenses.map((expense, index) => (
         <div

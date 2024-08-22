@@ -3,7 +3,7 @@ import axios from "axios";
 import SymbolIcon from "./MaterialSymbol/SymbolIcon";
 import { Button } from "../ui/button";
 
-export const DownloadButton = ({ downloadLink }: { downloadLink: string }) => {
+export const DownloadButton = ({ downloadLink, showText }: { downloadLink: string, showText: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDownload = async () => {
@@ -30,9 +30,9 @@ export const DownloadButton = ({ downloadLink }: { downloadLink: string }) => {
   };
 
   return (
-    <Button variant={"ghost"} className="flex items-center gap-2 text-label" onClick={handleDownload} disabled={isLoading}>
+    <Button variant={"ghost"} className="flex items-center gap-2 text-label w-full text-left" onClick={handleDownload} disabled={isLoading}>
       <SymbolIcon icon="download" color="#1E1E2A" />
-      {isLoading ? "Downloading..." : "Download"}
+      {showText && (isLoading ? "Downloading..." : "Download")}
     </Button>
   );
 };
