@@ -79,7 +79,7 @@ export default function AutoFormObject<
   return (
     <Accordion
       type="multiple"
-      className={cn("space-y-5 border-none", innerClassName)}
+      className={cn("space-y-5 border-none w-full", innerClassName)}
     >
       {Object.keys(shape).map((name) => {
         let item = shape[name] as z.ZodAny;

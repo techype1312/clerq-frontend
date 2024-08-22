@@ -29,10 +29,6 @@ export default function RootLayout({
     <html lang="en">
       <MainContextProvider>
         <UserContextProvider>
-          {/* <Script
-            async
-            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_GOOGLE_API}&loading=async&libraries=places&callback=initMap`}
-          ></Script> */}
           <body
             className={cn(
               "min-h-screen bg-background font-sans antialiased",

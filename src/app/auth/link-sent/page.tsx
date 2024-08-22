@@ -55,11 +55,11 @@ const LinkSentPage = () => {
     <div className="text-center flex gap-20 h-screen max-h-screen flex-col items-center justify-center">
       <div className="flex flex-col gap-4 items-center">
         <SymbolIcon icon="mark_email_unread" color="#5266EB" size={48} />
-        <h1 className="text-primary text-3xl w-2/3">
+        <h1 className="text-primary text-2xl md:text-3xl w-2/3">
           Check your inbox to{" "}
           {newUser ? "confirm your email address" : "log in"}
         </h1>
-        <p className="text-base text-label">
+        <p className="text-sm md:text-base text-label">
           We&apos;ve sent a {newUser ? "confirmation email" : "magic link"} to{" "}
           {email}
         </p>
@@ -78,7 +78,7 @@ const LinkSentPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="text-white bg-primary py-2 px-8 rounded-full w-fit focus:outline-none"
+            className="text-white bg-primary py-2 px-24 md:px-8 rounded-full md:w-fit focus:outline-none"
           >
             {loading ? <Loader2Icon className="animate-spin" /> : "Resend"}
           </button>
