@@ -43,7 +43,10 @@ const MemberStatusUpdateDialog = ({
   const actionBtnText =
     row.status === 1 ? `Remove ${row.firstName}` : `Yes, Restore`;
 
-  const hoverClass = row.status === 1 ? "hover:bg-red-50 text-red-600" : "hover:bg-blue-50 text-blue-600";
+  const hoverClass =
+    row.status === 1
+      ? "hover:bg-red-50 text-red-600"
+      : "hover:bg-blue-50 text-blue-600";
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
@@ -88,28 +91,31 @@ const MemberStatusUpdateDialog = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>{description}</DialogDescription>
-        <DialogFooter className="ml-auto h-10 flex gap-2 mt-4">
-          <DialogClose asChild>
+        <DialogDescription>
+          {description}
+
+          <div className="ml-auto h-10 flex flex-row justify-end gap-2 mt-4">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                className="background-muted text-label hover:!background-muted h-10 px-8 rounded-full"
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+            </DialogClose>
             <Button
               type="button"
-              variant="ghost"
-              className="background-muted text-label hover:!background-muted h-10 px-8 rounded-full"
+              className="background-primary px-8 rounded-full h-10 gap-2"
+              onClick={updateStatus}
               disabled={loading}
             >
-              Cancel
+              {loading && <Loader2Icon className="animate-spin" size={20} />}
+              {actionBtnText}
             </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-8 rounded-full h-10 gap-2"
-            onClick={updateStatus}
-            disabled={loading}
-          >
-            {loading && <Loader2Icon className="animate-spin" size={20} />}
-            {actionBtnText}
-          </Button>
-        </DialogFooter>
+          </div>
+        </DialogDescription>
       </DialogContent>
     </Dialog>
   );

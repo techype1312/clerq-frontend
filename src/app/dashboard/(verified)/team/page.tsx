@@ -15,6 +15,7 @@ import ColumnProfileItem from "@/components/teams/Columns/ProfileItem";
 import ColumnRoleItem from "@/components/teams/Columns/RoleItem";
 import TeamActionMenu from "@/components/teams/TeamActionMenu";
 import { useCompanySessionContext } from "@/context/CompanySession";
+import { useMainContext } from "@/context/Main";
 
 const Page = () => {
   const { userData } = useUserContext();
@@ -139,12 +140,9 @@ const Page = () => {
           <div className="flex flex-row gap-2 justify-end">
             <span
               style={{
-                fontWeight: 400,
-                fontSize: "12px",
                 letterSpacing: ".2px",
-                lineHeight: "20px",
-                color: "#535461",
               }}
+              className="text-xs text-[#535461] font-normal"
             >
               {cell.getValue() as string}
             </span>
@@ -172,10 +170,12 @@ const Page = () => {
       status: tm.status?.id,
       statusLabel: find(statuses, { id: tm.status?.id })?.name,
       showEdit:
-        tm.role?.id !== 3 && userData?.id !== tm.user?.id && tm.status?.id === 1,
+        tm.role?.id !== 3 &&
+        userData?.id !== tm.user?.id &&
+        tm.status?.id === 1,
       showStatusUpdate: tm.role?.id !== 3 && userData?.id !== tm.user?.id,
       lastActive: "Yesterday",
-      photo: tm.user?.photo
+      photo: tm.user?.photo,
     }));
     const invites = teamInvites.map((im) => ({
       id: im.id,
@@ -201,21 +201,16 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamMembers.length, teamInvites.length]);
 
+  const { windowWidth } = useMainContext();
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-row justify-between">
-          <h1
-            style={{
-              fontSize: "24px",
-              fontWeight: "500",
-              lineHeight: "28.8px",
-              textAlign: "left",
-              color: "#1E1E2A",
-            }}
-          >
-            Team
-          </h1>
+          {windowWidth > 767 && (
+            <h1 className="text-2xl font-medium text-primary text-left">
+              Team
+            </h1>
+          )}
           <InviteNewMemberDialog onAddSuccess={onAddInvite} />
         </div>
 
@@ -240,6 +235,7 @@ const Page = () => {
               showUploadButton={false}
               columns={teamsColumns}
               data={rowData}
+              showDownload={false}
             />
           </div>
         )}

@@ -80,29 +80,13 @@ const EditMemberDialog = ({
           {`Edit`}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <div
-            className="flex w-full items-center justify-between min-w-64 mt-6"
-            style={{
-              color: "#535460",
-              fontSize: "16px",
-              fontWeight: 400,
-              lineHeight: "22.4px",
-              textAlign: "left",
-            }}
-          >
+      <DialogContent className="sm:max-w-lg h-screen md:h-auto overflow-auto">
+        <DialogHeader className="h-fit mt-auto">
+          <div className="flex w-full items-center justify-between min-w-64 mt-6 text-base font-normal text-left text-label">
             <div className="flex text-label text-base gap-4 items-center min-w-52">
               <Avatar firstName={row.firstName} lastName={row.lastName} />
               <div className="flex flex-col justify-center">
-                <span
-                  style={{
-                    color: "#363644",
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    lineHeight: "24px",
-                  }}
-                >
+                <span className="text-[15px] font-normal text-[#363644]">
                   {`${row.firstName} ${row.lastName}`}
                 </span>
                 <span
@@ -135,30 +119,31 @@ const EditMemberDialog = ({
             </Select>
           </div>
         </DialogHeader>
-        <DialogDescription>
+        <DialogDescription className="h-fit">
           <Permissions />
-        </DialogDescription>
-        <DialogFooter className="ml-auto h-10 flex gap-2 mt-4">
-          <DialogClose asChild>
+          <div className="mt-4 ml-auto flex gap-2 justify-end">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                className="background-muted text-label hover:!background-muted h-10 px-8 rounded-full"
+                disabled={loading}
+              >
+                Close
+              </Button>
+            </DialogClose>
+
             <Button
               type="button"
-              variant="ghost"
-              className="background-muted text-label hover:!background-muted h-10 px-8 rounded-full"
+              className="background-primary px-8 rounded-full h-10"
+              onClick={updateRolePermissions}
               disabled={loading}
             >
-              Close
+              {loading && <Loader2Icon className="animate-spin" size={20} />}
+              Update
             </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-8 rounded-full h-10"
-            onClick={updateRolePermissions}
-            disabled={loading}
-          >
-            {loading && <Loader2Icon className="animate-spin" size={20} />}
-            Update
-          </Button>
-        </DialogFooter>
+          </div>
+        </DialogDescription>
       </DialogContent>
     </Dialog>
   );
