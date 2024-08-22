@@ -14,6 +14,7 @@ import {
 import { Button } from "../ui/button";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import UploadProfilePhoto from "./UploadFile";
+import ProfilePhotoPreview from "./ProfilePhotoPreview";
 
 const ProfilePhotoEditModel = ({
   updatePhoto,
@@ -55,38 +56,11 @@ const ProfilePhotoEditModel = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="cursor-pointer h-8 w-8 relative">
+        <div className="cursor-pointer relative">
           {loading && (
             <Loader2Icon className="animate-spin absolute top-0 left-0 w-full h-full stroke-blue-600" />
           )}
-          {photo ? (
-            <Image
-              src={photo.path}
-              alt={`${firstName} ${lastName}`}
-              height={100}
-              width={100}
-              className="rounded-lg object-cover"
-              style={{
-                maxHeight: "38px",
-                maxWidth: "38px",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                fontSize: "18px",
-                color: "#1e1e2a",
-                fontWeight: "bold",
-                lineHeight: "24px",
-                textTransform: "uppercase",
-                backgroundColor: "#cce8ea",
-              }}
-              className="flex flex-row items-center h-full w-full justify-center rounded-lg"
-            >
-              <span>{firstName?.slice(0, 1)}</span>
-              <span>{lastName?.slice(0, 1)}</span>
-            </div>
-          )}
+          <ProfilePhotoPreview firstName={firstName} lastName={lastName} photo={photo}/>
           <Fragment>
             {showButtons && canEdit && photo?.path && (
               <Button

@@ -1,5 +1,6 @@
 import React from "react";
 import Avatar from "../Avatar";
+import ProfilePhotoPreview from "@/components/profile-photo/ProfilePhotoPreview";
 
 const ColumnProfileItem = ({ label, row }: { label: string; row: any }) => {
   return (
@@ -14,7 +15,12 @@ const ColumnProfileItem = ({ label, row }: { label: string; row: any }) => {
       }}
     >
       <div className="flex text-label text-base gap-4 items-center">
-        <Avatar firstName={row.firstName} lastName={row.lastName} />
+        <ProfilePhotoPreview
+          firstName={label}
+          photo={row?.photo}
+          size={32}
+          className="rounded-full"
+        />
         <div className="flex flex-col justify-center">
           <span
             style={{

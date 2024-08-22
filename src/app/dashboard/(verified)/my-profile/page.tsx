@@ -10,6 +10,7 @@ import { UserUpdateSchema } from "@/types/schemas/user";
 import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
+import ProfilePhotoEditModel from "@/components/profile-photo";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -259,12 +260,14 @@ const Page = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
-            <Image
-              src="/profile.png"
-              className="rounded-lg"
-              alt="logo"
-              width={40}
-              height={40}
+            <ProfilePhotoEditModel
+              firstName={userData?.firstName}
+              lastName={userData?.lastName}
+              photo={userData?.photo}
+              updatePhoto={updateUserPhoto}
+              removePhoto={removeUserPhoto}
+              canEdit={true}
+              showButtons={false}
             />
             <p
               className="ml-2"

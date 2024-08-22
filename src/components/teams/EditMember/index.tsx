@@ -70,7 +70,7 @@ const EditMemberDialog = ({
       <DialogTrigger asChild disabled={loading}>
         <Button
           variant="secondary"
-          className="rounded-full gap-1 px-4 py-1 h-7 hover:bg-blue-50 text-blue-600"
+          className="gap-2 rounded-none px-4 py-1 h-10 justify-start bg-transparent hover:bg-blue-50 text-blue-600"
           style={{
             fontSize: "12px",
             lineHeight: "12px",

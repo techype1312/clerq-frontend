@@ -18,7 +18,7 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
     <Link
       className={`${
         isActive ? "text-black font-normal" : "text-primary background-light"
-      } px-4 rounded py-1 ml-7`}
+      } px-4 rounded py-1`}
       href={href}
       onClick={() => {
         setOpen(false);
@@ -52,8 +52,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const items = pathname.startsWith("/dashboard") ? (
     <>
       {/* Company Section */}
-      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
-        <SymbolIcon icon="apartment" size={24} />
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        {/* <SymbolIcon icon="apartment" size={24} /> */}
         <span>Company</span>
       </div>
       <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
@@ -138,8 +138,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
 
       {/* Settings Section */}
-      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
-        <SymbolIcon icon="settings" size={24} />
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        {/* <SymbolIcon icon="settings" size={24} /> */}
         <span>Settings</span>
       </div>
 
@@ -179,8 +179,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
 
       {/* User Section */}
-      <div className="mt-2 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
-        <SymbolIcon icon="person" size={24} />
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+        {/* <SymbolIcon icon="person" size={24} /> */}
         <span>Personal</span>
       </div>
 
@@ -216,26 +216,33 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
 
   return (
     <div
-      className={`absolute h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static gap-2 lg:h-auto flex-col min-w-fit transition-all duration-500 ${
+      className={`absolute flex gap-3 h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
-          ? "px-0 pt-6 pb-4 min-w-48"
-          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-6 pb-8"
+          ? "px-0 pt-3 pb-6 min-w-48"
+          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-3 pb-6"
       } `}
     >
-      <div className="flex justify-between items-center pb-4 lg:hidden">
-        {/* <div>Icon will go here</div> */}
-        <button
-          className="block"
-          onClick={() => {
-            setOpen(false);
-          }}
-        >
-          <X size={30} />
-        </button>
-      </div>
-      <div className="flex flex-col mt-0 gap-4">
+      <div className="flex flex-col mx-4 gap-3">
+        <div className="flex justify-between items-center px-2 lg:hidden gap-6 ">
+          <Image
+            src={"/clerq_logo.png"}
+            alt="Clerq"
+            width={50}
+            height={30}
+          />
+          <button
+            className="block"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            <SymbolIcon icon="close" />
+          </button>
+        </div>
         <CompanyToggleDrawer />
-        <div className="flex flex-col gap-3 px-2">{items}</div>
+      </div>
+      <div className="flex flex-col mt-0 gap-[6px] items-center">
+        <div className="flex flex-col gap-3 px-4 border-t">{items}</div>
       </div>
     </div>
   );

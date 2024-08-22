@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import ProfilePhotoPreview from "../profile-photo/ProfilePhotoPreview";
 
 const DashboardTop = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const DashboardTop = () => {
       Cookies.remove("refreshToken");
       Cookies.remove("onboarding_completed");
       router.replace("/auth/signin");
-      router.refresh()
+      router.refresh();
     });
   };
 
@@ -44,12 +45,12 @@ const DashboardTop = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="ml-auto mr-8 flex items-center cursor-pointer">
-            <Image
-              src="/profile.png"
+            <ProfilePhotoPreview
+              firstName={userData?.firstName}
+              lastName={userData?.lastName}
+              photo={userData?.photo}
+              size={30}
               className="rounded-full"
-              alt="logo"
-              width={40}
-              height={40}
             />
           </div>
         </DropdownMenuTrigger>

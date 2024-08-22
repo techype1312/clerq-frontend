@@ -56,7 +56,6 @@ export const CompanySessionProvider = ({
 
   const onFetchUCRMSuccess = (res: { data: IUcrm }) => {
     if (res.data) {
-      handleUcrmSwitch(res?.data?.id);
       toast.success(`you've switched to ${res?.data?.company?.name}`, {
         delay: 500,
         pauseOnHover: false,
@@ -82,6 +81,7 @@ export const CompanySessionProvider = ({
   };
 
   const switchCompany = async (ucrmId: IUcrm["id"]) => {
+    handleUcrmSwitch(ucrmId);
     setopenSwitchDialog(true);
     setLoading(true);
     return fetchUcrm(ucrmId);

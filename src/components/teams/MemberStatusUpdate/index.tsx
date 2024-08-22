@@ -43,6 +43,8 @@ const MemberStatusUpdateDialog = ({
   const actionBtnText =
     row.status === 1 ? `Remove ${row.firstName}` : `Yes, Restore`;
 
+  const hoverClass = row.status === 1 ? "hover:bg-red-50 text-red-600" : "hover:bg-blue-50 text-blue-600";
+
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
     setLoading(false);
@@ -72,7 +74,7 @@ const MemberStatusUpdateDialog = ({
       <DialogTrigger asChild disabled={loading}>
         <Button
           variant="secondary"
-          className="rounded-full gap-1 px-4 py-1 h-7  hover:bg-red-50 text-red-600"
+          className={`gap-2 rounded-none px-4 py-1 h-10 justify-start bg-transparent ${hoverClass}`}
           style={{
             fontSize: "12px",
             lineHeight: "12px",

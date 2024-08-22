@@ -13,6 +13,7 @@ import {
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import ProfilePhotoPreview from "@/components/profile-photo/ProfilePhotoPreview";
 
 const CompanyToggleDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -31,15 +32,13 @@ const CompanyToggleDrawer = () => {
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="gap-6 border-none py-5 px-0 justify-around bg-none"
+            className="gap-10 border-none py-5 px-2 justify-around bg-none bg-transparent w-fit"
           >
             <div className="flex flex-row items-center gap-2">
-              <Image
-                src="/profile.png"
-                className="rounded-lg"
-                alt="logo"
-                width={32}
-                height={32}
+              <ProfilePhotoPreview
+                firstName={currentUcrm.company.name}
+                photo={currentUcrm.company.logo}
+                size={30}
               />
               <p
                 style={{
@@ -51,12 +50,15 @@ const CompanyToggleDrawer = () => {
                 {currentUcrm.company.name}
               </p>
             </div>
-            {open ? <SymbolIcon icon="keyboard_arrow_up" /> : <SymbolIcon icon="keyboard_arrow_down" />}
-            
+            {open ? (
+              <SymbolIcon icon="keyboard_arrow_up" />
+            ) : (
+              <SymbolIcon icon="keyboard_arrow_down" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 ml-4">
-          <p className="text-muted px-2 py-1">{"Switch accounts"}</p>
+          <p className="text-muted px-2 py-1 text-xs">{"Switch accounts"}</p>
           <DropdownMenuSeparator />
           <DropdownMenuGroup className="my-3">
             {myCompanyMappings.map((ucrm: any) => {
@@ -67,13 +69,11 @@ const CompanyToggleDrawer = () => {
                   onClick={() => switchCompany(ucrm.id)}
                 >
                   <div className="flex flex-row items-center gap-2">
-                    <Image
-                      src="/profile.png"
-                      className="rounded-lg"
-                      alt="logo"
-                      width={32}
-                      height={32}
-                    />
+                  <ProfilePhotoPreview
+                    firstName={ucrm.company.name}
+                    photo={ucrm.company.logo}
+                    size={30}
+                  />
                     <p
                       style={{
                         fontSize: "14px",
@@ -97,8 +97,6 @@ const CompanyToggleDrawer = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <span className="border-b"></span>
     </Fragment>
   );
 };

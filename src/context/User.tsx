@@ -119,6 +119,9 @@ export const UserContextProvider = ({
     if (values.dob) {
       payload.dob = values.dob;
     }
+    if (values.photo) {
+      payload.photo = values.photo;
+    }
     if (!isEmpty(payload)) {
       return updateUserDataDetails(payload);
     }

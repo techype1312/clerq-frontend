@@ -6,7 +6,7 @@ import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import { Loader2Icon } from "lucide-react";
 import ProfileRowContainer from "@/components/dashboard/profile";
-import ProfilePhoto from "@/components/profile-photo";
+import ProfilePhotoEditModel from "@/components/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
@@ -22,6 +22,7 @@ const CompanyContainer = () => {
     updateCompanyDetails,
   } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
+
   useEffect(() => {
     if (isEmpty(companyData)) {
       setRowData([]);
@@ -229,7 +230,7 @@ const CompanyContainer = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="mt-auto flex gap-2 items-center border-b pb-4">
-            <ProfilePhoto
+            <ProfilePhotoEditModel
               firstName={companyData?.name}
               photo={companyData?.logo}
               updatePhoto={updateCompanyLogo}

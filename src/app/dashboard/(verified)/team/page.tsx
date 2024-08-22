@@ -11,15 +11,14 @@ import { useUserContext } from "@/context/User";
 import { allRoles, statuses } from "@/utils/constants";
 import InviteTeamApis from "@/actions/apis/InviteApi";
 import InviteNewMemberDialog from "@/components/teams/InviteNewMember";
-import MemberStatusUpdateDialog from "@/components/teams/MemberStatusUpdate";
-import ResendInviteButton from "@/components/teams/ResendInvite";
-import RemoveInviteDialog from "@/components/teams/RemoveInvite";
-import EditMemberDialog from "@/components/teams/EditMember";
 import ColumnProfileItem from "@/components/teams/Columns/ProfileItem";
 import ColumnRoleItem from "@/components/teams/Columns/RoleItem";
+import TeamActionMenu from "@/components/teams/TeamActionMenu";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const Page = () => {
   const { userData } = useUserContext();
+  const { currentUcrm } = useCompanySessionContext();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [teamMembers, setTeamMembers] = useState<Record<string, any>[]>([]);
@@ -96,7 +95,7 @@ const Page = () => {
     fetchTeamMembers();
     fetchInvites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentUcrm?.company?.id]);
 
   const teamsColumns: ColumnDef<any>[] = [
     {
@@ -132,54 +131,29 @@ const Page = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "lastActive",
-    //   header: "Last Active",
-    //   cell: ({ cell }) => {
-    //     return (
-    //       <div className="flex flex-row gap-2">
-    //         <span
-    //           style={{
-    //             fontWeight: 400,
-    //             fontSize: "12px",
-    //             letterSpacing: ".2px",
-    //             lineHeight: "20px",
-    //             color: "#535461",
-    //           }}
-    //         >
-    //           {cell.getValue() as string}
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
     {
-      accessorKey: "id",
-      header: "",
-      cell: ({ row }) => {
+      accessorKey: "lastActive",
+      header: () => <div className="text-center">{"Last Active"}</div>,
+      cell: ({ cell, row }) => {
         return (
-          <div className="flex flex-row gap-2 justify-end mx-2 z-10">
-            {row.original.showEdit && (
-              <EditMemberDialog
-                row={row.original}
-                onUpdate={onRolePermissionsUpdate}
-              />
-            )}
-            {row.original.showStatusUpdate && (
-              <MemberStatusUpdateDialog
-                row={row.original}
-                onUpdate={onStatusUpdate}
-              />
-            )}
-            {row.original.showRemoveInvite && (
-              <RemoveInviteDialog
-                row={row.original}
-                onUpdate={onRemoveInvite}
-              />
-            )}
-            {row.original.showRemoveInvite && (
-              <ResendInviteButton row={row.original} />
-            )}
+          <div className="flex flex-row gap-2 justify-end">
+            <span
+              style={{
+                fontWeight: 400,
+                fontSize: "12px",
+                letterSpacing: ".2px",
+                lineHeight: "20px",
+                color: "#535461",
+              }}
+            >
+              {cell.getValue() as string}
+            </span>
+            <TeamActionMenu
+              row={row.original}
+              onRemoveInvite={onRemoveInvite}
+              onRolePermissionsUpdate={onRolePermissionsUpdate}
+              onStatusUpdate={onStatusUpdate}
+            />
           </div>
         );
       },
@@ -189,18 +163,19 @@ const Page = () => {
   const handleRowData = () => {
     const members = teamMembers.map((tm) => ({
       id: tm.id,
-      name: [tm.user.firstName, tm.user.lastName].join(" "),
-      firstName: tm.user.firstName,
-      lastName: tm.user.lastName,
-      email: tm.user.email,
-      role: tm.role.id,
-      roleLabel: find(allRoles, { id: tm.role.id })?.name,
-      status: tm.status.id,
-      statusLabel: find(statuses, { id: tm.status.id })?.name,
+      name: [tm.user?.firstName, tm.user?.lastName].join(" "),
+      firstName: tm.user?.firstName,
+      lastName: tm.user?.lastName,
+      email: tm.user?.email,
+      role: tm.role?.id,
+      roleLabel: find(allRoles, { id: tm.role?.id })?.name,
+      status: tm.status?.id,
+      statusLabel: find(statuses, { id: tm.status?.id })?.name,
       showEdit:
-        tm.role.id !== 3 && userData?.id !== tm.user.id && tm.status.id === 1,
-      showStatusUpdate: tm.role.id !== 3 && userData?.id !== tm.user.id,
-      // lastActive: "Yesterday",
+        tm.role?.id !== 3 && userData?.id !== tm.user?.id && tm.status?.id === 1,
+      showStatusUpdate: tm.role?.id !== 3 && userData?.id !== tm.user?.id,
+      lastActive: "Yesterday",
+      photo: tm.user?.photo
     }));
     const invites = teamInvites.map((im) => ({
       id: im.id,
@@ -210,12 +185,13 @@ const Page = () => {
       email: im.email,
       role: im.role.id,
       roleLabel: find(allRoles, { id: im.role.id })?.name,
-      status: "Invited",
-      statusLabel: "Invited",
+      status: im.status,
+      statusLabel: im.status,
       showEdit: false,
       showStatusUpdate: false,
       showResendInvite: true,
       showRemoveInvite: true,
+      lastActive: "Invited",
     }));
     setRowData([...members, ...invites]);
   };
