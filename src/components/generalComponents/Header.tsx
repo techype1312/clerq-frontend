@@ -7,15 +7,15 @@ import AuthApis from "@/actions/apis/AuthApis";
 import { Button } from "../ui/button";
 
 const Header = () => {
-  const { userdata, refreshUser } = useContext(UserContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(userdata ? true : false);
+  const { userData, refreshUser } = useContext(UserContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(userData ? true : false);
   useEffect(() => {
-    if (userdata) {
+    if (userData) {
       setIsLoggedIn(true);
     } else{
       setIsLoggedIn(false);
     }
-  }, [userdata]);
+  }, [userData]);
   
   const handleLogout = async () => {
     return AuthApis.signOut().then(() => {

@@ -140,7 +140,8 @@ const CompanyContainer = () => {
           isEditable: true,
           values: {
             address: {
-              country: companyData.mailing_address?.country?.toUpperCase() ?? "US",
+              country:
+                companyData.mailing_address?.country?.toUpperCase() ?? "US",
               address_line_1: companyData.mailing_address?.address_line_1,
               address_line_2: companyData.mailing_address?.address_line_2,
               city: companyData.mailing_address?.city,
@@ -160,7 +161,7 @@ const CompanyContainer = () => {
                 setCompanyData({
                   ...companyData,
                   mailing_address: res.data,
-                })
+                });
               }
               return res;
             },
@@ -178,7 +179,8 @@ const CompanyContainer = () => {
           isEditable: true,
           values: {
             address: {
-              country: companyData.legal_address?.country?.toUpperCase() ?? "US",
+              country:
+                companyData.legal_address?.country?.toUpperCase() ?? "US",
               address_line_1: companyData.legal_address?.address_line_1,
               address_line_2: companyData.legal_address?.address_line_2,
               city: companyData.legal_address?.city,
