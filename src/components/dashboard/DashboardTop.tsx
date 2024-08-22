@@ -49,7 +49,7 @@ const DashboardTop = () => {
               firstName={userData?.firstName}
               lastName={userData?.lastName}
               photo={userData?.photo}
-              size={30}
+              size={38}
               className="rounded-full"
             />
           </div>

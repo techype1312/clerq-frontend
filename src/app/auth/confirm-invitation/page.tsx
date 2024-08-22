@@ -6,15 +6,18 @@ import React, { Suspense, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import AuthApis from "@/actions/apis/AuthApis";
 import { useUserContext } from "@/context/User";
+import InviteTeamApis from "@/actions/apis/InviteApi";
 
-const ConfirmEmailPage = () => {
+const ConfirmInvitationPage = () => {
   const router = useRouter();
   const { updateUserLocalData } = useUserContext();
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const hash = searchParams.get("hash");
+  const userEmail = searchParams.get("email");
+  const userFirstName = searchParams.get("firstName");
+  const userLasName = searchParams.get("lastName");
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
 
@@ -30,10 +33,10 @@ const ConfirmEmailPage = () => {
     }
     if (hash) {
       hasRunRef.current = true;
-      const confirmEmail = async () => {
-        const res = await AuthApis.confirmEmail(hash);
+      const confirmInvitation = async () => {
+        const res = await InviteTeamApis.acceptInvite({ hash });
         if (res.data && res.data.token && res.data.refreshToken) {
-          toast.success("Email confirmed successfully!");
+          toast.success("Invitation confirmed successfully!");
           Cookies.set("refreshToken", res.data.refreshToken, {
             expires: res.data.tokenExpiry,
           });
@@ -47,7 +50,7 @@ const ConfirmEmailPage = () => {
           router.push("/dashboard");
         }
       };
-      confirmEmail();
+      confirmInvitation();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, hash, error, error_description]);
@@ -56,8 +59,9 @@ const ConfirmEmailPage = () => {
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
       <Loader2Icon className="animate-spin" size={"48px"} />
       <div className="flex flex-col gap-2">
+        {`${userFirstName} ${userLasName} (${userEmail})`}
         <h2 className="text-center text-xl font-medium">
-          Confirming Email <br />
+          Confirming Invitation <br />
         </h2>
       </div>
     </div>
@@ -67,7 +71,7 @@ const ConfirmEmailPage = () => {
 export default function Page() {
   return (
     <Suspense>
-      <ConfirmEmailPage />
+      <ConfirmInvitationPage />
     </Suspense>
   );
 }

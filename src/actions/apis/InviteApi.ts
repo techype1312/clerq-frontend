@@ -49,18 +49,26 @@ const removeInvite = (id: string) => {
 const resendInviteLink = (id: string) => {
   const token = getCookie("token") || null;
   const ucrmKey = getCookie("otto_ucrm") || null;
-  return ApiCalls.postResponse(
-    `invites/${id}/invite-link`,
-    {},
-    token,
-    ucrmKey
-  );
+  return ApiCalls.postResponse(`invites/${id}/invite-link`, {}, token, ucrmKey);
 };
 
-const acceptInvite = (id: string, payload: any) => {
+interface IAcceptInvitePayload {
+  hash: string;
+  password: string;
+  phone: string;
+  country_code: number;
+  firstName: string;
+  lastName: string;
+}
+
+interface IConfirmInvitePayload {
+  hash: string;
+}
+
+const acceptInvite = (payload: IConfirmInvitePayload | IAcceptInvitePayload) => {
   const token = getCookie("token") || null;
   const ucrmKey = getCookie("otto_ucrm") || null;
-  return ApiCalls.postResponse(`invites/${id}/accept`, payload, token, ucrmKey);
+  return ApiCalls.postResponse(`invites/accept`, payload, token, ucrmKey);
 };
 
 const InviteTeamApis = {
@@ -69,7 +77,7 @@ const InviteTeamApis = {
   removeInvite,
   resendInviteLink,
   acceptInvite,
-  updateInviteRole
+  updateInviteRole,
 };
 
 export default InviteTeamApis;
