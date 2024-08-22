@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
@@ -38,6 +38,7 @@ interface DataTableProps<TData, TValue> {
   setLoading?: any;
   accounts?: any;
   currentUcrm?: any;
+  showDownload?: boolean;
 }
 // import {
 //   parseISO,
@@ -56,6 +57,7 @@ import {
 import { labelValue } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
 import BankingApis from "@/actions/apis/BankingApis";
+import { MainContext } from "@/context/Main";
 
 // export const dateFilter = (row: any[], columnIds: (string | number)[], filterValue: string) => {
 //   const currentDate = new Date();
@@ -101,6 +103,7 @@ export function DataTable<TData, TValue>({
   setLoading,
   accounts,
   currentUcrm,
+  showDownload = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
@@ -108,7 +111,8 @@ export function DataTable<TData, TValue>({
     pageSize: 10,
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [filterValue, setFilterValue] = useState<string[]>([]);
+  const { windowWidth } = useContext(MainContext);
+  // const [filterValue, setFilterValue] = useState<string[]>([]);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const exportExcel = (rows: any) => {
     // const rowData = rows.map((row: any) => row.original);
@@ -123,13 +127,13 @@ export function DataTable<TData, TValue>({
         gl_code,
         receipt,
       } = row.original;
-      const Category = category.join(", ");
+      // const Category = category?.join(", ");
       return {
         date,
         mask: row.original.account.mask,
         merchant_name,
         amount,
-        Category,
+        category,
         clerq_category,
         gl_code,
         receipt,
@@ -324,231 +328,353 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-2">
-          <Popover>
-            {showFilter && (
-              <PopoverTrigger asChild>
-                <Button className="h-8 gap-2 px-2 flex items-center">
-                  <span className="-mb-1">
-                    <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
-                  </span>
-                  <span>Filter</span>
-                </Button>
-              </PopoverTrigger>
-            )}
-            <PopoverContent
-              style={{
-                width: "580px",
-                height: "100%",
-              }}
-              align="start"
-            >
-              <h6>Filters</h6>
-              <DropdownMenuSeparator />
-              <div className="flex">
-                <div className="flex flex-col gap-2 text-left border-r">
-                  {filterCategories.map((category, index) => {
-                    // let hover;
-                    // if (openedFilter === category.value) hover = true;
-                    return (
-                      <Button
-                        variant={"ghost"}
-                        key={index}
-                        onClick={() => {
-                          setOpenedFilter(category.value);
-                        }}
-                        className={`${
-                          openedFilter === category.value
-                            ? "text-primary bg-muted"
-                            : " text-label hover:text-label"
-                        } justify-between`}
-                      >
-                        {category.label}{" "}
-                        <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />
-                      </Button>
-                    );
-                  })}
-                </div>
-                <div className="w-[100%] overflow-x-scroll">
-                  <Filters
-                    openedFilter={openedFilter}
-                    setColumnFilters={setColumnFilters}
-                    columnFilters={columnFilters}
-                    setDateFilter={setDateFilter}
-                    dateFilter={dateFilter}
-                    setAmountFilter={setAmountFilter}
-                    amountFilter={amountFilter}
-                  />
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-          <div className="flex gap-2">
-            {columnFilters.map((filter: any, index: number) => {
-              return (
-                <div
-                  className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
-                  key={index}
-                >
-                  <p className="text-primary-alt">
-                    {Array.isArray(filter?.value)
-                      ? filter?.value.length > 1
-                        ? formatFilterId(filter?.id) +
-                          ` (${filter?.value.length})`
-                        : filter?.value
-                      : (filter.id === "amount" ? "$" : "") +
-                        " " +
-                        filter?.value}
-                  </p>
-                  <p
-                    className="cursor-pointer h-5"
-                    onClick={() => {
-                      setColumnFilters(
-                        columnFilters.filter((val) => val.id !== filter.id)
-                      );
-                    }}
-                  >
-                    <SymbolIcon icon="close" color="#535460" size={20} />
-                  </p>
-                </div>
-              );
-            })}
-            {dateFilter && dateFilter?.value && (
-              <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
-                <p className="text-primary-alt">
-                  {dateFilter.label}
-                  {/* {Array.isArray(filter?.value)
-                      ? filter?.value.length > 1
-                      ? formatFilterId(filter?.id) +
-                      ` (${filter?.value.length})`
-                      : filter?.value
-                      : (filter.id === "amount" ? "$" : "") +
-                      " " +
-                      filter?.value} */}
-                </p>
-                <p
-                  className="cursor-pointer h-5"
-                  onClick={() => {
-                    setDateFilter({});
-                  }}
-                >
-                  <SymbolIcon icon="close" color="#535460" size={20} />
-                </p>
-              </div>
-            )}
-            {amountFilter && amountFilter?.value && (
-              <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
-                <p className="text-primary-alt">
-                  ${amountFilter?.value}
-                  {/* {Array.isArray(filter?.value)
-                      ? filter?.value.length > 1
-                      ? formatFilterId(filter?.id) +
-                      ` (${filter?.value.length})`
-                      : filter?.value
-                      : (filter.id === "amount" ? "$" : "") +
-                      " " +
-                      filter?.value} */}
-                </p>
-                <p
-                  className="cursor-pointer h-5"
-                  onClick={() => {
-                    setAmountFilter({});
-                  }}
-                >
-                  <SymbolIcon icon="close" color="#535460" size={20} />
-                </p>
-              </div>
-            )}
-            {(columnFilters.length > 0 || dateFilter?.value || amountFilter?.value) && (
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setColumnFilters([]);
-                  setDateFilter({});
-                  setAmountFilter({});
+      <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4 md:gap-0 w-full">
+        <div className="flex flex-wrap md:flex-nowrap gap-2 w-full">
+          <div
+            className={`flex items-center justify-between gap-2 ${
+              windowWidth > 767 ? "w-fit" : "w-full"
+            }`}
+          >
+            <Popover>
+              {showFilter && (
+                <PopoverTrigger asChild>
+                  <Button className="h-8 gap-2 px-2 flex items-center">
+                    <span className="-mb-1">
+                      <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
+                    </span>
+                    {columnFilters.length > 0 ||
+                    dateFilter?.value ||
+                    amountFilter?.value ? (
+                      <span>Filter applied</span>
+                    ) : (
+                      <span>Filter</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+              )}
+              <PopoverContent
+                style={{
+                  width: "580px",
+                  height: "100%",
                 }}
-                className="h-8"
+                align="start"
               >
-                Clear
+                <h6>Filters</h6>
+                <DropdownMenuSeparator />
+                <div className="flex">
+                  <div className="flex flex-col gap-2 text-left border-r">
+                    {filterCategories.map((category, index) => {
+                      // let hover;
+                      // if (openedFilter === category.value) hover = true;
+                      return (
+                        <Button
+                          variant={"ghost"}
+                          key={index}
+                          onClick={() => {
+                            setOpenedFilter(category.value);
+                          }}
+                          className={`${
+                            openedFilter === category.value
+                              ? "text-primary bg-muted"
+                              : " text-label hover:text-label"
+                          } justify-between`}
+                        >
+                          {category.label}{" "}
+                          <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <div className="w-[100%] overflow-x-scroll">
+                    <Filters
+                      openedFilter={openedFilter}
+                      setColumnFilters={setColumnFilters}
+                      columnFilters={columnFilters}
+                      setDateFilter={setDateFilter}
+                      dateFilter={dateFilter}
+                      setAmountFilter={setAmountFilter}
+                      amountFilter={amountFilter}
+                    />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            {windowWidth < 768 && (
+              <div className="flex items-center justify-end ml-auto md:mx-0 w-full">
+                {showPagination && (
+                  <Fragment>
+                    <div>
+                      <span className="text-muted text-nowrap">
+                        {pagination.pageSize * (pagination.pageIndex - 1) + 1}-
+                        {pagination.pageSize * pagination.pageIndex <
+                        data?.length
+                          ? pagination.pageSize * pagination.pageIndex
+                          : data?.length}{" "}
+                        of {data?.length}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="py-0"
+                      onClick={() =>
+                        pagination.pageIndex > 1 &&
+                        setPagination({
+                          ...pagination,
+                          pageIndex: pagination.pageIndex - 1,
+                        })
+                      }
+                      disabled={pagination.pageIndex === 1}
+                    >
+                      <SymbolIcon icon="chevron_left" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="py-0"
+                      onClick={() =>
+                        setPagination((prev) => ({
+                          ...prev,
+                          pageIndex: pagination.pageIndex + 1,
+                        }))
+                      }
+                      disabled={!hasNextPage}
+                    >
+                      <SymbolIcon icon="chevron_right" />
+                    </Button>
+                  </Fragment>
+                )}
+                {windowWidth > 768 ? (
+                  <>
+                    {showDownloadButton && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() =>
+                          exportExcel(table.getFilteredRowModel().rows)
+                        }
+                      >
+                        <SymbolIcon icon="download" />
+                        Download
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {showDownload && (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button type="button" variant="ghost" className="p-0">
+                            <SymbolIcon icon="more_vert" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-fit" align="end">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() =>
+                              exportExcel(table.getFilteredRowModel().rows)
+                            }
+                            className="p-1"
+                          >
+                            <SymbolIcon icon="download" />
+                            Download
+                          </Button>
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          {windowWidth > 767 && (
+            <>
+              <div className="flex flex-wrap gap-2">
+                {columnFilters.map((filter: any, index: number) => {
+                  return (
+                    <div
+                      className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
+                      key={index}
+                    >
+                      <p className="text-primary-alt">
+                        {Array.isArray(filter?.value)
+                          ? filter?.value.length > 1
+                            ? formatFilterId(filter?.id) +
+                              ` (${filter?.value.length})`
+                            : filter?.value
+                          : (filter.id === "amount" ? "$" : "") +
+                            " " +
+                            filter?.value}
+                      </p>
+                      <p
+                        className="cursor-pointer h-5"
+                        onClick={() => {
+                          setColumnFilters(
+                            columnFilters.filter((val) => val.id !== filter.id)
+                          );
+                        }}
+                      >
+                        <SymbolIcon icon="close" color="#535460" size={20} />
+                      </p>
+                    </div>
+                  );
+                })}
+                {dateFilter && dateFilter?.value && (
+                  <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
+                    <p className="text-primary-alt">{dateFilter.label}</p>
+                    <p
+                      className="cursor-pointer h-5"
+                      onClick={() => {
+                        setDateFilter({});
+                      }}
+                    >
+                      <SymbolIcon icon="close" color="#535460" size={20} />
+                    </p>
+                  </div>
+                )}
+                {amountFilter && amountFilter?.value && (
+                  <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
+                    <p className="text-primary-alt">${amountFilter?.value}</p>
+                    <p
+                      className="cursor-pointer h-5"
+                      onClick={() => {
+                        setAmountFilter({});
+                      }}
+                    >
+                      <SymbolIcon icon="close" color="#535460" size={20} />
+                    </p>
+                  </div>
+                )}
+                {(columnFilters.length > 0 ||
+                  dateFilter?.value ||
+                  amountFilter?.value) && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setColumnFilters([]);
+                      setDateFilter({});
+                      setAmountFilter({});
+                    }}
+                    className="h-8"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+        {windowWidth > 767 && (
+          <div className="flex items-center justify-end space-x-2 mx-auto md:mx-0">
+            {showPagination && (
+              <Fragment>
+                <div>
+                  <span className="text-muted text-nowrap">
+                    {pagination.pageSize * (pagination.pageIndex - 1) + 1}-
+                    {pagination.pageSize * pagination.pageIndex < data?.length
+                      ? pagination.pageSize * pagination.pageIndex
+                      : data?.length}{" "}
+                    of {data?.length}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="py-0"
+                  onClick={() =>
+                    pagination.pageIndex > 1 &&
+                    setPagination({
+                      ...pagination,
+                      pageIndex: pagination.pageIndex - 1,
+                    })
+                  }
+                  disabled={pagination.pageIndex === 1}
+                >
+                  <SymbolIcon icon="chevron_left" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="py-0"
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: pagination.pageIndex + 1,
+                    }))
+                  }
+                  disabled={!hasNextPage}
+                >
+                  <SymbolIcon icon="chevron_right" />
+                </Button>
+              </Fragment>
+            )}
+            {showDownload && (
+              <>
+                {windowWidth > 768 ? (
+                  <>
+                    {showDownloadButton && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() =>
+                          exportExcel(table.getFilteredRowModel().rows)
+                        }
+                      >
+                        <SymbolIcon icon="download" />
+                        Download
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button type="button" variant="ghost" className="p-1">
+                        <SymbolIcon icon="more_vert" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() =>
+                          exportExcel(table.getFilteredRowModel().rows)
+                        }
+                        className="p-1 flex justify-start w-full text-left"
+                      >
+                        <SymbolIcon icon="download" />
+                        Download
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </>
+            )}
+            {showUploadButton && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onUpload}
+                className="p-1"
+              >
+                <SymbolIcon icon="upload" />
+                Upload New
               </Button>
             )}
           </div>
-        </div>
-        <div className="flex items-center justify-end space-x-2">
-          {showPagination && (
-            <Fragment>
-              <div>
-                <span className="text-muted">
-                  {pagination.pageSize * (pagination.pageIndex - 1) + 1}-
-                  {pagination.pageSize * pagination.pageIndex < data?.length
-                    ? pagination.pageSize * pagination.pageIndex
-                    : data?.length}{" "}
-                  of {data?.length}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="py-0"
-                onClick={() =>
-                  pagination.pageIndex > 1 &&
-                  setPagination({
-                    ...pagination,
-                    pageIndex: pagination.pageIndex - 1,
-                  })
-                }
-                disabled={pagination.pageIndex === 1}
-              >
-                <SymbolIcon icon="chevron_left" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="py-0"
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    pageIndex: pagination.pageIndex + 1,
-                  }))
-                }
-                disabled={!hasNextPage}
-              >
-                <SymbolIcon icon="chevron_right" />
-              </Button>
-            </Fragment>
-          )}
-          {showDownloadButton && (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => exportExcel(table.getFilteredRowModel().rows)}
-            >
-              <SymbolIcon icon="download" />
-              Download
-            </Button>
-          )}
-          {showUploadButton && (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onUpload}
-              className="p-1"
-            >
-              <SymbolIcon icon="upload" />
-              Upload New
-            </Button>
-          )}
-        </div>
+        )}
       </div>
-      <Table className="overflow-x-scroll">
+      <Table className="overflow-x-scroll border-spacing-4">
         {showHeader && (
           <TableHeader className="border-b">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-[#757575] px-0">
+                    <TableHead
+                      key={header.id}
+                      className="text-[#757575] md:px-0 text-nowrap"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -571,7 +697,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="px-0 py-3 text-nowrap">
+                  <TableCell key={cell.id} className="md:px-0 py-3 text-nowrap">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

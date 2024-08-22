@@ -5,6 +5,7 @@ import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
+import { useMainContext } from "@/context/Main";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
@@ -17,29 +18,6 @@ type merchant = {
   merchant_name: string;
   merchant_logo: string;
 };
-
-// const filterByDateRange = (rows: any, id: any, filterValue: any) => {
-//   const [startDate, endDate] =
-//     filterValue === "thisMonth" ? getCurrentMonthRange() : getLastMonthRange();
-//   return rows?.filter((row: any) => {
-//     const rowDate = new Date(row.original[id]);
-//     return rowDate >= startDate && rowDate <= endDate;
-//   });
-// };
-
-// const getCurrentMonthRange = () => {
-//   const now = new Date();
-//   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-//   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-//   return [startOfMonth, endOfMonth];
-// };
-
-// const getLastMonthRange = () => {
-//   const now = new Date();
-//   const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-//   const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-//   return [lastMonth, endOfLastMonth];
-// };
 
 const glCodes = [
   "230 - Electric Bills",
@@ -78,8 +56,6 @@ const categories = [
 const transactionsColumns: ColumnDef<any>[] = [
   {
     accessorKey: "date",
-    // header: "Date",
-    // filterFn: dateFilter,
     header: ({ column }) => {
       return (
         <Button
@@ -266,17 +242,13 @@ const Page = () => {
       }
     });
   }, [currentUcrm]);
+const {windowWidth} = useMainContext();
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-primary text-2xl font-medium ml-1">Transaction</h1>
-      {/* {loading ? (
-        <div className="h-[70vh] w-full flex items-center justify-center">
-          <Loader2Icon className="animate-spin" />
-        </div>
-      ) : (
-        <> */}
-      {/* {transactions.length !== 0 ? ( */}
+        {windowWidth > 767 && (
+          <h1 className="text-primary text-2xl font-medium ml-1">Transaction</h1>
+        )}
       {accounts?.length !== 0 ? (
         <DataTable
           columns={transactionsColumns}
@@ -292,13 +264,6 @@ const Page = () => {
           <h1 className="text-2xl text-muted">No Accounts connected</h1>
         </div>
       )}
-      {/* ) : (
-            <div className="flex justify-center items-center h-96">
-              <h1 className="text-2xl text-muted">No transactions available</h1>
-            </div>
-          )} */}
-      {/* </>
-      )} */}
     </div>
   );
 };
