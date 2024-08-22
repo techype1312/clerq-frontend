@@ -9,7 +9,7 @@ const ProfileRowContainer = ({ profileData }: { profileData: RowData[] }) => {
     <div className="flex flex-col">
       {profileData.map((data, index) => (
         <div
-          className={`${data.id !== "social" ? "p-4" : ""} border-b pl-0`}
+          className={`${data.id !== "social" ? "pt-4 md:p-4" : ""} border-b pl-0`}
           key={index}
         >
           <ProfileItem rowData={data} />
