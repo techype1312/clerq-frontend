@@ -33,7 +33,7 @@ const SheetsData = ({
         }}
         className="flex justify-between text-primary cursor-pointer"
       >
-        <h1 className="text-xl flex items-center">
+        <h1 className="text-base md:text-xl flex items-center">
           {sheetData.isCollapsible && (
             <span className={showData ? "h-fit" : "-rotate-90 h-fit"}>
               <SymbolIcon icon="arrow_drop_down" color="#1E1E2A" size={32} />
@@ -41,7 +41,7 @@ const SheetsData = ({
           )}
           {sheetData.title.title}
         </h1>
-        <p className="text-label font-semibold">
+        <p className="text-label font-medium md:font-semibold">
           {sheetData.title.value < 0 && "-"}$
           {Math.abs(sheetData.title.value).toLocaleString("en-US", {
             minimumFractionDigits: 2,
