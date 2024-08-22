@@ -34,13 +34,13 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <h1 className="text-primary text-xl">Profit & Loss</h1>
-        <p className="text-sm text-muted">Group by</p>
+        <h1 className="text-primary font-medium text-xl">Profit & Loss</h1>
+        <p className="text-sm text-muted ml-auto">Group by</p>
       </div>
-      <div className="grid grid-cols-3 w-full gap-4">
+      <div className="grid md:grid-cols-3 w-full gap-4">
         <Card className="flex flex-col py-4 px-6">
           <CardTitle className="text-label text-base">Total revenue</CardTitle>
-          <p className="text-[#02542D] text-xl">
+          <p className="text-background-primary text-xl">
             ${profitNLoss.totalRevenue.toFixed(2).toLocaleString()}
           </p>
         </Card>

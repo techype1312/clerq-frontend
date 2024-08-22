@@ -65,9 +65,9 @@ const MoneyMovement = ({
       ))}
       {/* <span className="border border-input"></span> */}
       <div className="flex justify-between border-t border-[#F3F3F3] mt-2 pt-6 pb-2">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <p className="text-sm text-label">Avg (3 months)</p>
-          <p className="text-sm text-muted">
+          <p className="text-sm text-primary font-medium">
             ${formatNumber(moneyMovementData.avgValue)}
           </p>
         </div>

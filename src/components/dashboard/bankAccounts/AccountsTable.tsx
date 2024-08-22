@@ -19,7 +19,7 @@ const AccountsTable = ({
   companyId: string;
 }) => {
   return (
-    <Table className="gap-20">
+    <Table>
       {!!accounts.length && (
         <Fragment>
           <TableHeader>
@@ -31,7 +31,7 @@ const AccountsTable = ({
           <TableBody>
             {accounts?.map((acc: any | any, index: number) => (
               <TableRow key={index}>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium pl-0 md:pl-4">
                   <div className="flex gap-2">
                     <span className="bg-[#5266EB29] flex items-center justify-center rounded-full px-3 py-0">
                       <SymbolIcon icon="account_balance" color="#5266EB" />
