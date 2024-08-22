@@ -13,6 +13,7 @@ import {
 import { FormControl, FormItem } from "../ui/form";
 import { Checkbox } from "../ui/checkbox";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
+import { toast } from "react-toastify";
 
 const Step2 = ({
   changeStep,
@@ -40,6 +41,14 @@ const Step2 = ({
   const [addressDataLoaded, setAddressDataLoaded] = useState(false);
   const [createdAddress, setCreatedAddress] = useState(false);
   const handleSubmit = async (e: Step2Schema) => {
+    if (!addressId || !mailingAddressId)
+      return toast.error(
+        addressId
+          ? mailingAddressId
+            ? "Please add Legal and Mailing address"
+            : "Please add Mailing address"
+          : "Please add legal address"
+      );
     try {
       setLoading(true);
       // const address = e.address;
@@ -58,7 +67,6 @@ const Step2 = ({
       } else {
         res = await CompanyApis.createCompany(companyData);
       }
-
       setCompanyData(res);
       setLoading(false);
       if (res && res.data && res.status === 200) changeStep(step + 1);
@@ -120,6 +128,9 @@ const Step2 = ({
     if (!companyData) {
       return setRefetchUserData(!refetchUserData);
     } else if (!addressDataLoaded) {
+      if (companyData) {
+        setLocalCompanyData(companyData);
+      }
       if (companyData?.legal_address?.id)
         setAddressId(companyData?.legal_address?.id);
       if (companyData?.mailing_address?.id)
@@ -141,10 +152,17 @@ const Step2 = ({
             inputProps: {
               placeholder: "Value",
               onChange: (e: any) => {
-                setLocalCompanyData({
-                  ...localCompanyData,
-                  name: e.target.value,
-                });
+                if (e.target.value.length > 0) {
+                  setLocalCompanyData({
+                    ...localCompanyData,
+                    name: e.target.value,
+                  });
+                } else {
+                  setLocalCompanyData({
+                    ...localCompanyData,
+                    name: "",
+                  });
+                }
               },
             },
           },
@@ -165,7 +183,10 @@ const Step2 = ({
             inputProps: {
               placeholder: "(123)-456-7890",
               onChange: (e: any) => {
-                setLocalCompanyData({ ...localCompanyData, phone: e.target.value });
+                setLocalCompanyData({
+                  ...localCompanyData,
+                  phone: e.target.value,
+                });
               },
             },
           },
@@ -238,17 +259,12 @@ const Step2 = ({
         }}
         values={{
           name: localCompanyData?.name ? localCompanyData?.name : "",
-          ein: localCompanyData?.ein
-            ? localCompanyData?.ein
-            : companyData?.ein ?? "",
-          email: localCompanyData?.email
-            ? localCompanyData?.email
-            : companyData?.email ?? "",
-          tax_classification: localCompanyData?.tax_classification
-            ? localCompanyData?.tax_classification
-            : companyData?.tax_classification,
-          phone: localCompanyData?.phone ?? companyData?.phone,
-          tax_residence_country: "US",
+          ein: localCompanyData?.ein ? localCompanyData?.ein : "",
+          email: localCompanyData?.email ? localCompanyData?.email : "",
+          tax_classification: localCompanyData?.tax_classification ?? "",
+          phone: localCompanyData?.phone ?? "",
+          tax_residence_country:
+            localCompanyData?.tax_residence_country ?? "US",
           address: {
             address_line_1: address ? address?.address_line_1 : "",
             address_line_2: address ? address?.address_line_2 : "",
@@ -277,9 +293,6 @@ const Step2 = ({
           long1: mailingAddress ? mailingAddress.longitude : "",
           lat1: mailingAddress ? mailingAddress.latitude : "",
           country_code: user?.country_code,
-        }}
-        defaultValues={{
-          tax_residence_country: "US",
         }}
         dependencies={[
           // {
@@ -386,18 +399,18 @@ const Step2 = ({
               });
             }
           }
-          if(values.phone){
+          if (values.phone) {
             setLocalCompanyData({
               ...localCompanyData,
               phone: values.phone,
               country_code: values.country_code,
-            }) 
+            });
           }
-          if(values.tax_classification){
+          if (values.tax_classification) {
             setLocalCompanyData({
               ...localCompanyData,
               tax_classification: values.tax_classification,
-            })
+            });
           }
         }}
       >
@@ -407,13 +420,13 @@ const Step2 = ({
               changeStep(1);
             }}
             variant="ghost"
-            className="background-muted text-label hover:!background-muted h-12 px-10 rounded-full"
+            className="background-muted text-label hover:!background-muted box-border w-40 h-12 px-10 rounded-full"
           >
             Previous
           </Button>
           <AutoFormSubmit
             disabled={loading}
-            className="background-primary px-10 rounded-full h-12"
+            className="background-primary px-10 rounded-full h-12 box-border w-40"
           >
             {loading ? <Loader2Icon className="animate-spin" /> : "Next"}
           </AutoFormSubmit>

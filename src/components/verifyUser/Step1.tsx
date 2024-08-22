@@ -8,6 +8,7 @@ import OnboardingApis from "@/actions/apis/OnboardingApis";
 import AuthApis from "@/actions/apis/AuthApis";
 import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/apis/CompanyApis";
+import { toast } from "react-toastify";
 
 const Step1 = ({
   changeStep,
@@ -36,6 +37,14 @@ const Step1 = ({
   const [companyData, setCompanyData] = useState<any>();
 
   const handleSubmit = async (e: Step1Schema) => {
+    if (!addressId || !mailingAddressId)
+      return toast.error(
+        addressId
+          ? mailingAddressId
+            ? "Please add Legal and Mailing address"
+            : "Please add Mailing address"
+          : "Please add legal address"
+      );
     setLoading(true);
     let userData: any = e;
     if (userData?.company === "Yes" && companyData?.length === 0) {
@@ -450,7 +459,7 @@ const Step1 = ({
     >
       <AutoFormSubmit
         disabled={loading}
-        className="w-fit background-primary px-10 rounded-full h-12"
+        className="w-fit background-primary rounded-full h-12"
       >
         {loading ? <Loader2Icon className="animate-spin" /> : "Next"}
       </AutoFormSubmit>

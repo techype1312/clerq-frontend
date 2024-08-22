@@ -77,7 +77,7 @@ const Step4 = ({
         }}
         className={`${
           !linkToken ? "cursor-wait" : "cursor-pointer"
-        } p-4 flex gap-2 bg-[#FAFBFD] border-none`}
+        } flex flex-col md:flex-row items-center md:items-start py-8 px-4 md:p-8 gap-2 bg-[#FAFBFD] border-none`}
       >
         <div className="my-auto">
           <Image
@@ -88,10 +88,10 @@ const Step4 = ({
           />
         </div>
         <CardHeader>
-          <CardTitle className="text-xl font-normal text-primary">
+          <CardTitle className="text-lg md:text-xl font-normal text-primary">
             Connect with Plaid
           </CardTitle>
-          <CardDescription className="text-base font-normal text-label">
+          <CardDescription className="text-sm md:text-base font-normal text-label">
             Deploy your new project in one-click.
           </CardDescription>
         </CardHeader>

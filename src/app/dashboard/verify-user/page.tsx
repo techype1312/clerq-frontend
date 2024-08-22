@@ -64,10 +64,10 @@ const VerifyUserPage = () => {
     }
   });
   return (
-    <div className="flex px-12 h-screen items-center">
-      <div className="flex gap-4 h-[80vh] items-center w-full">
-        <div className="flex flex-col w-1/2 gap-4 self-start">
-          <p className="text-muted">
+    <div className="flex px-6 md:px-12 h-screen items-center">
+      <div className="flex flex-col md:flex-row gap-4 h-[80vh] items-center w-full">
+        <div className="flex flex-row md:flex-col md:w-1/2 gap-4 self-start">
+          <p className="text-muted w-fit text-nowrap">
             Step {step}/{totalSteps}
           </p>
           {/*
@@ -86,10 +86,10 @@ const VerifyUserPage = () => {
           >
             -
           </button> */}
-          <h1 className="text-primary text-3xl">
+          <h1 className="text-primary text-xl md:text-3xl">
             <span>{headerText}</span>
             {headerText[0] === stepsHeader[2] && (
-              <p className="text-sm max-w-sm text-muted mt-2">
+              <p className="text-xs md:text-sm max-w-sm text-muted mt-2">
                 To securely connect your bank account, we use Plaid, you can
                 also manually add your bank account.
               </p>
@@ -104,7 +104,7 @@ const VerifyUserPage = () => {
             </>
           )} */}
         </div>
-        <div className="flex items-center w-1/2 py-12">
+        <div className="flex items-center md:w-1/2 py-12">
           {step === 1 && (
             <Step1
               changeStep={changeStep}
@@ -123,26 +123,6 @@ const VerifyUserPage = () => {
             (step === 3 && totalSteps === 3)) && (
             <Step4 changeStep={changeStep} userData={userData} step={step} />
           )}
-          {/* {((step === 3 && totalSteps === 5) ||
-            (step === 2 && totalSteps === 4)) && <div className="h-sm"></div>}
-          {((step === 4 && totalSteps === 5) ||
-            (step === 3 && totalSteps === 4)) && (
-            <Step4
-              changeStep={changeStep}
-              userData={userData}
-              otherUserData={otherUserData}
-              step={step}
-            />
-          )}
-          {((step === 5 && totalSteps === 5) ||
-            (step === 4 && totalSteps === 4)) && (
-            <Step5
-              changeStep={changeStep}
-              userData={userData}
-              otherUserData={otherUserData}
-              step={step}
-            />
-          )} */}
         </div>
       </div>
     </div>
