@@ -82,7 +82,7 @@ const Page = () => {
                 Balance sheet
               </h1>
             )}
-            <div className="w-fit">
+            <div className="w-fit md:ml-auto">
               <DateRangeDropdownSelect
                 dateRange={dateRange}
                 selectedDateRange={selectedDateRange}
