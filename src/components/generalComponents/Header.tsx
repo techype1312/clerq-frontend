@@ -1,29 +1,29 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { UserContext } from "@/context/User";
+import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
 import { Button } from "../ui/button";
 
 const Header = () => {
-  const { userData, refreshUser } = useContext(UserContext);
+  const { userData } = useUserContext();
   const [isLoggedIn, setIsLoggedIn] = useState(userData ? true : false);
   useEffect(() => {
     if (userData) {
       setIsLoggedIn(true);
-    } else{
+    } else {
       setIsLoggedIn(false);
     }
   }, [userData]);
-  
+
   const handleLogout = async () => {
     return AuthApis.signOut().then(() => {
-      Cookies.remove('token')
-      Cookies.remove('refreshToken')
-      Cookies.remove('onboarding_completed')
+      Cookies.remove("token");
+      Cookies.remove("refreshToken");
+      Cookies.remove("onboarding_completed");
       localStorage.clear();
-    })
+    });
   };
 
   return (
