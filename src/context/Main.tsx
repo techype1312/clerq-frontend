@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 export const MainContext = createContext<any>(null);
 // import { usePathname, useRouter } from "next/navigation";
 // import Cookies from "js-cookie";
@@ -40,3 +40,5 @@ export const MainContextProvider = ({
     </MainContext.Provider>
   );
 };
+
+export const useMainContext = () => useContext(MainContext);

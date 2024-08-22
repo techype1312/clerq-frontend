@@ -35,7 +35,7 @@ export const DashboardLayout = ({
         <DashboardTop />
         <div
           className={
-            "px-4 sm:px-8 pt-4 pb-12 mx-8 overflow-y-auto overflow-x-hidden"
+            "px-4 sm:px-8 pt-4 pb-12 md:mx-8 overflow-y-auto overflow-x-hidden"
           }
         >
           {children}
