@@ -29,7 +29,7 @@ const VerifyUserPage = () => {
 
   useEffect(() => {
     setRefetchUserData(!refetchUserData);
-  }, [setRefetchUserData]);
+  }, []);
 
   // const searchParamStep = parseInt(searchParams.get("step") ?? "1");
 
