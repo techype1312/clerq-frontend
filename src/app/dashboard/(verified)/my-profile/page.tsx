@@ -232,7 +232,7 @@ const Page = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
-  
+
   const loadingState = () => {
     if (loading || !userDataLoaded) {
       return <ProfileSkeleton />;

@@ -1,16 +1,10 @@
-// import { type NextRequest } from "next/server";
-// import { updateSession } from "@/utils/supabase/middleware";
-
-// export async function middleware(request: NextRequest) {
-//   return await updateSession(request);
-// }
-
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
-  const isUserOnboard = request.cookies.get("onboarding_completed")?.value ?? "false";
+  const isUserOnboard =
+    request.cookies.get("onboarding_completed")?.value ?? "false";
   if (
     token &&
     isUserOnboard === "false" &&
