@@ -8,6 +8,7 @@ on:
 env:
   AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppStaging/c3d176d41d1947be883776368561dcde
   AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-staging
+  APP_ENV: staging
 
 jobs:
   build-and-deploy-staging:
@@ -35,20 +36,20 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }} .
-          docker tag ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }} ${{ env.AWS_ECR_REPOSITORY }}:latest
+          docker build -t ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} .
+          docker tag ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
 
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }}
-          docker push ${{ env.AWS_ECR_REPOSITORY }}:latest
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }}
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
 
       - name: Deploy to Staging App Runner
         run: |
           aws apprunner update-service --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }} \
             --source-configuration '{
                 "ImageRepository": {
-                    "ImageIdentifier": "${{ env.AWS_ECR_REPOSITORY }}:latest",
+                    "ImageIdentifier": "${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest",
                     "ImageRepositoryType": "ECR"
                 }
             }'
