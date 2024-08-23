@@ -137,10 +137,6 @@ const Step2 = ({
       setAddressDataLoaded(true);
     }
   }, [companyData, addressDataLoaded]);
-  useEffect(()=>{
-    console.log(localCompanyData, 'localCompanyData')
-  },[localCompanyData])
-
   return (
     <div className="w-full">
       <AutoForm
@@ -326,7 +322,8 @@ const Step2 = ({
         zodItemClass="flex flex-row gap-4 space-y-0"
         labelClass="text-label"
         onValuesChange={(values) => {
-            setLocalCompanyData((prevData: any) => ({
+          //For some reason some values are not being updated in the local state but in group they are
+          setLocalCompanyData((prevData: any) => ({
               ...prevData,
               name: values?.name,
               ein: values?.ein,
@@ -392,8 +389,6 @@ const Step2 = ({
             });
           }
           if (values.ein) {
-            console.log(values.ein);
-            console.log(localCompanyData);
             setLocalCompanyData((prevData: any) => ({
               ...prevData,
               ein: values.ein,
@@ -405,7 +400,6 @@ const Step2 = ({
             }));
           }
           if (values.tax_classification) {
-            console.log(values.tax_classification, localCompanyData, 'tax');
             setLocalCompanyData({
               ...localCompanyData,
               tax_classification: values.tax_classification,

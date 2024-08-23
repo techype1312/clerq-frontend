@@ -142,7 +142,6 @@ const Step1 = ({
       if (userData) {
         setLocalUserData(userData);
       }
-      console.log("userData", userData);
       if (userData?.legal_address?.id)
         setAddressId(userData?.legal_address?.id);
       if (userData?.mailing_address?.id)
