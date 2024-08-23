@@ -24,6 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";
 import DocumentListItem from "@/components/documents/DocumentListItem";
+import { useMainContext } from "@/context/Main";
 
 const Page = () => {
   const { toast, dismiss: dismissToast } = useToast();
@@ -195,45 +196,35 @@ const Page = () => {
     fetchDocuments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const { windowWidth } = useMainContext();
 
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
-        <div className="flex gap-24 flex-row">
+        <div className="flex gap-8 md:gap-24 flex-col md:flex-row">
           <div>
-            <h1
-              style={{
-                fontSize: "24px",
-                fontWeight: "500",
-                lineHeight: "28.8px",
-                textAlign: "left",
-                color: "#1E1E2A",
-              }}
-            >
-              Documents
-            </h1>
-            <div className="mt-8">
+            {windowWidth > 767 && (
+              <h1 className="text-2xl font-medium text-left text-primary">
+                Documents
+              </h1>
+            )}
+            <div className="mt-8 flex flex-row md:flex-col overflow-auto gap-2">
               {documentDetails.map((dt) => (
                 <div
                   key={dt.id}
                   style={{
-                    cursor: "pointer",
-                    fontWeight: currentType === dt.id ? "600" : "400",
-                    color: currentType === dt.id ? "#1E1E2A" : "#9D9DA7",
-                    padding: "2px",
-                    marginBottom: "10px",
                     pointerEvents: loading ? "none" : "visible",
                   }}
+                  className={`cursor-pointer p-0.5 mb-2.5 text-nowrap ${
+                    currentType === dt.id
+                      ? "font-semibold text-primary"
+                      : "font-normal text-muted"
+                  } + ${
+                    loading ? "pointer-events-none" : "pointer-events-auto"
+                  }`}
                   onClick={() => onDoctypeClick(dt.id)}
                 >
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      lineHeight: "19.6px",
-                      textAlign: "right",
-                    }}
-                    className="hover:text-black"
-                  >
+                  <p className="text-sm text-right hover:text-black">
                     {dt.label}
                   </p>
                 </div>
@@ -244,15 +235,7 @@ const Page = () => {
             {currentDocTypeDetails && (
               <div className="flex gap-1 flex-col">
                 <div className="flex gap-1 flex-row items-center">
-                  <h1
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: 400,
-                      lineHeight: "24px",
-                      textAlign: "left",
-                      color: "#1E1E2A",
-                    }}
-                  >
+                  <h1 className="text-lg font-normal text-left text-primary">
                     {currentDocTypeDetails.title}
                   </h1>
                   <TooltipProvider>
@@ -269,16 +252,7 @@ const Page = () => {
                   </TooltipProvider>
                 </div>
                 <div className="flex gap-1 flex-col items-start max-w-screen-md">
-                  <p
-                    className="whitespace-break-spaces w-full"
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      lineHeight: "19.6px",
-                      textAlign: "left",
-                      color: "#9D9DA7",
-                    }}
-                  >
+                  <p className="whitespace-break-spaces w-full text-sm font-normal text-left text-muted">
                     {currentDocTypeDetails.description}
                   </p>
                   {showUpload || (!documents.length && !loading) ? (

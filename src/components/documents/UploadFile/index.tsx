@@ -128,15 +128,7 @@ const UploadFile = (props: UploadFileProps) => {
       onSubmit={handleUploadFiles}
     >
       <Card className="border-2 border-[#DCDCE4] border-dashed hover:border-blue-700  cursor-pointer bg-[#F7F7F8]">
-        <CardContent
-          className="p-0 flex flex-col"
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#1E1E2A",
-            textAlign: "center",
-          }}
-        >
+        <CardContent className="p-0 flex flex-col items-center justify-center text-primary text-center">
           <Dropzone
             onDrop={onDrop}
             accept={{

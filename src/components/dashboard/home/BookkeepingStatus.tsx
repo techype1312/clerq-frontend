@@ -23,9 +23,9 @@ const BookkeepingStatus = ({
   bookkeepingStatus: bookKeepingStatusType[];
 }) => {
   return (
-    <div className="flex flex-col gap-4 px-4 py-8 border border-input rounded-md">
-      <div className="flex justify-between">
-        <h2 className="text-primary text-xl">Bookkeeping status</h2>
+    <div className="flex flex-col gap-4 md:px-4 py-8 md:border md:border-input rounded-md">
+      <div className="flex justify-between flex-col md:flex-row">
+        <h2 className="text-primary text-base font-medium md:text-xl">Bookkeeping status</h2>
         <p className="text-muted text-sm">
           See progress towards your tax ready books.
         </p>

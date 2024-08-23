@@ -52,7 +52,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit {rowData.label}</DialogTitle>
+          <DialogTitle className="text-left">Edit {rowData.label}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-row items-center space-x-2 w-full">
           {schema && values && (

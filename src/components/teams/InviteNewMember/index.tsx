@@ -75,13 +75,13 @@ const InviteNewMemberDialog = ({
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-lg"
+        className="sm:max-w-lg h-screen md:h-auto overflow-auto"
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
       >
-        <DialogHeader>
-          <DialogTitle>{`Add member`}</DialogTitle>
+        <DialogHeader className="h-fit mt-auto">
+          <DialogTitle className="text-left md:text-center h-fit">{`Add member`}</DialogTitle>
         </DialogHeader>
         <DialogDescription>
           <div className="flex flex-col w-full items-center min-w-64 mt-6 mb-4">
@@ -92,7 +92,7 @@ const InviteNewMemberDialog = ({
                 role: allowedRoles[0].name,
               }}
               className="flex flex-col gap-4 max-w-lg mx-auto"
-              zodItemClass="flex flex-row grow gap-4 space-y-0 w-full"
+              zodItemClass="flex flex-col md:flex-row grow gap-4 space-y-0 w-full"
               withSubmitButton={false}
               submitButtonText="Get started"
               submitButtonClass="background-primary"
@@ -100,7 +100,7 @@ const InviteNewMemberDialog = ({
               onSubmit={sendNewInvite}
             >
               <Permissions />
-              <div className="ml-auto h-10 flex gap-2 mt-4">
+              <div className="ml-auto h-10 flex flex-row gap-2 mt-4">
                 <DialogClose asChild>
                   <Button
                     type="button"

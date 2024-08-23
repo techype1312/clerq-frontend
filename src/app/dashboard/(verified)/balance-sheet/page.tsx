@@ -3,6 +3,7 @@ import DateRangeDropdownSelect from "@/components/generalComponents/DateRangeDro
 import HeaderCard from "@/components/generalComponents/HeaderCard";
 import SheetsData from "@/components/generalComponents/SheetsData";
 import { Button } from "@/components/ui/button";
+import { useMainContext } from "@/context/Main";
 import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ const Page = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<dateRangeType>(
     dateRange[0]
   );
+  const { windowWidth } = useMainContext();
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
   const [sheetData, setSheetData] = useState<sheetDataType>({
     title: { title: "Revenue", value: 162500.7 },
@@ -63,9 +65,9 @@ const Page = () => {
       title: "Balance sheet",
       download:
         "https://gseijrhbhurcrpgbxrgt.supabase.co/storage/v1/object/sign/Test%20bucket/sample.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJUZXN0IGJ1Y2tldC9zYW1wbGUucGRmIiwiaWF0IjoxNzIyNDMwNzgxLCJleHAiOjE3MjMwMzU1ODF9.DJSWsvWgcN6VPhR1Tc59nlHu1CcVqCVUDAv2Y5w4RqE&t=2024-07-31T12%3A59%3A41.813Z",
-      leftText: { title: "Assets", value: 500.0 },
-      centerText: { title: "Liabilities", value: 502.123 },
-      rightText: { title: "Equity", value: 500.123 },
+      leftText: { title: "Assets", value: 50000.0 },
+      centerText: { title: "Liabilities", value: 5020.123 },
+      rightText: { title: "Equity", value: 5000.123 },
     });
   }, [selectedDateRange]);
   const [isOpened, setIsOpened] = useState("all");
@@ -74,19 +76,23 @@ const Page = () => {
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between">
-            <h1 className="text-primary text-2xl font-medium ml-1">
-              Balance sheet
-            </h1>
-            <DateRangeDropdownSelect
-              dateRange={dateRange}
-              selectedDateRange={selectedDateRange}
-              setSelectedDateRange={setSelectedDateRange}
-              setSelectedDateRangeIndex={setSelectedDateRangeIndex}
-              selectedDateRangeIndex={selectedDateRangeIndex}
-            />
+          <div className="flex gap-4 md:gap-0 flex-col md:flex-row">
+            {windowWidth > 767 && (
+              <h1 className="text-primary text-2xl font-medium ml-1">
+                Balance sheet
+              </h1>
+            )}
+            <div className="w-fit md:ml-auto">
+              <DateRangeDropdownSelect
+                dateRange={dateRange}
+                selectedDateRange={selectedDateRange}
+                setSelectedDateRange={setSelectedDateRange}
+                setSelectedDateRangeIndex={setSelectedDateRangeIndex}
+                selectedDateRangeIndex={selectedDateRangeIndex}
+              />
+            </div>
           </div>
-          <HeaderCard cardDetails={cardDetails} />
+          <HeaderCard cardDetails={cardDetails} windowWidth={windowWidth} />
           <div className="flex flex-col gap-4 mt-4 mx-1">
             <div className="flex gap-2">
               <Button

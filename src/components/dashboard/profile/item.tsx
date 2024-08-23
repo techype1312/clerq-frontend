@@ -20,7 +20,7 @@ const ProfileItem = ({ rowData }: { rowData: RowData }) => {
         );
       default:
         return (
-          <div className="flex flex-col min-w-56 gap-1">
+          <div className="flex flex-col min-w-40 md:min-w-56 gap-1">
             <span className="text-primary whitespace-break-spaces">
               {rowData.formattedValue}
             </span>
@@ -47,12 +47,12 @@ const ProfileItem = ({ rowData }: { rowData: RowData }) => {
     <div className="grid grid-cols-2 gap-4">
       <div className="text-primary flex flex-col gap-1 w-64">
         <span
-          style={{ fontSize: "15px", fontWeight: 400, lineHeight: "24px " }}
+          className="text-sm w-2/3 sm:w-full md:text-[15px] font-normal"
         >
           {rowData.label}
         </span>
         {rowData.description && (
-          <span className="text-gray-400 text-xs whitespace-break-spaces">
+          <span className="text-gray-400 w-1/2 sm:w-full text-xs whitespace-break-spaces">
             {rowData.description}
           </span>
         )}

@@ -1,4 +1,8 @@
-import { calculateDateRange, formatDateRange, formatDateRangeWithDay } from "@/utils/utils";
+import {
+  calculateDateRange,
+  formatDateRange,
+  formatDateRangeWithDay,
+} from "@/utils/utils";
 import React, { useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import Select from "react-select";
@@ -53,6 +57,11 @@ const DateFilter = ({
                 e.from.toDateString(),
                 e.to.toDateString()
               ),
+            });
+          } else if (e?.from) {
+            setDateFilter({
+              value: e,
+              label: "",
             });
           }
         }}

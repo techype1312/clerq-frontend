@@ -11,35 +11,22 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import ProfilePhotoEditModel from "@/components/profile-photo";
+import { useMainContext } from "@/context/Main";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
-    <div
-      className="flex w-full items-center justify-between"
-      style={{
-        width: "160px",
-      }}
-    >
+    <div className="flex w-40 md:w-full items-center justify-between">
       <div
-        className="flex flex-col justify-center"
+        className="flex flex-col justify-center rounded whitespace-nowrap text-primary"
         style={{
-          borderRadius: "4px",
-          whiteSpace: "nowrap",
-          color: "#1e1e2a",
           textTransform: "capitalize",
         }}
       >
         <span
           style={{
-            border: "1px solid #cce8ea",
-            borderRadius: "4px",
-            padding: "0 8px",
-            fontWeight: 400,
-            fontSize: "12px",
             letterSpacing: ".2px",
-            lineHeight: "20px",
           }}
-          className="hover:bg-teal-100"
+          className="hover:bg-teal-100 rounded px-2 text-xs font-normal border border-[#cce8ea]"
         >
           {label}
         </span>
@@ -58,6 +45,7 @@ const Page = () => {
     updateUserData,
     updateUserLocalData,
   } = useUserContext();
+  const { windowWidth } = useMainContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
   useEffect(() => {
@@ -181,7 +169,7 @@ const Page = () => {
                   mailing_address: res.data,
                 });
               }
-              return res
+              return res;
             },
           },
         },
@@ -259,6 +247,9 @@ const Page = () => {
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
+          {windowWidth > 767 && (
+            <h1 className="text-primary text-2xl font-medium">Profile</h1>
+          )}
           <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
             <ProfilePhotoEditModel
               firstName={userData?.firstName}
@@ -269,14 +260,7 @@ const Page = () => {
               canEdit={true}
               showButtons={false}
             />
-            <p
-              className="ml-2"
-              style={{
-                fontSize: "28px",
-                lineHeight: "36px",
-                fontWeight: 380,
-              }}
-            >
+            <p className="ml-2 text-lg text-nowrap mr-2 md:text-[28px] font-[380]">
               {userData?.firstName} {userData?.lastName}
             </p>
             <RoleItem label={userData?.role?.name ?? ""} />

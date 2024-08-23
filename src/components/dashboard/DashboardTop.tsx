@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
 import { Input } from "../ui/input";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +15,17 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import ProfilePhotoPreview from "../profile-photo/ProfilePhotoPreview";
+import { dashboardTitle } from "@/utils/constants";
+import { MainContext } from "@/context/Main";
+import { Button } from "../ui/button";
+import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 
 const DashboardTop = () => {
+  const { windowWidth } = useContext(MainContext);
   const router = useRouter();
   const { userData } = useUserContext();
+  const pathname = usePathname();
+  const inputRef = useRef<any>(null);
 
   const handleLogout = async () => {
     return AuthApis.signOut().then(() => {
@@ -31,20 +37,67 @@ const DashboardTop = () => {
       router.refresh();
     });
   };
+  const [showInput, setShowInput] = React.useState(false);
+
+  const mobileTitle = dashboardTitle.find(
+    (title) =>
+      pathname === `/dashboard/${title.toLowerCase().replace(" ", "-")}` ||
+      (title === "Overview" && pathname === "/dashboard") ||
+      (title === "Bank accounts" && pathname === "/dashboard/bank-connections") ||
+      (title === "Settings") && pathname === "/dashboard/controls" || 
+      (title === "Profile") && pathname === "/dashboard/my-profile" 
+  );
+  const [search, setSearch] = React.useState("");
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowInput(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="my-4 w-full flex">
+    <div className="my-4 w-full flex" ref={inputRef}>
+      {windowWidth < 768 && !showInput && (
+        <h1 className="text-primary text-2xl font-medium ml-14 flex items-center justify-center">
+          {mobileTitle ? mobileTitle : "Dashboard"}
+        </h1>
+      )}
+
       <Input
-        className="w-1/2 rounded-2xl"
-        outerClassName="flex items-center justify-center"
+        className="ml-8 w-3/4 md:w-1/2 rounded-2xl bg-white"
+        outerClassName={`${
+          showInput || windowWidth > 767 ? "flex" : " hidden "
+        } items-center justify-center`}
         endIcon={"search"}
+        onChange={(e) => setSearch(e.target.value)}
+        value={search}
         placeholder="Search for a product"
         type="text"
       />
+      
+      {windowWidth < 768 && !showInput && (
+        <Button
+          variant={"ghost"}
+          className="ml-auto mr-4 hover:bg-white"
+          onClick={() => {
+            setShowInput(!showInput);
+          }}
+        >
+          <SymbolIcon icon="search" className="text-muted" />
+        </Button>
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="ml-auto mr-8 flex items-center cursor-pointer">
+          <div className="md:ml-auto mr-4 md:mr-8 flex items-center cursor-pointer">
             <ProfilePhotoPreview
               firstName={userData?.firstName}
               lastName={userData?.lastName}

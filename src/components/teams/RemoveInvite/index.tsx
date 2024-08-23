@@ -77,8 +77,7 @@ const RemoveInviteDialog = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>{description}</DialogDescription>
-        <DialogFooter className="ml-auto h-10 flex gap-2 mt-4">
+        <div className="ml-auto h-10 flex flex-row gap-2 mt-4">
           <DialogClose asChild>
             <Button
               type="button"
@@ -98,7 +97,8 @@ const RemoveInviteDialog = ({
             {loading && <Loader2Icon className="animate-spin" size={20} />}
             {actionBtnText}
           </Button>
-        </DialogFooter>
+        </div>
+        <DialogDescription>{description}</DialogDescription>
       </DialogContent>
     </Dialog>
   );

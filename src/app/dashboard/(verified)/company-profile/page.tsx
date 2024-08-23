@@ -240,16 +240,7 @@ const CompanyContainer = () => {
               canEdit={true}
               showButtons={false}
             />
-            <p
-              className="ml-2"
-              style={{
-                fontSize: "28px",
-                lineHeight: "36px",
-                fontWeight: 380,
-              }}
-            >
-              {companyData?.name}
-            </p>
+            <p className="ml-2 text-3xl font-[380]">{companyData?.name}</p>
           </div>
           <ProfileRowContainer profileData={rowData} />
         </div>
