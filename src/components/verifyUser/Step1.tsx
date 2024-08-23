@@ -94,6 +94,7 @@ const Step1 = ({
     const res = await AuthApis.updateUser(userData);
 
     if (res && res.status === 200) {
+      updateUserLocalData(res.data);
       changeStep(2);
     }
     setLoading(false);
@@ -138,7 +139,7 @@ const Step1 = ({
       setRefetchUserData(!refetchUserData);
       return;
     } else if (!addressDataLoaded) {
-      if(userData){
+      if (userData) {
         setLocalUserData(userData);
       }
       console.log("userData", userData);
@@ -159,21 +160,6 @@ const Step1 = ({
     });
   }, []);
 
-  // const clearAddress = async () => {
-  //   setAddress(undefined);
-  //   setMailingAddress(undefined);
-  //   setAddressId(null);
-  //   setMailingAddressId(null);
-  //   await AuthApis.updateUser({
-  //     legal_address: {
-  //       id: null,
-  //     },
-  //     mailing_address: {
-  //       id: null,
-  //     },
-  //   });
-  // };
-
   return (
     <AutoForm
       formSchema={step1Schema}
@@ -185,46 +171,11 @@ const Step1 = ({
           legalFirstName: {
             inputProps: {
               placeholder: "John",
-              onChange: (e: any) => {
-                updateUserLocalData({
-                  ...userData,
-                  legalFirstName: e.target.value,
-                });
-                setLocalUserData({
-                  ...localUserData,
-                  legalFirstName: e.target.value,
-                })
-              },
             },
           },
           legalLastName: {
             inputProps: {
               placeholder: "Doe",
-              onChange: (e: any) => {
-                updateUserLocalData({
-                  ...userData,
-                  legalLastName: e.target.value,
-                });
-                setLocalUserData({
-                  ...localUserData,
-                  legalLastName: e.target.value,
-                })
-              },
-            },
-          },
-        },
-        date_of_birth: {
-          inputProps: {
-            // date component uses onSelect instead of onChange
-            onSelect: (e: any) => {
-              updateUserLocalData({
-                ...userData,
-                dob: e,
-              });
-              setLocalUserData({
-                ...localUserData,
-                dob: e,
-              })
             },
           },
         },
@@ -254,16 +205,6 @@ const Step1 = ({
           inputProps: {
             placeholder: "Select country",
             disabled: true,
-            onChange: (e: any) => {
-              updateUserLocalData({
-                ...userData,
-                tax_residence_country: e.currentTarget.value,
-              });
-              setLocalUserData({
-                ...localUserData,
-                tax_residence_country: e.currentTarget.value,
-              })
-            },
           },
         },
         email: {
@@ -371,9 +312,8 @@ const Step1 = ({
       ]}
       values={{
         name: {
-          legalFirstName: localUserData?.legalFirstName
-            ? localUserData?.legalFirstName
-            : localUserData?.firstName,
+          legalFirstName:
+            localUserData?.legalFirstName ?? localUserData?.firstName,
           legalLastName: localUserData?.legalLastName
             ? localUserData?.legalLastName
             : localUserData?.lastName,
@@ -445,7 +385,10 @@ const Step1 = ({
           }
         }
         if (!addressDataLoaded || values.mailing_address_id) {
-          if (values.mailing_address_id !== mailingAddressId && values.mailing_address_id) {
+          if (
+            values.mailing_address_id !== mailingAddressId &&
+            values.mailing_address_id
+          ) {
             setMailingAddressId(values.mailing_address_id);
             setCreatedAddress(true);
           }
@@ -474,6 +417,31 @@ const Step1 = ({
             });
           }
         }
+        if (
+          values.name &&
+          (values.name.legalFirstName || values.name.legalLastName)
+        ) {
+          updateUserLocalData({
+            ...userData,
+            legalFirstName: values.name.legalFirstName,
+            legalLastName: values.name.legalLastName,
+          });
+          setLocalUserData({
+            ...localUserData,
+            legalFirstName: values.name.legalFirstName,
+            legalLastName: values.name.legalLastName,
+          });
+        }
+        if (values.date_of_birth) {
+          updateUserLocalData({
+            ...userData,
+            dob: values.date_of_birth.toUTCString(),
+          });
+          setLocalUserData({
+            ...localUserData,
+            dob: values.date_of_birth.toUTCString(),
+          });
+        }
       }}
     >
       <AutoFormSubmit
@@ -482,14 +450,6 @@ const Step1 = ({
       >
         {loading ? <Loader2Icon className="animate-spin" /> : "Next"}
       </AutoFormSubmit>
-      {/* <button
-        onClick={(e) => {
-          e.preventDefault();
-          clearAddress();
-        }}
-      >
-        clearAddress
-      </button> */}
     </AutoForm>
   );
 };

@@ -6,13 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import CompanyApis from "@/actions/apis/CompanyApis";
 import { useUserContext } from "@/context/User";
-import {
-  AutoFormInputComponentProps,
-  DependencyType,
-} from "../ui/auto-form/types";
-import { FormControl, FormItem } from "../ui/form";
-import { Checkbox } from "../ui/checkbox";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
+import { DependencyType } from "../ui/auto-form/types";
 import { toast } from "react-toastify";
 
 const Step2 = ({
@@ -26,7 +20,11 @@ const Step2 = ({
   const [companyData, setCompanyData] = useState<
     Step2Schema | any | undefined
   >();
-  const [localCompanyData, setLocalCompanyData] = useState<Step2Schema | any>();
+  const [localCompanyData, setLocalCompanyData] = useState<any>({
+    name: "",
+    phone: "",
+    country_code: 91,
+  });
   const {
     userData: user,
     refetchUserData,
@@ -78,6 +76,7 @@ const Step2 = ({
     const fetchData = async () => {
       CompanyApis.getAllCompanies().then((res) => {
         setCompanyData(res.data.data[0]);
+        setLocalCompanyData(res.data.data[0]);
         setCompanyId(res.data.data[0].id);
       });
     };
@@ -128,9 +127,6 @@ const Step2 = ({
     if (!companyData) {
       return setRefetchUserData(!refetchUserData);
     } else if (!addressDataLoaded) {
-      if (companyData) {
-        setLocalCompanyData(companyData);
-      }
       if (companyData?.legal_address?.id)
         setAddressId(companyData?.legal_address?.id);
       if (companyData?.mailing_address?.id)
@@ -141,6 +137,9 @@ const Step2 = ({
       setAddressDataLoaded(true);
     }
   }, [companyData, addressDataLoaded]);
+  useEffect(()=>{
+    console.log(localCompanyData, 'localCompanyData')
+  },[localCompanyData])
 
   return (
     <div className="w-full">
@@ -150,31 +149,12 @@ const Step2 = ({
         fieldConfig={{
           name: {
             inputProps: {
-              placeholder: "Value",
-              onChange: (e: any) => {
-                if (e.target.value.length > 0) {
-                  setLocalCompanyData({
-                    ...localCompanyData,
-                    name: e.target.value,
-                  });
-                } else {
-                  setLocalCompanyData({
-                    ...localCompanyData,
-                    name: "",
-                  });
-                }
-              },
+              placeholder: "Your company name",
             },
           },
           email: {
             inputProps: {
-              placeholder: "Value",
-              onChange: (e: any) => {
-                setLocalCompanyData({
-                  ...localCompanyData,
-                  email: e.target.value,
-                });
-              },
+              placeholder: "Your company email",
             },
           },
           phone: {
@@ -182,12 +162,6 @@ const Step2 = ({
             label: "Phone number",
             inputProps: {
               placeholder: "(123)-456-7890",
-              onChange: (e: any) => {
-                setLocalCompanyData({
-                  ...localCompanyData,
-                  phone: e.target.value,
-                });
-              },
             },
           },
           tax_residence_country: {
@@ -201,59 +175,47 @@ const Step2 = ({
             fieldType: "modal",
             inputProps: {
               isPresent: address ? true : false,
-              onChange: (e: any) => {
-                setChangedAddress(!changedAddress);
-                setAddress(e);
-              },
+              // onChange: (e: any) => {
+              //   setChangedAddress(!changedAddress);
+              //   setAddress(e);
+              // },
             },
           },
           ein: {
             label: "EIN (Employer Identification no.)",
             inputProps: {
-              placeholder: "Value",
-              onChange: (e: any) => {
-                setLocalCompanyData({
-                  ...localCompanyData,
-                  ein: e.target.value,
-                });
-              },
+              placeholder: "Your EIN",
             },
           },
           tax_classification: {
             inputProps: {
               placeholder: "Individual/sole proprietor or single-member LLC",
-              onChange: (e: any) => {
-                setLocalCompanyData({
-                  ...localCompanyData,
-                  tax_classification: e.target.value,
-                });
-              },
             },
           },
           mailing_address: {
             label: "Mailing address",
             inputProps: {
               isPresent: mailingAddress ? true : false,
-              onChange: (e: any) => {
-                setChangedAddress(!changedAddress);
-                setMailingAddress(e);
-              },
+              // onChange: (e: any) => {
+              //   setChangedAddress(!changedAddress);
+              //   setMailingAddress(e);
+              // },
             },
             fieldType: "modal",
           },
 
           address_id: {
             inputProps: {
-              onChange: (e: any) => {
-                setAddressId(e.target.value);
-              },
+              // onChange: (e: any) => {
+              //   setAddressId(e.target.value);
+              // },
             },
           },
           mailing_address_id: {
             inputProps: {
-              onChange: (e: any) => {
-                setMailingAddressId(e.target.value);
-              },
+              // onChange: (e: any) => {
+              //   setMailingAddressId(e.target.value);
+              // },
             },
           },
         }}
@@ -261,7 +223,9 @@ const Step2 = ({
           name: localCompanyData?.name ? localCompanyData?.name : "",
           ein: localCompanyData?.ein ? localCompanyData?.ein : "",
           email: localCompanyData?.email ? localCompanyData?.email : "",
-          tax_classification: localCompanyData?.tax_classification ?? "",
+          tax_classification: localCompanyData?.tax_classification
+            ? localCompanyData?.tax_classification
+            : "",
           phone: localCompanyData?.phone ?? "",
           tax_residence_country:
             localCompanyData?.tax_residence_country ?? "US",
@@ -292,7 +256,7 @@ const Step2 = ({
           lat: address ? address.latitude : "",
           long1: mailingAddress ? mailingAddress.longitude : "",
           lat1: mailingAddress ? mailingAddress.latitude : "",
-          country_code: user?.country_code,
+          country_code: user?.country_code ?? 1,
         }}
         dependencies={[
           // {
@@ -358,10 +322,19 @@ const Step2 = ({
             },
           },
         ]}
-        className="flex flex-col gap-4 mx-auto max-w-lg"
+        className="flex flex-col gap-4 mx-auto xs:w-96 max-w-xl"
         zodItemClass="flex flex-row gap-4 space-y-0"
         labelClass="text-label"
         onValuesChange={(values) => {
+            setLocalCompanyData((prevData: any) => ({
+              ...prevData,
+              name: values?.name,
+              ein: values?.ein,
+              email: values?.email,
+              tax_classification: values?.tax_classification,
+              phone: values?.phone,
+              country_code: values?.country_code,
+            }));
           if (!addressDataLoaded || values.address_id) {
             if (values.address_id && values.address_id !== addressId) {
               setAddressId(values.address_id);
@@ -406,7 +379,33 @@ const Step2 = ({
               country_code: values.country_code,
             });
           }
+          if (values.email) {
+            setLocalCompanyData({
+              ...localCompanyData,
+              email: values.email,
+            });
+          }
+          if (values.phone) {
+            setLocalCompanyData({
+              ...localCompanyData,
+              phone: values.phone,
+            });
+          }
+          if (values.ein) {
+            console.log(values.ein);
+            console.log(localCompanyData);
+            setLocalCompanyData((prevData: any) => ({
+              ...prevData,
+              ein: values.ein,
+              name: values.name,
+              email: values.email,
+              phone: values.phone,
+              tax_classification: values.tax_classification,
+              country_code: values.country_code,
+            }));
+          }
           if (values.tax_classification) {
+            console.log(values.tax_classification, localCompanyData, 'tax');
             setLocalCompanyData({
               ...localCompanyData,
               tax_classification: values.tax_classification,
