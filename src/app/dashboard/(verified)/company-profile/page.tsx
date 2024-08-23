@@ -148,6 +148,9 @@ const CompanyContainer = () => {
               postal_code: companyData.mailing_address?.postal_code,
               state: companyData.mailing_address?.state,
             },
+            mailing_address: {
+              ...companyData?.legal_address,
+            },
             address_id: companyData.mailing_address?.id,
           },
           schema: CompanyUpdateSchema.address,
@@ -186,6 +189,9 @@ const CompanyContainer = () => {
               city: companyData.legal_address?.city,
               postal_code: companyData.legal_address?.postal_code,
               state: companyData.legal_address?.state,
+            },
+            mailing_address: {
+              ...companyData?.mailing_address,
             },
             address_id: companyData.legal_address?.id,
           },

@@ -33,7 +33,7 @@ const Step1 = ({
     Address | any | undefined
   >();
   const { refetchUserData, setRefetchUserData, refreshUser } = useUserContext();
-
+  const [localUserData, setLocalUserData] = useState<any>();
   const [companyData, setCompanyData] = useState<any>();
 
   const handleSubmit = async (e: Step1Schema) => {
@@ -58,7 +58,7 @@ const Step1 = ({
         email: userData?.email,
         name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
         phone: userData?.phone,
-        country_code: e.country_code, // change to 1
+        country_code: e.country_code,
         ein: userData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
@@ -67,10 +67,10 @@ const Step1 = ({
       // Update Existing company details
       await CompanyApis.updateCompany(companyData[0].id, {
         email: userData?.email,
-        name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
-        phone: userData?.phone,
-        country_code: e.country_code, // change to 1
-        ein: userData?.phone,
+        name: `${localUserData?.legalFirstName} ${localUserData?.legalLastName}`,
+        phone: localUserData?.phone,
+        country_code: e.country_code,
+        ein: localUserData?.phone,
         tax_residence_country: "US",
         tax_classification: "Individual/Sole Proprietor",
       });
@@ -81,8 +81,8 @@ const Step1 = ({
     delete userData.address_id;
     delete userData.mailing_address_id;
     delete userData.company;
-    userData.legalFirstName = e.name.legalFirstName ?? userData.firstName;
-    userData.legalLastName = e.name.legalLastName ?? userData.lastName;
+    userData.legalFirstName = e.name.legalFirstName ?? localUserData.firstName;
+    userData.legalLastName = e.name.legalLastName ?? localUserData.lastName;
     delete userData.name;
     (userData.tax_residence_country = "US"),
       delete userData.tax_residence_country;
@@ -138,6 +138,9 @@ const Step1 = ({
       setRefetchUserData(!refetchUserData);
       return;
     } else if (!addressDataLoaded) {
+      if(userData){
+        setLocalUserData(userData);
+      }
       console.log("userData", userData);
       if (userData?.legal_address?.id)
         setAddressId(userData?.legal_address?.id);
@@ -187,6 +190,10 @@ const Step1 = ({
                   ...userData,
                   legalFirstName: e.target.value,
                 });
+                setLocalUserData({
+                  ...localUserData,
+                  legalFirstName: e.target.value,
+                })
               },
             },
           },
@@ -198,6 +205,10 @@ const Step1 = ({
                   ...userData,
                   legalLastName: e.target.value,
                 });
+                setLocalUserData({
+                  ...localUserData,
+                  legalLastName: e.target.value,
+                })
               },
             },
           },
@@ -210,6 +221,10 @@ const Step1 = ({
                 ...userData,
                 dob: e,
               });
+              setLocalUserData({
+                ...localUserData,
+                dob: e,
+              })
             },
           },
         },
@@ -244,6 +259,10 @@ const Step1 = ({
                 ...userData,
                 tax_residence_country: e.currentTarget.value,
               });
+              setLocalUserData({
+                ...localUserData,
+                tax_residence_country: e.currentTarget.value,
+              })
             },
           },
         },
@@ -352,19 +371,19 @@ const Step1 = ({
       ]}
       values={{
         name: {
-          legalFirstName: userData?.legalFirstName
-            ? userData?.legalFirstName
-            : userData?.firstName,
-          legalLastName: userData?.legalLastName
-            ? userData?.legalLastName
-            : userData?.lastName,
+          legalFirstName: localUserData?.legalFirstName
+            ? localUserData?.legalFirstName
+            : localUserData?.firstName,
+          legalLastName: localUserData?.legalLastName
+            ? localUserData?.legalLastName
+            : localUserData?.lastName,
         },
-        email: userData?.email,
-        phone: userData?.phone ?? "",
-        country_code: userData?.country_code ?? 1,
-        tax_residence_country: userData?.tax_residence_country ?? "US",
-        date_of_birth: userData?.dob
-          ? new Date(userData?.dob ?? "")
+        email: localUserData?.email,
+        phone: localUserData?.phone ?? "",
+        country_code: localUserData?.country_code ?? 1,
+        tax_residence_country: localUserData?.tax_residence_country ?? "US",
+        date_of_birth: localUserData?.dob
+          ? new Date(localUserData?.dob ?? "")
           : undefined,
         address: {
           address_line_1: address ? address?.address_line_1 : "",

@@ -139,6 +139,7 @@ export default function AutoFormObject<
                 path={[...path, name]}
                 labelClass={labelClass}
                 isPresent={fieldConfigItem.inputProps?.isPresent}
+                addressType={fieldConfigItem.inputProps?.addressType}
               />
             </AccordionItem>
           );
