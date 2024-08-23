@@ -1,5 +1,5 @@
 "use client";
-import { login, resendLogin } from "@/app/auth/signin/actions";
+
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -9,10 +9,6 @@ import { useFormStatus } from "react-dom";
 import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
 
-const initialState = {
-  message: "",
-};
-
 const LinkSentPage = () => {
   const { pending } = useFormStatus();
   // const [state, formAction] = useFormState(resendLogin, initialState);
@@ -21,6 +17,7 @@ const LinkSentPage = () => {
   const newUser = searchParams.get("newUser") === "true" ? true : false;
   const [loading, setLoading] = React.useState(false);
   const { refreshUser } = useUserContext();
+
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();
@@ -31,18 +28,12 @@ const LinkSentPage = () => {
       window.removeEventListener("focus", handleFocus);
     };
   }, [refreshUser]);
-  // useEffect(() => {
-  //   if (state.message === "Email sent") {
-  //     toast.success("Check your inbox email sent successfully");
-  //   } else if (state.message === "Error sending email") {
-  //     toast.error("An error occurred");
-  //   }
-  // }, [state]);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const searchParams = "magic_link=true";
-    const res = await AuthApis.login(searchParams, {email: email});
+    const res = await AuthApis.login(searchParams, { email: email });
     if (res && res.status === 200) {
       toast.success("Check your inbox email sent successfully");
     } else {
@@ -74,7 +65,12 @@ const LinkSentPage = () => {
           onSubmit={handleSubmit}
           // action={formAction}
         >
-          <input id="email" name="email" type="hidden" defaultValue={email ?? ""} />
+          <input
+            id="email"
+            name="email"
+            type="hidden"
+            defaultValue={email ?? ""}
+          />
           <button
             type="submit"
             disabled={loading}

@@ -16,6 +16,8 @@ import GooglePlacesAutocomplete, {
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import { useUserContext } from "@/context/User";
 import { Servers } from "../../../../../config";
+import { Button } from "../../button";
+import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -27,6 +29,7 @@ type AutoFormModalComponentProps = {
   name: string;
   labelClass?: string;
   isPresent?: boolean;
+  addressType?: string;
 };
 
 export default function AutoFormAddressModal({
@@ -39,6 +42,7 @@ export default function AutoFormAddressModal({
   name,
   labelClass,
   isPresent = false,
+  addressType,
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
   const { refreshUser } = useUserContext();
@@ -106,6 +110,40 @@ export default function AutoFormAddressModal({
       });
   };
 
+  const copyAddress = async () => {
+    let res;
+    if (addressType === "address") {
+      console.log(form.getValues("mailing_address"), form.getValues());
+      let body = form.getValues("mailing_address");
+      delete body.id;
+      body.country = "US";
+      res = await OnboardingApis.updateAddress(
+        form.getValues("address_id"),
+        body
+      );
+
+      form.setValue("address", body);
+      setValue({
+        label: form.getValues()?.address?.address_line_1,
+        value: form.getValues()?.address?.address_line_1,
+      });
+    } else if (addressType === "mailing_address") {
+      let body = form.getValues("legal_address");
+      delete body.id;
+      res = await OnboardingApis.updateAddress(
+        form.getValues("address_id"),
+        body
+      );
+      body.country = "US";
+      form.setValue("address", body);
+      setValue({
+        label: form.getValues()?.mailing_address?.address_line_1,
+        value: form.getValues()?.mailing_address?.address_line_1,
+      });
+      console.log(res);
+    }
+  };
+
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
       <FormItem className="flex w-full flex-col justify-start">
@@ -146,6 +184,14 @@ export default function AutoFormAddressModal({
               innerClassName={zodItemClass}
               labelClass={labelClass}
             />
+            <Button
+              onClick={copyAddress}
+              variant={"ghost"}
+              className="w-fit flex gap-1 text-label pl-0 hover:bg-white"
+            >
+              <SymbolIcon icon="content_copy" size={18} /> copy from{" "}
+              {addressType === "address" ? "mailing address" : "legal address"}
+            </Button>
           </>
         </FormControl>
         <FormMessage />

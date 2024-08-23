@@ -139,12 +139,15 @@ const Page = () => {
           label: "Mailing Address",
           values: {
             address: {
-              country: userData?.mailing_address?.country,
+              country: userData?.mailing_address?.country?.toUpperCase() ?? "US",
               address_line_1: userData?.mailing_address?.address_line_1,
               address_line_2: userData?.mailing_address?.address_line_2,
               city: userData?.mailing_address?.city,
               postal_code: userData?.mailing_address?.postal_code,
               state: userData?.mailing_address?.state,
+            },
+            legal_address: {
+              ...userData?.legal_address,
             },
             address_id: userData?.mailing_address?.id,
           },
@@ -175,12 +178,15 @@ const Page = () => {
           label: "Legal Address",
           values: {
             address: {
-              country: userData?.legal_address?.country,
+              country: userData?.legal_address?.country?.toUpperCase() ?? "",
               address_line_1: userData?.legal_address?.address_line_1,
               address_line_2: userData?.legal_address?.address_line_2,
               city: userData?.legal_address?.city,
               postal_code: userData?.legal_address?.postal_code,
               state: userData?.legal_address?.state,
+            },
+            mailing_address: {
+              ...userData?.mailing_address,
             },
             address_id: userData?.legal_address?.id,
           },
