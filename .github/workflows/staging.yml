@@ -1,0 +1,54 @@
+name: Deploy to AWS App Runner
+
+on:
+  push:
+    branches:
+      - staging
+
+env:
+  AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppStaging/c3d176d41d1947be883776368561dcde
+  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-staging
+
+jobs:
+  build-and-deploy-staging:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          region: ${{ secrets.AWS_REGION }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }} .
+          docker tag ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }} ${{ env.AWS_ECR_REPOSITORY }}:latest
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ github.sha }}
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:latest
+
+      - name: Deploy to AWS App Runner
+        run: |
+          aws apprunner update-service --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }} \
+            --source-configuration '{
+                "ImageRepository": {
+                    "ImageIdentifier": "${{ env.AWS_ECR_REPOSITORY }}:latest",
+                    "ImageRepositoryType": "ECR"
+                }
+            }'
