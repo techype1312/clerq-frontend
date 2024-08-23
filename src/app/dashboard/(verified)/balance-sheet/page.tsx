@@ -3,7 +3,6 @@ import DateRangeDropdownSelect from "@/components/generalComponents/DateRangeDro
 import HeaderCard from "@/components/generalComponents/HeaderCard";
 import SheetsData from "@/components/generalComponents/SheetsData";
 import { Button } from "@/components/ui/button";
-import { useMainContext } from "@/context/Main";
 import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
@@ -13,7 +12,6 @@ const Page = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<dateRangeType>(
     dateRange[0]
   );
-  const { windowWidth } = useMainContext();
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
   const [sheetData, setSheetData] = useState<sheetDataType>({
     title: { title: "Revenue", value: 162500.7 },
@@ -77,11 +75,9 @@ const Page = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-4 md:gap-0 flex-col md:flex-row">
-            {windowWidth > 767 && (
-              <h1 className="text-primary text-2xl font-medium ml-1">
-                Balance sheet
-              </h1>
-            )}
+            <h1 className="text-primary text-2xl font-medium ml-1 max-md:hidden">
+              Balance sheet
+            </h1>
             <div className="w-fit md:ml-auto">
               <DateRangeDropdownSelect
                 dateRange={dateRange}
@@ -92,7 +88,7 @@ const Page = () => {
               />
             </div>
           </div>
-          <HeaderCard cardDetails={cardDetails} windowWidth={windowWidth} />
+          <HeaderCard cardDetails={cardDetails} />
           <div className="flex flex-col gap-4 mt-4 mx-1">
             <div className="flex gap-2">
               <Button

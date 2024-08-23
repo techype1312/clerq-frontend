@@ -3,17 +3,15 @@ import DateRangeDropdownSelect from "@/components/generalComponents/DateRangeDro
 import { DownloadButton } from "@/components/generalComponents/DownloadButton";
 import HeaderCard from "@/components/generalComponents/HeaderCard";
 import SheetsData from "@/components/generalComponents/SheetsData";
-import { MainContext } from "@/context/Main";
 import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const dateRange = generateDateRange();
   const [selectedDateRange, setSelectedDateRange] = useState<dateRangeType>(
     dateRange[0]
   );
-  const { windowWidth } = useContext(MainContext);
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
   const [sheetData, setSheetData] = useState<sheetDataType>({
     title: { title: "Revenue", value: 162500.7 },
@@ -63,11 +61,9 @@ const Page = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-4 md:gap-0 justify-between flex-col md:flex-row">
-            {windowWidth > 767 && (
-              <h1 className="text-primary text-2xl font-medium ml-1">
-                Income statement
-              </h1>
-            )}
+            <h1 className="text-primary text-2xl font-medium ml-1 max-md:hidden">
+              Income statement
+            </h1>
             <div className="flex justify-between">
               <DateRangeDropdownSelect
                 dateRange={dateRange}
@@ -76,17 +72,15 @@ const Page = () => {
                 setSelectedDateRangeIndex={setSelectedDateRangeIndex}
                 selectedDateRangeIndex={selectedDateRangeIndex}
               />
-              <div className="w-fit">
-                {windowWidth < 768 && (
-                  <DownloadButton
-                    showText={false}
-                    downloadLink={cardDetails.download}
-                  />
-                )}
+              <div className="w-fit md:hidden">
+                <DownloadButton
+                  showText={false}
+                  downloadLink={cardDetails.download}
+                />
               </div>
             </div>
           </div>
-          <HeaderCard cardDetails={cardDetails} windowWidth={windowWidth} />
+          <HeaderCard cardDetails={cardDetails} />
           <div className="flex flex-col gap-4 mt-4 mx-1">
             <SheetsData sheetData={sheetData} />
             <span className="border-b border-muted"></span>

@@ -80,7 +80,7 @@ const EditMemberDialog = ({
           {`Edit`}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg h-screen md:h-auto overflow-auto">
+      <DialogContent className="max-md:min-w-full h-screen md:h-auto overflow-auto">
         <DialogHeader className="h-fit mt-auto">
           <div className="flex w-full items-center justify-between min-w-64 mt-6 text-base font-normal text-left text-label">
             <div className="flex text-label text-base gap-4 items-center min-w-52">

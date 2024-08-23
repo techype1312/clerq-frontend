@@ -17,7 +17,88 @@ import TeamActionMenu from "@/components/teams/TeamActionMenu";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
 
+const getTableColumns = ({
+  windowWidth,
+  onStatusUpdate,
+  onRemoveInvite,
+  onRolePermissionsUpdate,
+}: {
+  windowWidth: number;
+  onRolePermissionsUpdate: (
+    ucrmId: string,
+    status: Record<string, any>
+  ) => void;
+  onStatusUpdate: (ucrmId: string, status: Record<string, any>) => void;
+  onRemoveInvite: (inviteId: string) => void;
+}): ColumnDef<any>[] => {
+  const userProfileCol: ColumnDef<any> = {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ cell, row }) => {
+      return (
+        <ColumnProfileItem
+          label={cell.getValue() as string}
+          row={row.original}
+        />
+      );
+    },
+  };
+  const userStatusCol: ColumnDef<any> = {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ cell, row }) => {
+      return (
+        <ColumnRoleItem
+          label={row.original.statusLabel as string}
+          row={row.original}
+        />
+      );
+    },
+  };
+  const userRoleCol: ColumnDef<any> = {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ cell, row }) => {
+      return (
+        <ColumnRoleItem label={row.original.roleLabel} row={row.original} />
+      );
+    },
+  };
+  const userActionsCol: ColumnDef<any> = {
+    accessorKey: "lastActive",
+    header: () => <div className="text-center">{"Last Active"}</div>,
+    cell: ({ cell, row }) => {
+      return (
+        <div className="flex flex-row gap-2 justify-end">
+          <span
+            style={{
+              letterSpacing: ".2px",
+            }}
+            className="text-xs text-[#535461] font-normal"
+          >
+            {cell.getValue() as string}
+          </span>
+          <TeamActionMenu
+            row={row.original}
+            onRemoveInvite={onRemoveInvite}
+            onRolePermissionsUpdate={onRolePermissionsUpdate}
+            onStatusUpdate={onStatusUpdate}
+          />
+        </div>
+      );
+    },
+  };
+  if (windowWidth < 576) {
+    return [userProfileCol, userActionsCol];
+  }
+  if (windowWidth < 768) {
+    return [userProfileCol, userStatusCol, userActionsCol];
+  }
+  return [userProfileCol, userRoleCol, userStatusCol, userActionsCol];
+};
+
 const Page = () => {
+  const { windowWidth } = useMainContext();
   const { userData } = useUserContext();
   const { currentUcrm } = useCompanySessionContext();
   const [error, setError] = useState("");
@@ -98,66 +179,6 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUcrm?.company?.id]);
 
-  const teamsColumns: ColumnDef<any>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ cell, row }) => {
-        return (
-          <ColumnProfileItem
-            label={cell.getValue() as string}
-            row={row.original}
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
-      cell: ({ cell, row }) => {
-        return (
-          <ColumnRoleItem label={row.original.roleLabel} row={row.original} />
-        );
-      },
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ cell, row }) => {
-        return (
-          <ColumnRoleItem
-            label={row.original.statusLabel as string}
-            row={row.original}
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "lastActive",
-      header: () => <div className="text-center">{"Last Active"}</div>,
-      cell: ({ cell, row }) => {
-        return (
-          <div className="flex flex-row gap-2 justify-end">
-            <span
-              style={{
-                letterSpacing: ".2px",
-              }}
-              className="text-xs text-[#535461] font-normal"
-            >
-              {cell.getValue() as string}
-            </span>
-            <TeamActionMenu
-              row={row.original}
-              onRemoveInvite={onRemoveInvite}
-              onRolePermissionsUpdate={onRolePermissionsUpdate}
-              onStatusUpdate={onStatusUpdate}
-            />
-          </div>
-        );
-      },
-    },
-  ];
-
   const handleRowData = () => {
     const members = teamMembers.map((tm) => ({
       id: tm.id,
@@ -201,16 +222,13 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamMembers.length, teamInvites.length]);
 
-  const { windowWidth } = useMainContext();
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-row justify-between">
-          {windowWidth > 767 && (
-            <h1 className="text-2xl font-medium text-primary text-left">
-              Team
-            </h1>
-          )}
+          <h1 className="text-2xl font-medium text-primary text-left max-md:hidden">
+            Team
+          </h1>
           <InviteNewMemberDialog onAddSuccess={onAddInvite} />
         </div>
 
@@ -233,7 +251,12 @@ const Page = () => {
               showHeader={true}
               showDownloadButton={false}
               showUploadButton={false}
-              columns={teamsColumns}
+              columns={getTableColumns({
+                windowWidth,
+                onRemoveInvite,
+                onRolePermissionsUpdate,
+                onStatusUpdate,
+              })}
               data={rowData}
               showDownload={false}
             />

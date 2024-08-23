@@ -16,12 +16,11 @@ import {
 } from "../ui/dropdown-menu";
 import ProfilePhotoPreview from "../profile-photo/ProfilePhotoPreview";
 import { dashboardTitle } from "@/utils/constants";
-import { MainContext } from "@/context/Main";
 import { Button } from "../ui/button";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import { cn } from "@/utils/utils";
 
 const DashboardTop = () => {
-  const { windowWidth } = useContext(MainContext);
   const router = useRouter();
   const { userData } = useUserContext();
   const pathname = usePathname();
@@ -43,9 +42,10 @@ const DashboardTop = () => {
     (title) =>
       pathname === `/dashboard/${title.toLowerCase().replace(" ", "-")}` ||
       (title === "Overview" && pathname === "/dashboard") ||
-      (title === "Bank accounts" && pathname === "/dashboard/bank-connections") ||
-      (title === "Settings") && pathname === "/dashboard/controls" || 
-      (title === "Profile") && pathname === "/dashboard/my-profile" 
+      (title === "Bank accounts" &&
+        pathname === "/dashboard/bank-connections") ||
+      (title === "Settings" && pathname === "/dashboard/controls") ||
+      (title === "Profile" && pathname === "/dashboard/my-profile")
   );
   const [search, setSearch] = React.useState("");
 
@@ -65,35 +65,45 @@ const DashboardTop = () => {
 
   return (
     <div className="my-4 w-full flex" ref={inputRef}>
-      {windowWidth < 768 && !showInput && (
-        <h1 className="text-primary text-2xl font-medium ml-14 flex items-center justify-center">
-          {mobileTitle ? mobileTitle : "Dashboard"}
-        </h1>
-      )}
+      <h1
+        className={cn(
+          "text-primary text-2xl font-medium ml-14 flex items-center justify-center md:hidden",
+          {
+            ["flex"]: !showInput,
+            ["hidden"]: showInput,
+          }
+        )}
+      >
+        {mobileTitle ? mobileTitle : "Dashboard"}
+      </h1>
 
       <Input
         className="ml-8 w-3/4 md:w-1/2 rounded-2xl bg-white"
-        outerClassName={`${
-          showInput || windowWidth > 767 ? "flex" : " hidden "
-        } items-center justify-center`}
+        outerClassName={cn(
+          "items-center justify-center max-md:hidden md:flex",
+          {
+            "!flex": showInput,
+          }
+        )}
         endIcon={"search"}
         onChange={(e) => setSearch(e.target.value)}
         value={search}
         placeholder="Search for a product"
         type="text"
       />
-      
-      {windowWidth < 768 && !showInput && (
-        <Button
-          variant={"ghost"}
-          className="ml-auto mr-4 hover:bg-white"
-          onClick={() => {
-            setShowInput(!showInput);
-          }}
-        >
-          <SymbolIcon icon="search" className="text-muted" />
-        </Button>
-      )}
+
+      <Button
+        variant={"ghost"}
+        className={cn("ml-auto mr-4 hover:bg-white md:hidden", {
+          ["flex"]: !showInput,
+          ["hidden"]: showInput,
+        })}
+        onClick={() => {
+          setShowInput(!showInput);
+        }}
+      >
+        <SymbolIcon icon="search" className="text-muted" />
+      </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

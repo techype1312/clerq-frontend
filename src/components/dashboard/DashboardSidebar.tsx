@@ -1,12 +1,11 @@
 "use client";
 
-import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
 import CompanyToggleDrawer from "./company-toggle-drawer";
+import { Fragment } from "react";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   const isActive =
@@ -31,26 +30,9 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
 
 const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const pathname = usePathname();
-  const [windowWidth, setWindowWidth] = useState<number>(300);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setWindowWidth(window.innerWidth);
-    }
-
-    window.addEventListener("resize", () => {
-      setWindowWidth(window.innerWidth);
-    });
-
-    return () => {
-      window.removeEventListener("resize", () => {
-        setWindowWidth(window.innerWidth);
-      });
-    };
-  }, []);
 
   const items = pathname.startsWith("/dashboard") ? (
-    <>
+    <Fragment>
       {/* Company Section */}
       <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
         {/* <SymbolIcon icon="apartment" size={24} /> */}
@@ -209,10 +191,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         />
         Notifications
       </SidebarLink>
-    </>
-  ) : (
-    <></>
-  );
+    </Fragment>
+  ) : null;
 
   return (
     <div
@@ -224,12 +204,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
     >
       <div className="flex flex-col mx-4 gap-3">
         <div className="flex justify-between items-center px-2 lg:hidden gap-6 ">
-          <Image
-            src={"/clerq_logo.png"}
-            alt="Clerq"
-            width={50}
-            height={30}
-          />
+          <Image src={"/clerq_logo.png"} alt="Clerq" width={50} height={30} />
           <button
             className="block"
             onClick={() => {

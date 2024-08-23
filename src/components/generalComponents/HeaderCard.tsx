@@ -4,7 +4,7 @@ import { cardDetails, textType } from "@/types/general";
 import { DownloadButton } from "./DownloadButton";
 import { formatDateRange } from "@/utils/utils";
 
-const HeaderCard = ({ cardDetails, windowWidth }: { cardDetails: cardDetails, windowWidth: number }) => {
+const HeaderCard = ({ cardDetails }: { cardDetails: cardDetails }) => {
   const [formattedDateRange, setFormattedDateRange] = React.useState<string>();
   useEffect(() => {
     setFormattedDateRange(
@@ -29,10 +29,8 @@ const HeaderCard = ({ cardDetails, windowWidth }: { cardDetails: cardDetails, wi
             <h1 className="text-primary text-xl">{cardDetails.title}</h1>
           </div>
         )}
-        <div className="w-fit">
-        {windowWidth > 768 && (
+        <div className="w-fit max-md:hidden">
           <DownloadButton downloadLink={cardDetails.download} showText={true} />
-        )}
         </div>
       </CardHeader>
       <CardContent className="mt-8 flex flex-wrap gap-8 md:gap-0">

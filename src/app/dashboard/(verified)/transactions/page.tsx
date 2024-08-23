@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
+import { ErrorProps } from "@/types/general";
+import { cn } from "@/utils/utils";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowUpDown } from "lucide-react";
+import { isObject } from "lodash";
+import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 type merchant = {
@@ -53,8 +56,12 @@ const categories = [
   "Utilities",
 ];
 
-const transactionsColumns: ColumnDef<any>[] = [
-  {
+const getTableColumns = ({
+  windowWidth,
+}: {
+  windowWidth: number;
+}): ColumnDef<any>[] => {
+  const dateCol: ColumnDef<any> = {
     accessorKey: "date",
     header: ({ column }) => {
       return (
@@ -71,12 +78,13 @@ const transactionsColumns: ColumnDef<any>[] = [
     cell: ({ cell }) => {
       return (
         <div className="text-muted text-sm">
-          {format(cell.getValue() as string, "MMMM d, yyyy")}
+          {format(cell.getValue() as string, "MMM d, yyyy")}
         </div>
       );
     },
-  },
-  {
+  };
+
+  const merchantCol: ColumnDef<any> = {
     accessorKey: "merchant",
     header: "Company",
     cell: ({ cell }) => {
@@ -93,32 +101,36 @@ const transactionsColumns: ColumnDef<any>[] = [
                 alt={(cell.getValue() as merchant).merchant_name}
                 className="rounded-full"
               />
-              <span>{(cell.getValue() as merchant).merchant_name}</span>
+              <span className="text-sm font-semibold">
+                {(cell.getValue() as merchant).merchant_name}
+              </span>
             </>
           ) : (
-            <span>{(cell.getValue() as merchant).merchant_name}</span>
+            <span className="text-sm font-semibold">
+              {(cell.getValue() as merchant).merchant_name}
+            </span>
           )}
         </div>
       );
     },
-  },
-  {
+  };
+
+  const accountCol: ColumnDef<any> = {
     accessorKey: "account",
     header: "Account",
     cell: ({ cell }) => {
       return (
-        <div className="flex text-label text-base">
-          <SymbolIcon icon="account_balance" />
-          {(cell.getValue() as any)?.name} ••
-          {(cell.getValue() as any)?.mask}
+        <div className="flex text-label text-xs gap-1 items-center">
+          <SymbolIcon icon="account_balance" size={18} />
+          <span className="text-sm">{(cell.getValue() as any)?.name} ••</span>
+          <span>{(cell.getValue() as any)?.mask}</span>
         </div>
       );
     },
-  },
-  // Created a custom cell to display the amount in the correct format
-  {
+  };
+
+  const amountCol: ColumnDef<any> = {
     accessorKey: "amount",
-    // header: "Amount",
     header: ({ column }) => {
       return (
         <Button
@@ -130,22 +142,34 @@ const transactionsColumns: ColumnDef<any>[] = [
         </Button>
       );
     },
-    cell: ({ cell }) => (
-      <div className="text-label text-base">
-        {(cell.getValue() as number) && (cell.getValue() as number) < 0 && "-"}$
-        {Math.abs(cell.getValue() as number)}
-      </div>
-    ),
-  },
-  {
+    cell: ({ cell }) => {
+      const isDebited =
+        (cell.getValue() as number) && (cell.getValue() as number) < 0;
+      return (
+        <div
+          className={cn("text-label text-base", {
+            ["text-[#036e43]"]: !isDebited,
+          })}
+        >
+          {isDebited && "-"}${Math.abs(cell.getValue() as number)}
+        </div>
+      );
+    },
+  };
+
+  const categoryCol: ColumnDef<any> = {
     accessorKey: "category",
     header: "Category",
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId));
     },
-  },
-  {
-    accessorKey: "clerq_category",
+    cell: ({ cell }) => {
+      return <span className="text-sm">{cell.getValue() as string}</span>;
+    },
+  };
+
+  const clerqCategoryCol: ColumnDef<any> = {
+    accessorKey: "clerqCategory",
     header: "Clerq category",
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId));
@@ -173,9 +197,10 @@ const transactionsColumns: ColumnDef<any>[] = [
         </SelectContent>
       </Select>
     ),
-  },
-  {
-    accessorKey: "gl_code",
+  };
+
+  const glCodeCol: ColumnDef<any> = {
+    accessorKey: "glCode",
     header: "GL code",
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId));
@@ -203,8 +228,9 @@ const transactionsColumns: ColumnDef<any>[] = [
         </SelectContent>
       </Select>
     ),
-  },
-  {
+  };
+
+  const receiptCol: ColumnDef<any> = {
     accessorKey: "receipt",
     header: "Receipt",
     cell: ({ cell }) => (
@@ -217,53 +243,98 @@ const transactionsColumns: ColumnDef<any>[] = [
           }
         }}
         variant="ghost"
-        className="text-label"
+        className="text-label rounded-full p-0 h-8 w-8 bg-slate-100 hover:bg-slate-200"
       >
         {cell.getValue() ? (
-          <SymbolIcon icon="receipt_long" />
+          <SymbolIcon icon="receipt_long" size={24} />
         ) : (
-          <SymbolIcon icon="inactive_order" />
+          <SymbolIcon icon="add" size={24} />
         )}
       </Button>
     ),
-  },
-];
+  };
+
+  if (windowWidth < 576) {
+    return [dateCol, merchantCol, amountCol, receiptCol];
+  }
+  if (windowWidth < 768) {
+    return [dateCol, merchantCol, amountCol, receiptCol];
+  }
+  if (windowWidth < 1024) {
+    return [dateCol, merchantCol, accountCol, amountCol, receiptCol];
+  }
+  return [dateCol, merchantCol, accountCol, amountCol, categoryCol, receiptCol];
+};
 
 const Page = () => {
+  const { windowWidth } = useMainContext();
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [accountsLoading, setAccountsLoading] = useState(false);
   const { currentUcrm } = useCompanySessionContext();
+
+  const onError = (err: string | ErrorProps) => {
+    setError(isObject(err) ? err.message : err);
+    setAccountsLoading(false);
+  };
+
+  const onFetchAccountsSuccess = (res: any) => {
+    if (res.data && res.data?.length) {
+      setAccounts(res.data);
+    }
+    setAccountsLoading(false);
+  };
+
+  const fetchAccounts = useCallback(async () => {
+    if (accountsLoading || !currentUcrm?.company?.id) return false;
+    setAccountsLoading(true);
+    return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
+      onFetchAccountsSuccess,
+      onError
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUcrm?.company?.id]);
+
   useEffect(() => {
-    if (!currentUcrm) return;
-    BankingApis.getBankAccounts(currentUcrm?.company?.id).then(async (res) => {
-      if (res.data) {
-        setAccounts(res.data);
-      }
-    });
-  }, [currentUcrm]);
-const {windowWidth} = useMainContext();
+    fetchAccounts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUcrm?.company?.id]);
 
   return (
-    <div className="flex flex-col gap-4">
-        {windowWidth > 767 && (
-          <h1 className="text-primary text-2xl font-medium ml-1">Transaction</h1>
-        )}
-      {accounts?.length !== 0 ? (
-        <DataTable
-          columns={transactionsColumns}
-          data={transactions}
-          accounts={accounts}
-          setTransactions={setTransactions}
-          setLoading={setLoading}
-          currentUcrm={currentUcrm}
-          showFilter={true}
-        />
-      ) : (
-        <div className="flex justify-center items-center h-96">
-          <h1 className="text-2xl text-muted">No Accounts connected</h1>
+    <div className="flex gap-24 flex-row justify-center">
+      <div className="w-full lg:max-w-[950px]">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-primary text-2xl font-medium ml-1 max-md:hidden">
+            Transactions
+          </h1>
+
+          {accountsLoading && (
+            <div className="w-full flex items-center h-12 justify-center">
+              <Loader2Icon className="animate-spin" />
+            </div>
+          )}
+
+          {!accountsLoading && !accounts.length && (
+            <div className="w-full flex items-center h-12 justify-center">
+              No Accounts connected
+            </div>
+          )}
+
+          {!accountsLoading && !!accounts.length && (
+            <DataTable
+              columns={getTableColumns({ windowWidth })}
+              data={transactions}
+              accounts={accounts}
+              setTransactions={setTransactions}
+              setLoading={setLoading}
+              currentUcrm={currentUcrm}
+              showFilter={true}
+            />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

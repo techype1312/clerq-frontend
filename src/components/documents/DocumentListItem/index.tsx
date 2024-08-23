@@ -82,7 +82,9 @@ const DocumentListItem = ({
         <SymbolIcon icon="draft" color="#BFBFC5" />
 
         <div className="flex-col gap-1">
-          <p className="text-sm first-letter:capitalize">{row.name}</p>
+          <p className="text-sm first-letter:capitalize max-md:max-w-[200px] md:max-w-[300px] text-pretty">
+            {row.name}
+          </p>
           <p className="text-xs text-[#70707d]">{`${format(
             new Date(row.createdAt),
             "MM-dd-yyyy"

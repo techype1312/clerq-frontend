@@ -1,18 +1,16 @@
 "use client";
 import EditDisableModule from "@/components/dashboard/settings/EditDisableModule";
 import SwitchModule from "@/components/dashboard/settings/SwitchModule";
-import { useMainContext } from "@/context/Main";
 import React from "react";
 
 const Page = () => {
-const { windowWidth } = useMainContext();
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex gap-4 flex-col">
-          {windowWidth > 767 && (
-            <h1 className="text-primary text-2xl font-medium">Settings</h1>
-          )}
+          <h1 className="text-primary text-2xl font-medium max-md:hidden">
+            Settings
+          </h1>
           <EditDisableModule
             moduleData={{
               title: "Require receipts for card transactions",

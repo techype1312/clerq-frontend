@@ -11,12 +11,8 @@ import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
-import { useUserContext } from "@/context/User";
-import { useMainContext } from "@/context/Main";
 
 const Page = () => {
-  const { userData } = useUserContext();
-  const {windowWidth} = useMainContext();
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
     {
       title: "Last 7 days",
@@ -137,11 +133,9 @@ const Page = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 flex-col md:flex-row justify-between">
-            {windowWidth > 767 && (
-              <h1 className="text-primary text-2xl font-medium ml-1">
-                Overview
-              </h1>
-            )}
+            <h1 className="text-primary text-2xl font-medium ml-1 max-md:hidden">
+              Overview
+            </h1>
             <div className="flex gap-2 overflow-auto">
               {overviewTimeLine.map((timeLine, index) => (
                 <Button

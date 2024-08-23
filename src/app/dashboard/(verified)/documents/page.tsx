@@ -24,7 +24,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";
 import DocumentListItem from "@/components/documents/DocumentListItem";
-import { useMainContext } from "@/context/Main";
 
 const Page = () => {
   const { toast, dismiss: dismissToast } = useToast();
@@ -196,18 +195,15 @@ const Page = () => {
     fetchDocuments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { windowWidth } = useMainContext();
 
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex gap-8 md:gap-24 flex-col md:flex-row">
           <div>
-            {windowWidth > 767 && (
-              <h1 className="text-2xl font-medium text-left text-primary">
-                Documents
-              </h1>
-            )}
+            <h1 className="text-2xl font-medium text-left text-primary max-md:hidden">
+              Documents
+            </h1>
             <div className="mt-8 flex flex-row md:flex-col overflow-auto gap-2">
               {documentDetails.map((dt) => (
                 <div
@@ -280,6 +276,7 @@ const Page = () => {
                           showHeader={true}
                           columns={documentColumns}
                           showDownloadButton={false}
+                          showDownload={false}
                           showUploadButton={true}
                           onUpload={toggleUploadSection}
                           data={documents}

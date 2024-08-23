@@ -86,10 +86,7 @@ const ShareDocumentsDialog = ({
         )}
       </DialogTrigger>
       <DialogContent className="min-w-full h-screen z-[100] items-center sm:rounded-none justify-center">
-        <div
-          className="flex flex-col w-max items-center min-w-64 py-5"
-          style={{ maxWidth: "402px" }}
-        >
+        <div className="flex flex-col items-center py-5">
           <DialogHeader className="text-start w-full my-5">
             <DialogTitle>{`Share Documents`}</DialogTitle>
           </DialogHeader>
@@ -132,7 +129,7 @@ const ShareDocumentsDialog = ({
                 </span>
               </AlertDescription>
             </Alert>
-            <DialogFooter className="flex flex-col w-full items-center sm:justify-end min-w-64 mt-6 mb-4 my-2 h-12 gap-2">
+            <DialogFooter className="flex flex-row w-full items-center justify-end mt-6 mb-4 my-2 h-12 gap-2">
               <DialogClose asChild>
                 <Button
                   type="button"

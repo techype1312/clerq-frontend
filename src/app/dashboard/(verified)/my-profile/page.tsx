@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import Image from "next/image";
 import { useUserContext } from "@/context/User";
 import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
@@ -11,7 +10,6 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import ProfilePhotoEditModel from "@/components/profile-photo";
-import { useMainContext } from "@/context/Main";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -45,7 +43,6 @@ const Page = () => {
     updateUserData,
     updateUserLocalData,
   } = useUserContext();
-  const { windowWidth } = useMainContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
   useEffect(() => {
@@ -247,9 +244,9 @@ const Page = () => {
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
-          {windowWidth > 767 && (
-            <h1 className="text-primary text-2xl font-medium">Profile</h1>
-          )}
+          <h1 className="text-primary text-2xl font-medium max-md:hidden">
+            Profile
+          </h1>
           <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
             <ProfilePhotoEditModel
               firstName={userData?.firstName}
