@@ -23,7 +23,7 @@ const SignupPage = () => {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col gap-12 items-center justify-center mt-12 md:my-auto">
+    <div className="flex flex-col gap-12 items-center justify-center h-screen mt-12 md:my-auto">
       <Image
         className="md:hidden"
         src={"/clerq_logo.png"}
