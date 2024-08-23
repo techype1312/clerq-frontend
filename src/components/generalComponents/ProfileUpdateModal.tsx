@@ -24,10 +24,17 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
 
   useEffect(() => {
     const configId = rowData.id?.includes("address") ? "address" : rowData.id;
+    const inputProps =
+      rowData.id === "legal_address"
+        ? { addressType: "address" }
+        : rowData.id === "mailing_address"
+        ? { addressType: "mailing_address" }
+        : "";
     setConfig({
       [configId]: {
         fieldType: rowData.type,
         label: rowData.label,
+        inputProps: inputProps,
       },
     });
     setSchema(rowData.schema);
@@ -38,7 +45,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
       setValues(rowData.values);
     }
   }, [rowData]);
-
+console.log(rowData.values)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
