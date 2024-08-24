@@ -27,9 +27,9 @@ const SigninPage = () => {
   return (
     <div className="flex h-screen w-full items-center justify-center md:items-stretch md:justify-normal gap-12">
       <div className="hidden md:block background-placeholder w-1/2"></div>
-      <div className="flex flex-col justify-center items-center gap-24">
-        <Image className="md:hidden" src={"/clerq_logo.png"} alt="Clerq" width={75} height={30} />
-        <div className="flex flex-col gap-4 w-full items-center md:items-start">
+      <div className="flex flex-col justify-center items-center gap-6">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-4 w-full items-start">
           <h1 className="text-2xl md:text-4xl font-normal text-primary">
             Log In
           </h1>
@@ -48,10 +48,10 @@ const SigninPage = () => {
             }}
             fieldConfig={{
               email: {
-                inputProps:{
+                inputProps: {
                   placeholder: "your@email.com",
-                }
-              }
+                },
+              },
             }}
             className="flex flex-col gap-4 max-w-sm md:max-w-lg mr-2"
             withSubmitButton={false}

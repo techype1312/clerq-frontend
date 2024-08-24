@@ -70,14 +70,8 @@ const VerifyOtpPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-12 gap-28">
-      <Image
-        className="md:hidden"
-        src={"/clerq_logo.png"}
-        alt="Clerq"
-        width={75}
-        height={30}
-      />
+    <div className="flex flex-col items-center justify-center gap-6 h-screen">
+      <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <OtpPage
         title={"Enter code"}
         phone={phone ?? ""}

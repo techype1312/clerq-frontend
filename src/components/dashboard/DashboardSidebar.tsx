@@ -198,22 +198,27 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
     <div
       className={`absolute flex gap-3 h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
-          ? "px-0 pt-3 pb-6 min-w-48"
-          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-3 pb-6"
+          ? "px-0 pt-5 pb-6 min-w-48"
+          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-5 pb-6"
       } `}
     >
-      <div className="flex flex-col px-6 gap-3">
-        <div className="flex justify-between items-center lg:hidden gap-6">
-          <Image src={"/clerq_logo.png"} alt="Clerq" width={50} height={30} />
-          <button
-            className="block"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <SymbolIcon icon="close" />
-          </button>
-        </div>
+      <div className="flex flex-row px-6 justify-between items-center gap-6 pb-2 border-b">
+        <Image
+          src={"/otto_logo_large.png"}
+          alt="Otto"
+          width={77}
+          height={30}
+        />
+        <button
+          className="flex lg:hidden items-center"
+          onClick={() => {
+            setOpen(false);
+          }}
+        >
+          <SymbolIcon icon="close" />
+        </button>
+      </div>
+      <div className="flex flex-col px-6">
         <CompanyToggleDrawer />
       </div>
       <div className="flex flex-col mt-0 gap-3 items-start border-t px-6 overflow-scroll">

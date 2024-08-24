@@ -30,7 +30,7 @@ const OtpPage = ({
 }: z.infer<typeof OtpPageProps>) => {
 
   return (
-    <div className="flex flex-col gap-40 items-center md:justify-center h-screen">
+    <div className="flex flex-col gap-20 items-center md:justify-center">
       <div className="flex flex-col items-center">
         <SymbolIcon icon="key" color="#5266EB" size={40} />
         <h1 className="text-3xl text-primary">{title}</h1>
