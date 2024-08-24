@@ -1,11 +1,10 @@
 "use client";
-import AuthApis from "@/actions/apis/AuthApis";
+
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { DependencyType } from "@/components/ui/auto-form/types";
 import { useUserContext } from "@/context/User";
 import { signUpSchema } from "@/types/schema-embedded";
 import Image from "next/image";
-import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -20,6 +19,7 @@ const AcceptInvitationPage = () => {
   const { updateUserLocalData } = useUserContext();
   const searchParams = useSearchParams();
 
+  const [inviteVerified, setInviteVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(searchParams.get("error"));
   const hash = searchParams.get("hash");
@@ -34,7 +34,7 @@ const AcceptInvitationPage = () => {
     setLoading(false);
   };
 
-  const onFetchCompanyDetailsSuccess = (res: any) => {
+  const onFetchAcceptInviteSuccess = (res: any) => {
     if (res.data && res.data.token && res.data.refreshToken) {
       toast.success("Invitation accepted successfully!");
       Cookies.set("refreshToken", res.data.refreshToken, {
@@ -65,7 +65,27 @@ const AcceptInvitationPage = () => {
       country_code: 91,
     };
     return InviteTeamApis.acceptInvite(data).then(
-      onFetchCompanyDetailsSuccess,
+      onFetchAcceptInviteSuccess,
+      onError
+    );
+  };
+
+  const onFetchVerifyInviteSuccess = (res: any) => {
+    if (res && res.data) {
+      setInviteVerified(true);
+    }
+    setLoading(false);
+  };
+
+  const handleVerifyInvitation = () => {
+    if (loading || !hash || inviteVerified) return false;
+    hasRunRef.current = true;
+    setLoading(true);
+    const data = {
+      hash: hash as string,
+    };
+    return InviteTeamApis.verifyInvite(data).then(
+      onFetchVerifyInviteSuccess,
       onError
     );
   };
@@ -80,8 +100,34 @@ const AcceptInvitationPage = () => {
           error_description
       );
     }
+    handleVerifyInvitation()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, error_description]);
+
+  if (!inviteVerified && loading) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Loader2Icon className="animate-spin" size={"48px"} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Verifying Invite <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!inviteVerified && !loading) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Failed to verify Invite! <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-12 items-center justify-center mt-12 md:my-auto">

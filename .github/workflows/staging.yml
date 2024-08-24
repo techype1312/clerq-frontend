@@ -36,7 +36,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} .
+          docker build --build-arg APP_ENV=${{ env.APP_ENV }} \
+            -t ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} .
           docker tag ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
 
       - name: Push Docker image to ECR

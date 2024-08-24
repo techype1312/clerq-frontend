@@ -83,7 +83,7 @@ const ProfilePhotoEditModel = ({
           </Fragment>
         </div>
       </DialogTrigger>
-      <DialogContent className="z-[100] items-center rounded-md justify-center max-w-md">
+      <DialogContent className="max-md:max-w-full max-md:h-screen h-auto z-[100] items-center rounded-md justify-center max-w-md">
         <DialogHeader className="text-start w-full">
           <DialogTitle>{`Edit profile image`}</DialogTitle>
         </DialogHeader>
@@ -120,13 +120,13 @@ const ProfilePhotoEditModel = ({
                 </p>
               </div>
               <Button
-                className="rounded-full gap-1 px-4 py-2 h-7  hover:bg-red-50 text-red-600"
+                className="rounded-full gap-1 px-4 py-2 h-7 max-md:w-7 hover:bg-red-50 text-red-600"
                 variant="secondary"
                 onClick={handleRemovePhoto}
                 disabled={loading}
               >
                 <SymbolIcon icon="delete" size={20} />
-                Remove
+                <span className="max-md:hidden">Remove</span>
               </Button>
             </div>
           )}

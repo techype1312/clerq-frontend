@@ -32,7 +32,7 @@ const CompanyToggleDrawer = () => {
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="gap-10 border-none py-5 px-2 justify-around bg-none bg-transparent w-fit"
+            className="gap-10 border-none py-5 px-0 justify-around bg-none bg-transparent w-fit"
           >
             <div className="flex flex-row items-center gap-2">
               <ProfilePhotoPreview

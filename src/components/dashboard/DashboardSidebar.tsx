@@ -17,7 +17,7 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
     <Link
       className={`${
         isActive ? "text-black font-normal" : "text-primary background-light"
-      } px-4 rounded py-1`}
+      } rounded py-1`}
       href={href}
       onClick={() => {
         setOpen(false);
@@ -34,7 +34,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
   const items = pathname.startsWith("/dashboard") ? (
     <Fragment>
       {/* Company Section */}
-      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
         {/* <SymbolIcon icon="apartment" size={24} /> */}
         <span>Company</span>
       </div>
@@ -120,7 +120,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
 
       {/* Settings Section */}
-      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
         {/* <SymbolIcon icon="settings" size={24} /> */}
         <span>Settings</span>
       </div>
@@ -161,7 +161,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
 
       {/* User Section */}
-      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2 px-4">
+      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
         {/* <SymbolIcon icon="person" size={24} /> */}
         <span>Personal</span>
       </div>
@@ -202,8 +202,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-3 pb-6"
       } `}
     >
-      <div className="flex flex-col mx-4 gap-3">
-        <div className="flex justify-between items-center px-2 lg:hidden gap-6 ">
+      <div className="flex flex-col px-6 gap-3">
+        <div className="flex justify-between items-center lg:hidden gap-6">
           <Image src={"/clerq_logo.png"} alt="Clerq" width={50} height={30} />
           <button
             className="block"
@@ -216,8 +216,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         </div>
         <CompanyToggleDrawer />
       </div>
-      <div className="flex flex-col mt-0 gap-[6px] items-center">
-        <div className="flex flex-col gap-3 px-4 border-t">{items}</div>
+      <div className="flex flex-col mt-0 gap-3 items-start border-t px-6 overflow-scroll">
+        {items}
       </div>
     </div>
   );
