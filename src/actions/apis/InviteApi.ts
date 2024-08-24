@@ -65,10 +65,20 @@ interface IConfirmInvitePayload {
   hash: string;
 }
 
+interface IVerifyInvitePayload {
+  hash: string;
+}
+
 const acceptInvite = (payload: IConfirmInvitePayload | IAcceptInvitePayload) => {
   const token = getCookie("token") || null;
   const ucrmKey = getCookie("otto_ucrm") || null;
   return ApiCalls.postResponse(`invites/accept`, payload, token, ucrmKey);
+};
+
+const verifyInvite = (payload: IVerifyInvitePayload) => {
+  const token = getCookie("token") || null;
+  const ucrmKey = getCookie("otto_ucrm") || null;
+  return ApiCalls.postResponse(`invites/verify`, payload, token, ucrmKey);
 };
 
 const InviteTeamApis = {
@@ -78,6 +88,7 @@ const InviteTeamApis = {
   resendInviteLink,
   acceptInvite,
   updateInviteRole,
+  verifyInvite,
 };
 
 export default InviteTeamApis;

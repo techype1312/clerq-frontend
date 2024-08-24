@@ -77,6 +77,7 @@ const RemoveInviteDialog = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
+        <DialogDescription>{description}</DialogDescription>
         <div className="ml-auto h-10 flex flex-row gap-2 mt-4">
           <DialogClose asChild>
             <Button
@@ -98,7 +99,6 @@ const RemoveInviteDialog = ({
             {actionBtnText}
           </Button>
         </div>
-        <DialogDescription>{description}</DialogDescription>
       </DialogContent>
     </Dialog>
   );

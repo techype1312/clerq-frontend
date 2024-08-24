@@ -39,6 +39,18 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+# Copy the environment file for production
+# This line will ensure the correct environment variables are available during build
+RUN if [ ! -f .env ]; then cp env-example .env; fi
+
+# Generate robots.txt based on APP_ENV
+RUN \
+  if [ "$APP_ENV" = "production" ]; then \
+    echo -e "User-agent: *\nAllow: /" > public/robots.txt; \
+  else \
+    echo -e "User-agent: *\nDisallow: /" > public/robots.txt; \
+  fi
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
