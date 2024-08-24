@@ -45,7 +45,7 @@ jobs:
           docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }}
           docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
 
-      - name: Deploy to Demo App Runner
+      - name: Update App Runner
         run: |
           aws apprunner update-service --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }} \
             --source-configuration '{
@@ -54,3 +54,7 @@ jobs:
                     "ImageRepositoryType": "ECR"
                 }
             }'
+
+      - name: Deploy App Runner
+        run: |
+          aws apprunner start-deployment --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }}
