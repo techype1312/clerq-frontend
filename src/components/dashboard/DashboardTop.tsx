@@ -64,7 +64,7 @@ const DashboardTop = () => {
   }, []);
 
   return (
-    <div className="my-4 w-full flex" ref={inputRef}>
+    <div className="my-5 w-full flex" ref={inputRef}>
       <h1
         className={cn(
           "text-primary text-2xl font-medium ml-14 flex items-center justify-center md:hidden",

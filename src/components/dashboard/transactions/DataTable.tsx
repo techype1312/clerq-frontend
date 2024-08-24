@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({
         merchant_name,
         amount,
         category,
-        clerq_category,
+        ottoCategory,
         gl_code,
         receipt,
       } = row.original;
@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
         merchant_name,
         amount,
         category,
-        clerq_category,
+        ottoCategory,
         gl_code,
         receipt,
       };
@@ -140,8 +140,8 @@ export function DataTable<TData, TValue>({
       value: "date",
     },
     // {
-    //   label: "Clerq Category",
-    //   value: "clerq_category",
+    //   label: "Otto Category",
+    //   value: "ottocategory",
     // },
     {
       label: "Category",
@@ -151,15 +151,16 @@ export function DataTable<TData, TValue>({
       label: "Sub Categories",
       value: "sub_categories",
     },
-    {
-      label: "GL Code",
-      value: "gl_code",
-    },
+    // {
+    //   label: "GL Code",
+    //   value: "glCode",
+    // },
     {
       label: "Amount Range",
       value: "amount",
     },
   ]);
+
   const [dateFilter, setDateFilter] = useState<any>();
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
   const [pagesVisited, setPagesVisited] = useState<number[]>([]);
@@ -207,8 +208,8 @@ export function DataTable<TData, TValue>({
                 merchant_name: transaction.merchant_name,
                 merchant_logo: transaction.merchant_logo_url,
               },
-              // gl_code: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
-              // clerq_category: index === 0 ? "Cleaning" : "Advertising",
+              // glCode: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
+              // ottoCategory: index === 0 ? "Cleaning" : "Advertising",
               account: accounts?.filter(
                 (account: any) => account.id === transaction.account.id
               )[0],

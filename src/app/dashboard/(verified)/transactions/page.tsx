@@ -169,9 +169,9 @@ const getTableColumns = ({
     },
   };
 
-  const clerqCategoryCol: ColumnDef<any> = {
-    accessorKey: "clerqCategory",
-    header: "Clerq category",
+  const ottoCategoryCol: ColumnDef<any> = {
+    accessorKey: "ottoCategory",
+    header: "Otto category",
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId));
     },

@@ -76,7 +76,7 @@ const CompanyContainer = () => {
           id: "name",
           label: "Company name",
           description:
-            "This is the name that appears on Clerq and in your notifications.",
+            "This is the name that appears on Otto and in your notifications.",
           formattedValue: companyData.name,
           type: "text",
           isEditable: true,
@@ -91,7 +91,7 @@ const CompanyContainer = () => {
         {
           id: "company_logo",
           label: "Company logo",
-          description: "This will appear on Clerq next to your company name.",
+          description: "This will appear on Otto next to your company name.",
           values: {
             logo: companyData.logo,
             name: companyData.name,

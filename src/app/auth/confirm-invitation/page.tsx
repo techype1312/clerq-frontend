@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useUserContext } from "@/context/User";
 import InviteTeamApis from "@/actions/apis/InviteApi";
+import Image from "next/image";
 
 const ConfirmInvitationPage = () => {
   const router = useRouter();
@@ -55,8 +56,22 @@ const ConfirmInvitationPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, hash, error, error_description]);
 
+  if (!hash || error) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Failed to verify Invite! <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
+      <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <Loader2Icon className="animate-spin" size={"48px"} />
       <div className="flex flex-col gap-2">
         {`${userFirstName} ${userLasName} (${userEmail})`}

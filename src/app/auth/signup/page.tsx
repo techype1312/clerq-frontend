@@ -23,17 +23,13 @@ const SignupPage = () => {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col gap-12 items-center justify-center h-screen mt-12 md:my-auto">
-      <Image
-        className="md:hidden"
-        src={"/clerq_logo.png"}
-        alt="Clerq"
-        width={75}
-        height={30}
-      />
+    <div className="flex flex-col gap-6 items-center justify-center h-screen mt-12 md:my-auto">
+      <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <div className="max-w-md md:max-w-2xl flex flex-col gap-8">
         <div className="flex flex-col gap-4 text-center">
-          <h1 className="text-2xl md:text-4xl w-2/3 mx-auto md:w-full">Simplified finances with Clerq</h1>
+          <h1 className="text-2xl md:text-4xl w-2/3 mx-auto md:w-full">
+            Simplified finances with Otto
+          </h1>
           <p className="text-sm md:text-base text-secondary mx-4">
             Apply in 10 minutes for Simple finances that transforms how you
             operate.
@@ -100,16 +96,16 @@ const SignupPage = () => {
           </Link>
         </h5>
         <p className="mx-auto text-center text-muted text-[11px] md:text-sm w-4/5 md:w-3/4">
-          By clicking “Get started“, I agree to Clerq’s{" "}
+          By clicking “Get started“, I agree to Otto’s{" "}
           <span className="border-b border-muted-text">Terms of Use</span>,{" "}
           <span className="border-b border-muted-text">Privacy Policy</span> and
           to receive electronic communication about my accounts and services per{" "}
           <span className="border-b border-muted-text">
-            Clerq’s Electronic Communications Agreement
+            Otto’s Electronic Communications Agreement
           </span>
           , and acknowledge receipt of{" "}
           <span className="border-b border-muted-text">
-            Clerq’s USA PATRIOT Act disclosure.
+            Otto’s USA PATRIOT Act disclosure.
           </span>
         </p>
       </div>

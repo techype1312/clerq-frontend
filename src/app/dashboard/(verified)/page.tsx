@@ -181,8 +181,8 @@ export default Page;
 >
   <div className="my-auto">
     <Image
-      src="/plaid&clerq.png"
-      alt="Plaid & Clerq"
+      src="/otto_plaid.png"
+      alt="Plaid & Otto"
       width={102}
       height={64}
     />

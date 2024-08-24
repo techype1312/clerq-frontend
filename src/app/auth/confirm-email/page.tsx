@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import AuthApis from "@/actions/apis/AuthApis";
 import { useUserContext } from "@/context/User";
+import Image from "next/image";
 
 const ConfirmEmailPage = () => {
   const router = useRouter();
@@ -49,11 +50,25 @@ const ConfirmEmailPage = () => {
       };
       confirmEmail();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, hash, error, error_description]);
+
+  if (!hash || error) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Failed to confirm Email! <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
+      <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <Loader2Icon className="animate-spin" size={"48px"} />
       <div className="flex flex-col gap-2">
         <h2 className="text-center text-xl font-medium">
