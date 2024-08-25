@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
 import BankingApis from "@/actions/apis/BankingApis";
 import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
+import Script from "next/script";
 
 const Page = () => {
   const { currentUcrm } = useCompanySessionContext();
@@ -41,31 +42,40 @@ const Page = () => {
   }, [currentUcrm?.company?.id]);
 
   return (
-    <div className="flex gap-24 flex-row justify-center">
-      <div className="w-full lg:max-w-[950px]">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-primary text-2xl font-medium max-md:hidden">
-            Bank Accounts
-          </h1>
-          <div className="flex flex-col gap-2 mb-4 border-b border-[#F1F1F4]">
-            <h6 className="text-primary">Linked bank accounts</h6>
-            <p className="text-muted">
-              Automatically extract all business transactions for bookkeeping.
-            </p>
-            {loading ? (
-              <div className="w-full flex items-center h-12 justify-center">
-                <Loader2Icon className="animate-spin" />
-              </div>
-            ) : (
-              <AccountsTable
-                accounts={bankAccounts}
-                companyId={currentUcrm?.company?.id as string}
-              />
-            )}
+    <Fragment>
+      <Script
+        src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
+        strategy="beforeInteractive"
+        onLoad={() =>
+          console.log(`script loaded correctly, window.FB has been populated`)
+        }
+      />
+      <div className="flex gap-24 flex-row justify-center">
+        <div className="w-full lg:max-w-[950px]">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-primary text-2xl font-medium max-md:hidden">
+              Bank Accounts
+            </h1>
+            <div className="flex flex-col gap-2 mb-4 border-b border-[#F1F1F4]">
+              <h6 className="text-primary">Linked bank accounts</h6>
+              <p className="text-muted">
+                Automatically extract all business transactions for bookkeeping.
+              </p>
+              {loading ? (
+                <div className="w-full flex items-center h-12 justify-center">
+                  <Loader2Icon className="animate-spin" />
+                </div>
+              ) : (
+                <AccountsTable
+                  accounts={bankAccounts}
+                  companyId={currentUcrm?.company?.id as string}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

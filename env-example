@@ -3,3 +3,4 @@ PORT=3001
 API_SERVER_BASE_URL=https://stagingapi.joinotto.com/api/v1/
 GOOGLE_API_KEY=YOU_GOOGLE_API_KEY
 APP_ENV=development
+NODE_ENV=development
