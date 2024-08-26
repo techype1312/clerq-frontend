@@ -8,7 +8,7 @@ import { MainContextProvider } from "@/context/Main";
 import "react-material-symbols/rounded";
 import { Toaster } from "@/components/ui/toaster";
 import { UserContextProvider } from "@/context/User";
-import Script from "next/script";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const fontSans = FontSans({
   subsets: ["latin"],

@@ -1,7 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import isEmpty from "lodash/isEmpty";
 import isObject from "lodash/isObject";
 import { usePathname, useRouter } from "next/navigation";
@@ -20,7 +26,8 @@ export const UserContextProvider = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
   const [error, setError] = useState("");
   const [userData, setUserData] = useState<IUser>();
   const [refetchUserData, setRefetchUserData] = useState<boolean>(false);
@@ -28,6 +35,7 @@ export const UserContextProvider = ({
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
     setLoading(false);
+    setUserDataLoaded(true);
   };
 
   const onFetchUserDetailsError = (err: string | ErrorProps) => {
@@ -36,6 +44,7 @@ export const UserContextProvider = ({
     }
     setError(isObject(err) ? err.message : err);
     setLoading(false);
+    setUserDataLoaded(true);
   };
 
   const onFetchUserDetailsSuccess = (res: any) => {
@@ -55,13 +64,15 @@ export const UserContextProvider = ({
       router.push("/auth/login");
     }
     setLoading(false);
+    setUserDataLoaded(true);
   };
 
   const refreshUser = useCallback(async () => {
-      const token = Cookies.get("token");
-      if (loading || !token) return false;
-      setLoading(true);
-      return AuthApis.profile().then(
+    const token = Cookies.get("token");
+    if (loading || !token) return false;
+    setLoading(true);
+    setUserDataLoaded(false);
+    return AuthApis.profile().then(
       onFetchUserDetailsSuccess,
       onFetchUserDetailsError
     );
@@ -69,9 +80,11 @@ export const UserContextProvider = ({
 
   useEffect(() => {
     if (!userData) {
-      if (localStorage.getItem("user")) { 
+      if (localStorage.getItem("user")) {
         setUserData(JSON.parse(localStorage.getItem("user") as string));
-      } else{
+        setUserDataLoaded(true);
+        setLoading(false);
+      } else {
         refreshUser(); //This causes the search params to be cleared
       }
     }
@@ -80,22 +93,19 @@ export const UserContextProvider = ({
   const updateUserLocalData = (data: any) => {
     setUserData(data);
     localStorage.setItem("user", JSON.stringify(data));
-  }
+  };
 
   const onUpdateUserDataSuccess = (res: any) => {
     if (res.data) {
       updateUserLocalData(res.data);
     }
-    return res
+    return res;
   };
 
   const updateUserDataDetails = async (payload: Record<string, any>) => {
     const token = Cookies.get("token");
     if (loading || !token) return false;
-    return AuthApis.updateUser(payload).then(
-      onUpdateUserDataSuccess,
-      onError
-    );
+    return AuthApis.updateUser(payload).then(onUpdateUserDataSuccess, onError);
   };
 
   const updateUserData = async (values: Partial<IUser>) => {
@@ -137,20 +147,19 @@ export const UserContextProvider = ({
 
   return (
     <UserContext.Provider
-      value={
-        {
-          loading,
-          error,
-          userData,
-          refetchUserData,
-          refreshUser,
-          setRefetchUserData,
-          updateUserLocalData,
-          updateUserPhoto,
-          removeUserPhoto,
-          updateUserData,
-        }
-      }
+      value={{
+        loading,
+        error,
+        userData,
+        refetchUserData,
+        refreshUser,
+        setRefetchUserData,
+        updateUserLocalData,
+        updateUserPhoto,
+        removeUserPhoto,
+        updateUserData,
+        userDataLoaded,
+      }}
     >
       {children}
     </UserContext.Provider>

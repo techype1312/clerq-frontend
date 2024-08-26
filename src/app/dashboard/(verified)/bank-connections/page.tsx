@@ -1,17 +1,17 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import isObject from "lodash/isObject";
-import { Loader2Icon } from "lucide-react";
 import BankingApis from "@/actions/apis/BankingApis";
-import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
+import BankConnectionsSkeleton from "@/components/skeletonLoading/dashboard/BankConnectionsSkeleton";
 
-const Page = () => {
+const BankConnections = lazy(() => import("./BankConnections"));
+
+export default function Page() {
   const { currentUcrm } = useCompanySessionContext();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
 
   const onError = (err: string | ErrorProps) => {
@@ -27,8 +27,7 @@ const Page = () => {
   };
 
   const fetchBankAccounts = () => {
-    if (loading || !currentUcrm?.company?.id) return false;
-    setLoading(true);
+    if (!currentUcrm?.company?.id) return false;
     return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
       onFetchAccountsSuccess,
       onError
@@ -37,8 +36,17 @@ const Page = () => {
 
   useEffect(() => {
     fetchBankAccounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUcrm?.company?.id]);
+
+  // const LoadingState = () => {
+  //   <BankConnectionsSkeleton />;
+  // }
+
+  // const MainContext = () => {
+  //   <Suspense fallback={<BankConnectionsSkeleton />}>
+  //       <BankConnections />
+  //     </Suspense>
+  // }
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -52,21 +60,19 @@ const Page = () => {
             <p className="text-muted">
               Automatically extract all business transactions for bookkeeping.
             </p>
-            {loading ? (
-              <div className="w-full flex items-center h-12 justify-center">
-                <Loader2Icon className="animate-spin" />
-              </div>
-            ) : (
-              <AccountsTable
-                accounts={bankAccounts}
-                companyId={currentUcrm?.company?.id as string}
-              />
-            )}
+            {/* {loading ? (
+              <BankConnectionsSkeleton />
+            ) : ( */}
+              <Suspense fallback={<BankConnectionsSkeleton />}>
+                <BankConnections
+                  bankAccounts={bankAccounts}
+                  companyId={currentUcrm?.company?.id as string}
+                />
+              </Suspense>
+            {/* )} */}
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default Page;
+}

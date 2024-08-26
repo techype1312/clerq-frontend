@@ -265,23 +265,19 @@ const Page = () => {
                     </div>
                   ) : (
                     <Fragment>
-                      {loading ? (
-                        <div className="w-full flex items-center h-12 justify-center">
-                          <Loader2Icon className="animate-spin" />
-                        </div>
-                      ) : (
-                        <DataTable
-                          showFilter={false}
-                          showPagination={false}
-                          showHeader={true}
-                          columns={documentColumns}
-                          showDownloadButton={false}
-                          showDownload={false}
-                          showUploadButton={true}
-                          onUpload={toggleUploadSection}
-                          data={documents}
-                        />
-                      )}
+                      <DataTable
+                        showFilter={false}
+                        showPagination={false}
+                        showHeader={true}
+                        columns={documentColumns}
+                        showDownloadButton={false}
+                        showDownload={false}
+                        showUploadButton={true}
+                        onUpload={toggleUploadSection}
+                        data={documents}
+                        loading={loading}
+                        type="document"
+                      />
                     </Fragment>
                   )}
                 </div>

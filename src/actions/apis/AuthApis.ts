@@ -6,10 +6,10 @@ const getCheck = (payload: any) => {
   return ApiCalls.getResponse(`users/`, payload, token);
 };
 
-const login = (searchParams: string, payload: any) => {
+const login = (searchParams: string, email: string | null) => {
   return ApiCalls.postResponse(
     `auth/email/login?${searchParams}`,
-    payload,
+    {email},
     null
   );
 };

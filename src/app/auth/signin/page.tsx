@@ -40,10 +40,11 @@ const SigninPage = () => {
           <AutoForm
             formSchema={signInSchema}
             onSubmit={async (e) => {
+              const email = e.email.trim().toLowerCase();
               const searchParams = "magic_link=true";
-              const res = await AuthApis.login(searchParams, e);
+              const res = await AuthApis.login(searchParams, email);
               if (res.status === 200) {
-                router.push(`/auth/link-sent?email=${e.email}`);
+                router.push(`/auth/link-sent?email=${email}`);
               }
             }}
             fieldConfig={{

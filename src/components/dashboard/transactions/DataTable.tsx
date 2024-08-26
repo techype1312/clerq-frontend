@@ -33,6 +33,9 @@ import {
 import { labelValue } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
 import BankingApis from "@/actions/apis/BankingApis";
+import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
+import DocumentSkeleton from "@/components/skeletonLoading/dashboard/DocumentSkeleton";
+import TeamSkeleton from "@/components/skeletonLoading/dashboard/TeamSkeleton";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -55,6 +58,8 @@ interface DataTableProps<TData, TValue> {
   accounts?: any;
   currentUcrm?: any;
   showDownload?: boolean;
+  loading?: boolean;
+  type?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -71,6 +76,8 @@ export function DataTable<TData, TValue>({
   accounts,
   currentUcrm,
   showDownload = true,
+  loading,
+  type,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
@@ -300,7 +307,7 @@ export function DataTable<TData, TValue>({
     <>
       <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4 md:gap-0 w-full">
         <div className="flex flex-wrap md:flex-nowrap gap-2 w-full">
-          <div className="flex items-center justify-between gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 w-fit">
             <Popover>
               {showFilter && (
                 <PopoverTrigger asChild>
@@ -318,10 +325,7 @@ export function DataTable<TData, TValue>({
                   </Button>
                 </PopoverTrigger>
               )}
-              <PopoverContent
-                align="start"
-                className="h-full w-max"
-              >
+              <PopoverContent align="start" className="h-full w-max">
                 <h6>Filters</h6>
                 <DropdownMenuSeparator />
                 <div className="flex">
@@ -642,29 +646,52 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
         )}
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="border-b"
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="md:px-0 p-3 text-nowrap">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+        {loading ? (
+          <>
+            {type === "document" && (
+              <DocumentSkeleton />
+            ) } 
+            {type === "transaction" &&(
+              <TransactionSkeleton />
+            )}
+            {type === "team" &&(
+              <TeamSkeleton />
+            )}
+          </>
+        ) : (
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="border-b"
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="md:px-0 p-3 text-nowrap"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
       </Table>
     </>
   );

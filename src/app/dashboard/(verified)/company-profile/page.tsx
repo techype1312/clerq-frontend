@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
@@ -10,6 +10,7 @@ import ProfilePhotoEditModel from "@/components/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
+import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
 
 const CompanyContainer = () => {
   const {
@@ -20,6 +21,7 @@ const CompanyContainer = () => {
     updateCompanyLogo,
     removeCompanyLogo,
     updateCompanyDetails,
+    companyDataLoaded,
   } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
@@ -217,38 +219,46 @@ const CompanyContainer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyData]);
 
-  if (loading) {
-    return (
-      <div className="w-full flex items-center h-12 justify-center">
-        <Loader2Icon className="animate-spin" />
-      </div>
-    );
-  }
+  const loadingState = () => {
+    if (loading || !companyDataLoaded) {
+      return (
+        <ProfileSkeleton />
+      );
+    }
 
-  if (!loading && !companyData) {
-    return (
-      <div className="w-full flex items-center h-12 justify-center">
-        No data found
-      </div>
-    );
-  }
+    if (companyDataLoaded && !companyData) {
+      return (
+        <div className="w-full flex items-center h-12 justify-center">
+          No data found
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
-          <div className="mt-auto flex gap-2 items-center border-b pb-4">
-            <ProfilePhotoEditModel
-              firstName={companyData?.name}
-              photo={companyData?.logo}
-              updatePhoto={updateCompanyLogo}
-              removePhoto={removeCompanyLogo}
-              canEdit={true}
-              showButtons={false}
-            />
-            <p className="ml-2 text-3xl font-[380]">{companyData?.name}</p>
-          </div>
-          <ProfileRowContainer profileData={rowData} />
+          <h1 className="text-primary text-2xl font-medium max-md:hidden">
+            Company profile
+          </h1>
+          {loadingState()}
+          {companyData && (
+            <Fragment>
+              <div className="mt-auto flex gap-2 items-center border-b pb-4">
+                <ProfilePhotoEditModel
+                  firstName={companyData?.name}
+                  photo={companyData?.logo}
+                  updatePhoto={updateCompanyLogo}
+                  removePhoto={removeCompanyLogo}
+                  canEdit={true}
+                  showButtons={false}
+                />
+                <p className="ml-2 text-3xl font-[380]">{companyData?.name}</p>
+              </div>
+              <ProfileRowContainer profileData={rowData} />
+            </Fragment>
+          )}
         </div>
       </div>
     </div>

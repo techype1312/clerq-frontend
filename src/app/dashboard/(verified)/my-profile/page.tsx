@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useUserContext } from "@/context/User";
 import { RowData } from "@/types/general";
@@ -10,6 +10,7 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
 import OnboardingApis from "@/actions/apis/OnboardingApis";
 import ProfilePhotoEditModel from "@/components/profile-photo";
+import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -42,6 +43,7 @@ const Page = () => {
     removeUserPhoto,
     updateUserData,
     updateUserLocalData,
+    userDataLoaded,
   } = useUserContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
 
@@ -139,7 +141,8 @@ const Page = () => {
           label: "Mailing Address",
           values: {
             address: {
-              country: userData?.mailing_address?.country?.toUpperCase() ?? "US",
+              country:
+                userData?.mailing_address?.country?.toUpperCase() ?? "US",
               address_line_1: userData?.mailing_address?.address_line_1,
               address_line_2: userData?.mailing_address?.address_line_2,
               city: userData?.mailing_address?.city,
@@ -229,22 +232,20 @@ const Page = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
+  
+  const loadingState = () => {
+    if (loading || !userDataLoaded) {
+      return <ProfileSkeleton />;
+    }
 
-  if (loading) {
-    return (
-      <div className="w-full flex items-center h-12 justify-center">
-        <Loader2Icon className="animate-spin" />
-      </div>
-    );
-  }
-
-  if (!loading && !userData) {
-    return (
-      <div className="w-full flex items-center h-12 justify-center">
-        No data found
-      </div>
-    );
-  }
+    if (userDataLoaded && !userData) {
+      return (
+        <div className="w-full flex items-center h-12 justify-center">
+          No data found
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -253,22 +254,27 @@ const Page = () => {
           <h1 className="text-primary text-2xl font-medium max-md:hidden">
             Profile
           </h1>
-          <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
-            <ProfilePhotoEditModel
-              firstName={userData?.firstName}
-              lastName={userData?.lastName}
-              photo={userData?.photo}
-              updatePhoto={updateUserPhoto}
-              removePhoto={removeUserPhoto}
-              canEdit={true}
-              showButtons={false}
-            />
-            <p className="ml-2 text-lg text-nowrap mr-2 md:text-[28px] font-[380]">
-              {userData?.firstName} {userData?.lastName}
-            </p>
-            <RoleItem label={userData?.role?.name ?? ""} />
-          </div>
-          <ProfileRowContainer profileData={rowData} />
+          {loadingState()}
+          {userData && (
+            <Fragment>
+              <div className="mt-auto flex gap-2 cursor-pointer items-center border-b pb-4">
+                <ProfilePhotoEditModel
+                  firstName={userData?.firstName}
+                  lastName={userData?.lastName}
+                  photo={userData?.photo}
+                  updatePhoto={updateUserPhoto}
+                  removePhoto={removeUserPhoto}
+                  canEdit={true}
+                  showButtons={false}
+                />
+                <p className="ml-2 text-lg text-nowrap mr-2 md:text-[28px] font-[380]">
+                  {userData?.firstName} {userData?.lastName}
+                </p>
+                <RoleItem label={userData?.role?.name ?? ""} />
+              </div>
+              <ProfileRowContainer profileData={rowData} />
+            </Fragment>
+          )}
         </div>
       </div>
     </div>

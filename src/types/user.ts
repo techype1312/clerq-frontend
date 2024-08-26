@@ -33,6 +33,7 @@ export interface IUser {
 
 export interface IUserContext {
   loading: boolean;
+  userDataLoaded: boolean;
   error: string;
   refetchUserData: boolean;
   userData?: IUser;

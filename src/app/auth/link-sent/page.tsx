@@ -8,14 +8,10 @@ import { toast } from "react-toastify";
 import { useFormStatus } from "react-dom";
 import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/apis/AuthApis";
-
-const initialState = {
-  message: "",
-};
+import { useRouter } from "next/navigation";
 
 const LinkSentPage = () => {
-  const { pending } = useFormStatus();
-  // const [state, formAction] = useFormState(resendLogin, initialState);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const newUser = searchParams.get("newUser") === "true" ? true : false;
@@ -31,24 +27,25 @@ const LinkSentPage = () => {
       window.removeEventListener("focus", handleFocus);
     };
   }, [refreshUser]);
-  // useEffect(() => {
-  //   if (state.message === "Email sent") {
-  //     toast.success("Check your inbox email sent successfully");
-  //   } else if (state.message === "Error sending email") {
-  //     toast.error("An error occurred");
-  //   }
-  // }, [state]);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const searchParams = "magic_link=true";
-    const res = await AuthApis.login(searchParams, {email: email});
-    if (res && res.status === 200) {
-      toast.success("Check your inbox email sent successfully");
+    if (!email) {
+      toast.error("Email is required");
+      setLoading(false);
+      return router.push("/auth/signin");
     } else {
-      toast.error("An error occurred");
+      const formattedEmail = email.trim().toLowerCase();
+      const res = await AuthApis.login(searchParams, formattedEmail);
+      if (res && res.status === 200) {
+        toast.success("Check your inbox email sent successfully");
+      } else {
+        toast.error("An error occurred");
+      }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -74,7 +71,12 @@ const LinkSentPage = () => {
           onSubmit={handleSubmit}
           // action={formAction}
         >
-          <input id="email" name="email" type="hidden" defaultValue={email ?? ""} />
+          <input
+            id="email"
+            name="email"
+            type="hidden"
+            defaultValue={email ?? ""}
+          />
           <button
             type="submit"
             disabled={loading}
