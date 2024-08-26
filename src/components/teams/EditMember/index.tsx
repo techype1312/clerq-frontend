@@ -7,7 +7,6 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -22,8 +21,8 @@ import {
 } from "@/components/ui/select";
 import Permissions from "@/components/generalComponents/Permissions";
 import { ErrorProps } from "@/types/general";
-import TeamApis from "@/actions/apis/TeamApis";
 import { allowedRoles } from "@/utils/constants";
+import TeamApis from "@/actions/data/team-data";
 import Avatar from "../Avatar";
 
 const EditMemberDialog = ({
@@ -34,30 +33,29 @@ const EditMemberDialog = ({
   onUpdate?: (ucrmId: string, status: Record<string, any>) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [roleId, setRoleId] = useState(String(row.role));
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onUpdateSucess = (res: any) => {
-    if (res.status === 200) {
-      onUpdate &&
-        onUpdate(res.data.id, {
-          role: res.data.role,
-          permissions: res.data.permissions,
-        });
-      setOpen(false);
-    }
+    onUpdate &&
+      onUpdate(res.id, {
+        role: res.role,
+        permissions: res.permissions,
+      });
+    setOpen(false);
     setLoading(false);
   };
 
   const updateRolePermissions = () => {
     if (loading) return false;
     setLoading(true);
+    setServerError("");
     return TeamApis.updateTeamMember(row.id, { role: { id: roleId } }).then(
       onUpdateSucess,
       onError

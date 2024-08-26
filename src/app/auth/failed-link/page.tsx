@@ -1,12 +1,12 @@
 "use client";
 
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
+import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 
 const FailedLinkPage = () => {
   const { refreshUser } = useUserContext();
@@ -34,6 +34,7 @@ const FailedLinkPage = () => {
       hasShownError.current = true;
     }
   }, [error, error_description]);
+
   return (
     <div className="text-center flex gap-20 h-screen max-h-screen flex-col items-center justify-center">
       <div className="flex flex-col gap-4 items-center">

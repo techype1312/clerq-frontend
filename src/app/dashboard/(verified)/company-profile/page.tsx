@@ -2,28 +2,61 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { RowData } from "@/types/general";
+import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
-import { Loader2Icon } from "lucide-react";
 import ProfileRowContainer from "@/components/dashboard/profile";
 import ProfilePhotoEditModel from "@/components/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
+import { isObject } from "lodash";
+import AddressApis from "@/actions/data/address.data";
 import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
 
 const CompanyContainer = () => {
   const {
-    loading,
+    loading: companyLoading,
     error,
     companyData,
     setCompanyData,
     updateCompanyLogo,
     removeCompanyLogo,
     updateCompanyDetails,
-    companyDataLoaded,
   } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onUpdateAddressSuccess = (
+    addressType: "legal_address" | "mailing_address",
+    res: any
+  ) => {
+    if (!companyData) return;
+    setLoading(false);
+    setCompanyData({
+      ...companyData,
+      [addressType]: res,
+    });
+    return res;
+  };
+
+  const handleUpdateAddress = async (
+    addressType: "legal_address" | "mailing_address",
+    addressId: string,
+    address: any
+  ) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AddressApis.updateAddress(addressId, address).then(
+      (res) => onUpdateAddressSuccess(addressType, res),
+      onError
+    );
+  };
 
   useEffect(() => {
     if (isEmpty(companyData)) {
@@ -158,17 +191,11 @@ const CompanyContainer = () => {
           schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
+                "mailing_address",
                 data.address_id,
                 data.address
               );
-              if (res && res.status === 200) {
-                setCompanyData({
-                  ...companyData,
-                  mailing_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -200,17 +227,11 @@ const CompanyContainer = () => {
           schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
+                "legal_address",
                 data.address_id,
                 data.address
               );
-              if (res && res.status === 200) {
-                setCompanyData({
-                  ...companyData,
-                  legal_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -220,13 +241,13 @@ const CompanyContainer = () => {
   }, [companyData]);
 
   const loadingState = () => {
-    if (loading || !companyDataLoaded) {
+    if (companyLoading && !companyData) {
       return (
         <ProfileSkeleton />
       );
     }
 
-    if (companyDataLoaded && !companyData) {
+    if (!companyLoading && !companyData) {
       return (
         <div className="w-full flex items-center h-12 justify-center">
           No data found

@@ -15,7 +15,7 @@ import {
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
-import InviteTeamApis from "@/actions/apis/InviteApi";
+import InviteTeamApis from "@/actions/data/invite.data";
 
 const RemoveInviteDialog = ({
   row,
@@ -25,7 +25,7 @@ const RemoveInviteDialog = ({
   onUpdate?: (inviteId: string) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const triggerBtnText = "Remove Invite";
@@ -35,25 +35,24 @@ const RemoveInviteDialog = ({
   const actionBtnText = `Yes, Delete`;
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onSuccess = (res: any) => {
-    if (res.status === 200) {
-      onUpdate && onUpdate(row.id);
-      setOpen(false);
-      toast.success(`Invite removed!`, {
-        position: "bottom-center",
-        hideProgressBar: true,
-      });
-    }
+    onUpdate && onUpdate(row.id);
+    setOpen(false);
+    toast.success(`Invite removed!`, {
+      position: "bottom-center",
+      hideProgressBar: true,
+    });
     setLoading(false);
   };
 
   const updateStatus = () => {
     if (loading) return false;
     setLoading(true);
+    setServerError("");
     return InviteTeamApis.removeInvite(row.id).then(onSuccess, onError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };

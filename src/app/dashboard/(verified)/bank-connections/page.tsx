@@ -1,29 +1,29 @@
 "use client";
-import React, { Fragment, lazy, Suspense, useEffect, useState } from "react";
 
+import React, { Fragment, lazy, Suspense, useEffect, useState } from "react";
 import isObject from "lodash/isObject";
-import BankingApis from "@/actions/apis/BankingApis";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
-import BankConnectionsSkeleton from "@/components/skeletonLoading/dashboard/BankConnectionsSkeleton";
 import Script from "next/script";
+import BankingApis from "@/actions/data/banking.data";
+import BankConnectionsSkeleton from "@/components/skeletonLoading/dashboard/BankConnectionsSkeleton";
 
 const BankConnections = lazy(() => import("./BankConnections"));
 
 export default function Page() {
   const { currentUcrm } = useCompanySessionContext();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchAccountsSuccess = (res: any) => {
-    if (res.data && res.data.length) {
-      setBankAccounts(res.data);
+    if (res && res.length) {
+      setBankAccounts(res);
     }
     setLoading(false);
   };

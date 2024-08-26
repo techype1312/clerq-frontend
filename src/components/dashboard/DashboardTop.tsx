@@ -1,9 +1,7 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
-import Cookies from "js-cookie";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
-import AuthApis from "@/actions/apis/AuthApis";
 import { Input } from "../ui/input";
 import {
   DropdownMenu,
@@ -19,24 +17,27 @@ import { dashboardTitle } from "@/utils/constants";
 import { Button } from "../ui/button";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import { cn } from "@/utils/utils";
+import AuthApis from "@/actions/data/auth.data";
+import { isObject } from "lodash";
+import { ErrorProps } from "@/types/general";
+import localStorage from "@/utils/storage/local-storage.util";
+import {
+  removeAuthOnboardingStatus,
+  removeAuthRefreshToken,
+  removeAuthToken,
+  removeAuthUcrmId,
+  removeSessionId,
+} from "@/utils/session-manager.util";
 
 const DashboardTop = () => {
   const router = useRouter();
   const { userData } = useUserContext();
   const pathname = usePathname();
   const inputRef = useRef<any>(null);
-
-  const handleLogout = async () => {
-    return AuthApis.signOut().then(() => {
-      localStorage.clear();
-      Cookies.remove("token");
-      Cookies.remove("refreshToken");
-      Cookies.remove("onboarding_completed");
-      router.replace("/auth/signin");
-      router.refresh();
-    });
-  };
   const [showInput, setShowInput] = React.useState(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = React.useState("");
 
   const mobileTitle = dashboardTitle.find(
     (title) =>
@@ -47,7 +48,30 @@ const DashboardTop = () => {
       (title === "Settings" && pathname === "/dashboard/controls") ||
       (title === "Profile" && pathname === "/dashboard/my-profile")
   );
-  const [search, setSearch] = React.useState("");
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onLogoutSuccess = (res: any) => {
+    setLoading(false);
+    removeAuthToken();
+    removeAuthRefreshToken();
+    removeAuthUcrmId();
+    removeSessionId();
+    localStorage.remove("user");
+    removeAuthOnboardingStatus();
+    router.replace("/auth/signin");
+    router.refresh();
+  };
+
+  const handleLogout = async () => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AuthApis.signOutUser().then(onLogoutSuccess, onError);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

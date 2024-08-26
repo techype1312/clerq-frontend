@@ -45,7 +45,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
       setValues(rowData.values);
     }
   }, [rowData]);
-console.log(rowData.values)
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

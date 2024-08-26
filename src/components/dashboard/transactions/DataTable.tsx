@@ -30,12 +30,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { labelValue } from "@/types/general";
+import { ErrorProps, labelValue } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
-import BankingApis from "@/actions/apis/BankingApis";
 import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
 import DocumentSkeleton from "@/components/skeletonLoading/dashboard/DocumentSkeleton";
 import TeamSkeleton from "@/components/skeletonLoading/dashboard/TeamSkeleton";
+import BankingApis from "@/actions/data/banking.data";
+import { isObject } from "lodash";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -47,6 +48,7 @@ const csvConfig = mkConfig({
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
   showDownloadButton?: boolean;
   showUploadButton?: boolean;
   showHeader?: boolean;
@@ -58,13 +60,40 @@ interface DataTableProps<TData, TValue> {
   accounts?: any;
   currentUcrm?: any;
   showDownload?: boolean;
-  loading?: boolean;
   type?: string;
 }
+
+const filterCategories = [
+  {
+    label: "Date",
+    value: "date",
+  },
+  // {
+  //   label: "Otto Category",
+  //   value: "ottocategory",
+  // },
+  {
+    label: "Category",
+    value: "category",
+  },
+  {
+    label: "Sub Categories",
+    value: "sub_categories",
+  },
+  // {
+  //   label: "GL Code",
+  //   value: "glCode",
+  // },
+  {
+    label: "Amount Range",
+    value: "amount",
+  },
+];
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  loading,
   onUpload,
   showFilter = false,
   showDownloadButton = true,
@@ -76,7 +105,6 @@ export function DataTable<TData, TValue>({
   accounts,
   currentUcrm,
   showDownload = true,
-  loading,
   type,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -85,8 +113,16 @@ export function DataTable<TData, TValue>({
     pageSize: 10,
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  // const [filterValue, setFilterValue] = useState<string[]>([]);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const [openedFilter, setOpenedFilter] = useState<string>("category");
+  const [dateFilter, setDateFilter] = useState<any>();
+  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const [pagesVisited, setPagesVisited] = useState<number[]>([]);
+  const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
+  const [amountFilter, setAmountFilter] = useState<any>();
+  const [oldSorting, setOldSorting] = useState<SortingState>([]);
+  const [serverError, setServerError] = useState("");
+
   const exportExcel = (rows: any) => {
     // const rowData = rows.map((row: any) => row.original);
     const rowData = rows.map((row: any) => {
@@ -123,161 +159,131 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    // getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    // onPaginationChange: setPagination,
     state: {
-      // pagination,
       sorting,
       columnFilters,
     },
   });
-  const [openedFilter, setOpenedFilter] = useState<string>("category");
-  const [filterCategories, setFilterCategories] = useState<labelValue[]>([
-    {
-      label: "Date",
-      value: "date",
-    },
-    // {
-    //   label: "Otto Category",
-    //   value: "ottocategory",
-    // },
-    {
-      label: "Category",
-      value: "category",
-    },
-    {
-      label: "Sub Categories",
-      value: "sub_categories",
-    },
-    // {
-    //   label: "GL Code",
-    //   value: "glCode",
-    // },
-    {
-      label: "Amount Range",
-      value: "amount",
-    },
-  ]);
 
-  const [dateFilter, setDateFilter] = useState<any>();
-  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
-  const [pagesVisited, setPagesVisited] = useState<number[]>([]);
-  const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
-  const [amountFilter, setAmountFilter] = useState<any>();
-  const fetchTransactions = async () => {
-    setLoading(true);
-    if (accounts.length === 0) return;
-    let response;
-    if (!pagesVisited.includes(pagination.pageIndex) || filtersChanged) {
-      response = await BankingApis.getBankTransactions(
-        currentUcrm?.company?.id,
-        {
-          page: pagination.pageIndex,
-          limit: pagination.pageSize,
-          sort: sorting.map((sort) => {
-            return {
-              order: sort.desc ? "DESC" : "ASC",
-              orderBy: sort.id,
-            };
-          }),
-          filters:
-            columnFilters &&
-            columnFilters.map((filter) => {
-              return {
-                id: filter.id,
-                value: filter.value,
-              };
-            }),
-          dateFilter: dateFilter && dateFilter.value,
-          amountFilter: amountFilter && amountFilter,
-        }
-      );
-    } else {
-      response = true;
-    }
-    if (response) {
-      if (filtersChanged || !pagesVisited.includes(pagination.pageIndex)) {
-        setTransactions(
-          response.data?.data.map((transaction: any, index: number) => {
-            return {
-              ...transaction,
-              date: transaction.createdAt,
-              merchant: {
-                merchant_name: transaction.merchant_name,
-                merchant_logo: transaction.merchant_logo_url,
-              },
-              // glCode: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
-              // ottoCategory: index === 0 ? "Cleaning" : "Advertising",
-              account: accounts?.filter(
-                (account: any) => account.id === transaction.account.id
-              )[0],
-            };
-          })
-        );
-      } else {
-        setTransactions(historyTransactions[pagination.pageIndex - 1]);
-      }
-      if (filtersChanged) {
-        setHistoryTransactions([
-          response.data?.data.map((transaction: any, index: number) => {
-            return {
-              ...transaction,
-              date: transaction.createdAt,
-              merchant: {
-                merchant_name: transaction.merchant_name,
-                merchant_logo: transaction.merchant_logo_url,
-              },
-              account: accounts?.filter(
-                (account: any) => account.id === transaction.account.id
-              )[0],
-            };
-          }),
-        ]);
-      } else if (!pagesVisited.includes(pagination.pageIndex)) {
-        setHistoryTransactions([
-          ...historyTransactions,
-          response.data?.data.map((transaction: any, index: number) => {
-            return {
-              ...transaction,
-              date: transaction.createdAt,
-              merchant: {
-                merchant_name: transaction.merchant_name,
-                merchant_logo: transaction.merchant_logo_url,
-              },
-              account: accounts?.filter(
-                (account: any) => account.id === transaction.account.id
-              )[0],
-            };
-          }),
-        ]);
-        setPagesVisited([...pagesVisited, pagination.pageIndex]);
-      }
-      //Once we have total length of data, we can calculate if there are more pages
-      setHasNextPage(
-        response?.data?.hasNextPage ??
-          pagesVisited.includes(pagination.pageIndex + 1)
-      );
-      setLoading(false);
-    }
-    setFiltersChanged(false);
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
   };
 
-  const [oldSorting, setOldSorting] = useState<SortingState>([]);
+  const onFetchTransactionsSuccess = (res: any) => {
+    if (filtersChanged || !pagesVisited.includes(pagination.pageIndex)) {
+      setTransactions(
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            // glCode: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
+            // ottoCategory: index === 0 ? "Cleaning" : "Advertising",
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        })
+      );
+    } else {
+      setTransactions(historyTransactions[pagination.pageIndex - 1]);
+    }
+    if (filtersChanged) {
+      setHistoryTransactions([
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        }),
+      ]);
+    } else if (!pagesVisited.includes(pagination.pageIndex)) {
+      setHistoryTransactions([
+        ...historyTransactions,
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        }),
+      ]);
+      setPagesVisited([...pagesVisited, pagination.pageIndex]);
+    }
+    //Once we have total length of data, we can calculate if there are more pages
+    setHasNextPage(
+      res.hasNextPage ?? pagesVisited.includes(pagination.pageIndex + 1)
+    );
+    setFiltersChanged(false);
+    setLoading(false);
+  };
+
+  const handleFetchTransactions = () => {
+    if (!accounts.length) return false;
+    if (!pagesVisited.includes(pagination.pageIndex) || filtersChanged) {
+      setLoading(true);
+      return BankingApis.getBankTransactions(currentUcrm?.company?.id, {
+        page: pagination.pageIndex,
+        limit: pagination.pageSize,
+        sort: sorting.map((sort) => {
+          return {
+            order: sort.desc ? "DESC" : "ASC",
+            orderBy: sort.id,
+          };
+        }),
+        filters:
+          columnFilters &&
+          columnFilters.map((filter) => {
+            return {
+              id: filter.id,
+              value: filter.value,
+            };
+          }),
+        dateFilter: dateFilter && dateFilter.value,
+        amountFilter: amountFilter && amountFilter,
+      }).then(onFetchTransactionsSuccess, onError);
+    }
+  };
 
   useEffect(() => {
-    if (currentUcrm?.company?.id) fetchTransactions();
+    if (!loading && currentUcrm?.company?.id) {
+      handleFetchTransactions();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex]);
 
   useEffect(() => {
-    if (data.length === 0 && currentUcrm?.company?.id) fetchTransactions();
+    if (data.length === 0 && currentUcrm?.company?.id) {
+      handleFetchTransactions();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (sorting !== oldSorting && currentUcrm?.company?.id && accounts) {
+    if (
+      sorting !== oldSorting &&
+      currentUcrm?.company?.id &&
+      accounts?.length
+    ) {
       setOldSorting(sorting);
       setFiltersChanged(true);
       setPagesVisited([]);
@@ -289,8 +295,14 @@ export function DataTable<TData, TValue>({
   }, [sorting, columnFilters]);
 
   useEffect(() => {
-    if (filtersChanged && currentUcrm?.company?.id && accounts) {
-      fetchTransactions();
+    if (
+      !loading &&
+      filtersChanged &&
+      currentUcrm?.company?.id &&
+      accounts?.length
+    ) {
+      console.log("filtersChanged >>>>>");
+      handleFetchTransactions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersChanged]);
@@ -299,6 +311,7 @@ export function DataTable<TData, TValue>({
     setFiltersChanged(true);
     setPagesVisited([]);
   }, [dateFilter]);
+
   useEffect(() => {
     setFiltersChanged(true);
     setPagesVisited([]);
@@ -307,8 +320,8 @@ export function DataTable<TData, TValue>({
   return (
     <>
       <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4 md:gap-0 w-full">
-        <div className="flex flex-wrap md:flex-nowrap gap-2 w-full">
-          <div className="flex items-center justify-between gap-2 w-fit">
+        <div className="flex flex-row max-md:flex-nowrap gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 max-md:w-full">
             <Popover>
               {showFilter && (
                 <PopoverTrigger asChild>
@@ -459,7 +472,7 @@ export function DataTable<TData, TValue>({
               )}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 max-md:hidden">
+          <div className="flex flex-row gap-2 max-md:hidden">
             {columnFilters.map((filter: any, index: number) => {
               return (
                 <div
@@ -649,15 +662,9 @@ export function DataTable<TData, TValue>({
         )}
         {loading ? (
           <>
-            {type === "document" && (
-              <DocumentSkeleton />
-            ) } 
-            {type === "transaction" &&(
-              <TransactionSkeleton />
-            )}
-            {type === "team" &&(
-              <TeamSkeleton />
-            )}
+            {type === "document" && <DocumentSkeleton />}
+            {type === "transaction" && <TransactionSkeleton />}
+            {type === "team" && <TeamSkeleton />}
           </>
         ) : (
           <TableBody>

@@ -2,13 +2,20 @@
 
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
 import { useUserContext } from "@/context/User";
-import InviteTeamApis from "@/actions/apis/InviteApi";
 import Image from "next/image";
+import {
+  setAuthOnboardingStatus,
+  setAuthRefreshToken,
+  setAuthToken,
+} from "@/utils/session-manager.util";
+import { ErrorProps } from "@/types/general";
+import { isObject } from "lodash";
+import InviteTeamApis from "@/actions/data/invite.data";
+import localStorage from "@/utils/storage/local-storage.util";
 
 const ConfirmInvitationPage = () => {
   const router = useRouter();
@@ -21,6 +28,37 @@ const ConfirmInvitationPage = () => {
   const userLasName = searchParams.get("lastName");
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onAcceptInviteSuccess = (res: any) => {
+    toast.success("Invite accepted successfully!");
+    setAuthToken(res.token, res.tokenExpires);
+    setAuthRefreshToken(res.refreshToken);
+    setAuthOnboardingStatus(res.user?.onboarding_completed);
+    localStorage.set("user", res.user);
+    updateUserLocalData(res.user);
+    router.push("/dashboard");
+    setLoading(false);
+  };
+
+  const handleAcceptInvitation = () => {
+    if (loading || !hash) return false;
+    setLoading(true);
+    setServerError("");
+    const data = {
+      hash: hash as string,
+    };
+    return InviteTeamApis.acceptInvite(data).then(
+      onAcceptInviteSuccess,
+      onError
+    );
+  };
 
   useEffect(() => {
     if (hasRunRef.current) return;
@@ -34,29 +72,12 @@ const ConfirmInvitationPage = () => {
     }
     if (hash) {
       hasRunRef.current = true;
-      const confirmInvitation = async () => {
-        const res = await InviteTeamApis.acceptInvite({ hash });
-        if (res.data && res.data.token && res.data.refreshToken) {
-          toast.success("Invitation confirmed successfully!");
-          Cookies.set("refreshToken", res.data.refreshToken, {
-            expires: res.data.tokenExpiry,
-          });
-          Cookies.set("token", res.data.token);
-          Cookies.set(
-            "onboarding_completed",
-            res?.data?.user?.onboarding_completed ? "true" : "false"
-          );
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-          updateUserLocalData(res.data.user);
-          router.push("/dashboard");
-        }
-      };
-      confirmInvitation();
+      handleAcceptInvitation();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, hash, error, error_description]);
 
-  if (!hash || error) {
+  if (!hash || error || serverError) {
     return (
       <div className="flex flex-col gap-4 items-center justify-center h-screen">
         <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
@@ -74,7 +95,7 @@ const ConfirmInvitationPage = () => {
       <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <Loader2Icon className="animate-spin" size={"48px"} />
       <div className="flex flex-col gap-2">
-        {`${userFirstName} ${userLasName} (${userEmail})`}
+        {userFirstName ? `${userFirstName} ${userLasName} (${userEmail})` : ""}
         <h2 className="text-center text-xl font-medium">
           Confirming Invitation <br />
         </h2>

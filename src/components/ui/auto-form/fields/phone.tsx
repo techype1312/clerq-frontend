@@ -65,11 +65,6 @@ export default function AutoFormPhone({
             onChange={(val, data: CountryData) => {
                 form.setValue("country_code", data.dialCode);
                 form.setValue("phone", val.slice(data.dialCode.length));
-                // fieldPropsWithoutShowLabel.onChange({
-                //   country_code: data.dialCode,
-                //   phone: val.slice(data.dialCode.length),
-                // })
-              console.log(form.getValues("country_code"), form.getValues("phone"));
             }}
             value={`${form.getValues("country_code")} ${form.getValues("phone")}`}
             countryCodeEditable={false}

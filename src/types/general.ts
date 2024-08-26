@@ -1,3 +1,4 @@
+import { HttpStatusCode } from "axios";
 import { z } from "zod";
 
 export type dateRangeType = {
@@ -73,7 +74,8 @@ export type monthlyGraphDataType = {
 };
 
 export interface ErrorProps {
-  message: string;
+  status: HttpStatusCode;
+  errors: Record<string, string>;
 }
 
 export type RowData = {
@@ -96,4 +98,10 @@ export interface IStatus {
 export interface IRole {
   id: number;
   name: string;
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  tokenExpires: number;
 }

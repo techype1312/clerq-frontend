@@ -19,7 +19,7 @@ import AutoForm from "@/components/ui/auto-form";
 import { inviteUserSchema } from "@/types/schema-embedded";
 import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
-import InviteTeamApis from "@/actions/apis/InviteApi";
+import InviteTeamApis from "@/actions/data/invite.data";
 
 const InviteNewMemberDialog = ({
   onAddSuccess,
@@ -27,29 +27,28 @@ const InviteNewMemberDialog = ({
   onAddSuccess: (data: Record<string, any>) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onSuccess = (res: any) => {
     setLoading(false);
-    if (res.status === 201) {
-      onAddSuccess(res.data);
-      setOpen(false);
-      toast.success(`Invite Sent`, {
-        position: "bottom-center",
-        hideProgressBar: true,
-      });
-    }
+    onAddSuccess(res);
+    setOpen(false);
+    toast.success(`Invite Sent`, {
+      position: "bottom-center",
+      hideProgressBar: true,
+    });
   };
 
   const sendNewInvite = (values: Record<string, any>) => {
     if (loading) return false;
     setLoading(true);
+    setServerError("");
     const selectedRoleId = find(allowedRoles, { name: values.role })?.id;
     return InviteTeamApis.createInvite({
       email: values.email,

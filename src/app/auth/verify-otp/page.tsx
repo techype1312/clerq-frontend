@@ -1,72 +1,72 @@
 "use client";
-import AuthApis from "@/actions/apis/AuthApis";
+
 import OtpPage from "@/components/generalComponents/OTP";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
 import { useUserContext } from "@/context/User";
 import Image from "next/image";
+import { ErrorProps } from "@/types/general";
+import { isObject } from "lodash";
+import { setAuthOnboardingStatus, setAuthRefreshToken, setAuthToken } from "@/utils/session-manager.util";
+import AuthApis from "@/actions/data/auth.data";
+import localStorage from "@/utils/storage/local-storage.util";
+
 const VerifyOtpPage = () => {
   const router = useRouter();
   const { updateUserLocalData } = useUserContext();
-  const [otp, setOtp] = React.useState("");
-  const [otpError, setOtpError] = React.useState("");
+  const [otp, setOtp] = useState("");
   const searchParams = useSearchParams();
   const phone = searchParams.get("phone");
   const country_code = searchParams.get("country_code");
-  const [disableButton, setDisableButton] = React.useState(false);
-  const verifyOtp = async () => {
-    setDisableButton(true);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const handleVerifyOtpSuccess = (res: any) => {
+    toast.success("Logged in successfully!");
+    setAuthToken(res.token, res.tokenExpires);
+    setAuthRefreshToken(res.refreshToken);
+    setAuthOnboardingStatus(res.user?.onboarding_completed);
+    localStorage.set("user", res.user);
+    updateUserLocalData(res.user);
+    router.push("/dashboard");
+    setLoading(false);
+  };
+
+  const handleVerifyOtp = () => {
+    setLoading(true);
     if (otp.length !== 6) {
-      setDisableButton(false);
+      setLoading(false);
       toast.error("Invalid OTP");
       return;
     }
-    try {
-      const res = await AuthApis.verifyOtp({
-        phone,
-        otp,
-        country_code: parseInt(country_code ?? "91"), //make 1 for us,
-      });
-      if (res.status === 200) {
-        if (res.data && res.data.token && res.data.refreshToken) {
-          Cookies.set("refreshToken", res.data.refreshToken, {
-            expires: res.data.tokenExpiry,
-          });
-          Cookies.set("token", res.data.token);
-          Cookies.set(
-            "onboarding_completed",
-            res?.data?.user?.onboarding_completed ? "true" : "false"
-          );
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-          updateUserLocalData(res.data.user);
-          router.push("/dashboard");
-        }
-        router.push("/dashboard");
-      }
-      setDisableButton(false);
-    } catch (e) {
-      setOtpError("Invalid OTP");
-      setDisableButton(false);
-    }
+    setServerError("");
+    setLoading(true);
+    return AuthApis.verifyOtp({
+      phone,
+      otp,
+      country_code: parseInt(country_code ?? "91"),
+    }).then(handleVerifyOtpSuccess, onError);
   };
-  const resendOtp = async () => {
-    setDisableButton(true);
-    try {
-      const res = await AuthApis.loginWithOtp({
-        phone,
-        country_code: parseInt(country_code ?? "91"), //make 1 for us,
-      });
-      if (res.status === 200) {
-        toast.success("Resent the OTP successfully");
-        setDisableButton(false);
-      }
-    } catch (e) {
-      toast.error("Error sending OTP");
-      setDisableButton(false);
-    }
+
+  const handleResendOtpSuccess = (res: any) => {
+    toast.success("OTP sent successfully!");
+    setLoading(false);
+  };
+
+  const handleResendOtp = () => {
+    setServerError("");
+    setLoading(true);
+    return AuthApis.loginUserWithOtp({
+      phone,
+      country_code: parseInt(country_code ?? "91"),
+    }).then(handleResendOtpSuccess, onError);
   };
 
   return (
@@ -78,10 +78,10 @@ const VerifyOtpPage = () => {
         country_code={country_code ?? ""}
         otp={otp}
         setOtp={setOtp}
-        error={otpError}
-        verifyOtp={verifyOtp}
-        disableButton={disableButton}
-        resendOtp={resendOtp}
+        error={serverError}
+        verifyOtp={handleVerifyOtp}
+        disableButton={loading}
+        resendOtp={handleResendOtp}
       />
     </div>
   );

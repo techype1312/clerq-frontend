@@ -5,7 +5,6 @@ import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
 import { format } from "date-fns";
 import { ErrorProps } from "@/types/general";
-import DocumentApis from "@/actions/apis/DocumentApis";
 import { formatStringWithCount } from "@/utils/utils";
 import { shareDocumentsSchema } from "@/types/schema-embedded";
 import { useToast } from "@/components/ui/use-toast";
@@ -23,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import AutoForm from "@/components/ui/auto-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DocumentApis from "@/actions/data/document.data";
 
 const ShareDocumentsDialog = ({
   selectedDocuments = [],
@@ -32,26 +32,22 @@ const ShareDocumentsDialog = ({
   trigger?: "button" | "icon";
 }) => {
   const { toast } = useToast();
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onSuccess = (res: any) => {
-    if (res.status === 204) {
-      console.log("Email sent!");
-      setOpen(false);
-
-      toast({
-        duration: 4000,
-        title: "Document email sent",
-        description: `${selectedDocuments.length} shared documents`,
-      });
-    }
+    setOpen(false);
+    toast({
+      duration: 4000,
+      title: "Document email sent",
+      description: `${selectedDocuments.length} shared documents`,
+    });
     setLoading(false);
   };
 

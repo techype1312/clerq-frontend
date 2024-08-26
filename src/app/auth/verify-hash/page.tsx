@@ -2,11 +2,20 @@
 
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthApis from "@/actions/apis/AuthApis";
-import Cookies from "js-cookie";
 import { useUserContext } from "@/context/User";
+import { ErrorProps } from "@/types/general";
+import { isObject } from "lodash";
+import { toast } from "react-toastify";
+import {
+  setAuthOnboardingStatus,
+  setAuthRefreshToken,
+  setAuthToken,
+} from "@/utils/session-manager.util";
+import localStorage from "@/utils/storage/local-storage.util";
+import AuthApis from "@/actions/data/auth.data";
+import Image from "next/image";
 
 const VerifyHashPage = () => {
   const router = useRouter();
@@ -16,6 +25,33 @@ const VerifyHashPage = () => {
   const hash = searchParams.get("hash");
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const handleVerifyMagicLinkSuccess = (res: any) => {
+    toast.success("Logged in successfully!");
+    setAuthToken(res.token, res.tokenExpires);
+    setAuthRefreshToken(res.refreshToken);
+    setAuthOnboardingStatus(res.user?.onboarding_completed);
+    localStorage.set("user", res.user);
+    updateUserLocalData(res.user);
+    router.push("/dashboard");
+    setLoading(false);
+  };
+
+  const handleVerifyMagicLink = (hash: string) => {
+    setServerError("");
+    setLoading(true);
+    return AuthApis.verifyMagicLinkHash(hash).then(
+      handleVerifyMagicLinkSuccess,
+      onError
+    );
+  };
 
   useEffect(() => {
     if (hasRunRef.current) return;
@@ -29,32 +65,27 @@ const VerifyHashPage = () => {
     }
     if (hash) {
       hasRunRef.current = true;
-      const verifyMagicLinkHash = async () => {
-        const res = await AuthApis.verifyMagicLinkHash(hash);
-        if (res.status === 200) {
-          if (res.data && res.data.token && res.data.refreshToken) {
-            Cookies.set("refreshToken", res.data.refreshToken, {
-              expires: res.data.tokenExpiry,
-            });
-            Cookies.set("token", res.data.token);
-            Cookies.set(
-              "onboarding_completed",
-              res?.data?.user?.onboarding_completed ? "true" : "false"
-            );
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-            updateUserLocalData(res.data.user);
-            router.push("/dashboard");
-          }
-        }
-      };
-      verifyMagicLinkHash();
+      handleVerifyMagicLink(hash);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  if (!hash || serverError) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Failed to login! <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
-      <Loader2Icon className="animate-spin" size={"48px"} />
+      {loading && <Loader2Icon className="animate-spin" size={"48px"} />}
       <p>Logging in with magic link</p>
     </div>
   );

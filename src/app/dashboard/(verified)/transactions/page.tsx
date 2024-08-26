@@ -1,5 +1,6 @@
 "use client";
-import BankingApis from "@/actions/apis/BankingApis";
+
+import BankingApis from "@/actions/data/banking.data";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
@@ -271,19 +272,19 @@ const Page = () => {
   const { windowWidth } = useMainContext();
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(true);
   const [accountsLoading, setAccountsLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setAccountsLoading(false);
   };
 
   const onFetchAccountsSuccess = (res: any) => {
-    if (res.data && res.data?.length) {
-      setAccounts(res.data);
+    if (res && res?.length) {
+      setAccounts(res);
     }
     setAccountsLoading(false);
   };

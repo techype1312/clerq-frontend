@@ -3,70 +3,100 @@ import React, { useEffect, useState } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Image from "next/image";
 import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
-import BankingApis from "@/actions/apis/BankingApis";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import AuthApis from "@/actions/apis/AuthApis";
+import { ErrorProps } from "@/types/general";
+import { isObject } from "lodash";
+import BankingApis from "@/actions/data/banking.data";
+import { useUserContext } from "@/context/User";
+import CompanyApis from "@/actions/data/company.data";
 
 const Step4 = ({
-  changeStep,
   userData,
-  step,
 }: {
   changeStep: (step: number) => void;
   userData: any;
   step: number;
 }) => {
+  const { updateUserData } = useUserContext();
   const router = useRouter();
   const [linkToken, setLinkToken] = useState<string>("");
   const [companyId, setCompanyId] = useState<string>("");
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
   const config: PlaidLinkOptions = {
     onSuccess: (public_token, metadata) => {
-      BankingApis.exchangePublicToken(
-        JSON.stringify({
-          publicToken: public_token,
-          company: {
-            id: companyId,
+      BankingApis.exchangePublicToken({
+        publicToken: public_token,
+        company: {
+          id: companyId,
+        },
+      }).then((res) => {
+        return updateUserData(
+          {
+            onboarding_completed: true,
           },
-        })
-      ).then((res) => {
-        Cookies.set("onboarding_completed", "true");
-        // This will update the user as verified
-        AuthApis.updateUser({
-          onboarding_completed: true,
-        });
-        router.push("/dashboard");
+          true
+        );
       });
     },
     onExit: (err, metadata) => {
-      // changeStep(step );
       toast.info("Banking connection failed");
     },
     onEvent: (eventName, metadata) => {},
     token: linkToken,
   };
+
   const { open, exit, ready } = usePlaidLink(config);
 
-  useEffect(() => {
-    if (userData?.id && !companyId) {
-      const fetchCompanyData = async () => {
-        const res = await CompanyApis.getAllCompanies();
-        setCompanyId(res.data?.data[0]?.id);
-      };
-
-      fetchCompanyData();
+  const onFetchLinkTokenSuccess = (res: any) => {
+    if (res) {
+      setLinkToken(res.link_token);
     }
+    setLoading(false);
+  };
+
+  const generateLinkToken = () => {
+    if (!companyId || linkToken) return false;
+    setLoading(true);
+    setServerError("");
+    return BankingApis.generateLinkToken({ companyId }).then(
+      onFetchLinkTokenSuccess,
+      onError
+    );
+  }
+
+  const onFetchCompaniesSuccess = (res: any) => {
+    if (res) {
+      setCompanyId(res.data[0]?.id);
+    }
+    setLoading(false);
+  };
+
+  const fetchMyCompanies = () => {
+    if (!userData?.id || companyId) return false;
+    setLoading(true);
+    setServerError("");
+    return CompanyApis.getAllCompanies().then(
+      onFetchCompaniesSuccess,
+      onError
+    );
+  }
+
+  useEffect(() => {
+    fetchMyCompanies()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData?.id, companyId]);
 
   useEffect(() => {
-    if (companyId && !linkToken) {
-      const body = { companyId };
-      BankingApis.generateLinkToken(JSON.stringify(body)).then((res) => {
-        setLinkToken(res.data.link_token);
-      });
-    }
+    generateLinkToken()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId, linkToken]);
 
   return (

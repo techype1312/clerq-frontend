@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  authOnboardingBucket,
+  authorizationTokenBucket,
+} from "./utils/session-manager.util";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("token")?.value;
-  const isUserOnboard =
-    request.cookies.get("onboarding_completed")?.value ?? "false";
+
+  const token = request.cookies.get(authorizationTokenBucket)?.value;
+  const isUserOnboarded =
+    request.cookies.get(authOnboardingBucket)?.value ?? "false";
+
   if (
     token &&
-    isUserOnboard === "false" &&
+    isUserOnboarded === "false" &&
     pathname !== "/dashboard/verify-user"
   ) {
     return NextResponse.redirect(
@@ -15,7 +21,7 @@ export async function middleware(request: NextRequest) {
     );
   } else if (
     token &&
-    isUserOnboard === "true" &&
+    isUserOnboarded === "true" &&
     pathname === "/dashboard/verify-user"
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
