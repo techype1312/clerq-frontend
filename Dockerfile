@@ -24,7 +24,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # This will do the trick, use the corresponding env file for each environment.
-# COPY .env.production.sample .env.production
+COPY .env.example .env
 RUN npm run build
 
 # Next.js collects completely anonymous telemetry data about general usage.
