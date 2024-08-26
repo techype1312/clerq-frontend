@@ -3,7 +3,6 @@
 import BankingApis from "@/actions/data/banking.data";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
@@ -13,7 +12,7 @@ import { cn } from "@/utils/utils";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";

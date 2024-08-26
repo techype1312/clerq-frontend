@@ -1,14 +1,13 @@
 "use client";
 
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useUserContext } from "@/context/User";
 import Image from "next/image";
+import isObject from "lodash/isObject";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
 import AuthApis from "@/actions/data/auth.data";
 import {
   setAuthOnboardingStatus,
@@ -16,6 +15,7 @@ import {
   setAuthToken,
 } from "@/utils/session-manager.util";
 import localStorage from "@/utils/storage/local-storage.util";
+import { useUserContext } from "@/context/User";
 
 const ConfirmEmailPage = () => {
   const router = useRouter();

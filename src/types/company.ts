@@ -24,7 +24,6 @@ export interface ICompany {
 export interface ICompanyContext {
   loading: boolean;
   error: string;
-  companyDataLoaded: boolean;
   companyData?: ICompany;
   setCompanyData: Dispatch<SetStateAction<ICompany | undefined>>;
   updateCompanyLogo: (logo: IImageFileType) => Promise<false | void>;

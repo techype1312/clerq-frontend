@@ -1,19 +1,23 @@
 "use client";
 
-import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
-import { DependencyType } from "@/components/ui/auto-form/types";
-import { useUserContext } from "@/context/User";
-import { signUpSchema } from "@/types/schema-embedded";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import React, { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Loader2Icon } from "lucide-react";
-import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import InviteTeamApis from "@/actions/data/invite.data";
-import { setAuthOnboardingStatus, setAuthRefreshToken, setAuthToken } from "@/utils/session-manager.util";
+import {
+  setAuthOnboardingStatus,
+  setAuthRefreshToken,
+  setAuthToken,
+} from "@/utils/session-manager.util";
 import localStorage from "@/utils/storage/local-storage.util";
+import { ErrorProps } from "@/types/general";
+import { signUpSchema } from "@/types/schema-embedded";
+import { useUserContext } from "@/context/User";
+import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
+import { DependencyType } from "@/components/ui/auto-form/types";
 
 const AcceptInvitationPage = () => {
   const router = useRouter();

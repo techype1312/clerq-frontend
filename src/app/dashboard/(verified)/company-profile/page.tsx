@@ -8,7 +8,7 @@ import ProfileRowContainer from "@/components/dashboard/profile";
 import ProfilePhotoEditModel from "@/components/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
 

@@ -7,7 +7,7 @@ import { DependencyType } from "../ui/auto-form/types";
 import { useUserContext } from "@/context/User";
 import { toast } from "react-toastify";
 import AuthApis from "@/actions/data/auth.data";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { ErrorProps } from "@/types/general";
 import CompanyApis from "@/actions/data/company.data";
 

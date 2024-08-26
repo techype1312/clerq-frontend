@@ -5,7 +5,7 @@ import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { DependencyType } from "@/components/ui/auto-form/types";
 import { ErrorProps } from "@/types/general";
 import { signUpSchema } from "@/types/schema-embedded";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";

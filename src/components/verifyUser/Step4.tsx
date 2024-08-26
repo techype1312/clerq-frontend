@@ -6,7 +6,7 @@ import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import BankingApis from "@/actions/data/banking.data";
 import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/data/company.data";

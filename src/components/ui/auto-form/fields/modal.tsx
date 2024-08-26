@@ -28,7 +28,7 @@ import { Servers } from "../../../../../config";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 
 type AutoFormModalComponentProps = {

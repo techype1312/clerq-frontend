@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 import AuthApis from "@/actions/data/auth.data";
 import { useRouter } from "next/navigation";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 
 const Header = () => {
   const { userData } = useUserContext();

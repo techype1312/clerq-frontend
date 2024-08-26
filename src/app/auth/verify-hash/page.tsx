@@ -6,7 +6,7 @@ import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { toast } from "react-toastify";
 import {
   setAuthOnboardingStatus,

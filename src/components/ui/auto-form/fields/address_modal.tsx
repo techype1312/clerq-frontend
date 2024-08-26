@@ -18,7 +18,7 @@ import { Servers } from "../../../../../config";
 import { Button } from "../../button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 
 type AutoFormModalComponentProps = {

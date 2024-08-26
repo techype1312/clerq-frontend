@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { DependencyType } from "@/components/ui/auto-form/types";
 import Image from "next/image";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import AuthApis from "@/actions/data/auth.data";
 
 const SigninPage = () => {

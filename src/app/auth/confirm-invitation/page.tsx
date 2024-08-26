@@ -13,7 +13,7 @@ import {
   setAuthToken,
 } from "@/utils/session-manager.util";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import InviteTeamApis from "@/actions/data/invite.data";
 import localStorage from "@/utils/storage/local-storage.util";
 

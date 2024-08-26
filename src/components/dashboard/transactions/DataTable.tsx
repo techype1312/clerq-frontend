@@ -30,13 +30,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ErrorProps, labelValue } from "@/types/general";
+import { ErrorProps } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
 import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
 import DocumentSkeleton from "@/components/skeletonLoading/dashboard/DocumentSkeleton";
 import TeamSkeleton from "@/components/skeletonLoading/dashboard/TeamSkeleton";
 import BankingApis from "@/actions/data/banking.data";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",

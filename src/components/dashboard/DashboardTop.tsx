@@ -18,7 +18,7 @@ import { Button } from "../ui/button";
 import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
 import { cn } from "@/utils/utils";
 import AuthApis from "@/actions/data/auth.data";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { ErrorProps } from "@/types/general";
 import localStorage from "@/utils/storage/local-storage.util";
 import {

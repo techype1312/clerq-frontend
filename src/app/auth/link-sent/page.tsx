@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useUserContext } from "@/context/User";
 import AuthApis from "@/actions/data/auth.data";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 
 const LinkSentPage = () => {
   const router = useRouter()

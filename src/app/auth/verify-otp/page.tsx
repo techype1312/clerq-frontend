@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useUserContext } from "@/context/User";
 import Image from "next/image";
 import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { setAuthOnboardingStatus, setAuthRefreshToken, setAuthToken } from "@/utils/session-manager.util";
 import AuthApis from "@/actions/data/auth.data";
 import localStorage from "@/utils/storage/local-storage.util";
