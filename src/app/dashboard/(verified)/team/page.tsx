@@ -102,13 +102,15 @@ const Page = () => {
   const { userData } = useUserContext();
   const { currentUcrm } = useCompanySessionContext();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState<Record<string, any>[]>([]);
   const [teamInvites, setTeamInvites] = useState<Record<string, any>[]>([]);
+  const [dataFetched, setDataFetched] = useState(false);
   const [rowData, setRowData] = useState<Record<string, any>[]>([]);
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
+    setDataFetched(true);
     setLoading(false);
   };
 
@@ -117,6 +119,7 @@ const Page = () => {
     if (index !== -1) {
       teamMembers[index].status = status;
     }
+    setDataFetched(true);
     setTeamMembers(teamMembers);
     handleRowData();
   };
@@ -138,17 +141,18 @@ const Page = () => {
     if (res.data && res.data?.data?.length) {
       setTeamMembers(res.data.data);
     }
+    setDataFetched(true);
     setLoading(false);
   };
 
   const fetchTeamMembers = useCallback(() => {
-    if (loading) return false;
+    // if (loading) return false;
     setLoading(true);
     return TeamApis.getAllTeamMembers({}).then(
       onFetchTeamMembersSuccess,
       onError
     );
-  }, [loading]);
+  }, []);
 
   const onRemoveInvite = (inviteId: string) => {
     const updatedInvites = reject(teamInvites, { id: inviteId });
@@ -162,6 +166,7 @@ const Page = () => {
   const onFetchInvitesSuccess = (res: any) => {
     if (res.data && res.data?.data?.length) {
       setTeamInvites(res.data.data);
+      setDataFetched(true);
     }
   };
 
@@ -174,6 +179,8 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    if (!currentUcrm?.company?.id) return;
+    setDataFetched(false);
     fetchTeamMembers();
     fetchInvites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -232,19 +239,17 @@ const Page = () => {
           <InviteNewMemberDialog onAddSuccess={onAddInvite} />
         </div>
 
-        {loading && (
+        {/* {!dataFetched && (
           <div className="w-full flex items-center h-12 justify-center">
             <Loader2Icon className="animate-spin" />
           </div>
-        )}
+        )} */}
 
-        {!loading && !rowData.length && (
-          <div className="w-full flex items-center h-12 justify-center">
-            No data found
+        {dataFetched && !rowData.length && (
+          <div className="w-full flex items-center h-[40vh] justify-center">
+            Click on the button above to invite a new team member.
           </div>
         )}
-
-        {!loading && !!rowData.length && (
           <div className="mt-6 flex gap-1 flex-col items-start">
             <DataTable
               showPagination={false}
@@ -259,9 +264,10 @@ const Page = () => {
               })}
               data={rowData}
               showDownload={false}
+              type="team"
+              loading={loading}
             />
           </div>
-        )}
       </div>
     </div>
   );
