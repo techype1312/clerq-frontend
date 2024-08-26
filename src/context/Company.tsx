@@ -25,12 +25,14 @@ export const CompanyContextProvider = ({
 }) => {
   const { currentUcrm } = useCompanySessionContext();
   const [loading, setLoading] = useState(false);
+  const [companyDataLoaded, setCompanyDataLoaded] = useState(false);
   const [error, setError] = useState("");
   const [companyData, setCompanyData] = useState<ICompany>();
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.message : err);
     setLoading(false);
+    setCompanyDataLoaded(true);
   };
 
   const onFetchCompanyDetailsSuccess = (res: any) => {
@@ -38,11 +40,13 @@ export const CompanyContextProvider = ({
       setCompanyData(res.data);
     }
     setLoading(false);
+    setCompanyDataLoaded(true);
   };
 
   const fetchCompanyData = useCallback(async () => {
     if (loading || !currentUcrm?.company?.id) return false;
     setLoading(true);
+    setCompanyDataLoaded(true);
     return CompanyApis.getCompany(currentUcrm?.company?.id).then(
       onFetchCompanyDetailsSuccess,
       onError
@@ -105,6 +109,7 @@ export const CompanyContextProvider = ({
         updateCompanyLogo,
         removeCompanyLogo,
         updateCompanyDetails,
+        companyDataLoaded
       }}
     >
       {children}
