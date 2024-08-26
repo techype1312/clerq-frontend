@@ -3,26 +3,26 @@
 import React, { Fragment, useEffect, useState } from "react";
 import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
-import BankingApis from "@/actions/apis/BankingApis";
 import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 import Script from "next/script";
+import BankingApis from "@/actions/data/banking.data";
 
 const Page = () => {
   const { currentUcrm } = useCompanySessionContext();
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchAccountsSuccess = (res: any) => {
-    if (res.data && res.data.length) {
-      setBankAccounts(res.data);
+    if (res && res.length) {
+      setBankAccounts(res);
     }
     setLoading(false);
   };

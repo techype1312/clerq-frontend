@@ -6,16 +6,16 @@ import { Loader2Icon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import { ErrorProps } from "@/types/general";
-import TeamApis from "@/actions/apis/TeamApis";
 import { useUserContext } from "@/context/User";
 import { allRoles, statuses } from "@/utils/constants";
-import InviteTeamApis from "@/actions/apis/InviteApi";
 import InviteNewMemberDialog from "@/components/teams/InviteNewMember";
 import ColumnProfileItem from "@/components/teams/Columns/ProfileItem";
 import ColumnRoleItem from "@/components/teams/Columns/RoleItem";
 import TeamActionMenu from "@/components/teams/TeamActionMenu";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
+import InviteTeamApis from "@/actions/data/invite.data";
+import TeamApis from "@/actions/data/team-data";
 
 const getTableColumns = ({
   windowWidth,
@@ -101,16 +101,31 @@ const Page = () => {
   const { windowWidth } = useMainContext();
   const { userData } = useUserContext();
   const { currentUcrm } = useCompanySessionContext();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [teamMembers, setTeamMembers] = useState<Record<string, any>[]>([]);
   const [teamInvites, setTeamInvites] = useState<Record<string, any>[]>([]);
   const [rowData, setRowData] = useState<Record<string, any>[]>([]);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
+
+  const onFetchTeamMembersSuccess = (res: any) => {
+    setTeamMembers(res.data);
+    setLoading(false);
+  };
+
+  const fetchTeamMembers = useCallback(() => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return TeamApis.getAllTeamMembers({}).then(
+      onFetchTeamMembersSuccess,
+      onError
+    );
+  }, [loading]);
 
   const onStatusUpdate = (ucrmId: string, status: Record<string, any>) => {
     const index = findIndex(teamMembers, { id: ucrmId });
@@ -134,22 +149,6 @@ const Page = () => {
     handleRowData();
   };
 
-  const onFetchTeamMembersSuccess = (res: any) => {
-    if (res.data && res.data?.data?.length) {
-      setTeamMembers(res.data.data);
-    }
-    setLoading(false);
-  };
-
-  const fetchTeamMembers = useCallback(() => {
-    if (loading) return false;
-    setLoading(true);
-    return TeamApis.getAllTeamMembers({}).then(
-      onFetchTeamMembersSuccess,
-      onError
-    );
-  }, [loading]);
-
   const onRemoveInvite = (inviteId: string) => {
     const updatedInvites = reject(teamInvites, { id: inviteId });
     setTeamInvites(updatedInvites);
@@ -160,13 +159,11 @@ const Page = () => {
   };
 
   const onFetchInvitesSuccess = (res: any) => {
-    if (res.data && res.data?.data?.length) {
-      setTeamInvites(res.data.data);
-    }
+    setTeamInvites(res.data);
   };
 
   const fetchInvites = useCallback(() => {
-    setLoading(true);
+    setServerError("");
     return InviteTeamApis.getAllInvites({}).then(
       onFetchInvitesSuccess,
       onError

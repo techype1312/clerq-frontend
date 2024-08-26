@@ -1,13 +1,14 @@
 "use client";
+
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { Address, Step2Schema, step2Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { useUserContext } from "@/context/User";
-import { DependencyType } from "../ui/auto-form/types";
 import { toast } from "react-toastify";
+import CompanyApis from "@/actions/data/company.data";
+import { DependencyType } from "../ui/auto-form/types";
+import { Button } from "../ui/button";
 
 const Step2 = ({
   changeStep,
@@ -38,6 +39,7 @@ const Step2 = ({
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [addressDataLoaded, setAddressDataLoaded] = useState(false);
   const [createdAddress, setCreatedAddress] = useState(false);
+
   const handleSubmit = async (e: Step2Schema) => {
     if (!addressId || !mailingAddressId)
       return toast.error(
@@ -52,7 +54,7 @@ const Step2 = ({
       // const address = e.address;
       // if (companyData) await updateCompanyData(e);
       // else await insertCompanyData(e, address);
-      let res;
+      let res: any;
       if (companyData && companyId) {
         let companyUpdateData: any = e;
         companyUpdateData.country_code = 91;
@@ -67,33 +69,22 @@ const Step2 = ({
       }
       setCompanyData(res);
       setLoading(false);
-      if (res && res.data && res.status === 200) changeStep(step + 1);
+      if (res && res?.id) changeStep(step + 1);
     } catch (error: any) {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       CompanyApis.getAllCompanies().then((res) => {
-        setCompanyData(res.data.data[0]);
-        setLocalCompanyData(res.data.data[0]);
-        setCompanyId(res.data.data[0].id);
+        setCompanyData(res.data[0]);
+        setLocalCompanyData(res.data[0]);
+        setCompanyId(res.data[0].id);
       });
     };
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   if (addressId && mailingAddressId && companyId)
-  //     CompanyApis.updateCompany(companyId, {
-  //       legal_address: {
-  //         id: addressId,
-  //       },
-  //       mailing_address: {
-  //         id: mailingAddressId,
-  //       },
-  //     });
-  // }, [changedAddress]);
 
   useEffect(() => {
     if (addressId && companyId && createdAddress) {
@@ -108,6 +99,7 @@ const Step2 = ({
       updateAndFetchAddress();
     }
   }, [addressId, companyId, createdAddress]);
+
   useEffect(() => {
     if (mailingAddressId && companyId && createdAddress) {
       const updateAndFetchAddress = async () => {
@@ -136,7 +128,9 @@ const Step2 = ({
         setMailingAddress(companyData?.mailing_address);
       setAddressDataLoaded(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyData, addressDataLoaded]);
+
   return (
     <div className="w-full">
       <AutoForm
@@ -324,14 +318,14 @@ const Step2 = ({
         onValuesChange={(values) => {
           //For some reason some values are not being updated in the local state but in group they are
           setLocalCompanyData((prevData: any) => ({
-              ...prevData,
-              name: values?.name,
-              ein: values?.ein,
-              email: values?.email,
-              tax_classification: values?.tax_classification,
-              phone: values?.phone,
-              country_code: values?.country_code,
-            }));
+            ...prevData,
+            name: values?.name,
+            ein: values?.ein,
+            email: values?.email,
+            tax_classification: values?.tax_classification,
+            phone: values?.phone,
+            country_code: values?.country_code,
+          }));
           if (!addressDataLoaded || values.address_id) {
             if (values.address_id && values.address_id !== addressId) {
               setAddressId(values.address_id);

@@ -1,6 +1,6 @@
 NEXT_BASE_URL=http://localhost:3001
 PORT=3001
-NEXT_PUBLIC_API_SERVER_BASE_URL=https://stagingapi.joinotto.com/api/v1/
+NEXT_PUBLIC_API_SERVER_BASE_URL=https://stagingapi.joinotto.com/api
 NEXT_PUBLIC_GOOGLE_API_KEY=
 NEXT_PUBLIC_APP_ENV=development
 NEXT_PUBLIC_SENTRY_DSN=

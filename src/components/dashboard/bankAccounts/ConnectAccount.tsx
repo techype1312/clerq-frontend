@@ -5,32 +5,25 @@ import { PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
 import { Loader2Icon } from "lucide-react";
 import isObject from "lodash/isObject";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import BankingApis from "@/actions/apis/BankingApis";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Card } from "@/components/ui/card";
 import { ErrorProps } from "@/types/general";
+import BankingApis from "@/actions/data/banking.data";
 
 const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [linkToken, setLinkToken] = useState<string>("");
 
   const config: PlaidLinkOptions = {
     onSuccess: (public_token, metadata) => {
-      BankingApis.exchangePublicToken(
-        JSON.stringify({
-          publicToken: public_token,
-          company: {
-            id: companyId,
-          },
-        })
-      ).then((res) => {
-        Cookies.set("onboarding_completed", "true");
-        // This will update the user as verified
-        router.push("/dashboard");
+      BankingApis.exchangePublicToken({
+        publicToken: public_token,
+        company: {
+          id: companyId,
+        },
       });
     },
     onExit: (err, metadata) => {
@@ -44,13 +37,13 @@ const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const { open, ready } = usePlaidLink(config);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchLinkTokenSuccess = (res: any) => {
-    if (res.data) {
-      setLinkToken(res.data.link_token);
+    if (res) {
+      setLinkToken(res.link_token);
     }
     setLoading(false);
   };
@@ -58,8 +51,7 @@ const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const handleLinkTokenGeneration = () => {
     if (companyId && !linkToken) {
       setLoading(true);
-      const body = { companyId };
-      BankingApis.generateLinkToken(JSON.stringify(body)).then(
+      BankingApis.generateLinkToken({ companyId }).then(
         onFetchLinkTokenSuccess,
         onError
       );

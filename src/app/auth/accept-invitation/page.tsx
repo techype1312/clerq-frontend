@@ -8,11 +8,12 @@ import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
 import { Loader2Icon } from "lucide-react";
 import { ErrorProps } from "@/types/general";
 import { isObject } from "lodash";
-import InviteTeamApis from "@/actions/apis/InviteApi";
+import InviteTeamApis from "@/actions/data/invite.data";
+import { setAuthOnboardingStatus, setAuthRefreshToken, setAuthToken } from "@/utils/session-manager.util";
+import localStorage from "@/utils/storage/local-storage.util";
 
 const AcceptInvitationPage = () => {
   const router = useRouter();
@@ -20,40 +21,35 @@ const AcceptInvitationPage = () => {
   const searchParams = useSearchParams();
 
   const [inviteVerified, setInviteVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(searchParams.get("error"));
+  const error = searchParams.get("error");
   const hash = searchParams.get("hash");
   const userEmail = searchParams.get("email") || "";
   const userFirstName = searchParams.get("firstName") || "";
   const userLasName = searchParams.get("lastName") || "";
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchAcceptInviteSuccess = (res: any) => {
-    if (res.data && res.data.token && res.data.refreshToken) {
-      toast.success("Invitation accepted successfully!");
-      Cookies.set("refreshToken", res.data.refreshToken, {
-        expires: res.data.tokenExpiry,
-      });
-      Cookies.set("token", res.data.token);
-      Cookies.set(
-        "onboarding_completed",
-        res?.data?.user?.onboarding_completed ? "true" : "false"
-      );
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      updateUserLocalData(res.data.user);
-      router.push("/dashboard");
-    }
+    toast.success("Invite accepted successfully!");
+    setAuthToken(res.token, res.tokenExpires);
+    setAuthRefreshToken(res.refreshToken);
+    setAuthOnboardingStatus(res.user?.onboarding_completed);
+    localStorage.set("user", res.user);
+    updateUserLocalData(res.user);
+    router.push("/dashboard");
     setLoading(false);
   };
 
   const handleAcceptInvitation = (values: any) => {
     if (loading || !hash) return false;
+    setServerError("");
     setLoading(true);
     const data = {
       hash: hash as string,
@@ -70,10 +66,8 @@ const AcceptInvitationPage = () => {
     );
   };
 
-  const onFetchVerifyInviteSuccess = (res: any) => {
-    if (res && res.data) {
-      setInviteVerified(true);
-    }
+  const onVerifyInviteSuccess = (res: any) => {
+    setInviteVerified(true);
     setLoading(false);
   };
 
@@ -81,11 +75,12 @@ const AcceptInvitationPage = () => {
     if (loading || !hash || inviteVerified) return false;
     hasRunRef.current = true;
     setLoading(true);
+    setServerError("");
     const data = {
       hash: hash as string,
     };
     return InviteTeamApis.verifyInvite(data).then(
-      onFetchVerifyInviteSuccess,
+      onVerifyInviteSuccess,
       onError
     );
   };
@@ -117,7 +112,7 @@ const AcceptInvitationPage = () => {
     );
   }
 
-  if (!hash || (!inviteVerified && !loading)) {
+  if (!hash || (!inviteVerified && !loading) || serverError) {
     return (
       <div className="flex flex-col gap-4 items-center justify-center h-screen">
         <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />

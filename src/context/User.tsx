@@ -1,15 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import isEmpty from "lodash/isEmpty";
 import isObject from "lodash/isObject";
 import { usePathname, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import AuthApis from "@/actions/apis/AuthApis";
 import { ErrorProps } from "@/types/general";
 import { IImageFileType } from "@/types/file";
 import { IUser, IUserContext } from "@/types/user";
+import AuthApis from "@/actions/data/auth.data";
+import localStorage from "@/utils/storage/local-storage.util";
+import {
+  getAuthToken,
+  setAuthOnboardingStatus,
+} from "@/utils/session-manager.util";
 
 export const UserContext = createContext<IUserContext>({} as IUserContext);
 
@@ -21,47 +31,37 @@ export const UserContextProvider = ({
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [userData, setUserData] = useState<IUser>();
   const [refetchUserData, setRefetchUserData] = useState<boolean>(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchUserDetailsError = (err: string | ErrorProps) => {
-    if (localStorage.getItem("user")) {
-      setUserData(JSON.parse(localStorage.getItem("user") as string));
+    if (localStorage.get("user") && localStorage.get("user").val) {
+      setUserData(JSON.parse(localStorage.get("user").val));
     }
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchUserDetailsSuccess = (res: any) => {
-    if (res.data) {
-      setUserData(res.data);
-      localStorage.setItem("user", JSON.stringify(res.data));
-    }
+    setLoading(false);
+    setUserData(res);
+    localStorage.set("user", JSON.stringify(res));
     if (pathname.startsWith("/auth")) {
       router.push("/dashboard");
     }
-    if (res && res.status === 401) {
-      localStorage.removeItem("user");
-      Cookies.remove("token");
-      Cookies.remove("refresh_token");
-      Cookies.remove("onboarding_completed");
-      Cookies.remove("otto_ucrm");
-      router.push("/auth/login");
-    }
-    setLoading(false);
   };
 
   const refreshUser = useCallback(async () => {
-      const token = Cookies.get("token");
-      if (loading || !token) return false;
-      setLoading(true);
-      return AuthApis.profile().then(
+    const token = getAuthToken();
+    if (loading || !token) return false;
+    setLoading(true);
+    return AuthApis.getMyprofile().then(
       onFetchUserDetailsSuccess,
       onFetchUserDetailsError
     );
@@ -69,9 +69,9 @@ export const UserContextProvider = ({
 
   useEffect(() => {
     if (!userData) {
-      if (localStorage.getItem("user")) { 
-        setUserData(JSON.parse(localStorage.getItem("user") as string));
-      } else{
+      if (localStorage.get("user") && localStorage.get("user").val) {
+        setUserData(JSON.parse(localStorage.get("user").val));
+      } else {
         refreshUser(); //This causes the search params to be cleared
       }
     }
@@ -79,26 +79,32 @@ export const UserContextProvider = ({
 
   const updateUserLocalData = (data: any) => {
     setUserData(data);
-    localStorage.setItem("user", JSON.stringify(data));
-  }
-
-  const onUpdateUserDataSuccess = (res: any) => {
-    if (res.data) {
-      updateUserLocalData(res.data);
-    }
-    return res
+    localStorage.set("user", JSON.stringify(data));
   };
 
-  const updateUserDataDetails = async (payload: Record<string, any>) => {
-    const token = Cookies.get("token");
-    if (loading || !token) return false;
-    return AuthApis.updateUser(payload).then(
-      onUpdateUserDataSuccess,
+  const onUpdateUserDataSuccess = (res: any, onboarding?: boolean) => {
+    updateUserLocalData(res);
+    if (onboarding && pathname.startsWith("/auth")) {
+      setAuthOnboardingStatus(true);
+      router.push("/dashboard");
+    }
+  };
+
+  const updateUserDataDetails = async (
+    payload: Record<string, any>,
+    onboarding?: boolean
+  ) => {
+    if (loading) return false;
+    return AuthApis.updateMyProfile(payload).then(
+      (res) => onUpdateUserDataSuccess(res, onboarding),
       onError
     );
   };
 
-  const updateUserData = async (values: Partial<IUser>) => {
+  const updateUserData = async (
+    values: Partial<IUser>,
+    onboarding?: boolean
+  ) => {
     const payload: Partial<IUser> = {};
     if (values.firstName) {
       payload.firstName = values.firstName;
@@ -123,7 +129,7 @@ export const UserContextProvider = ({
       payload.photo = values.photo;
     }
     if (!isEmpty(payload)) {
-      return updateUserDataDetails(payload);
+      return updateUserDataDetails(payload, onboarding);
     }
   };
 
@@ -137,20 +143,18 @@ export const UserContextProvider = ({
 
   return (
     <UserContext.Provider
-      value={
-        {
-          loading,
-          error,
-          userData,
-          refetchUserData,
-          refreshUser,
-          setRefetchUserData,
-          updateUserLocalData,
-          updateUserPhoto,
-          removeUserPhoto,
-          updateUserData,
-        }
-      }
+      value={{
+        loading,
+        error: serverError,
+        userData,
+        refetchUserData,
+        refreshUser,
+        setRefetchUserData,
+        updateUserLocalData,
+        updateUserPhoto,
+        removeUserPhoto,
+        updateUserData,
+      }}
     >
       {children}
     </UserContext.Provider>

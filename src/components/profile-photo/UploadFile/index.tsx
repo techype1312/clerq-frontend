@@ -9,12 +9,12 @@ import isObject from "lodash/isObject";
 import { FileRejection } from "react-dropzone";
 import { convertFileSize } from "@/utils/file";
 import { ErrorProps } from "@/types/general";
-import FileApis from "@/actions/apis/FileApis";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Dropzone from "@/components/generalComponents/Dropzone";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { IImageFileType, ILocalFile } from "@/types/file";
+import FileApis from "@/actions/data/file.data";
 
 const MAX_FILES = 1;
 
@@ -25,7 +25,7 @@ interface UploadFileProps {
 const UploadProfilePhoto = (props: UploadFileProps) => {
   const [files, setFiles] = useState<ILocalFile[]>([]);
   const [errMsg, setErrMsg] = useState("");
-  const [uploadError, setUploadError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [fileRes, setFileResponse] = useState<IImageFileType | null>(null);
 
@@ -67,13 +67,13 @@ const UploadProfilePhoto = (props: UploadFileProps) => {
   };
 
   const onError = (err: string | ErrorProps) => {
-    setUploadError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFileUploadSuccess = (res: any) => {
-    if (res && res.data) {
-      setFileResponse(res.data.file);
+    if (res && res.file) {
+      setFileResponse(res.file);
     }
     setLoading(false);
   };
@@ -93,7 +93,7 @@ const UploadProfilePhoto = (props: UploadFileProps) => {
   };
 
   const removeFile = () => {
-    setUploadError("");
+    setServerError("");
     setErrMsg("");
     setLoading(false);
     setFileResponse(null);

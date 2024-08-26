@@ -1,25 +1,48 @@
 "use client";
-import AuthApis from "@/actions/apis/AuthApis";
+
+import AuthApis from "@/actions/data/auth.data";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { DependencyType } from "@/components/ui/auto-form/types";
+import { ErrorProps } from "@/types/general";
 import { signUpSchema } from "@/types/schema-embedded";
+import { isObject } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 
 const SignupPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = React.useState(searchParams.get("email") || "");
+  const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const handleSignupSuccess = (res: any) => {
+    router.push(`/auth/link-sent?email=${res.email}&newUser=true`);
+  };
+
+  const handleSignup = (values: Record<string, any>) => {
+    setServerError("");
+    setLoading(true);
+    const data = {
+      email: values.email,
+      password: values.password,
+      firstName: values.name.firstName,
+      lastName: values.name.lastName,
+      phone: values.phone,
+      country_code: 91,
+    };
+    return AuthApis.signUpUser(data).then(handleSignupSuccess, onError);
+  };
 
   React.useEffect(() => {
     setEmail(searchParams.get("email") || "");
-    // const res = async () => {
-    //   const res1 = await AuthApis.healthCheck();
-    //   return res1;
-    // };
-    // res();
   }, [searchParams]);
 
   return (
@@ -38,20 +61,7 @@ const SignupPage = () => {
         <AutoForm
           formSchema={signUpSchema}
           // formAction={signup}
-          onSubmit={async (e) => {
-            const data = {
-              email: e.email,
-              password: e.password,
-              firstName: e.name.firstName,
-              lastName: e.name.lastName,
-              phone: e.phone,
-              country_code: 91,
-            };
-            const res = await AuthApis.signUp(data);
-            if (res.status === 204) {
-              router.push(`/auth/link-sent?email=${e.email}&newUser=true`);
-            }
-          }}
+          onSubmit={handleSignup}
           fieldConfig={{
             password: {
               inputProps: {

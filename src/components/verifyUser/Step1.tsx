@@ -4,27 +4,28 @@ import { Address, Step1Schema, step1Schema } from "@/types/schema-embedded";
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { DependencyType } from "../ui/auto-form/types";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
-import AuthApis from "@/actions/apis/AuthApis";
 import { useUserContext } from "@/context/User";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { toast } from "react-toastify";
+import AuthApis from "@/actions/data/auth.data";
+import { isObject } from "lodash";
+import { ErrorProps } from "@/types/general";
+import CompanyApis from "@/actions/data/company.data";
 
 const Step1 = ({
-  changeStep,
   userData,
   updateUserLocalData,
-  setTotalSteps,
   totalSteps,
   staticForFirstTime,
+  changeStep,
+  setTotalSteps,
   setStaticForFirstTime,
 }: {
-  changeStep: (step: number) => void;
   userData: any;
   updateUserLocalData: any;
-  setTotalSteps: (steps: number) => void;
   totalSteps: number;
   staticForFirstTime: boolean;
+  changeStep: (step: number) => void;
+  setTotalSteps: (steps: number) => void;
   setStaticForFirstTime: (value: boolean) => void;
 }) => {
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,29 @@ const Step1 = ({
   const { refetchUserData, setRefetchUserData, refreshUser } = useUserContext();
   const [localUserData, setLocalUserData] = useState<any>();
   const [companyData, setCompanyData] = useState<any>();
+  const [addressId, setAddressId] = useState<string | null>(null);
+  const [mailingAddressId, setMailingAddressId] = useState<string | null>(null);
+  const [changedAddress, setChangedAddress] = useState(false);
+  const [createdAddress, setCreatedAddress] = useState(false);
+  const [addressDataLoaded, setAddressDataLoaded] = useState(false);
+  const [userRefetch, setUserRefetch] = useState(false);
+  const [serverError, setServerError] = useState("");
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onUpdateUserSuccess = (res: any) => {
+    updateUserLocalData(res);
+    changeStep(2);
+  };
+
+  const handleUpdateUser = async (payload: any) => {
+    if (loading) return false;
+    setServerError("");
+    return AuthApis.updateMyProfile(payload).then(onUpdateUserSuccess, onError);
+  };
 
   const handleSubmit = async (e: Step1Schema) => {
     if (!addressId || !mailingAddressId)
@@ -91,22 +115,14 @@ const Step1 = ({
     userData.dob = e.date_of_birth.toUTCString();
     delete userData.date_of_birth;
 
-    const res = await AuthApis.updateUser(userData);
-
-    if (res && res.status === 200) {
-      updateUserLocalData(res.data);
-      changeStep(2);
-    }
+    handleUpdateUser(userData);
     setLoading(false);
   };
-  const [addressId, setAddressId] = useState<string | null>(null);
-  const [mailingAddressId, setMailingAddressId] = useState<string | null>(null);
-  const [changedAddress, setChangedAddress] = useState(false);
-  const [createdAddress, setCreatedAddress] = useState(false);
+
   useEffect(() => {
     const updateAndFetchAddress = async () => {
       if (addressId && createdAddress) {
-        await AuthApis.updateUser({
+        await AuthApis.updateMyProfile({
           legal_address: {
             id: addressId,
           },
@@ -116,11 +132,13 @@ const Step1 = ({
       }
     };
     updateAndFetchAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId, createdAddress]);
+
   useEffect(() => {
     const updateAndFetchAddress = async () => {
       if (mailingAddressId && createdAddress) {
-        await AuthApis.updateUser({
+        await AuthApis.updateMyProfile({
           mailing_address: {
             id: mailingAddressId,
           },
@@ -131,8 +149,6 @@ const Step1 = ({
     updateAndFetchAddress();
   }, [mailingAddressId, createdAddress]);
 
-  const [addressDataLoaded, setAddressDataLoaded] = useState(false);
-  const [userRefetch, setUserRefetch] = useState(false);
   useEffect(() => {
     if (!userRefetch) {
       setUserRefetch(true);
@@ -151,11 +167,12 @@ const Step1 = ({
         setMailingAddress(userData?.mailing_address);
       setAddressDataLoaded(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, userRefetch, addressDataLoaded]);
 
   useEffect(() => {
     CompanyApis.getAllCompanies().then((res) => {
-      setCompanyData(res.data?.data);
+      setCompanyData(res?.data);
     });
   }, []);
 

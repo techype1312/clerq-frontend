@@ -14,7 +14,7 @@ import {
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
-import TeamApis from "@/actions/apis/TeamApis";
+import TeamApis from "@/actions/data/team-data";
 
 const MemberStatusUpdateDialog = ({
   row,
@@ -24,8 +24,31 @@ const MemberStatusUpdateDialog = ({
   onUpdate?: (ucrmId: string, status: Record<string, any>) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onStatusUpdateSuccess = (res: any) => {
+    onUpdate && onUpdate(res.id, res.status);
+    setOpen(false);
+    setLoading(false);
+  };
+
+  const updateStatus = () => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    const handler =
+      row.status === 1
+        ? TeamApis.deactivateTeamMember
+        : TeamApis.activateTeamMember;
+    return handler(row.id).then(onStatusUpdateSuccess, onError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
 
   const triggerBtnText = row.status === 1 ? "Remove" : "Restore";
   const triggerBtnIcon =
@@ -47,30 +70,6 @@ const MemberStatusUpdateDialog = ({
     row.status === 1
       ? "hover:bg-red-50 text-red-600"
       : "hover:bg-blue-50 text-blue-600";
-
-  const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
-    setLoading(false);
-  };
-
-  const onStatusUpdateSuccess = (res: any) => {
-    if (res.status === 200) {
-      onUpdate && onUpdate(res.data.id, res.data.status);
-      setOpen(false);
-    }
-    setLoading(false);
-  };
-
-  const updateStatus = () => {
-    if (loading) return false;
-    setLoading(true);
-    const handler =
-      row.status === 1
-        ? TeamApis.deactivateTeamMember
-        : TeamApis.activateTeamMember;
-    return handler(row.id).then(onStatusUpdateSuccess, onError);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

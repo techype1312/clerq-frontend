@@ -1,14 +1,52 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import Link from "next/link";
 import { useUserContext } from "@/context/User";
-import AuthApis from "@/actions/apis/AuthApis";
+import localStorage from "@/utils/storage/local-storage.util";
+import {
+  removeAuthOnboardingStatus,
+  removeAuthRefreshToken,
+  removeAuthToken,
+  removeAuthUcrmId,
+  removeSessionId,
+} from "@/utils/session-manager.util";
 import { Button } from "../ui/button";
+import AuthApis from "@/actions/data/auth.data";
+import { useRouter } from "next/navigation";
+import { ErrorProps } from "@/types/general";
+import { isObject } from "lodash";
 
 const Header = () => {
   const { userData } = useUserContext();
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(userData ? true : false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onLogoutSuccess = (res: any) => {
+    setLoading(false);
+    removeAuthToken();
+    removeAuthRefreshToken();
+    removeAuthUcrmId();
+    removeSessionId();
+    localStorage.remove("user");
+    removeAuthOnboardingStatus();
+    router.replace("/auth/signin");
+    router.refresh();
+  };
+
+  const handleLogout = async () => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AuthApis.signOutUser().then(onLogoutSuccess, onError);
+  };
+
   useEffect(() => {
     if (userData) {
       setIsLoggedIn(true);
@@ -16,15 +54,6 @@ const Header = () => {
       setIsLoggedIn(false);
     }
   }, [userData]);
-
-  const handleLogout = async () => {
-    return AuthApis.signOut().then(() => {
-      Cookies.remove("token");
-      Cookies.remove("refreshToken");
-      Cookies.remove("onboarding_completed");
-      localStorage.clear();
-    });
-  };
 
   return (
     <div className="p-2">

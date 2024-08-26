@@ -10,23 +10,21 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import ProfileItem from "../dashboard/profile/item";
-import SymbolIcon from "./MaterialSymbol/SymbolIcon";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import AuthApis from "@/actions/apis/AuthApis";
+import { useUserContext } from "@/context/User";
+import { IUser } from "@/types/user";
 
-const SocialModal = ({
-  rowData,
-  updateLocalUserData,
-}: {
-  rowData: any;
-  updateLocalUserData: any;
-}) => {
+const SocialModal = ({ rowData }: { rowData: any }) => {
+  const { updateUserData } = useUserContext();
   const [openedState, setOpenedState] = useState(false);
   const [link, setLink] = useState("");
   const [platform, setPlatform] = useState("");
-  const handleSaveSocialMedia = async () => {
-    AuthApis.updateUser([...rowData.value, { [platform]: link }].flat(4));
+
+  const handleUpdateUser = async () => {
+    return updateUserData(
+      [...rowData.value, { [platform]: link }].flat(4) as unknown as IUser
+    );
   };
 
   return (
@@ -45,27 +43,6 @@ const SocialModal = ({
                   isEditable: false,
                   type: "text",
                 }}
-                // updateLocalUserData={updateLocalUserData}
-                // editButton={
-                //   <DialogTrigger asChild>
-                //     <Button
-                //       onClick={() => {
-                //         setOpenedState(true);
-                //         setLink(value);
-                //         setPlatform(key);
-                //       }}
-                //       className="w-fit pl-0 hover:bg-transparent flex items-center text-background-primary gap-1"
-                //       variant={"ghost"}
-                //     >
-                //       Edit
-                //       <SymbolIcon
-                //         icon="chevron_right"
-                //         color="#5265EB"
-                //         size={20}
-                //       />
-                //     </Button>
-                //   </DialogTrigger>
-                // }
               />
             </div>
           );
@@ -124,7 +101,7 @@ const SocialModal = ({
               <DialogClose asChild>
                 <Button
                   onClick={() => {
-                    handleSaveSocialMedia();
+                    handleUpdateUser();
                   }}
                   className="background-text-destructive text-white hover:!background-text-destructive hover:opacity-90"
                 >
@@ -135,7 +112,7 @@ const SocialModal = ({
             <DialogClose asChild>
               <Button
                 onClick={() => {
-                  handleSaveSocialMedia();
+                  handleUpdateUser();
                 }}
               >
                 {openedState ? "Save" : "Add"}

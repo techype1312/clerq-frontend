@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useUserContext } from "@/context/User";
-import { RowData } from "@/types/general";
+import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import { UserUpdateSchema } from "@/types/schemas/user";
 import ProfileRowContainer from "@/components/dashboard/profile";
 import { Loader2Icon } from "lucide-react";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
 import ProfilePhotoEditModel from "@/components/profile-photo";
+import { isObject } from "lodash";
+import AddressApis from "@/actions/data/address.data";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -35,7 +36,7 @@ const RoleItem = ({ label }: { label: string }) => {
 
 const Page = () => {
   const {
-    loading,
+    loading: userLoading,
     error,
     userData,
     updateUserPhoto,
@@ -44,6 +45,37 @@ const Page = () => {
     updateUserLocalData,
   } = useUserContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onUpdateAddressSuccess = (addressType: string, res: any) => {
+    if (!userData) return;
+    setLoading(false);
+    updateUserLocalData({
+      ...userData,
+      [addressType]: res,
+    });
+    return res;
+  };
+
+  const handleUpdateAddress = async (
+    addressId: string,
+    address: any,
+    addressType: "legal_address" | "mailing_address"
+  ) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AddressApis.updateAddress(addressId, address).then(
+      (res) => onUpdateAddressSuccess(addressType, res),
+      onError
+    );
+  };
 
   useEffect(() => {
     if (isEmpty(userData)) {
@@ -139,7 +171,8 @@ const Page = () => {
           label: "Mailing Address",
           values: {
             address: {
-              country: userData?.mailing_address?.country?.toUpperCase() ?? "US",
+              country:
+                userData?.mailing_address?.country?.toUpperCase() ?? "US",
               address_line_1: userData?.mailing_address?.address_line_1,
               address_line_2: userData?.mailing_address?.address_line_2,
               city: userData?.mailing_address?.city,
@@ -159,17 +192,11 @@ const Page = () => {
           schema: UserUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
                 data.address_id,
-                data.address
+                data.address,
+                "mailing_address"
               );
-              if (res && res.status === 200) {
-                updateUserLocalData({
-                  ...userData,
-                  mailing_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -198,18 +225,11 @@ const Page = () => {
           schema: UserUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              console.log(data);
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
                 data.address_id,
-                data.address
+                data.address,
+                "legal_address"
               );
-              if (res && res.status === 200) {
-                updateUserLocalData({
-                  ...userData,
-                  legal_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -230,7 +250,7 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
-  if (loading) {
+  if (userLoading) {
     return (
       <div className="w-full flex items-center h-12 justify-center">
         <Loader2Icon className="animate-spin" />
@@ -238,7 +258,7 @@ const Page = () => {
     );
   }
 
-  if (!loading && !userData) {
+  if (!userLoading && !userData) {
     return (
       <div className="w-full flex items-center h-12 justify-center">
         No data found

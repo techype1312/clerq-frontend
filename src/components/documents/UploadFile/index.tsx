@@ -5,7 +5,6 @@ import uniqBy from "lodash/uniqBy";
 import flatMap from "lodash/flatMap";
 import isObject from "lodash/isObject";
 import { FileRejection } from "react-dropzone";
-import DocumentApis from "@/actions/apis/DocumentApis";
 import { convertFileSize } from "@/utils/file";
 import { DocumentTypes, ILocalFile } from "@/types/file";
 import { ErrorProps } from "@/types/general";
@@ -15,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Dropzone from "@/components/generalComponents/Dropzone";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import DocumentApis from "@/actions/data/document.data";
 
 const MAX_FILES = 1;
 
@@ -41,7 +41,7 @@ interface UploadFileProps {
 const UploadFile = (props: UploadFileProps) => {
   const [files, setFiles] = useState<ILocalFile[]>([]);
   const [errMsg, setErrMsg] = useState("");
-  const [uploadError, setUploadError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const fileTooLargeErrMsg = `The overall size of the pdf should not exceed 25mb.`;
@@ -83,13 +83,13 @@ const UploadFile = (props: UploadFileProps) => {
   };
 
   const onError = (err: string | ErrorProps) => {
-    setUploadError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onDocumentUploadSuccess = (res: any) => {
     if (res && props.onUploadSuccess) {
-      props.onUploadSuccess(res.data);
+      props.onUploadSuccess(res);
     }
     setLoading(false);
   };
