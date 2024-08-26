@@ -1,4 +1,4 @@
-name: Deploy to AWS App Runner
+name: Demo - Deploy Otto App
 
 on:
   push:

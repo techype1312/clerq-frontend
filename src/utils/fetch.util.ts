@@ -39,7 +39,7 @@ interface SendRequest {
 }
 
 const apiServerInstance: AxiosInstance = axios.create({
-  baseURL: Servers.LiveServer,
+  baseURL: process.env.NEXT_PUBLIC_API_SERVER_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     platform: "web",
