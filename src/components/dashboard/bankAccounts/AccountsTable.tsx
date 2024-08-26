@@ -18,6 +18,9 @@ const AccountsTable = ({
   accounts: Record<string, any>[];
   companyId: string;
 }) => {
+  if (accounts.length === 0) {
+    return null;
+  }
   return (
     <Table>
       {!!accounts.length && (
@@ -52,13 +55,13 @@ const AccountsTable = ({
           </TableBody>
         </Fragment>
       )}
-      <TableFooter className="bg-white border-t-0 w-full">
+      {/* <TableFooter className="bg-white border-t-0 w-full">
         <TableRow>
           <TableCell colSpan={4} className="text-center p-0">
             <ConnectAccount companyId={companyId} />
           </TableCell>
         </TableRow>
-      </TableFooter>
+      </TableFooter> */}
     </Table>
   );
 };

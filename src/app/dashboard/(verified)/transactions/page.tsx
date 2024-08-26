@@ -2,6 +2,7 @@
 import BankingApis from "@/actions/apis/BankingApis";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
@@ -272,7 +273,7 @@ const Page = () => {
   const [transactions, setTransactions] = React.useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [accountsLoading, setAccountsLoading] = useState(false);
+  const [accountsLoading, setAccountsLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
 
   const onError = (err: string | ErrorProps) => {
@@ -288,7 +289,7 @@ const Page = () => {
   };
 
   const fetchAccounts = useCallback(async () => {
-    if (accountsLoading || !currentUcrm?.company?.id) return false;
+    if (!currentUcrm?.company?.id) return false;
     setAccountsLoading(true);
     return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
       onFetchAccountsSuccess,
@@ -311,7 +312,7 @@ const Page = () => {
           </h1>
 
           {accountsLoading && (
-            <div className="w-full flex items-center h-12 justify-center">
+            <div className="w-full flex items-center h-80 justify-center">
               <Loader2Icon className="animate-spin" />
             </div>
           )}
@@ -328,9 +329,11 @@ const Page = () => {
               data={transactions}
               accounts={accounts}
               setTransactions={setTransactions}
+              loading={loading}
               setLoading={setLoading}
               currentUcrm={currentUcrm}
               showFilter={true}
+              type="transaction"
             />
           )}
         </div>
