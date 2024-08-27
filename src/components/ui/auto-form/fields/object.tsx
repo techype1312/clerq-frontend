@@ -3,9 +3,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import * as z from "zod";
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { cn } from "@/utils/utils";
