@@ -12,7 +12,7 @@ const CompanyUpdateSchema = {
     legalName: z.string(),
   }),
   ein: z.object({
-    fedralEin: z.string(),
+    federalEin: z.string(),
   }),
   phone: z.object({ phone: z.string(), country_code: z.number() }),
   address: addressSchema,

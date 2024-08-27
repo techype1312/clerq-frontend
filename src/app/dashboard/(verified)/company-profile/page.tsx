@@ -94,12 +94,12 @@ const CompanyContainer = () => {
         },
         {
           id: "ein",
-          label: "Fedral EIN",
+          label: "Federal EIN",
           formattedValue: companyData.ein,
           type: "text",
           isEditable: true,
           values: {
-            fedralEin: companyData.ein,
+            federalEin: companyData.ein,
           },
           schema: CompanyUpdateSchema.ein,
           actions: {
@@ -165,7 +165,7 @@ const CompanyContainer = () => {
           isEditable: false,
         },
         {
-          id: "address",
+          id: "mailing_address",
           label: "Company mailing address",
           description:
             "We’ll send physical cards and surprise gifts to this address.",
@@ -184,7 +184,7 @@ const CompanyContainer = () => {
               postal_code: companyData.mailing_address?.postal_code,
               state: companyData.mailing_address?.state,
             },
-            mailing_address: {
+            legal_address: {
               ...companyData?.legal_address,
             },
             address_id: companyData.mailing_address?.id,

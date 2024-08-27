@@ -128,6 +128,10 @@ export const UserContextProvider = ({
     if (values.photo) {
       payload.photo = values.photo;
     }
+    if(values.onboarding_completed){
+      payload.onboarding_completed = values.onboarding_completed;
+    }
+
     if (!isEmpty(payload)) {
       return updateUserDataDetails(payload, onboarding);
     }

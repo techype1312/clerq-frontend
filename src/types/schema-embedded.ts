@@ -115,7 +115,7 @@ export const step1Schema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -137,7 +137,7 @@ export const step1Schema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -190,7 +190,7 @@ export const step2Schema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -212,7 +212,7 @@ export const step2Schema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -344,7 +344,7 @@ export const newCompanySchema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -366,7 +366,7 @@ export const newCompanySchema = z.object({
       }),
       address_line_2: z.string({
         required_error: "City is required",
-      }),
+      }).optional(),
       city: z.string({
         required_error: "City is required",
       }),
