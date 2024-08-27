@@ -35,7 +35,7 @@ const ProfilePhotoPreview = ({
           style={{
             fontSize: "18px",
             color: "#1e1e2a",
-            fontWeight: "bold",
+            fontWeight: 500,
             lineHeight: "24px",
             textTransform: "uppercase",
             backgroundColor: "#cce8ea",

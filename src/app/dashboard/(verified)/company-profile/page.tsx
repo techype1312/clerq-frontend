@@ -269,7 +269,8 @@ const CompanyContainer = () => {
             <Fragment>
               <div className="mt-auto flex gap-2 items-center border-b pb-4">
                 <ProfilePhotoEditModel
-                  firstName={companyData?.name}
+                  firstName={companyData?.name?.split(' ')?.[0]}
+                  lastName={companyData?.name?.split(' ')?.[1]}
                   photo={companyData?.logo}
                   updatePhoto={updateCompanyLogo}
                   removePhoto={removeCompanyLogo}

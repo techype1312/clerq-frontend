@@ -10,7 +10,8 @@ const ProfileItem = ({ rowData }: { rowData: RowData }) => {
       case "photo":
         return (
           <ProfilePhotoEditModel
-            firstName={rowData?.values?.name}
+            firstName={rowData?.values?.name?.split(' ')?.[0]}
+            lastName={rowData?.values?.name?.split(' ')?.[1]}
             photo={rowData?.values?.logo}
             updatePhoto={rowData.actions?.updatePhoto}
             removePhoto={rowData.actions?.removePhoto}

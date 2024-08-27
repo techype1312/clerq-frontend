@@ -40,12 +40,13 @@ const CompanyToggleDrawer = ({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="gap-10 border-none py-5 px-0 justify-around bg-none bg-transparent w-fit"
+            className="gap-10 border-none py-5 px-2 justify-around bg-none bg-transparent w-fit"
           >
             <div className="flex flex-row items-center gap-2">
               {!toggleBtnText && (
                 <ProfilePhotoPreview
-                  firstName={currentUcrm.company.name}
+                  firstName={currentUcrm.company?.name?.split(' ')?.[0]}
+                  lastName={currentUcrm.company?.name?.split(' ')?.[1]}
                   photo={currentUcrm.company.logo}
                   size={30}
                 />
@@ -80,7 +81,8 @@ const CompanyToggleDrawer = ({
                 >
                   <div className="flex flex-row items-center gap-2">
                     <ProfilePhotoPreview
-                      firstName={ucrm.company.name}
+                      firstName={ucrm.company?.name?.split(' ')[0]}
+                      lastName={ucrm.company?.name?.split(' ')[1]}
                       photo={ucrm.company.logo}
                       size={30}
                     />

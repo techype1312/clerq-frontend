@@ -25,7 +25,7 @@ const ProfilePhotoEditModel = ({
   canEdit,
   showButtons,
 }: {
-  updatePhoto?: ((logo: IImageFileType) => Promise<false | void>);
+  updatePhoto?: (logo: IImageFileType) => Promise<false | void>;
   removePhoto?: () => Promise<false | void>;
   photo?: IImageFileType;
   firstName?: string;
@@ -60,7 +60,11 @@ const ProfilePhotoEditModel = ({
           {loading && (
             <Loader2Icon className="animate-spin absolute top-0 left-0 w-full h-full stroke-blue-600" />
           )}
-          <ProfilePhotoPreview firstName={firstName} lastName={lastName} photo={photo}/>
+          <ProfilePhotoPreview
+            firstName={firstName}
+            lastName={lastName}
+            photo={photo}
+          />
           <Fragment>
             {showButtons && canEdit && photo?.path && (
               <Button

@@ -29,7 +29,7 @@ export function removeAuthToken() {
   return removeCookie(authorizationTokenBucket);
 }
 
-export function setAuthToken(token: string, expires: number ) {
+export function setAuthToken(token: string, expires?: number ) {
   return setCookie(authorizationTokenBucket, token, { expires });
 }
 
