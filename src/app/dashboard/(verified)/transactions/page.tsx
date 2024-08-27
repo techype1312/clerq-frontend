@@ -2,7 +2,7 @@
 
 import BankingApis from "@/actions/data/banking.data";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";

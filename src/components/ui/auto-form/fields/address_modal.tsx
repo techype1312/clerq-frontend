@@ -16,7 +16,7 @@ import GooglePlacesAutocomplete, {
 import { useUserContext } from "@/context/User";
 import { Servers } from "../../../../../config";
 import { Button } from "../../button";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { ErrorProps } from "@/types/general";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";

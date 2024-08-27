@@ -12,10 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import ProfilePhotoPreview from "../profile-photo/ProfilePhotoPreview";
+import ProfilePhotoPreview from "../common/profile-photo/ProfilePhotoPreview";
 import { dashboardTitle } from "@/utils/constants";
 import { Button } from "../ui/button";
-import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import { cn } from "@/utils/utils";
 import AuthApis from "@/actions/data/auth.data";
 import isObject from "lodash/isObject";

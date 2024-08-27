@@ -1,4 +1,4 @@
-import ProfitNLossGraph from "@/components/generalComponents/graphs/ProfitNLossGraph";
+import ProfitNLossGraph from "@/components/common/graphs/ProfitNLossGraph";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { monthlyGraphDataType, profitLossDataType } from "@/types/general";

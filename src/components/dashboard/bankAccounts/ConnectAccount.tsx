@@ -6,7 +6,7 @@ import { Loader2Icon } from "lucide-react";
 import isObject from "lodash/isObject";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Card } from "@/components/ui/card";
 import { ErrorProps } from "@/types/general";
 import BankingApis from "@/actions/data/banking.data";

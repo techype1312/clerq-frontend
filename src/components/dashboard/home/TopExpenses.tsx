@@ -1,5 +1,5 @@
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import PercentageBar from "@/components/generalComponents/graphs/PercentageBar";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
+import PercentageBar from "@/components/common/graphs/PercentageBar";
 import { Select } from "@/components/ui/select";
 import { textType } from "@/types/general";
 import React from "react";

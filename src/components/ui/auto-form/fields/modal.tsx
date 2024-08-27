@@ -25,7 +25,7 @@ import GooglePlacesAutocomplete, {
   getLatLng,
 } from "react-google-places-autocomplete";
 import { Servers } from "../../../../../config";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { ErrorProps } from "@/types/general";
 import isObject from "lodash/isObject";

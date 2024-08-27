@@ -12,8 +12,8 @@ import {
 } from "../../ui/dropdown-menu";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { Button } from "@/components/ui/button";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import ProfilePhotoPreview from "@/components/profile-photo/ProfilePhotoPreview";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
+import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
 
 const CompanyToggleDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -93,7 +93,7 @@ const CompanyToggleDrawer = () => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="my-2 cursor-pointer">
-            Add new account
+            Add new company
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

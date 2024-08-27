@@ -16,7 +16,7 @@ import {
   DialogContentWithoutClose,
   DialogDescription,
 } from "@/components/ui/dialog";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IUcrm, IUCRMContext } from "@/types/ucrm";
 import CompanyApis from "@/actions/data/company.data";
 import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";

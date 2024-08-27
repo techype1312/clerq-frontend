@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 
 const FailedLinkPage = () => {
   const { refreshUser } = useUserContext();

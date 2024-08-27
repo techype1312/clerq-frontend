@@ -1,6 +1,6 @@
 "use client";
 
-import OtpPage from "@/components/generalComponents/OTP";
+import OtpPage from "@/components/common/OTP";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";

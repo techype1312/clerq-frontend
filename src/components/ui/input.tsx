@@ -30,7 +30,7 @@ import * as React from "react";
 import { cn } from "@/utils/utils";
 import { LucideIcon } from "lucide-react";
 import { SymbolCodepoints } from "react-material-symbols";
-import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

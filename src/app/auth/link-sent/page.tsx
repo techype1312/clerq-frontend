@@ -1,6 +1,6 @@
 "use client";
 
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { FormEvent, Suspense, useEffect, useState } from "react";

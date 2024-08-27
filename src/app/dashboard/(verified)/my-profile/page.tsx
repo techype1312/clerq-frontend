@@ -7,8 +7,8 @@ import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import { UserUpdateSchema } from "@/types/schemas/user";
 import ProfileRowContainer from "@/components/dashboard/profile";
-import ProfilePhotoEditModel from "@/components/profile-photo";
-import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
+import ProfilePhotoEditModel from "@/components/common/profile-photo";
+import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 

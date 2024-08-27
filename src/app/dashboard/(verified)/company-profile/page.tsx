@@ -5,12 +5,12 @@ import isEmpty from "lodash/isEmpty";
 import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
 import ProfileRowContainer from "@/components/dashboard/profile";
-import ProfilePhotoEditModel from "@/components/profile-photo";
+import ProfilePhotoEditModel from "@/components/common/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
-import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
+import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
 
 const CompanyContainer = () => {
   const {

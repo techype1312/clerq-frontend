@@ -16,13 +16,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import UploadFile from "@/components/documents/UploadFile";
+import UploadFile from "@/components/dashboard/documents/UploadFile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";
-import DocumentListItem from "@/components/documents/DocumentListItem";
+import ShareDocumentsDialog from "@/components/dashboard/documents/ShareDocumentsDialog";
+import DocumentListItem from "@/components/dashboard/documents/DocumentListItem";
 import DocumentApis from "@/actions/data/document.data";
 
 const Page = () => {

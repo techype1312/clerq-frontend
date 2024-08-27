@@ -2,9 +2,9 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Step1 from "@/components/verifyUser/Step1";
-import Step2 from "@/components/verifyUser/Step2";
-import Step4 from "@/components/verifyUser/Step4";
+import Step1 from "@/components/onboarding/Step1";
+import Step2 from "@/components/onboarding/Step2";
+import Step4 from "@/components/onboarding/Step4";
 import { useUserContext } from "@/context/User";
 
 const VerifyUserPage = () => {

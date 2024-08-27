@@ -6,7 +6,7 @@ import { useCompanySessionContext } from "@/context/CompanySession";
 import { ErrorProps } from "@/types/general";
 import Script from "next/script";
 import BankingApis from "@/actions/data/banking.data";
-import BankConnectionsSkeleton from "@/components/skeletonLoading/dashboard/BankConnectionsSkeleton";
+import BankConnectionsSkeleton from "@/components/skeletons/dashboard/BankConnectionsSkeleton";
 
 const BankConnections = lazy(() => import("./BankConnections"));
 

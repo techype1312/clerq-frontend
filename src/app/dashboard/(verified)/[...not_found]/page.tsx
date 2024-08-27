@@ -1,4 +1,4 @@
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import React from "react";
 
 export default function NotFound() {

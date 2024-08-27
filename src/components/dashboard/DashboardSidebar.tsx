@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
 import CompanyToggleDrawer from "./company-toggle-drawer";
 import { Fragment } from "react";

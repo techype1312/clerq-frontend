@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Fragment, useEffect, useState } from "react";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { mkConfig, generateCsv, download } from "export-to-csv";
@@ -32,9 +32,9 @@ import {
 } from "@/components/ui/popover";
 import { ErrorProps } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
-import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
-import DocumentSkeleton from "@/components/skeletonLoading/dashboard/DocumentSkeleton";
-import TeamSkeleton from "@/components/skeletonLoading/dashboard/TeamSkeleton";
+import TransactionSkeleton from "@/components/skeletons/dashboard/TransactionSkeleton";
+import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
+import TeamSkeleton from "@/components/skeletons/dashboard/TeamSkeleton";
 import BankingApis from "@/actions/data/banking.data";
 import isObject from "lodash/isObject";
 
