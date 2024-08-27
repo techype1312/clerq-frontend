@@ -11,7 +11,7 @@ import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
-import DashboardSkeleton from "@/components/skeletonLoading/dashboard/DashboardSkeleton";
+import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleton";
 
 const Dashboard = () => {
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([

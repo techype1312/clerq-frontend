@@ -2,28 +2,62 @@
 
 import React, { Fragment, Suspense, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { RowData } from "@/types/general";
+import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
-import { Loader2Icon } from "lucide-react";
 import ProfileRowContainer from "@/components/dashboard/profile";
-import ProfilePhotoEditModel from "@/components/profile-photo";
+import ProfilePhotoEditModel from "@/components/common/profile-photo";
 import { CompanyContextProvider, useCompanyContext } from "@/context/Company";
 import { CompanyUpdateSchema } from "@/types/schemas/company";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
-import ProfileSkeleton from "@/components/skeletonLoading/dashboard/ProfileSkeleton";
+import isObject from "lodash/isObject";
+import AddressApis from "@/actions/data/address.data";
+import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
+import { DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 
 const CompanyContainer = () => {
   const {
-    loading,
+    loading: companyLoading,
     error,
     companyData,
     setCompanyData,
     updateCompanyLogo,
     removeCompanyLogo,
     updateCompanyDetails,
-    companyDataLoaded,
   } = useCompanyContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onUpdateAddressSuccess = (
+    addressType: "legal_address" | "mailing_address",
+    res: any
+  ) => {
+    if (!companyData) return;
+    setLoading(false);
+    setCompanyData({
+      ...companyData,
+      [addressType]: res,
+    });
+    return res;
+  };
+
+  const handleUpdateAddress = async (
+    addressType: "legal_address" | "mailing_address",
+    addressId: string,
+    address: any
+  ) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AddressApis.updateAddress(addressId, address).then(
+      (res) => onUpdateAddressSuccess(addressType, res),
+      onError
+    );
+  };
 
   useEffect(() => {
     if (isEmpty(companyData)) {
@@ -76,7 +110,7 @@ const CompanyContainer = () => {
           id: "name",
           label: "Company name",
           description:
-            "This is the name that appears on Clerq and in your notifications.",
+            "This is the name that appears on Otto and in your notifications.",
           formattedValue: companyData.name,
           type: "text",
           isEditable: true,
@@ -91,7 +125,7 @@ const CompanyContainer = () => {
         {
           id: "company_logo",
           label: "Company logo",
-          description: "This will appear on Clerq next to your company name.",
+          description: "This will appear on Otto next to your company name.",
           values: {
             logo: companyData.logo,
             name: companyData.name,
@@ -143,7 +177,7 @@ const CompanyContainer = () => {
           values: {
             address: {
               country:
-                companyData.mailing_address?.country?.toUpperCase() ?? "US",
+                companyData.mailing_address?.country?.toUpperCase() ?? DEFAULT_COUNTRY_CODE,
               address_line_1: companyData.mailing_address?.address_line_1,
               address_line_2: companyData.mailing_address?.address_line_2,
               city: companyData.mailing_address?.city,
@@ -158,17 +192,11 @@ const CompanyContainer = () => {
           schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
+                "mailing_address",
                 data.address_id,
                 data.address
               );
-              if (res && res.status === 200) {
-                setCompanyData({
-                  ...companyData,
-                  mailing_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -185,7 +213,7 @@ const CompanyContainer = () => {
           values: {
             address: {
               country:
-                companyData.legal_address?.country?.toUpperCase() ?? "US",
+                companyData.legal_address?.country?.toUpperCase() ?? DEFAULT_COUNTRY_CODE,
               address_line_1: companyData.legal_address?.address_line_1,
               address_line_2: companyData.legal_address?.address_line_2,
               city: companyData.legal_address?.city,
@@ -200,17 +228,11 @@ const CompanyContainer = () => {
           schema: CompanyUpdateSchema.address,
           actions: {
             onUpdate: async (data: any) => {
-              const res = await OnboardingApis.updateAddress(
+              return handleUpdateAddress(
+                "legal_address",
                 data.address_id,
                 data.address
               );
-              if (res && res.status === 200) {
-                setCompanyData({
-                  ...companyData,
-                  legal_address: res.data,
-                });
-              }
-              return res;
             },
           },
         },
@@ -220,11 +242,13 @@ const CompanyContainer = () => {
   }, [companyData]);
 
   const loadingState = () => {
-    if (loading || !companyDataLoaded) {
-      return <ProfileSkeleton />;
+    if (companyLoading && !companyData) {
+      return (
+        <ProfileSkeleton />
+      );
     }
 
-    if (companyDataLoaded && !companyData) {
+    if (!companyLoading && !companyData) {
       return (
         <div className="w-full flex items-center h-12 justify-center">
           No data found

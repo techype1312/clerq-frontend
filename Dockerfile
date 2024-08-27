@@ -24,7 +24,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # This will do the trick, use the corresponding env file for each environment.
-# COPY .env.production.sample .env.production
+COPY .env.example .env
 RUN npm run build
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -37,6 +37,28 @@ RUN \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
+  fi
+
+# Copy the environment file for production
+# This line will ensure the correct environment variables are available during build
+RUN \
+  if [ "$APP_ENV" = "staging" ]; then \
+    cp .env.staging .env; \
+  elif [ "$APP_ENV" = "demo" ]; then \
+    cp .env.demo .env; \
+  elif [ "$APP_ENV" = "production" ]; then \
+    cp .env.example .env; \
+  else \
+    cp .env.example .env; \
+  fi
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
+
+# Generate robots.txt based on APP_ENV
+RUN \
+  if [ "$APP_ENV" = "production" ]; then \
+    echo -e "User-agent: *\nAllow: /" > public/robots.txt; \
+  else \
+    echo -e "User-agent: *\nDisallow: /" > public/robots.txt; \
   fi
 
 # Production image, copy all the files and run next

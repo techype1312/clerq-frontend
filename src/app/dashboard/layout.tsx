@@ -1,6 +1,6 @@
 "use client";
 import { Inter as FontSans } from "next/font/google";
-import Header from "@/components/generalComponents/Header";
+import Header from "@/components/common/Header";
 import { usePathname } from "next/navigation";
 const fontSans = FontSans({
   subsets: ["latin"],

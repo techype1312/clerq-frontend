@@ -1,4 +1,5 @@
 import AccountsTable from "@/components/dashboard/bankAccounts/AccountsTable";
+
 const BankConnections = ({
   bankAccounts,
   companyId,

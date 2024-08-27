@@ -1,0 +1,60 @@
+name: Demo - Deploy Otto App
+
+on:
+  push:
+    branches:
+      - demo
+
+env:
+  AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppDemo/fb9d199d82614dce88d19aedefbb3a23
+  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-staging
+  APP_ENV: demo
+
+jobs:
+  build-and-deploy-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          region: ${{ secrets.AWS_REGION }}
+
+      - name: Build Docker image
+        run: |
+          docker build --build-arg APP_ENV=${{ env.APP_ENV }} \
+            -t ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} .
+          docker tag ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }} ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }}
+          docker push ${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest
+
+      - name: Update App Runner
+        run: |
+          aws apprunner update-service --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }} \
+            --source-configuration '{
+                "ImageRepository": {
+                    "ImageIdentifier": "${{ env.AWS_ECR_REPOSITORY }}:${{ env.APP_ENV }}-latest",
+                    "ImageRepositoryType": "ECR"
+                }
+            }'
+
+      - name: Deploy App Runner
+        run: |
+          aws apprunner start-deployment --service-arn ${{ env.AWS_APP_RUNNER_SERVICE_ARN }}

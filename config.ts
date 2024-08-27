@@ -1,5 +1,5 @@
 export const Servers = {
-  // LiveServer: "http://localhost:3000/api/v1/",
-  LiveServer: process.env.NEXT_PUBLIC_LIVE_SERVER,
-  GoogleAPIkey: process.env.NEXT_PUBLIC_GOOGLE_API,
+  LiveServer: process.env.NEXT_PUBLIC_API_SERVER_BASE_URL,
+  GoogleAPIkey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+  AppEnv: process.env.NEXT_PUBLIC_APP_ENV,
 };

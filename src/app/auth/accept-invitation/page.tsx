@@ -1,71 +1,90 @@
 "use client";
-import AuthApis from "@/actions/apis/AuthApis";
+
+import React, { Suspense, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { Loader2Icon } from "lucide-react";
+import isObject from "lodash/isObject";
+import InviteTeamApis from "@/actions/data/invite.data";
+import {
+  setAuthOnboardingStatus,
+  setAuthRefreshToken,
+  setAuthToken,
+} from "@/utils/session-manager.util";
+import localStorage from "@/utils/storage/local-storage.util";
+import { ErrorProps } from "@/types/general";
+import { signUpSchema } from "@/types/schema-embedded";
+import { useUserContext } from "@/context/User";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { DependencyType } from "@/components/ui/auto-form/types";
-import { useUserContext } from "@/context/User";
-import { signUpSchema } from "@/types/schema-embedded";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
-import React, { Suspense, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import Cookies from "js-cookie";
-import { Loader2Icon } from "lucide-react";
-import { ErrorProps } from "@/types/general";
-import { isObject } from "lodash";
-import InviteTeamApis from "@/actions/apis/InviteApi";
 
 const AcceptInvitationPage = () => {
   const router = useRouter();
   const { updateUserLocalData } = useUserContext();
   const searchParams = useSearchParams();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(searchParams.get("error"));
+  const [inviteVerified, setInviteVerified] = useState(false);
+  const error = searchParams.get("error");
   const hash = searchParams.get("hash");
   const userEmail = searchParams.get("email") || "";
   const userFirstName = searchParams.get("firstName") || "";
   const userLasName = searchParams.get("lastName") || "";
   const error_description = searchParams.get("error_description");
   const hasRunRef = useRef(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
-  const onFetchCompanyDetailsSuccess = (res: any) => {
-    if (res.data && res.data.token && res.data.refreshToken) {
-      toast.success("Invitation accepted successfully!");
-      Cookies.set("refreshToken", res.data.refreshToken, {
-        expires: res.data.tokenExpiry,
-      });
-      Cookies.set("token", res.data.token);
-      Cookies.set(
-        "onboarding_completed",
-        res?.data?.user?.onboarding_completed ? "true" : "false"
-      );
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      updateUserLocalData(res.data.user);
-      router.push("/dashboard");
-    }
+  const onFetchAcceptInviteSuccess = (res: any) => {
+    toast.success("Invite accepted successfully!");
+    setAuthToken(res.token, res.tokenExpires);
+    setAuthRefreshToken(res.refreshToken);
+    setAuthOnboardingStatus(res.user?.onboarding_completed);
+    localStorage.set("user", res.user);
+    updateUserLocalData(res.user);
+    router.push("/dashboard");
     setLoading(false);
   };
 
   const handleAcceptInvitation = (values: any) => {
     if (loading || !hash) return false;
+    setServerError("");
     setLoading(true);
-    const data = {
+    const newUserData = {
       hash: hash as string,
       email: values.email,
       password: values.password,
       firstName: values.name.firstName,
       lastName: values.name.lastName,
       phone: values.phone,
-      country_code: 91,
+      country_code: Number(values.country_code),
     };
-    return InviteTeamApis.acceptInvite(data).then(
-      onFetchCompanyDetailsSuccess,
+    return InviteTeamApis.acceptInvite(newUserData).then(
+      onFetchAcceptInviteSuccess,
+      onError
+    );
+  };
+
+  const onVerifyInviteSuccess = (res: any) => {
+    setInviteVerified(true);
+    setLoading(false);
+  };
+
+  const handleVerifyInvitation = () => {
+    if (loading || !hash || inviteVerified) return false;
+    hasRunRef.current = true;
+    setLoading(true);
+    setServerError("");
+    const data = {
+      hash: hash as string,
+    };
+    return InviteTeamApis.verifyInvite(data).then(
+      onVerifyInviteSuccess,
       onError
     );
   };
@@ -80,22 +99,43 @@ const AcceptInvitationPage = () => {
           error_description
       );
     }
+    handleVerifyInvitation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, error_description]);
 
+  if (!inviteVerified && loading) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Loader2Icon className="animate-spin" size={"48px"} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Verifying Invite <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hash || (!inviteVerified && !loading) || serverError) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center h-screen">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-center text-xl font-medium">
+            Failed to verify Invite! <br />
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-12 items-center justify-center mt-12 md:my-auto">
-      <Image
-        className="md:hidden"
-        src={"/clerq_logo.png"}
-        alt="Clerq"
-        width={75}
-        height={30}
-      />
+      <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
       <div className="max-w-md md:max-w-2xl flex flex-col gap-8 lg:mt-8">
         <div className="flex flex-col gap-4 text-center">
           <h1 className="text-2xl md:text-4xl w-2/3 mx-auto md:w-full">
-            Simplified finances with Clerq
+            Simplified finances with Otto
           </h1>
           <p className="text-sm md:text-base text-secondary mx-4">
             Apply in 10 minutes for Simple finances that transforms how you
@@ -153,16 +193,16 @@ const AcceptInvitationPage = () => {
           </AutoFormSubmit>
         </AutoForm>
         <p className="mx-auto text-center text-muted text-[11px] md:text-sm w-4/5 md:w-3/4">
-          By clicking “Accept Invitation“, I agree to Clerq’s{" "}
+          By clicking “Accept Invitation“, I agree to Otto’s{" "}
           <span className="border-b border-muted-text">Terms of Use</span>,{" "}
           <span className="border-b border-muted-text">Privacy Policy</span> and
           to receive electronic communication about my accounts and services per{" "}
           <span className="border-b border-muted-text">
-            Clerq’s Electronic Communications Agreement
+            Otto’s Electronic Communications Agreement
           </span>
           , and acknowledge receipt of{" "}
           <span className="border-b border-muted-text">
-            Clerq’s USA PATRIOT Act disclosure.
+            Otto’s USA PATRIOT Act disclosure.
           </span>
         </p>
       </div>

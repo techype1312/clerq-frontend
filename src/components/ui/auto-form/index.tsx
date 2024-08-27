@@ -171,7 +171,6 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
           <form
             onSubmit={(e) => {
               form.handleSubmit(onSubmit)(e);
-              // console.log(form.formState.errors);
             }}
             className={cn("space-y-2", className)}
           >

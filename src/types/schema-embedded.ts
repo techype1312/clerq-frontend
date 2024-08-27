@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { country } from "@/utils/constants";
+import { enabledCountries } from "@/utils/constants";
 
 export const signUpSchema = z
   .object({
@@ -125,7 +125,7 @@ export const step1Schema = z.object({
       postal_code: z.string({
         required_error: "Postal code is required",
       }),
-      country: z.enum([country[0], ...country], {
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
         errorMap: customErrorMap,
       }),
     })
@@ -147,7 +147,7 @@ export const step1Schema = z.object({
       postal_code: z.string({
         required_error: "Postal code is required",
       }),
-      country: z.enum([country[0], ...country], {
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
         errorMap: customErrorMap,
       }),
     })
@@ -158,7 +158,7 @@ export const step1Schema = z.object({
   lat: z.number().optional(),
   long1: z.number().optional(),
   lat1: z.number().optional(),
-  tax_residence_country: z.enum([country[0], ...country], {
+  tax_residence_country: z.enum([enabledCountries[0], ...enabledCountries], {
     errorMap: customErrorMap,
   }),
   company: z.enum(["Yes", "No"]).optional(),
@@ -200,7 +200,7 @@ export const step2Schema = z.object({
       postal_code: z.string({
         required_error: "Postal code is required",
       }),
-      country: z.enum([country[0], ...country], {
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
         errorMap: customErrorMap,
       }),
     })
@@ -222,7 +222,7 @@ export const step2Schema = z.object({
       postal_code: z.string({
         required_error: "Postal code is required",
       }),
-      country: z.enum([country[0], ...country], {
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
         errorMap: customErrorMap,
       }),
     })
@@ -236,7 +236,7 @@ export const step2Schema = z.object({
   ein: z.string({
     required_error: "EIN is required",
   }),
-  tax_residence_country: z.enum([country[0], ...country], {
+  tax_residence_country: z.enum([enabledCountries[0], ...enabledCountries], {
     errorMap: customErrorMap,
   }),
   tax_classification: z.enum([
@@ -248,10 +248,6 @@ export const step2Schema = z.object({
     "Limited liability company (if applicable, provide the classification)",
     "Other (see instructions)",
   ]),
-  // exemptions: z.enum([
-  //   "Exempt payee code (if any)",
-  //   "Exemption from FATCA reporting code (if any)",
-  // ]),
 });
 
 export type Step2Schema = z.infer<typeof step2Schema>;
@@ -317,9 +313,95 @@ export const addressSchema = z.object({
     postal_code: z.string({
       required_error: "Postal code is required",
     }),
-    country: z.enum([country[0], ...country], {
+    country: z.enum([enabledCountries[0], ...enabledCountries], {
       errorMap: customErrorMap,
     }),
   }),
   address_id: z.string().optional(),
 });
+
+
+export const newCompanySchema = z.object({
+  name: z.string({
+    required_error: "Company Name is required",
+  }),
+  email: z
+    .string({
+      required_error: "Company Email is required",
+    })
+    .email(),
+  phone: z.string({
+    required_error: "Phone is required",
+  }),
+  country_code: z.number({
+    required_error: "Country code is required",
+  }),
+  //Bug: For modals the variable needs to be named without snake_case (haven't tested camelCase) i.e. company_address is invalid and address is valid
+  address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
+        errorMap: customErrorMap,
+      }),
+    })
+    .optional(),
+  mailing_address: z
+    .object({
+      address_line_1: z.string({
+        required_error: "Street is required",
+      }),
+      address_line_2: z.string({
+        required_error: "City is required",
+      }),
+      city: z.string({
+        required_error: "City is required",
+      }),
+      state: z.string({
+        required_error: "State is required",
+      }),
+      postal_code: z.string({
+        required_error: "Postal code is required",
+      }),
+      country: z.enum([enabledCountries[0], ...enabledCountries], {
+        errorMap: customErrorMap,
+      }),
+    })
+    .optional(),
+  address_id: z.string().optional(),
+  mailing_address_id: z.string().optional(),
+  long: z.number().optional(),
+  lat: z.number().optional(),
+  long1: z.number().optional(),
+  lat1: z.number().optional(),
+  ein: z.string({
+    required_error: "EIN is required",
+  }),
+  tax_residence_country: z.enum([enabledCountries[0], ...enabledCountries], {
+    errorMap: customErrorMap,
+  }),
+  tax_classification: z.enum([
+    "Individual/sole proprietor or single-member LLC",
+    "C Corporation",
+    "S Corporation",
+    "Partnership",
+    "Trust/estate",
+    "Limited liability company (if applicable, provide the classification)",
+    "Other (see instructions)",
+  ]),
+});
+
+export type NewCompanychema = z.infer<typeof step2Schema>;

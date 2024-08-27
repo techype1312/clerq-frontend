@@ -13,11 +13,14 @@ import GooglePlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-google-places-autocomplete";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
 import { useUserContext } from "@/context/User";
 import { Servers } from "../../../../../config";
 import { Button } from "../../button";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
+import { ErrorProps } from "@/types/general";
+import isObject from "lodash/isObject";
+import AddressApis from "@/actions/data/address.data";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -46,21 +49,86 @@ export default function AutoFormAddressModal({
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
   const { refreshUser } = useUserContext();
+  const [value, setValue] = useState<any>(null);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onUpdateAddressSuccess = (res: any) => {
+    setLoading(false);
+    return res;
+  };
+
+  const handleUpdateAddress = async (addressId: string, address: any) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AddressApis.updateAddress(addressId, address).then(
+      onUpdateAddressSuccess,
+      onError
+    );
+  };
+
+  const handleOnSelectAddressSuccess = (res: any) => {
+    setLoading(false);
+    form.setValue("address_id", res.id);
+    form.setValue("address", {
+      address_line_1: res.address_line_1,
+      address_line_2: res.address_line_1,
+      city: res.city,
+      state: res.state,
+      postal_code: res.postal_code,
+      country: DEFAULT_COUNTRY_CODE,
+    });
+
+    refreshUser();
+    setValue({
+      label: res.address_line_1.split(",")[0], //This should be removed once the API returns the correct address
+      value: res.address_line_1.split(",")[0],
+    });
+    return res;
+  };
+
+  const handleOnSelectAddress = async (data: {
+    latitude: number;
+    longitude: number;
+  }) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    if (!form.getValues("address_id")) {
+      return AddressApis.createAddress(data).then(
+        handleOnSelectAddressSuccess,
+        onError
+      );
+    } else {
+      return AddressApis.updateAddress(form.getValues("address_id"), data).then(
+        handleOnSelectAddressSuccess,
+        onError
+      );
+    }
+  };
+
   useEffect(() => {
     if (isPresent) {
       setSaved(true);
     }
   }, [isPresent]);
-  const [value, setValue] = useState<any>(null);
+
   useEffect(() => {
     if (name === "address" && form.getValues("address_id"))
       setValue({
         label: form.getValues()?.address?.address_line_1,
         value: form.getValues()?.address?.address_line_1,
       });
-    if (form.getValues("address.country") !== "US") {
-      form.setValue("address.country", "US");
+    if (form.getValues("address.country") !== DEFAULT_COUNTRY_CODE) {
+      form.setValue("address.country", DEFAULT_COUNTRY_CODE);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues("address_id")]);
 
   const handlePlaceSelect = (value: any) => {
@@ -72,55 +140,18 @@ export default function AutoFormAddressModal({
         if (name === "address") {
           form.setValue("lat", lat);
           form.setValue("lng", lng);
-          let res;
-          if (!form.getValues("address_id")) {
-            res = await OnboardingApis.createAddress({
-              latitude: lat,
-              longitude: lng,
-            });
-          } else {
-            const body = {
-              latitude: lat,
-              longitude: lng,
-            };
-            res = await OnboardingApis.updateAddress(
-              form.getValues("address_id"),
-              body
-            );
-          }
-          if (res && res.data && (res.status === 201 || res.status === 200)) {
-            form.setValue("address_id", res.data.id);
-            form.setValue("address", {
-              address_line_1: res.data.address_line_1,
-              address_line_2: res.data.address_line_1,
-              city: res.data.city,
-              state: res.data.state,
-              postal_code: res.data.postal_code,
-              country: "US",
-            });
-
-            refreshUser();
-            setValue({
-              label: res.data.address_line_1.split(",")[0], //This should be removed once the API returns the correct address
-              value: res.data.address_line_1.split(",")[0],
-            });
-          }
+          handleOnSelectAddress({ latitude: lat, longitude: lng });
         }
         setSaved(true);
       });
   };
 
   const copyAddress = async () => {
-    let res;
     if (addressType === "address") {
-      console.log(form.getValues("mailing_address"), form.getValues());
       let body = form.getValues("mailing_address");
       delete body.id;
-      body.country = "US";
-      res = await OnboardingApis.updateAddress(
-        form.getValues("address_id"),
-        body
-      );
+      body.country = DEFAULT_COUNTRY_CODE;
+      handleUpdateAddress(form.getValues("address_id"), body);
 
       form.setValue("address", body);
       setValue({
@@ -130,17 +161,13 @@ export default function AutoFormAddressModal({
     } else if (addressType === "mailing_address") {
       let body = form.getValues("legal_address");
       delete body.id;
-      res = await OnboardingApis.updateAddress(
-        form.getValues("address_id"),
-        body
-      );
-      body.country = "US";
+      handleUpdateAddress(form.getValues("address_id"), body);
+      body.country = DEFAULT_COUNTRY_CODE;
       form.setValue("address", body);
       setValue({
         label: form.getValues()?.mailing_address?.address_line_1,
         value: form.getValues()?.mailing_address?.address_line_1,
       });
-      console.log(res);
     }
   };
 
@@ -162,10 +189,10 @@ export default function AutoFormAddressModal({
                     { lat: 100, lng: 100 },
                   ],
                   componentRestrictions: {
-                    country: ["us"],
+                    country: enabledCountries.map((c) => c.toLowerCase()),
                   },
                 }}
-                apiOptions={{ language: "en", region: "us" }}
+                apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                 selectProps={{
                   value,
                   onChange: handlePlaceSelect,

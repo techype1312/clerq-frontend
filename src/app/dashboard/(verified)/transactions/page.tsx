@@ -1,8 +1,8 @@
 "use client";
-import BankingApis from "@/actions/apis/BankingApis";
+
+import BankingApis from "@/actions/data/banking.data";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import TransactionSkeleton from "@/components/skeletonLoading/dashboard/TransactionSkeleton";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
@@ -12,7 +12,7 @@ import { cn } from "@/utils/utils";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { isObject } from "lodash";
+import isObject from "lodash/isObject";
 import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
@@ -169,9 +169,9 @@ const getTableColumns = ({
     },
   };
 
-  const clerqCategoryCol: ColumnDef<any> = {
-    accessorKey: "clerqCategory",
-    header: "Clerq category",
+  const ottoCategoryCol: ColumnDef<any> = {
+    accessorKey: "ottoCategory",
+    header: "Otto category",
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId));
     },
@@ -271,19 +271,19 @@ const Page = () => {
   const { windowWidth } = useMainContext();
   const [accounts, setAccounts] = React.useState([]);
   const [transactions, setTransactions] = React.useState([]);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(true);
   const [accountsLoading, setAccountsLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setAccountsLoading(false);
   };
 
   const onFetchAccountsSuccess = (res: any) => {
-    if (res.data && res.data?.length) {
-      setAccounts(res.data);
+    if (res && res?.length) {
+      setAccounts(res);
     }
     setAccountsLoading(false);
   };

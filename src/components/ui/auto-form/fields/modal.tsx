@@ -24,11 +24,13 @@ import GooglePlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-google-places-autocomplete";
-import OnboardingApis from "@/actions/apis/OnboardingApis";
 import { Servers } from "../../../../../config";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import { useUserContext } from "@/context/User";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
+import { ErrorProps } from "@/types/general";
+import isObject from "lodash/isObject";
+import AddressApis from "@/actions/data/address.data";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -54,15 +56,70 @@ export default function AutoFormModal({
   isPresent = false,
 }: AutoFormModalComponentProps) {
   const [saved, setSaved] = useState(false);
+  const [value, setValue] = useState<any>(null);
+  const [update, setUpdate] = useState<boolean>(false);
+  const [disableUpdate, setDisableUpdate] = useState<boolean>(false);
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+    setDisableUpdate(true);
+  };
+
+  const onUpdateAddressSuccess = (res: any) => {
+    setLoading(false);
+    return res;
+  };
+
+  const handleUpdateAddress = async (addressId: string, address: any) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    return AddressApis.updateAddress(addressId, address).then(
+      onUpdateAddressSuccess,
+      onError
+    );
+  };
+
+  const handleOnSelectAddressSuccess = (
+    addressType: "address" | "mailing_address",
+    res: any
+  ) => {
+    setLoading(false);
+    form.setValue(`${addressType}_id`, res.id);
+    form.setValue(addressType, res);
+    setDisableUpdate(false);
+    return res;
+  };
+
+  const handleOnSelectAddress = async (
+    addressType: "address" | "mailing_address",
+    data: any
+  ) => {
+    if (loading) return false;
+    setLoading(true);
+    setServerError("");
+    setDisableUpdate(true);
+    if (!form.getValues(`${addressType}_id`)) {
+      return AddressApis.createAddress(data).then(
+        (res) => handleOnSelectAddressSuccess(addressType, res),
+        onError
+      );
+    } else {
+      return AddressApis.updateAddress(
+        form.getValues(`${addressType}_id`),
+        data
+      ).then((res) => handleOnSelectAddressSuccess(addressType, res), onError);
+    }
+  };
 
   useEffect(() => {
     if (isPresent) {
       setSaved(true);
     }
   }, [isPresent]);
-  const [value, setValue] = useState<any>(null);
-  const [update, setUpdate] = useState<boolean>(false);
-  const [disableUpdate, setDisableUpdate] = useState<boolean>(false);
 
   useEffect(() => {
     if (name === "address" && form.getValues("address_id"))
@@ -88,6 +145,7 @@ export default function AutoFormModal({
           "," +
           form.getValues()?.address?.postal_code,
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues("address_id")]);
 
   useEffect(() => {
@@ -114,29 +172,22 @@ export default function AutoFormModal({
           "," +
           form.getValues()?.mailing_address?.postal_code,
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues("mailing_address_id")]);
 
   useEffect(() => {
     if (update) {
       setUpdate(false);
       if (name === "address") {
-        const updateAddress = async () => {
-          const res = await OnboardingApis.updateAddress(
-            form.getValues("address_id"),
-            form.getValues(name)
-          );
-        };
-        updateAddress();
+        handleUpdateAddress(form.getValues("address_id"), form.getValues(name));
       } else {
-        const updateAddress = async () => {
-          const res = await OnboardingApis.updateAddress(
-            form.getValues("mailing_address_id"),
-            form.getValues(name)
-          );
-        };
-        updateAddress();
+        handleUpdateAddress(
+          form.getValues("mailing_address_id"),
+          form.getValues(name)
+        );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update]);
 
   const handlePlaceSelect = (value: any) => {
@@ -145,156 +196,47 @@ export default function AutoFormModal({
     geocodeByAddress(value?.label)
       .then((results: any) => getLatLng(results[0]))
       .then(async ({ lat, lng }: { lat: any; lng: any }) => {
-        setDisableUpdate(true);
         if (name === "address") {
-          let res;
-          const body = {
+          form.setValue("lat", lat);
+          form.setValue("long", lng);
+          handleOnSelectAddress("address", {
             latitude: lat,
             longitude: lng,
-          };
-          if (!form.getValues("address_id")) {
-            res = await OnboardingApis.createAddress(body);
-          } else {
-            res = await OnboardingApis.updateAddress(
-              form.getValues("address_id"),
-              body
-            );
-          }
-          if (res && res.data && (res.status === 201 || res.status === 200)) {
-            console.log("updated address through google places");
-            form.setValue("address_id", res.data.id);
-            form.setValue("address", {
-              address_line_1: res.data.address_line_1,
-              address_line_2: res.data.address_line_1,
-              city: res.data.city,
-              state: res.data.state,
-              postal_code: res.data.postal_code,
-            });
-            form.setValue("lat", lat);
-            form.setValue("long", lng);
-            setDisableUpdate(false);
-          }
+          });
         } else if (name === "mailing_address") {
-          let res;
           form.setValue("lat1", lat);
           form.setValue("long1", lng);
-          const body = {
+          handleOnSelectAddress("mailing_address", {
             latitude: lat,
             longitude: lng,
-          };
-          if (!form.getValues("mailing_address_id")) {
-            res = await OnboardingApis.createAddress(body);
-          } else {
-            res = await OnboardingApis.updateAddress(
-              form.getValues("mailing_address_id"),
-              body
-            );
-          }
-          if (res && res.data && (res.status === 201 || res.status === 200)) {
-            console.log("updated address through google places");
-            form.setValue("mailing_address_id", res.data.id);
-            form.setValue("mailing_address", {
-              address_line_1: res.data.address_line_1,
-              address_line_2: res.data.address_line_1,
-              city: res.data.city,
-              state: res.data.state,
-              postal_code: res.data.postal_code,
-            });
-            setDisableUpdate(false);
-          }
+          });
         }
         setSaved(true);
       });
   };
+
   const copyAddress = async () => {
-    let res;
-    setDisableUpdate(true);
     if (name === "address") {
       const body = {
         ...form.getValues("mailing_address"),
         longitude: form.getValues("long1"),
         latitude: form.getValues("lat1"),
       };
-      if (form.getValues("address_id")) {
-        console.log("here update l");
-        res = await OnboardingApis.updateAddress(
-          form.getValues("address_id"),
-          body
-        );
-      } else {
-        console.log("here create l");
-        res = await OnboardingApis.createAddress(body);
-        form.setValue("address_id", res.data.id);
-      }
       form.setValue("address", body);
       form.setValue("long", body.longitude);
       form.setValue("lat", body.latitude);
-      setValue({
-        label:
-          form.getValues()?.address?.address_line_1 +
-          "," +
-          form.getValues()?.address?.address_line_2 +
-          "," +
-          form.getValues()?.address?.city +
-          "," +
-          form.getValues()?.address?.state +
-          "," +
-          form.getValues()?.address?.postal_code,
-        value:
-          form.getValues()?.address?.address_line_1 +
-          "," +
-          form.getValues()?.address?.address_line_2 +
-          "," +
-          form.getValues()?.address?.city +
-          "," +
-          form.getValues()?.address?.state +
-          "," +
-          form.getValues()?.address?.postal_code,
-      });
+      handleOnSelectAddress("address", body);
     } else if (name === "mailing_address") {
       const body = {
         ...form.getValues("address"),
         longitude: form.getValues("long"),
         latitude: form.getValues("lat"),
       };
-      if (form.getValues("mailing_address_id")) {
-        console.log("here update m");
-        res = await OnboardingApis.updateAddress(
-          form.getValues("mailing_address_id"),
-          body
-        );
-      } else {
-        console.log("here create m");
-        res = await OnboardingApis.createAddress(body);
-        form.setValue("mailing_address_id", res.data.id);
-      }
       form.setValue("mailing_address", body);
       form.setValue("long1", body.longitude);
       form.setValue("lat1", body.latitude);
-      setValue({
-        label:
-          form.getValues()?.mailing_address?.address_line_1 +
-          "," +
-          form.getValues()?.mailing_address?.address_line_2 +
-          "," +
-          form.getValues()?.mailing_address?.city +
-          "," +
-          form.getValues()?.mailing_address?.state +
-          "," +
-          form.getValues()?.mailing_address?.postal_code,
-        value:
-          form.getValues()?.mailing_address?.address_line_1 +
-          "," +
-          form.getValues()?.mailing_address?.address_line_2 +
-          "," +
-          form.getValues()?.mailing_address?.city +
-          "," +
-          form.getValues()?.mailing_address?.state +
-          "," +
-          form.getValues()?.mailing_address?.postal_code,
-      });
+      handleOnSelectAddress("mailing_address", body);
     }
-    setDisableUpdate(false);
   };
 
   return (
@@ -320,10 +262,10 @@ export default function AutoFormModal({
                       { lat: 100, lng: 100 },
                     ],
                     componentRestrictions: {
-                      country: ["us"],
+                      country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: "us" }}
+                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,
@@ -361,10 +303,10 @@ export default function AutoFormModal({
                       { lat: 100, lng: 100 },
                     ],
                     componentRestrictions: {
-                      country: ["us"],
+                      country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: "us" }}
+                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,
@@ -399,7 +341,9 @@ export default function AutoFormModal({
               )}
               <DialogFooter className="mr-auto my-2 h-12 flex gap-2">
                 {disableUpdate ? (
-                  <span className="background-primary px-10 rounded-full h-12 text-white flex items-center justify-center"><Loader2Icon className="animate-spin" /></span>
+                  <span className="background-primary px-10 rounded-full h-12 text-white flex items-center justify-center">
+                    <Loader2Icon className="animate-spin" />
+                  </span>
                 ) : (
                   <DialogClose asChild>
                     <Button

@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import SymbolIcon from "../generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import { Input } from "./input";
 import { Button } from "./button";
 import { toast } from "react-toastify";

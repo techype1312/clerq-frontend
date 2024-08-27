@@ -33,14 +33,16 @@ export interface IUser {
 
 export interface IUserContext {
   loading: boolean;
-  userDataLoaded: boolean;
   error: string;
   refetchUserData: boolean;
   userData?: IUser;
-  setRefetchUserData: Dispatch<SetStateAction<boolean>>
-  refreshUser: () => Promise<false | void>,
-  updateUserLocalData: (data: any) => void
+  setRefetchUserData: Dispatch<SetStateAction<boolean>>;
+  refreshUser: () => Promise<false | void>;
+  updateUserLocalData: (data: any) => void;
   updateUserPhoto: (logo: IImageFileType) => Promise<false | void>;
   removeUserPhoto: () => Promise<false | void>;
-  updateUserData: (values: IUser) => Promise<false | void>;
+  updateUserData: (
+    values: Partial<IUser>,
+    onboarding?: boolean
+  ) => Promise<false | void>;
 }

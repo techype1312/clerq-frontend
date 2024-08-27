@@ -6,7 +6,6 @@ import isObject from "lodash/isObject";
 import { Check, Loader2Icon, Minus } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ErrorProps } from "@/types/general";
-import DocumentApis from "@/actions/apis/DocumentApis";
 import { formatStringWithCount } from "@/utils/utils";
 import { DocumentTypes, DocumentUploadStatusEnum } from "@/types/file";
 import { documentDetails } from "@/utils/constants/document";
@@ -17,18 +16,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
-import UploadFile from "@/components/documents/UploadFile";
+import UploadFile from "@/components/dashboard/documents/UploadFile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import ShareDocumentsDialog from "@/components/documents/ShareDocumentsDialog";
-import DocumentListItem from "@/components/documents/DocumentListItem";
-import DocumentSkeleton from "@/components/skeletonLoading/dashboard/DocumentSkeleton";
+import ShareDocumentsDialog from "@/components/dashboard/documents/ShareDocumentsDialog";
+import DocumentListItem from "@/components/dashboard/documents/DocumentListItem";
+import DocumentApis from "@/actions/data/document.data";
+import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
 
 const DocumentsPage = () => {
   const { toast, dismiss: dismissToast } = useToast();
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentType, setCurrentType] = useState<DocumentTypes>(
     DocumentTypes.FORM_1099
@@ -118,13 +118,13 @@ const DocumentsPage = () => {
   };
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const onFetchDocumentsSuccess = (res: any) => {
-    if (res.data && res.data?.data?.length) {
-      setDocuments(res.data.data);
+    if (res && res.data?.length) {
+      setDocuments(res.data);
     }
     setLoading(false);
   };

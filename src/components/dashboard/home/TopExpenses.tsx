@@ -1,5 +1,3 @@
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import PercentageBar from "@/components/generalComponents/graphs/PercentageBar";
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -7,6 +5,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
+import PercentageBar from "@/components/common/graphs/PercentageBar";
 import { textType } from "@/types/general";
 import React from "react";
 

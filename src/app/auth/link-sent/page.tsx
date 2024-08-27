@@ -1,22 +1,50 @@
 "use client";
-import { login, resendLogin } from "@/app/auth/signin/actions";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import React, { FormEvent, Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { FormEvent, Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useFormStatus } from "react-dom";
 import { useUserContext } from "@/context/User";
-import AuthApis from "@/actions/apis/AuthApis";
-import { useRouter } from "next/navigation";
+import AuthApis from "@/actions/data/auth.data";
+import { ErrorProps } from "@/types/general";
+import isObject from "lodash/isObject";
 
 const LinkSentPage = () => {
-  const router = useRouter();
+  const router = useRouter()
+  const { refreshUser } = useUserContext();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const newUser = searchParams.get("newUser") === "true" ? true : false;
-  const [loading, setLoading] = React.useState(false);
-  const { refreshUser } = useUserContext();
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const handleEmailLoginRequestSuccess = (data: { email: string }) => {
+    toast.success("Check your inbox email sent successfully");
+  };
+
+  const handleEmailLoginRequest = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Email is required");
+      setLoading(false);
+      return router.push("/auth/signin");
+    } else {
+      const formattedEmail = email.trim().toLowerCase();
+      setServerError("");
+      setLoading(true);
+      return AuthApis.loginUserWithEmail("magic_link=true", { email: formattedEmail }).then(
+        handleEmailLoginRequestSuccess,
+        onError
+      );
+    }
+  };
+
   useEffect(() => {
     const handleFocus = () => {
       refreshUser();
@@ -27,26 +55,6 @@ const LinkSentPage = () => {
       window.removeEventListener("focus", handleFocus);
     };
   }, [refreshUser]);
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    const searchParams = "magic_link=true";
-    if (!email) {
-      toast.error("Email is required");
-      setLoading(false);
-      return router.push("/auth/signin");
-    } else {
-      const formattedEmail = email.trim().toLowerCase();
-      const res = await AuthApis.login(searchParams, formattedEmail);
-      if (res && res.status === 200) {
-        toast.success("Check your inbox email sent successfully");
-      } else {
-        toast.error("An error occurred");
-      }
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="text-center flex gap-20 h-screen max-h-screen flex-col items-center justify-center">
@@ -67,10 +75,7 @@ const LinkSentPage = () => {
           If it&apos;s not in your inbox or spam folder, click the button below
           and we&apos;ll send you another one.
         </p>
-        <form
-          onSubmit={handleSubmit}
-          // action={formAction}
-        >
+        <form onSubmit={handleEmailLoginRequest}>
           <input
             id="email"
             name="email"

@@ -13,7 +13,8 @@ export interface IUcrm {
 export interface IUCRMContext {
   loading: boolean;
   error: string;
-  myCompanyMappings: IUcrm[];
   currentUcrm?: IUcrm;
+  myCompanyMappings: IUcrm[];
+  addNewCompanyMapping: (newUcrm: IUcrm) => void;
   switchCompany: (ucrmId: IUcrm['id']) => Promise<void>;
 }

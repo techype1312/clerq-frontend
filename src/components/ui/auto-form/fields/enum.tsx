@@ -11,8 +11,8 @@ import AutoFormLabel from "../common/label";
 import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import { getBaseSchema } from "../utils";
-import { Country, ICountry } from "country-state-city";
-import { country, countryDropdown } from "@/utils/constants";
+import { ICountry } from "country-state-city";
+import { countryDropdown, DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { findCountryItem } from "@/utils/utils";
 
@@ -37,7 +37,7 @@ export default function AutoFormEnum({
   function findItem(value: any) {
     return values.find((item) => item[0] === value);
   }
-  const [countryValue, setCountryValue] = useState<string | undefined>("US");
+  const [countryValue, setCountryValue] = useState<string | undefined>(DEFAULT_COUNTRY_CODE);
   const [countryDisplay, setCountryDisplay] = useState<string | undefined>(
     "United States"
   );

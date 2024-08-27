@@ -2,13 +2,11 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
-import ConnectAccount from "./ConnectAccount";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Fragment } from "react";
 
 const AccountsTable = ({
@@ -55,13 +53,6 @@ const AccountsTable = ({
           </TableBody>
         </Fragment>
       )}
-      {/* <TableFooter className="bg-white border-t-0 w-full">
-        <TableRow>
-          <TableCell colSpan={4} className="text-center p-0">
-            <ConnectAccount companyId={companyId} />
-          </TableCell>
-        </TableRow>
-      </TableFooter> */}
     </Table>
   );
 };

@@ -1,7 +1,5 @@
-import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
-import { country } from "@/utils/constants";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 import PhoneInput from "react-phone-input-2";
-// import "react-phone-input-2/lib/style.css";
 
 export default function InputPhone({
   disabled,
@@ -38,9 +36,9 @@ export default function InputPhone({
     <div className="flex flex-row items-center space-x-2 w-full">
       <div id="phone" className="flex w-full flex-col justify-start">
         <PhoneInput
-          country="us"
+          country={DEFAULT_COUNTRY_CODE.toLowerCase()}
           specialLabel=""
-          onlyCountries={country.map((c) => c.toLowerCase())}
+          onlyCountries={enabledCountries.map((c) => c.toLowerCase())}
           inputProps={{
             placeholder: "(123)-456-7890",
           }}

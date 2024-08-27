@@ -8,18 +8,18 @@ import {
   useState,
 } from "react";
 import isObject from "lodash/isObject";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { ErrorProps } from "@/types/general";
 import {
   Dialog,
   DialogContentWithoutClose,
   DialogDescription,
 } from "@/components/ui/dialog";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IUcrm, IUCRMContext } from "@/types/ucrm";
+import CompanyApis from "@/actions/data/company.data";
+import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
 
 // Create a context
 export const CompanySessionContext = createContext<IUCRMContext>(
@@ -41,12 +41,12 @@ export const CompanySessionProvider = ({
   const [currentUcrm, setCurrentUcrm] = useState<IUcrm>();
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.errors.message : err);
     setLoading(false);
   };
 
   const setUcrmCookie = (ucrmId: IUcrm["id"]) => {
-    Cookies.set("otto_ucrm", ucrmId);
+    setAuthUcrmId(ucrmId);
   };
 
   const handleUcrmSwitch = (ucrmId: IUcrm["id"]) => {
@@ -54,9 +54,9 @@ export const CompanySessionProvider = ({
     setUcrmCookie(ucrmId);
   };
 
-  const onFetchUCRMSuccess = (res: { data: IUcrm }) => {
-    if (res.data) {
-      toast.success(`you've switched to ${res?.data?.company?.name}`, {
+  const onFetchUCRMSuccess = (res: any) => {
+    if (res) {
+      toast.success(`you've switched to ${res?.company?.name}`, {
         delay: 500,
         pauseOnHover: false,
         autoClose: 3000,
@@ -72,7 +72,8 @@ export const CompanySessionProvider = ({
     }
     setLoading(false);
     setopenSwitchDialog(false);
-    router.refresh();
+    router.replace("/dashboard");
+    // router.refresh();
   };
 
   const fetchUcrm = async (ucrmId: IUcrm["id"]) => {
@@ -87,11 +88,16 @@ export const CompanySessionProvider = ({
     return fetchUcrm(ucrmId);
   };
 
-  const onFetchUCRMListSuccess = (res: { data: { data: IUcrm[] } }) => {
+  const onFetchUCRMListSuccess = (res: { data: IUcrm[] }) => {
     if (res.data) {
-      setMyCompanyMappings(res?.data?.data);
+      setMyCompanyMappings(res?.data);
     }
     setLoading(false);
+  };
+
+  const addNewCompanyMapping = (newUcrm: IUcrm) => {
+    setMyCompanyMappings([...myCompanyMappings, newUcrm]);
+    return switchCompany(newUcrm.id);
   };
 
   const refreshUcrmList = useCallback(async () => {
@@ -102,7 +108,7 @@ export const CompanySessionProvider = ({
   }, []);
 
   useEffect(() => {
-    const ucrmFromCookie = Cookies.get("otto_ucrm");
+    const ucrmFromCookie = getAuthUcrmId();
     if (!myCompanyMappings?.length) return;
     if (ucrmFromCookie) {
       const currentUcrm = myCompanyMappings?.find(
@@ -133,8 +139,9 @@ export const CompanySessionProvider = ({
       value={{
         loading,
         error,
-        myCompanyMappings,
         currentUcrm,
+        myCompanyMappings,
+        addNewCompanyMapping,
         switchCompany,
       }}
     >

@@ -1,35 +1,80 @@
 "use client";
 import Link from "next/link";
-import React, { Suspense, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import { signInSchema, signInWithPhoneSchema } from "@/types/schema-embedded";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import AuthApis from "@/actions/apis/AuthApis";
 import { DependencyType } from "@/components/ui/auto-form/types";
 import Image from "next/image";
+import { ErrorProps } from "@/types/general";
+import isObject from "lodash/isObject";
+import AuthApis from "@/actions/data/auth.data";
 
 const SigninPage = () => {
   const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const searchError = searchParams.get("error");
   const hasShownError = useRef(false);
   const router = useRouter();
 
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const handleEmailLoginRequestSuccess = ({ email }: { email: string }) => {
+    router.push(`/auth/link-sent?email=${email}`);
+  };
+
+  const handleEmailLoginRequest = (e: { email: string }) => {
+    const email = e.email.trim().toLowerCase();
+    setServerError("");
+    setLoading(true);
+    return AuthApis.loginUserWithEmail("magic_link=true", { email }).then(
+      handleEmailLoginRequestSuccess,
+      onError
+    );
+  };
+
+  const handlePhoneLoginRequestSuccess = (data: {
+    phone: string;
+    country_code: number;
+  }) => {
+    router.push(
+      `/auth/verify-otp?phone=${data.phone}&country_code=${data.country_code}`
+    );
+  };
+
+  const handlePhoneLoginRequest = (data: {
+    phone: string;
+    country_code: number;
+  }) => {
+    setServerError("");
+    setLoading(true);
+    return AuthApis.loginUserWithOtp(data).then(
+      handlePhoneLoginRequestSuccess,
+      onError
+    );
+  };
+
   useEffect(() => {
-    if (error && !hasShownError.current) {
-      if (error === "Signups not allowed for otp")
+    if (searchError && !hasShownError.current) {
+      if (searchError === "Signups not allowed for otp")
         toast.error("User not found. Please sign up first.");
       hasShownError.current = true;
       router.push("/auth/signin");
     }
-  }, [error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchError]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center md:items-stretch md:justify-normal gap-12">
       <div className="hidden md:block background-placeholder w-1/2"></div>
-      <div className="flex flex-col justify-center items-center gap-24">
-        <Image className="md:hidden" src={"/clerq_logo.png"} alt="Clerq" width={75} height={30} />
-        <div className="flex flex-col gap-4 w-full items-center md:items-start">
+      <div className="flex flex-col justify-center items-center gap-6">
+        <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
+        <div className="flex flex-col gap-4 w-full items-start">
           <h1 className="text-2xl md:text-4xl font-normal text-primary">
             Log In
           </h1>
@@ -39,20 +84,13 @@ const SigninPage = () => {
 
           <AutoForm
             formSchema={signInSchema}
-            onSubmit={async (e) => {
-              const email = e.email.trim().toLowerCase();
-              const searchParams = "magic_link=true";
-              const res = await AuthApis.login(searchParams, email);
-              if (res.status === 200) {
-                router.push(`/auth/link-sent?email=${email}`);
-              }
-            }}
+            onSubmit={handleEmailLoginRequest}
             fieldConfig={{
               email: {
-                inputProps:{
+                inputProps: {
                   placeholder: "your@email.com",
-                }
-              }
+                },
+              },
             }}
             className="flex flex-col gap-4 max-w-sm md:max-w-lg mr-2"
             withSubmitButton={false}
@@ -71,19 +109,7 @@ const SigninPage = () => {
 
           <AutoForm
             formSchema={signInWithPhoneSchema}
-            onSubmit={async (e) => {
-              console.log(e);
-              const data = {
-                phone: e.phone,
-                country_code: e.country_code, //country_code,
-              };
-              const res = await AuthApis.loginWithOtp(data);
-              if (res.status === 200) {
-                router.push(
-                  `/auth/verify-otp?phone=${e.phone}&country_code=${e.country_code}`
-                );
-              }
-            }}
+            onSubmit={handlePhoneLoginRequest}
             fieldConfig={{
               phone: {
                 fieldType: "phone",

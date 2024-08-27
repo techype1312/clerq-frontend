@@ -1,16 +1,12 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 export const MainContext = createContext<any>(null);
-// import { usePathname, useRouter } from "next/navigation";
-// import Cookies from "js-cookie";
 
 export const MainContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  // const router = useRouter();
-  // const pathname = usePathname();
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   useEffect(() => {

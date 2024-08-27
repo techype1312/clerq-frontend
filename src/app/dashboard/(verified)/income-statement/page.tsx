@@ -1,9 +1,9 @@
 "use client";
-import DateRangeDropdownSelect from "@/components/generalComponents/DateRangeDropdownSelect";
-import { DownloadButton } from "@/components/generalComponents/DownloadButton";
-import HeaderCard from "@/components/generalComponents/HeaderCard";
-import SheetsData from "@/components/generalComponents/SheetsData";
-import IncomeBankSkeleton from "@/components/skeletonLoading/dashboard/IncomeBankSkeleton";
+import DateRangeDropdownSelect from "@/components/common/DateRangeDropdownSelect";
+import { DownloadButton } from "@/components/common/DownloadButton";
+import HeaderCard from "@/components/common/HeaderCard";
+import SheetsData from "@/components/common/SheetsData";
+import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkeleton";
 import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
 import React, { Fragment, useEffect, useState } from "react";

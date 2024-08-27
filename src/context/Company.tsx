@@ -9,13 +9,15 @@ import {
 } from "react";
 import isEmpty from "lodash/isEmpty";
 import isObject from "lodash/isObject";
-import CompanyApis from "@/actions/apis/CompanyApis";
 import { ErrorProps } from "@/types/general";
 import { useCompanySessionContext } from "./CompanySession";
 import { ICompany, ICompanyContext } from "@/types/company";
 import { IImageFileType } from "@/types/file";
+import CompanyApis from "@/actions/data/company.data";
 
-export const CompanyContext = createContext<ICompanyContext>({} as ICompanyContext);
+export const CompanyContext = createContext<ICompanyContext>(
+  {} as ICompanyContext
+);
 
 // Create a provider component
 export const CompanyContextProvider = ({
@@ -25,28 +27,24 @@ export const CompanyContextProvider = ({
 }) => {
   const { currentUcrm } = useCompanySessionContext();
   const [loading, setLoading] = useState(false);
-  const [companyDataLoaded, setCompanyDataLoaded] = useState(false);
   const [error, setError] = useState("");
   const [companyData, setCompanyData] = useState<ICompany>();
 
   const onError = (err: string | ErrorProps) => {
-    setError(isObject(err) ? err.message : err);
+    setError(isObject(err) ? err.errors.message : err);
     setLoading(false);
-    setCompanyDataLoaded(true);
   };
 
   const onFetchCompanyDetailsSuccess = (res: any) => {
-    if (res.data) {
-      setCompanyData(res.data);
+    if (res) {
+      setCompanyData(res);
     }
     setLoading(false);
-    setCompanyDataLoaded(true);
   };
 
   const fetchCompanyData = useCallback(async () => {
     if (loading || !currentUcrm?.company?.id) return false;
     setLoading(true);
-    setCompanyDataLoaded(true);
     return CompanyApis.getCompany(currentUcrm?.company?.id).then(
       onFetchCompanyDetailsSuccess,
       onError
@@ -55,8 +53,8 @@ export const CompanyContextProvider = ({
   }, [currentUcrm?.company?.id]);
 
   const onUpdateCompanyDataSuccess = (res: any) => {
-    if (res.data) {
-      setCompanyData(res.data);
+    if (res) {
+      setCompanyData(res);
     }
     return res;
   };
@@ -74,10 +72,10 @@ export const CompanyContextProvider = ({
     if (values.companyName) {
       payload.name = values.companyName;
     }
-    if(values.phone){
+    if (values.phone) {
       payload.phone = values.phone;
     }
-    if(values.country_code){
+    if (values.country_code) {
       payload.country_code = values.country_code;
     }
     if (!isEmpty(payload)) {
@@ -109,7 +107,6 @@ export const CompanyContextProvider = ({
         updateCompanyLogo,
         removeCompanyLogo,
         updateCompanyDetails,
-        companyDataLoaded
       }}
     >
       {children}

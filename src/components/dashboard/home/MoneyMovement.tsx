@@ -1,6 +1,6 @@
 'use client'
-import MonthsAvgBarGraph from "@/components/generalComponents/graphs/MonthsAvgBarGraph";
-import SymbolIcon from "@/components/generalComponents/MaterialSymbol/SymbolIcon";
+import MonthsAvgBarGraph from "@/components/common/graphs/MonthsAvgBarGraph";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { moneyMovementDataType, monthlyGraphDataType } from "@/types/general";
 import { formatNumber } from "@/utils/utils";
 import React, { useEffect, useState } from "react";

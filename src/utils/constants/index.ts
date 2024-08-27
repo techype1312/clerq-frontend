@@ -1,8 +1,11 @@
 import { Country } from "country-state-city";
 
-export const country = ["US", "IN"];
+export const enabledCountries = ["US", "IN"];
 
-export const countryDropdown = country.map((c) => Country.getCountryByCode(c));
+export const countryDropdown = enabledCountries.map((c) => Country.getCountryByCode(c));
+
+export const DEFAULT_COUNTRY_CODE = "US";
+export const DEFAULT_DIAL_CODE = 1;
 
 export const allRoles = [
   { id: 3, name: "Account Owner" },

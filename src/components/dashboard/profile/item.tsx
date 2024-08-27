@@ -1,7 +1,7 @@
 import React from "react";
 import isEmpty from "lodash/isEmpty";
-import ProfilePhotoEditModel from "@/components/profile-photo";
-import ProfileUpdateModal from "@/components/generalComponents/ProfileUpdateModal";
+import ProfilePhotoEditModel from "@/components/common/profile-photo";
+import ProfileUpdateModal from "@/components/common/ProfileUpdateModal";
 import { RowData } from "@/types/general";
 
 const ProfileItem = ({ rowData }: { rowData: RowData }) => {
