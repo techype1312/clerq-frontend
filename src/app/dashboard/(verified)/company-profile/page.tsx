@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
@@ -221,9 +221,7 @@ const CompanyContainer = () => {
 
   const loadingState = () => {
     if (loading || !companyDataLoaded) {
-      return (
-        <ProfileSkeleton />
-      );
+      return <ProfileSkeleton />;
     }
 
     if (companyDataLoaded && !companyData) {
@@ -268,7 +266,9 @@ const CompanyContainer = () => {
 const Page = () => {
   return (
     <CompanyContextProvider>
-      <CompanyContainer />
+      <Suspense fallback={<ProfileSkeleton />}>
+        <CompanyContainer />
+      </Suspense>
     </CompanyContextProvider>
   );
 };

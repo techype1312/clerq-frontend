@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useUserContext } from "@/context/User";
 import { RowData } from "@/types/general";
@@ -34,7 +34,7 @@ const RoleItem = ({ label }: { label: string }) => {
   );
 };
 
-const Page = () => {
+const ProfilePage = () => {
   const {
     loading,
     error,
@@ -232,7 +232,7 @@ const Page = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
-  
+
   const loadingState = () => {
     if (loading || !userDataLoaded) {
       return <ProfileSkeleton />;
@@ -281,4 +281,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfilePage />
+    </Suspense>
+  );
+}
