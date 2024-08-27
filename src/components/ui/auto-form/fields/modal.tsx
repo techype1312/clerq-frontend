@@ -24,7 +24,7 @@ import GooglePlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-google-places-autocomplete";
-import { Servers } from "../../../../../config";
+import { isDemoEnv, Servers } from "../../../../../config";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Loader2Icon } from "lucide-react";
 import { ErrorProps } from "@/types/general";
@@ -378,7 +378,7 @@ export default function AutoFormModal({
                 innerClassName={zodItemClass}
                 labelClass={labelClass}
               />
-              {(name !== "address"
+              {!isDemoEnv() && (name !== "address"
                 ? form.getValues("address_id")
                 : form.getValues("mailing_address_id")) && (
                 <Button

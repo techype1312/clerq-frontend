@@ -24,6 +24,7 @@ import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
 import TeamApis from "@/actions/data/team-data";
 import Avatar from "../Avatar";
+import { isDemoEnv } from "../../../../../config";
 
 const EditMemberDialog = ({
   row,
@@ -130,16 +131,17 @@ const EditMemberDialog = ({
                 Close
               </Button>
             </DialogClose>
-
-            <Button
-              type="button"
-              className="background-primary px-8 rounded-full h-10"
-              onClick={updateRolePermissions}
-              disabled={loading}
-            >
-              {loading && <Loader2Icon className="animate-spin" size={20} />}
-              Update
-            </Button>
+            {!isDemoEnv() && (
+              <Button
+                type="button"
+                className="background-primary px-8 rounded-full h-10"
+                onClick={updateRolePermissions}
+                disabled={loading}
+              >
+                {loading && <Loader2Icon className="animate-spin" size={20} />}
+                Update
+              </Button>
+            )}
           </div>
         </DialogDescription>
       </DialogContent>

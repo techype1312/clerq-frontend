@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import Dropzone from "@/components/common/Dropzone";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import DocumentApis from "@/actions/data/document.data";
+import { isDemoEnv } from "../../../../../config";
 
 const MAX_FILES = 1;
 
@@ -140,7 +141,7 @@ const UploadFile = (props: UploadFileProps) => {
             }}
             onDropRejected={onDropRejected}
             maxFiles={MAX_FILES}
-            disabled={!MAX_FILES}
+            disabled={!MAX_FILES || isDemoEnv()}
           />
           {!!files.length && (
             <div className="flex-col gap-2 mt-2 mb-4">
@@ -163,12 +164,14 @@ const UploadFile = (props: UploadFileProps) => {
             Close
           </Button>
         )}
-        <AutoFormSubmit
-          className="border py-3 rounded-full background-text-primary text-white w-fit px-12"
-          disabled={loading}
-        >
-          Submit
-        </AutoFormSubmit>
+        {!isDemoEnv() && (
+          <AutoFormSubmit
+            className="border py-3 rounded-full background-text-primary text-white w-fit px-12"
+            disabled={loading}
+          >
+            Submit
+          </AutoFormSubmit>
+        )}
       </div>
     </AutoForm>
   );

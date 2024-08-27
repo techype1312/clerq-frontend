@@ -16,6 +16,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
 import InviteTeamApis from "@/actions/data/invite.data";
+import { isDemoEnv } from "../../../../../config";
 
 const RemoveInviteDialog = ({
   row,
@@ -88,15 +89,17 @@ const RemoveInviteDialog = ({
               Go Back
             </Button>
           </DialogClose>
-          <Button
-            type="button"
-            className="background-primary px-8 rounded-full h-10 gap-2"
-            onClick={updateStatus}
-            disabled={loading}
-          >
-            {loading && <Loader2Icon className="animate-spin" size={20} />}
-            {actionBtnText}
-          </Button>
+          {!isDemoEnv() && (
+            <Button
+              type="button"
+              className="background-primary px-8 rounded-full h-10 gap-2"
+              onClick={updateStatus}
+              disabled={loading}
+            >
+              {loading && <Loader2Icon className="animate-spin" size={20} />}
+              {actionBtnText}
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

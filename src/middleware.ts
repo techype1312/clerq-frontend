@@ -3,6 +3,7 @@ import {
   authOnboardingBucket,
   authorizationTokenBucket,
 } from "./utils/session-manager.util";
+import { isDemoEnv } from "../config";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -26,10 +27,16 @@ export async function middleware(request: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-  if (pathname.startsWith("/onboarding") && pathname.includes("/new-company") && !token && pathname != "/") {
+  if (
+    pathname.startsWith("/onboarding") &&
+    pathname.includes("/new-company") &&
+    !token
+  ) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
+  } else if (pathname.startsWith("/onboarding") && token && isDemoEnv()) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-  if (pathname.startsWith("/dashboard") && !token && pathname != "/") {
+  if (pathname.startsWith("/dashboard") && !token) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   } else if (pathname.startsWith("/auth") && token) {
     return NextResponse.redirect(new URL("/dashboard", request.url));

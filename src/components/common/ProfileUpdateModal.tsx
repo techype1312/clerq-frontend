@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { DependencyType } from "../ui/auto-form/types";
 import { RowData } from "@/types/general";
 import { Loader2Icon } from "lucide-react";
+import { isDemoEnv } from "../../../config";
 
 const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
   const [schema, setSchema] = useState<any>({});
@@ -124,14 +125,16 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                     Close
                   </Button>
                 </DialogClose>
-                <Button
-                  className="background-primary"
-                  type="submit"
-                  disabled={loading}
-                >
-                  {loading && <Loader2Icon className="animate-spin" />}
-                  Save
-                </Button>
+                {!isDemoEnv() && (
+                  <Button
+                    className="background-primary"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading && <Loader2Icon className="animate-spin" />}
+                    Save
+                  </Button>
+                )}
               </div>
             </AutoForm>
           )}

@@ -20,6 +20,7 @@ import { inviteUserSchema } from "@/types/schema-embedded";
 import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
 import InviteTeamApis from "@/actions/data/invite.data";
+import { isDemoEnv } from "../../../../../config";
 
 const InviteNewMemberDialog = ({
   onAddSuccess,
@@ -110,16 +111,18 @@ const InviteNewMemberDialog = ({
                     {"Close"}
                   </Button>
                 </DialogClose>
-                <Button
-                  type="submit"
-                  className="background-primary px-8 rounded-full h-10"
-                  disabled={loading}
-                >
-                  {loading && (
-                    <Loader2Icon className="animate-spin" size={20} />
-                  )}
-                  {"Send Invite"}
-                </Button>
+                {!isDemoEnv() && (
+                  <Button
+                    type="submit"
+                    className="background-primary px-8 rounded-full h-10"
+                    disabled={loading}
+                  >
+                    {loading && (
+                      <Loader2Icon className="animate-spin" size={20} />
+                    )}
+                    {"Send Invite"}
+                  </Button>
+                )}
               </div>
             </AutoForm>
           </div>

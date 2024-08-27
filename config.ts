@@ -4,3 +4,11 @@ export const Servers = {
   AppEnv: process.env.NEXT_PUBLIC_APP_ENV,
   DemoEnvToken: process.env.NEXT_PUBLIC_DEMO_USER_TOKEN,
 };
+
+export const isDemoEnv = (): boolean => {
+  return process.env.NEXT_PUBLIC_APP_ENV === "demo"
+}
+
+export const isProductionEnv = (): boolean => {
+  return process.env.NEXT_PUBLIC_APP_ENV === "production"
+}

@@ -23,6 +23,7 @@ import AutoForm from "@/components/ui/auto-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DocumentApis from "@/actions/data/document.data";
+import { isDemoEnv } from "../../../../../config";
 
 const ShareDocumentsDialog = ({
   selectedDocuments = [],
@@ -136,14 +137,16 @@ const ShareDocumentsDialog = ({
                   {"Back"}
                 </Button>
               </DialogClose>
-              <Button
-                type="submit"
-                className="background-primary px-10 rounded-full h-8 gap-2"
-                disabled={loading}
-              >
-                {loading && <Loader2Icon className="animate-spin" />}
-                {"Share via email"}
-              </Button>
+              {!isDemoEnv() && (
+                <Button
+                  type="submit"
+                  className="background-primary px-10 rounded-full h-8 gap-2"
+                  disabled={loading}
+                >
+                  {loading && <Loader2Icon className="animate-spin" />}
+                  {"Share via email"}
+                </Button>
+              )}
             </DialogFooter>
             <p
               style={{

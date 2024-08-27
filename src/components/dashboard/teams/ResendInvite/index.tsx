@@ -6,6 +6,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
 import InviteTeamApis from "@/actions/data/invite.data";
+import { isDemoEnv } from "../../../../../config";
 
 const ResendInviteButton = ({ row }: { row: any }) => {
   const [serverError, setServerError] = useState("");
@@ -25,7 +26,7 @@ const ResendInviteButton = ({ row }: { row: any }) => {
   };
 
   const sendNewInvite = () => {
-    if (loading) return false;
+    if (loading || isDemoEnv()) return false;
     setLoading(true);
     setServerError("");
     return InviteTeamApis.resendInviteLink(row.id).then(onSuccess, onError);

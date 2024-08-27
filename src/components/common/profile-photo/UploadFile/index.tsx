@@ -15,6 +15,7 @@ import Dropzone from "@/components/common/Dropzone";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IImageFileType, ILocalFile } from "@/types/file";
 import FileApis from "@/actions/data/file.data";
+import { isDemoEnv } from "../../../../../config";
 
 const MAX_FILES = 1;
 
@@ -152,22 +153,24 @@ const UploadProfilePhoto = (props: UploadFileProps) => {
               }}
               onDropRejected={onDropRejected}
               maxFiles={MAX_FILES}
-              disabled={!MAX_FILES || loading}
+              disabled={!MAX_FILES || loading || isDemoEnv()}
             />
             {errMsg && <div className="text-red-500 mt-2">{errMsg}</div>}
           </CardContent>
         </Card>
       )}
-      <div className="w-full flex flex-row justify-end gap-2 mt-4">
-        <Button
-          className="border py-2 rounded-full background-text-primary text-white w-fit px-4 gap-2"
-          disabled={loading || !files.length}
-          onClick={setProfile}
-        >
-          {loading && <Loader2Icon className="animate-spin" />}
-          Save
-        </Button>
-      </div>
+      {!isDemoEnv() && (
+        <div className="w-full flex flex-row justify-end gap-2 mt-4">
+          <Button
+            className="border py-2 rounded-full background-text-primary text-white w-fit px-4 gap-2"
+            disabled={loading || !files.length}
+            onClick={setProfile}
+          >
+            {loading && <Loader2Icon className="animate-spin" />}
+            Save
+          </Button>
+        </div>
+      )}
     </Fragment>
   );
 };

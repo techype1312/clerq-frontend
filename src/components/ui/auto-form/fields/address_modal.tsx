@@ -14,7 +14,7 @@ import GooglePlacesAutocomplete, {
   getLatLng,
 } from "react-google-places-autocomplete";
 import { useUserContext } from "@/context/User";
-import { Servers } from "../../../../../config";
+import { isDemoEnv, Servers } from "../../../../../config";
 import { Button } from "../../button";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { ErrorProps } from "@/types/general";
@@ -150,8 +150,8 @@ export default function AutoFormAddressModal({
     e.preventDefault();
     if (addressType === "address") {
       let body = form.getValues("mailing_address");
-      if(!body) return;
-      console.log(body)
+      if (!body) return;
+      console.log(body);
       delete body?.id;
       body.country = DEFAULT_COUNTRY_CODE;
       handleUpdateAddress(form.getValues("address_id"), body);
@@ -162,8 +162,8 @@ export default function AutoFormAddressModal({
       });
     } else if (addressType === "mailing_address") {
       let body = form.getValues("legal_address");
-      if(!body) return;
-      console.log(body)
+      if (!body) return;
+      console.log(body);
       delete body?.id;
       handleUpdateAddress(form.getValues("address_id"), body);
       body.country = DEFAULT_COUNTRY_CODE;
@@ -218,14 +218,18 @@ export default function AutoFormAddressModal({
               innerClassName={zodItemClass}
               labelClass={labelClass}
             />
-            <Button
-              onClick={copyAddress}
-              variant={"ghost"}
-              className="w-fit flex gap-1 text-label pl-0 hover:bg-white"
-            >
-              <SymbolIcon icon="content_copy" size={18} /> copy from{" "}
-              {addressType === "address" ? "mailing address" : "legal address"}
-            </Button>
+            {!isDemoEnv() && (
+              <Button
+                onClick={copyAddress}
+                variant={"ghost"}
+                className="w-fit flex gap-1 text-label pl-0 hover:bg-white"
+              >
+                <SymbolIcon icon="content_copy" size={18} /> copy from{" "}
+                {addressType === "address"
+                  ? "mailing address"
+                  : "legal address"}
+              </Button>
+            )}
           </>
         </FormControl>
         <FormMessage />

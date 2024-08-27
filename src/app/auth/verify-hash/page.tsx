@@ -78,6 +78,15 @@ const VerifyHashPage = () => {
           <h2 className="text-center text-xl font-medium">
             Failed to login! <br />
           </h2>
+          <button
+            disabled={loading}
+            onClick={async () => {
+              router.push("/auth/signin");
+            }}
+            className="text-white bg-primary py-2 px-8 rounded-full w-fit focus:outline-none"
+          >
+            {loading ? <Loader2Icon className="animate-spin" /> : "Go to login"}
+          </button>
         </div>
       </div>
     );

@@ -60,6 +60,18 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
       <SidebarLink
         pathname={pathname}
+        href="/dashboard/invoice"
+        setOpen={setOpen}
+      >
+        <SymbolIcon
+          icon="receipt"
+          color={pathname === "/dashboard/invoice" ? "#5266EB" : ""}
+          size={20}
+        />
+        Invoicing
+      </SidebarLink>
+      <SidebarLink
+        pathname={pathname}
         href="/dashboard/transactions"
         setOpen={setOpen}
       >

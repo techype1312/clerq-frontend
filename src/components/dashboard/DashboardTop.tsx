@@ -29,6 +29,7 @@ import {
   removeAuthUcrmId,
   removeSessionId,
 } from "@/utils/session-manager.util";
+import { isDemoEnv } from "../../../config";
 
 const DashboardTop = () => {
   const router = useRouter();
@@ -175,12 +176,14 @@ const DashboardTop = () => {
             Support
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={handleLogout}
-            className="py-4 cursor-pointer"
-          >
-            Log out
-          </DropdownMenuItem>
+          {!isDemoEnv() && (
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="py-4 cursor-pointer"
+            >
+              Log out
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

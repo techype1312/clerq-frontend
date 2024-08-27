@@ -10,6 +10,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Card } from "@/components/ui/card";
 import { ErrorProps } from "@/types/general";
 import BankingApis from "@/actions/data/banking.data";
+import { isDemoEnv } from "../../../../config";
 
 const ConnectAccount = ({ companyId }: { companyId: string }) => {
   const router = useRouter();
@@ -49,6 +50,7 @@ const ConnectAccount = ({ companyId }: { companyId: string }) => {
   };
 
   const handleLinkTokenGeneration = () => {
+    if (isDemoEnv()) return false;
     if (companyId && !linkToken) {
       setLoading(true);
       BankingApis.generateLinkToken({ companyId }).then(

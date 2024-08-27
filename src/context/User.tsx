@@ -19,7 +19,9 @@ import localStorage from "@/utils/storage/local-storage.util";
 import {
   getAuthToken,
   setAuthOnboardingStatus,
+  setAuthToken,
 } from "@/utils/session-manager.util";
+import { isDemoEnv, Servers } from "../../config";
 
 export const UserContext = createContext<IUserContext>({} as IUserContext);
 
@@ -67,12 +69,21 @@ export const UserContextProvider = ({
     );
   }, [refetchUserData]);
 
+  // ? Don't touch this DemoEnv AutoLogin
+  useEffect(() => {
+    if (isDemoEnv() && Servers.DemoEnvToken) {
+      setAuthToken(Servers.DemoEnvToken);
+      setAuthOnboardingStatus(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (!userData) {
       if (localStorage.get("user") && localStorage.get("user").val) {
         setUserData(JSON.parse(localStorage.get("user").val));
       } else {
-        refreshUser(); //This causes the search params to be cleared
+        setRefetchUserData(true);
+        refreshUser();
       }
     }
   }, []);

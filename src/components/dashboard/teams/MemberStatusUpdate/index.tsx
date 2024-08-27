@@ -15,6 +15,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
 import TeamApis from "@/actions/data/team-data";
+import { isDemoEnv } from "../../../../../config";
 
 const MemberStatusUpdateDialog = ({
   row,
@@ -104,15 +105,17 @@ const MemberStatusUpdateDialog = ({
                 Cancel
               </Button>
             </DialogClose>
-            <Button
-              type="button"
-              className="background-primary px-8 rounded-full h-10 gap-2"
-              onClick={updateStatus}
-              disabled={loading}
-            >
-              {loading && <Loader2Icon className="animate-spin" size={20} />}
-              {actionBtnText}
-            </Button>
+            {!isDemoEnv() && (
+              <Button
+                type="button"
+                className="background-primary px-8 rounded-full h-10 gap-2"
+                onClick={updateStatus}
+                disabled={loading}
+              >
+                {loading && <Loader2Icon className="animate-spin" size={20} />}
+                {actionBtnText}
+              </Button>
+            )}
           </div>
         </DialogDescription>
       </DialogContent>

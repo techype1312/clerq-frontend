@@ -15,6 +15,7 @@ import { Button } from "../../ui/button";
 import SymbolIcon from "../MaterialSymbol/SymbolIcon";
 import UploadProfilePhoto from "./UploadFile";
 import ProfilePhotoPreview from "./ProfilePhotoPreview";
+import { isDemoEnv } from "../../../../config";
 
 const ProfilePhotoEditModel = ({
   updatePhoto,
@@ -65,26 +66,28 @@ const ProfilePhotoEditModel = ({
             lastName={lastName}
             photo={photo}
           />
-          <Fragment>
-            {showButtons && canEdit && photo?.path && (
-              <Button
-                className="flex items-center text-background-primary p-0"
-                variant="link"
-              >
-                <span className="mt-1">Edit</span>
-                <SymbolIcon icon="chevron_right" color="#5265EB" size={14} />
-              </Button>
-            )}
-            {showButtons && canEdit && !photo?.path && (
-              <Button
-                className="flex items-center text-background-primary p-0"
-                variant="link"
-              >
-                <span className="mt-1">Add</span>
-                <SymbolIcon icon="chevron_right" color="#5265EB" size={14} />
-              </Button>
-            )}
-          </Fragment>
+          {!isDemoEnv() && (
+            <Fragment>
+              {showButtons && canEdit && photo?.path && (
+                <Button
+                  className="flex items-center text-background-primary p-0"
+                  variant="link"
+                >
+                  <span className="mt-1">Edit</span>
+                  <SymbolIcon icon="chevron_right" color="#5265EB" size={14} />
+                </Button>
+              )}
+              {showButtons && canEdit && !photo?.path && (
+                <Button
+                  className="flex items-center text-background-primary p-0"
+                  variant="link"
+                >
+                  <span className="mt-1">Add</span>
+                  <SymbolIcon icon="chevron_right" color="#5265EB" size={14} />
+                </Button>
+              )}
+            </Fragment>
+          )}
         </div>
       </DialogTrigger>
       <DialogContent className="max-md:max-w-full max-md:h-screen h-auto z-[100] items-center rounded-md justify-center max-w-md">
@@ -123,15 +126,17 @@ const ProfilePhotoEditModel = ({
                   {`${firstName} ${lastName}`}
                 </p>
               </div>
-              <Button
-                className="rounded-full gap-1 px-4 py-2 h-7 max-md:w-7 hover:bg-red-50 text-red-600"
-                variant="secondary"
-                onClick={handleRemovePhoto}
-                disabled={loading}
-              >
-                <SymbolIcon icon="delete" size={20} />
-                <span className="max-md:hidden">Remove</span>
-              </Button>
+              {!isDemoEnv() && (
+                <Button
+                  className="rounded-full gap-1 px-4 py-2 h-7 max-md:w-7 hover:bg-red-50 text-red-600"
+                  variant="secondary"
+                  onClick={handleRemovePhoto}
+                  disabled={loading}
+                >
+                  <SymbolIcon icon="delete" size={20} />
+                  <span className="max-md:hidden">Remove</span>
+                </Button>
+              )}
             </div>
           )}
           <UploadProfilePhoto onUploadSuccess={handleUpdatePhoto} />

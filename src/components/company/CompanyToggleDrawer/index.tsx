@@ -13,6 +13,7 @@ import { useCompanySessionContext } from "@/context/CompanySession";
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
+import { isDemoEnv } from "../../../../config";
 
 const CompanyToggleDrawer = ({
   toggleBtnText,
@@ -40,7 +41,7 @@ const CompanyToggleDrawer = ({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="gap-10 border-none py-5 px-2 justify-around bg-none bg-transparent w-fit"
+            className="gap-10 border-none py-5 px-2 -ml-2 justify-around bg-none bg-transparent w-fit"
           >
             <div className="flex flex-row items-center gap-2">
               {!toggleBtnText && (
@@ -103,7 +104,7 @@ const CompanyToggleDrawer = ({
               );
             })}
           </DropdownMenuGroup>
-          {showAddNew && (
+          {showAddNew && !isDemoEnv() && (
             <Fragment>
               <DropdownMenuSeparator />
               <DropdownMenuItem
