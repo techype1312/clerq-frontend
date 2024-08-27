@@ -41,7 +41,17 @@ RUN \
 
 # Copy the environment file for production
 # This line will ensure the correct environment variables are available during build
-RUN if [ ! -f .env ]; then cp env-example .env; fi
+RUN \
+  if [ "$APP_ENV" = "staging" ]; then \
+    cp .env.staging .env; \
+  elif [ "$APP_ENV" = "demo" ]; then \
+    cp .env.demo .env; \
+  elif [ "$APP_ENV" = "production" ]; then \
+    cp .env.example .env; \
+  else \
+    cp .env.example .env; \
+  fi
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Generate robots.txt based on APP_ENV
 RUN \
