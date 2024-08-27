@@ -11,8 +11,8 @@ import AutoFormLabel from "../common/label";
 import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import { getBaseSchema } from "../utils";
-import { Country, ICountry } from "country-state-city";
-import { country, countryDropdown, DEFAULT_COUNTRY_CODE } from "@/utils/constants";
+import { ICountry } from "country-state-city";
+import { countryDropdown, DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { findCountryItem } from "@/utils/utils";
 
