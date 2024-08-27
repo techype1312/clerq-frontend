@@ -1,4 +1,4 @@
-import { get, post } from "@/utils/fetch.util";
+import { get, patch, post } from "@/utils/fetch.util";
 
 const signUpUser = (payload: any) =>
   post({
@@ -58,7 +58,7 @@ const getMyprofile = () =>
   }).then((resp) => resp);
 
 const updateMyProfile = (payload: any) =>
-  post({
+  patch({
     url: `/v1/auth/me`,
     data: payload,
   }).then((resp) => resp);
