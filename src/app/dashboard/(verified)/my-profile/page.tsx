@@ -65,9 +65,9 @@ const Page = () => {
   };
 
   const handleUpdateAddress = async (
+    addressType: "legal_address" | "mailing_address",
     addressId: string,
     address: any,
-    addressType: "legal_address" | "mailing_address"
   ) => {
     if (loading) return false;
     setLoading(true);
@@ -195,8 +195,8 @@ const Page = () => {
             onUpdate: async (data: any) => {
               return handleUpdateAddress(
                 "mailing_address",
-                data.address,
                 data.address_id,
+                data.address,
               );
             },
           },

@@ -39,7 +39,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchBankAccounts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUcrm?.company?.id]);
 
   return (

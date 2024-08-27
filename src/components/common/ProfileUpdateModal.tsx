@@ -70,12 +70,10 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                   return rowData.actions?.onUpdate(values).then((res: any) => {
                     setLoading(false);
                     setOpen(false);
-                    if (res?.status === 200) {
-                      toast.success(`Successfully updated ${rowData.label}`, {
-                        position: "bottom-center",
-                        hideProgressBar: true,
-                      });
-                    }
+                    toast.success(`Successfully updated ${rowData.label}`, {
+                      position: "bottom-center",
+                      hideProgressBar: true,
+                    });
                   });
                 } else {
                   setLoading(true);

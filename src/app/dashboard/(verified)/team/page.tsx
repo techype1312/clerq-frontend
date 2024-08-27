@@ -237,7 +237,7 @@ const Page = () => {
         )} */}
 
         {!loading && !rowData.length && (
-          <div className="w-full flex items-center h-[40vh] justify-center">
+          <div className="w-full flex items-center h-[10vh] justify-center">
             Click on the button above to invite a new team member.
           </div>
         )}

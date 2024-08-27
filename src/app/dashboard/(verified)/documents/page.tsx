@@ -3,7 +3,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import compact from "lodash/compact";
 import isObject from "lodash/isObject";
-import { Check, Loader2Icon, Minus } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ErrorProps } from "@/types/general";
 import { formatStringWithCount } from "@/utils/utils";

@@ -318,16 +318,6 @@ const Step2 = ({
         zodItemClass="flex flex-row gap-4 space-y-0"
         labelClass="text-label"
         onValuesChange={(values) => {
-          //For some reason some values are not being updated in the local state but in group they are
-          // setLocalCompanyData((prevData: any) => ({
-          //   ...prevData,
-          //   name: values?.name,
-          //   ein: values?.ein,
-          //   email: values?.email,
-          //   tax_classification: values?.tax_classification,
-          //   phone: values?.phone,
-          //   country_code: values?.country_code,
-          // }));
           if (!addressDataLoaded || values.address_id) {
             if (values.address_id && values.address_id !== addressId) {
               setAddressId(values.address_id);
@@ -373,6 +363,7 @@ const Step2 = ({
             phone: values.phone ?? "",
             country_code: values.country_code ?? "",
             tax_classification: values.tax_classification,
+            tax_residence_country: values.tax_residence_country,
           }));
         }}
       >

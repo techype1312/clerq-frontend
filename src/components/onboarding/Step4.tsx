@@ -10,7 +10,7 @@ import isObject from "lodash/isObject";
 import BankingApis from "@/actions/data/banking.data";
 import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/data/company.data";
-import Cookies from "js-cookie";
+import { setAuthOnboardingStatus } from "@/utils/session-manager.util";
 
 const Step4 = ({
   userData,
@@ -39,16 +39,15 @@ const Step4 = ({
           id: companyId,
         },
       }).then((res) => {
-        console.log(res)
-          Cookies.set('otto-onboarding_completed', "true");
-          updateUserData(
-            {
-              onboarding_completed: true,
-            },
-            true
-          );
-          router.push("/dashboard");
-          return true; 
+        setAuthOnboardingStatus(true);
+        updateUserData(
+          {
+            onboarding_completed: true,
+          },
+          true
+        );
+        router.push("/dashboard");
+        return true;
       });
     },
     onExit: (err, metadata) => {
@@ -75,7 +74,7 @@ const Step4 = ({
       onFetchLinkTokenSuccess,
       onError
     );
-  }
+  };
 
   const onFetchCompaniesSuccess = (res: any) => {
     if (res) {
@@ -88,20 +87,17 @@ const Step4 = ({
     if (!userData?.id || companyId) return false;
     setLoading(true);
     setServerError("");
-    return CompanyApis.getAllCompanies().then(
-      onFetchCompaniesSuccess,
-      onError
-    );
-  }
+    return CompanyApis.getAllCompanies().then(onFetchCompaniesSuccess, onError);
+  };
 
   useEffect(() => {
-    fetchMyCompanies()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchMyCompanies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData?.id, companyId]);
 
   useEffect(() => {
-    generateLinkToken()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    generateLinkToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId, linkToken]);
 
   return (
