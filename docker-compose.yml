@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        APP_ENV: staging
     image: otto-app-staging
     ports:
       - "3001:3001"

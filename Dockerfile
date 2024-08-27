@@ -16,15 +16,31 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG APP_ENV
+ENV APP_ENV=${APP_ENV}
+RUN echo "Current app environment: ${APP_ENV}"
+
 # This will do the trick, use the corresponding env file for each environment.
-COPY .env.example .env
+# Copy the environment file for production
+# This line will ensure the correct environment variables are available during build
+RUN echo "APP_ENV is ${APP_ENV}" && \
+  if [ "$APP_ENV" = "staging" ]; then \
+  cp .env.staging .env; \
+  elif [ "$APP_ENV" = "demo" ]; then \
+  cp .env.demo .env; \
+  elif [ "$APP_ENV" = "production" ]; then \
+  cp .env.example .env; \
+  else \
+  cp .env.example .env; \
+  fi
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
+
 RUN npm run build
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -39,26 +55,12 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-# Copy the environment file for production
-# This line will ensure the correct environment variables are available during build
-RUN \
-  if [ "$APP_ENV" = "staging" ]; then \
-    cp .env.staging .env; \
-  elif [ "$APP_ENV" = "demo" ]; then \
-    cp .env.demo .env; \
-  elif [ "$APP_ENV" = "production" ]; then \
-    cp .env.example .env; \
-  else \
-    cp .env.example .env; \
-  fi
-# RUN if [ ! -f .env ]; then cp .env.example .env; fi
-
 # Generate robots.txt based on APP_ENV
 RUN \
   if [ "$APP_ENV" = "production" ]; then \
-    echo -e "User-agent: *\nAllow: /" > public/robots.txt; \
+  echo -e "User-agent: *\nAllow: /" > public/robots.txt; \
   else \
-    echo -e "User-agent: *\nDisallow: /" > public/robots.txt; \
+  echo -e "User-agent: *\nDisallow: /" > public/robots.txt; \
   fi
 
 # Production image, copy all the files and run next
