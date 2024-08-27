@@ -132,6 +132,7 @@ const Step2 = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyData, addressDataLoaded]);
 
+
   return (
     <div className="w-full">
       <AutoForm
@@ -217,7 +218,7 @@ const Step2 = ({
           tax_classification: localCompanyData?.tax_classification
             ? localCompanyData?.tax_classification
             : "",
-          phone: localCompanyData?.phone ?? "",
+          phone: localCompanyData?.phone ? localCompanyData?.phone : "",
           tax_residence_country:
             localCompanyData?.tax_residence_country ?? DEFAULT_COUNTRY_CODE,
           address: {
@@ -318,15 +319,15 @@ const Step2 = ({
         labelClass="text-label"
         onValuesChange={(values) => {
           //For some reason some values are not being updated in the local state but in group they are
-          setLocalCompanyData((prevData: any) => ({
-            ...prevData,
-            name: values?.name,
-            ein: values?.ein,
-            email: values?.email,
-            tax_classification: values?.tax_classification,
-            phone: values?.phone,
-            country_code: values?.country_code,
-          }));
+          // setLocalCompanyData((prevData: any) => ({
+          //   ...prevData,
+          //   name: values?.name,
+          //   ein: values?.ein,
+          //   email: values?.email,
+          //   tax_classification: values?.tax_classification,
+          //   phone: values?.phone,
+          //   country_code: values?.country_code,
+          // }));
           if (!addressDataLoaded || values.address_id) {
             if (values.address_id && values.address_id !== addressId) {
               setAddressId(values.address_id);
@@ -364,42 +365,15 @@ const Step2 = ({
               });
             }
           }
-          if (values.phone) {
-            setLocalCompanyData({
-              ...localCompanyData,
-              phone: values.phone,
-              country_code: values.country_code,
-            });
-          }
-          if (values.email) {
-            setLocalCompanyData({
-              ...localCompanyData,
-              email: values.email,
-            });
-          }
-          if (values.phone) {
-            setLocalCompanyData({
-              ...localCompanyData,
-              phone: values.phone,
-            });
-          }
-          if (values.ein) {
-            setLocalCompanyData((prevData: any) => ({
-              ...prevData,
-              ein: values.ein,
-              name: values.name,
-              email: values.email,
-              phone: values.phone,
-              tax_classification: values.tax_classification,
-              country_code: values.country_code,
-            }));
-          }
-          if (values.tax_classification) {
-            setLocalCompanyData({
-              ...localCompanyData,
-              tax_classification: values.tax_classification,
-            });
-          }
+          setLocalCompanyData((prevData: any) => ({
+            ...prevData,
+            ein: values.ein ?? "",
+            name: values.name ?? "",
+            email: values.email ?? "",
+            phone: values.phone ?? "",
+            country_code: values.country_code ?? "",
+            tax_classification: values.tax_classification,
+          }));
         }}
       >
         <div className="flex gap-4">

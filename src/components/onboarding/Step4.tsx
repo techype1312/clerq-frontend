@@ -10,6 +10,7 @@ import isObject from "lodash/isObject";
 import BankingApis from "@/actions/data/banking.data";
 import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/data/company.data";
+import Cookies from "js-cookie";
 
 const Step4 = ({
   userData,
@@ -38,12 +39,16 @@ const Step4 = ({
           id: companyId,
         },
       }).then((res) => {
-        return updateUserData(
-          {
-            onboarding_completed: true,
-          },
-          true
-        );
+        console.log(res)
+          Cookies.set('otto-onboarding_completed', "true");
+          updateUserData(
+            {
+              onboarding_completed: true,
+            },
+            true
+          );
+          router.push("/dashboard");
+          return true; 
       });
     },
     onExit: (err, metadata) => {
