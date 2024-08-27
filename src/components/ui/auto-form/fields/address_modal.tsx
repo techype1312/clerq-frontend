@@ -146,27 +146,31 @@ export default function AutoFormAddressModal({
       });
   };
 
-  const copyAddress = async () => {
+  const copyAddress = async (e: any) => {
+    e.preventDefault();
     if (addressType === "address") {
       let body = form.getValues("mailing_address");
-      delete body.id;
+      if(!body) return;
+      console.log(body)
+      delete body?.id;
       body.country = DEFAULT_COUNTRY_CODE;
       handleUpdateAddress(form.getValues("address_id"), body);
-
-      form.setValue("address", body);
-      setValue({
-        label: form.getValues()?.address?.address_line_1,
-        value: form.getValues()?.address?.address_line_1,
-      });
-    } else if (addressType === "mailing_address") {
-      let body = form.getValues("legal_address");
-      delete body.id;
-      handleUpdateAddress(form.getValues("address_id"), body);
-      body.country = DEFAULT_COUNTRY_CODE;
       form.setValue("address", body);
       setValue({
         label: form.getValues()?.mailing_address?.address_line_1,
         value: form.getValues()?.mailing_address?.address_line_1,
+      });
+    } else if (addressType === "mailing_address") {
+      let body = form.getValues("legal_address");
+      if(!body) return;
+      console.log(body)
+      delete body?.id;
+      handleUpdateAddress(form.getValues("address_id"), body);
+      body.country = DEFAULT_COUNTRY_CODE;
+      form.setValue("address", body);
+      setValue({
+        label: form.getValues()?.legal_address?.address_line_1,
+        value: form.getValues()?.legal_address?.address_line_1,
       });
     }
   };
@@ -192,7 +196,10 @@ export default function AutoFormAddressModal({
                     country: enabledCountries.map((c) => c.toLowerCase()),
                   },
                 }}
-                apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
+                apiOptions={{
+                  language: "en",
+                  region: DEFAULT_COUNTRY_CODE.toLowerCase(),
+                }}
                 selectProps={{
                   value,
                   onChange: handlePlaceSelect,

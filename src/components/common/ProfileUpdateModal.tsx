@@ -68,9 +68,9 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                 if (rowData.id.endsWith("address")) {
                   setLoading(true);
                   return rowData.actions?.onUpdate(values).then((res: any) => {
+                    setLoading(false);
+                    setOpen(false);
                     if (res?.status === 200) {
-                      setLoading(false);
-                      setOpen(false);
                       toast.success(`Successfully updated ${rowData.label}`, {
                         position: "bottom-center",
                         hideProgressBar: true,
@@ -80,14 +80,12 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                 } else {
                   setLoading(true);
                   return rowData.actions?.onUpdate(values).then((res: any) => {
-                    if (res?.status === 200) {
-                      setLoading(false);
-                      setOpen(false);
-                      toast.success(`Successfully updated ${rowData.label}`, {
-                        position: "bottom-center",
-                        hideProgressBar: true,
-                      });
-                    }
+                    setLoading(false);
+                    setOpen(false);
+                    toast.success(`Successfully updated ${rowData.label}`, {
+                      position: "bottom-center",
+                      hideProgressBar: true,
+                    });
                   });
                 }
               }}

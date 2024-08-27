@@ -194,9 +194,9 @@ const Page = () => {
           actions: {
             onUpdate: async (data: any) => {
               return handleUpdateAddress(
-                data.address_id,
+                "mailing_address",
                 data.address,
-                "mailing_address"
+                data.address_id,
               );
             },
           },
@@ -227,9 +227,9 @@ const Page = () => {
           actions: {
             onUpdate: async (data: any) => {
               return handleUpdateAddress(
+                "legal_address",
                 data.address_id,
                 data.address,
-                "legal_address"
               );
             },
           },
