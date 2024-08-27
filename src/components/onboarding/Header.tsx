@@ -26,6 +26,7 @@ import {
   removeSessionId,
 } from "@/utils/session-manager.util";
 import CompanyToggleDrawer from "../company/CompanyToggleDrawer";
+import { isEmpty } from "lodash";
 
 const OnboardingHeader = () => {
   const router = useRouter();
@@ -59,6 +60,7 @@ const OnboardingHeader = () => {
     return AuthApis.signOutUser().then(onLogoutSuccess, onError);
   };
 
+  if (!userData || isEmpty(userData)) return null;
   return (
     <div className="my-5 flex px-4 sm:px-8 md:mx-8" ref={inputRef}>
       <div

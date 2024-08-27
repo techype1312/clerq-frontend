@@ -26,6 +26,9 @@ export async function middleware(request: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
+  if (pathname.startsWith("/onboarding") && pathname.includes("/new-company") && !token && pathname != "/") {
+    return NextResponse.redirect(new URL("/auth/signin", request.url));
+  }
   if (pathname.startsWith("/dashboard") && !token && pathname != "/") {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   } else if (pathname.startsWith("/auth") && token) {

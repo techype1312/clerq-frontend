@@ -10,19 +10,10 @@ const Page = () => {
     loading: userDataLoading,
     userData,
   } = useUserContext();
-  const loadingState = () => {
-    if (userDataLoading && !userData) {
-      return <ProfileSkeleton />;
-    }
 
-    if (!userDataLoading && !userData) {
-      return (
-        <div className="w-full flex items-center h-12 justify-center">
-          No data found
-        </div>
-      );
-    }
-  };
+  if (!userDataLoading && !userData) {
+    return null;
+  }
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -31,7 +22,6 @@ const Page = () => {
           <h1 className="text-primary text-2xl font-medium">
             New Company info
           </h1>
-          {loadingState()}
           <NewCompany />
         </div>
       </div>
