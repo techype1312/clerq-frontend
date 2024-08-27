@@ -94,12 +94,12 @@ const CompanyContainer = () => {
         },
         {
           id: "ein",
-          label: "Fedral EIN",
+          label: "Federal EIN",
           formattedValue: companyData.ein,
           type: "text",
           isEditable: true,
           values: {
-            fedralEin: companyData.ein,
+            federalEin: companyData.ein,
           },
           schema: CompanyUpdateSchema.ein,
           actions: {

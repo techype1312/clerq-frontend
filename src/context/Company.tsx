@@ -78,6 +78,9 @@ export const CompanyContextProvider = ({
     if (values.country_code) {
       payload.country_code = values.country_code;
     }
+    if(values.federalEin) {
+      payload.ein = values.federalEin;
+    }
     if (!isEmpty(payload)) {
       return updateCompanyData(payload);
     }
