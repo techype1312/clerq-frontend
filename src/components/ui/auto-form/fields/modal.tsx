@@ -226,6 +226,28 @@ export default function AutoFormModal({
       form.setValue("long", body.longitude);
       form.setValue("lat", body.latitude);
       handleOnSelectAddress("address", body);
+      setValue({
+        label:
+          form.getValues()?.address?.address_line_1 +
+          "," +
+          form.getValues()?.address?.address_line_2 +
+          "," +
+          form.getValues()?.address?.city +
+          "," +
+          form.getValues()?.address?.state +
+          "," +
+          form.getValues()?.address?.postal_code,
+        value:
+          form.getValues()?.address?.address_line_1 +
+          "," +
+          form.getValues()?.address?.address_line_2 +
+          "," +
+          form.getValues()?.address?.city +
+          "," +
+          form.getValues()?.address?.state +
+          "," +
+          form.getValues()?.address?.postal_code,
+      });
     } else if (name === "mailing_address") {
       const body = {
         ...form.getValues("address"),
@@ -236,6 +258,28 @@ export default function AutoFormModal({
       form.setValue("long1", body.longitude);
       form.setValue("lat1", body.latitude);
       handleOnSelectAddress("mailing_address", body);
+      setValue({
+        label:
+          form.getValues()?.mailing_address?.address_line_1 +
+          "," +
+          form.getValues()?.mailing_address?.address_line_2 +
+          "," +
+          form.getValues()?.mailing_address?.city +
+          "," +
+          form.getValues()?.mailing_address?.state +
+          "," +
+          form.getValues()?.mailing_address?.postal_code,
+        value:
+          form.getValues()?.mailing_address?.address_line_1 +
+          "," +
+          form.getValues()?.mailing_address?.address_line_2 +
+          "," +
+          form.getValues()?.mailing_address?.city +
+          "," +
+          form.getValues()?.mailing_address?.state +
+          "," +
+          form.getValues()?.mailing_address?.postal_code,
+      });
     }
   };
 
@@ -265,7 +309,10 @@ export default function AutoFormModal({
                       country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
+                  apiOptions={{
+                    language: "en",
+                    region: DEFAULT_COUNTRY_CODE.toLowerCase(),
+                  }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,
@@ -273,6 +320,7 @@ export default function AutoFormModal({
                       "w-full border !important:border-input rounded-md focus:outline-none focus:border-primary",
                   }}
                 />
+                <FormMessage />
               </div>
               <DialogTrigger asChild>
                 <Button
@@ -306,7 +354,10 @@ export default function AutoFormModal({
                       country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
+                  apiOptions={{
+                    language: "en",
+                    region: DEFAULT_COUNTRY_CODE.toLowerCase(),
+                  }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,

@@ -12,8 +12,8 @@ import {
 } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { cn } from "@/utils/utils";
+import { Form, FormMessage } from "@/components/ui/form";
+import { cn, formatFilterId } from "@/utils/utils";
 import AutoFormObject from "./fields/object";
 import { Dependency, FieldConfig } from "./types";
 import {
@@ -41,7 +41,7 @@ export function AutoFormSubmit({
     <Button
       type="submit"
       disabled={disabled || formState.isSubmitting}
-      className={cn("md:mx-0 px-20 md:px-10",className)}
+      className={cn("md:mx-0 px-20 md:px-10", className)}
     >
       {formState.isSubmitting ? (
         <Loader2Icon className="animate-spin" />
@@ -115,8 +115,11 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   }
 
   const values = form.watch();
+  const valueError = formSchema.safeParse(values);
   // valuesString is needed because form.watch() returns a new object every time
   const valuesString = JSON.stringify(values);
+
+  let showError = false;
 
   React.useEffect(() => {
     onValuesChangeProp?.(values);
@@ -170,6 +173,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
         ) : (
           <form
             onSubmit={(e) => {
+              showError = true;
               form.handleSubmit(onSubmit)(e);
             }}
             className={cn("space-y-2", className)}
@@ -186,6 +190,16 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
             />
             {renderChildren}
             {withSubmitButton && <AutoFormSubmit />}
+            {showError && valueError.error?.issues.map((issue) => (
+              <div key={issue.path.join(".")}>
+                <FormMessage>
+                  <div className="flex flex-col gap-2">
+                    <p>{formatFilterId(issue.path.join(" -> "))}</p>
+                    {issue.message}
+                  </div>
+                </FormMessage>
+              </div>
+            ))}
           </form>
         )}
       </Form>
