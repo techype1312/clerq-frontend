@@ -1,7 +1,6 @@
 "use client";
 import React, { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,13 @@ import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
 
-const CompanyToggleDrawer = () => {
+const CompanyToggleDrawer = ({
+  toggleBtnText,
+  showAddNew = true,
+}: {
+  toggleBtnText?: string;
+  showAddNew?: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const {
@@ -24,6 +29,9 @@ const CompanyToggleDrawer = () => {
     switchCompany,
   } = useCompanySessionContext();
 
+  const initiateNewCompany = () => {
+    router.push("/onboarding/new-company");
+  };
   if (!currentUcrm || !myCompanyMappings.length) return null;
 
   return (
@@ -35,11 +43,13 @@ const CompanyToggleDrawer = () => {
             className="gap-10 border-none py-5 px-0 justify-around bg-none bg-transparent w-fit"
           >
             <div className="flex flex-row items-center gap-2">
-              <ProfilePhotoPreview
-                firstName={currentUcrm.company.name}
-                photo={currentUcrm.company.logo}
-                size={30}
-              />
+              {!toggleBtnText && (
+                <ProfilePhotoPreview
+                  firstName={currentUcrm.company.name}
+                  photo={currentUcrm.company.logo}
+                  size={30}
+                />
+              )}
               <p
                 style={{
                   fontSize: "14px",
@@ -47,7 +57,7 @@ const CompanyToggleDrawer = () => {
                   color: "#1e1e2a",
                 }}
               >
-                {currentUcrm.company.name}
+                {toggleBtnText || currentUcrm.company.name}
               </p>
             </div>
             {open ? (
@@ -69,11 +79,11 @@ const CompanyToggleDrawer = () => {
                   onClick={() => switchCompany(ucrm.id)}
                 >
                   <div className="flex flex-row items-center gap-2">
-                  <ProfilePhotoPreview
-                    firstName={ucrm.company.name}
-                    photo={ucrm.company.logo}
-                    size={30}
-                  />
+                    <ProfilePhotoPreview
+                      firstName={ucrm.company.name}
+                      photo={ucrm.company.logo}
+                      size={30}
+                    />
                     <p
                       style={{
                         fontSize: "14px",
@@ -91,10 +101,17 @@ const CompanyToggleDrawer = () => {
               );
             })}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="my-2 cursor-pointer">
-            Add new company
-          </DropdownMenuItem>
+          {showAddNew && (
+            <Fragment>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="my-2 cursor-pointer"
+                onClick={initiateNewCompany}
+              >
+                Add new company
+              </DropdownMenuItem>
+            </Fragment>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </Fragment>

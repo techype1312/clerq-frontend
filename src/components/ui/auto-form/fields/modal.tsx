@@ -30,6 +30,7 @@ import { Loader2Icon } from "lucide-react";
 import { ErrorProps } from "@/types/general";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -261,10 +262,10 @@ export default function AutoFormModal({
                       { lat: 100, lng: 100 },
                     ],
                     componentRestrictions: {
-                      country: ["us"],
+                      country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: "us" }}
+                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,
@@ -302,10 +303,10 @@ export default function AutoFormModal({
                       { lat: 100, lng: 100 },
                     ],
                     componentRestrictions: {
-                      country: ["us"],
+                      country: enabledCountries.map((c) => c.toLowerCase()),
                     },
                   }}
-                  apiOptions={{ language: "en", region: "us" }}
+                  apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                   selectProps={{
                     value,
                     onChange: handlePlaceSelect,

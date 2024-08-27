@@ -11,6 +11,7 @@ import ProfilePhotoEditModel from "@/components/common/profile-photo";
 import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
+import { DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 
 const RoleItem = ({ label }: { label: string }) => {
   return (
@@ -172,7 +173,7 @@ const Page = () => {
           values: {
             address: {
               country:
-                userData?.mailing_address?.country?.toUpperCase() ?? "US",
+                userData?.mailing_address?.country?.toUpperCase() ?? DEFAULT_COUNTRY_CODE,
               address_line_1: userData?.mailing_address?.address_line_1,
               address_line_2: userData?.mailing_address?.address_line_2,
               city: userData?.mailing_address?.city,

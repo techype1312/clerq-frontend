@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserContext } from "@/context/User";
-import { Input } from "../ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import ProfilePhotoPreview from "../common/profile-photo/ProfilePhotoPreview";
-import { dashboardTitle } from "@/utils/constants";
-import { Button } from "../ui/button";
-import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import { cn } from "@/utils/utils";
 import AuthApis from "@/actions/data/auth.data";
 import isObject from "lodash/isObject";
@@ -29,26 +25,15 @@ import {
   removeAuthUcrmId,
   removeSessionId,
 } from "@/utils/session-manager.util";
+import CompanyToggleDrawer from "../company/CompanyToggleDrawer";
 
-const DashboardTop = () => {
+const OnboardingHeader = () => {
   const router = useRouter();
   const { userData } = useUserContext();
   const pathname = usePathname();
   const inputRef = useRef<any>(null);
-  const [showInput, setShowInput] = React.useState(false);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = React.useState("");
-
-  const mobileTitle = dashboardTitle.find(
-    (title) =>
-      pathname === `/dashboard/${title.toLowerCase().replace(" ", "-")}` ||
-      (title === "Overview" && pathname === "/dashboard") ||
-      (title === "Bank accounts" &&
-        pathname === "/dashboard/bank-connections") ||
-      (title === "Settings" && pathname === "/dashboard/controls") ||
-      (title === "Profile" && pathname === "/dashboard/my-profile")
-  );
 
   const onError = (err: string | ErrorProps) => {
     setServerError(isObject(err) ? err.errors.message : err);
@@ -74,65 +59,21 @@ const DashboardTop = () => {
     return AuthApis.signOutUser().then(onLogoutSuccess, onError);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target)) {
-        setShowInput(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className="my-5 w-full flex" ref={inputRef}>
-      <h1
+    <div className="my-5 flex px-4 sm:px-8 md:mx-8" ref={inputRef}>
+      <div
         className={cn(
-          "text-primary text-2xl font-medium ml-14 flex items-center justify-center md:hidden mb-3",
-          {
-            ["flex"]: !showInput,
-            ["hidden"]: showInput,
-          }
+          "text-primary text-2xl font-medium flex items-center justify-center"
         )}
       >
-        {mobileTitle ? mobileTitle : "Dashboard"}
-      </h1>
-
-      <Input
-        className="ml-8 w-3/4 md:w-1/2 rounded-2xl bg-white"
-        outerClassName={cn(
-          "items-center justify-center max-md:hidden md:flex",
-          {
-            "!flex": showInput,
-          }
-        )}
-        endIcon={"search"}
-        onChange={(e) => setSearch(e.target.value)}
-        value={search}
-        placeholder="Search for a product"
-        type="text"
-      />
-
-      <Button
-        variant={"ghost"}
-        className={cn("ml-auto mr-4 hover:bg-white md:hidden", {
-          ["flex"]: !showInput,
-          ["hidden"]: showInput,
-        })}
-        onClick={() => {
-          setShowInput(!showInput);
-        }}
-      >
-        <SymbolIcon icon="search" className="text-muted" />
-      </Button>
-
+        <CompanyToggleDrawer
+          toggleBtnText="Switch Accounts"
+          showAddNew={false}
+        />
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="md:ml-auto mr-4 md:mr-8 flex items-center cursor-pointer">
+          <div className="ml-auto flex items-center cursor-pointer">
             <ProfilePhotoPreview
               firstName={userData?.firstName}
               lastName={userData?.lastName}
@@ -187,4 +128,4 @@ const DashboardTop = () => {
   );
 };
 
-export default DashboardTop;
+export default OnboardingHeader;

@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, addYears } from "date-fns";
 import { IAddress } from "@/types/address";
-import { country } from "./constants";
+import { enabledCountries } from "./constants";
 import { Country } from "country-state-city";
 
 export function cn(...inputs: ClassValue[]) {
@@ -155,7 +155,8 @@ export const mergeJsonArray = (newValues: Array<Record<string, any>>): Record<st
   }, {});
 };
 
-const countryDropdown = country.map((c) => Country.getCountryByCode(c));
+const countryDropdown = enabledCountries.map((c) => Country.getCountryByCode(c));
+
 export const findCountryItem = (value: any) => {
   const returnValue = countryDropdown.find((item) => item?.isoCode === value)?.name;
   return returnValue ?? "United States";

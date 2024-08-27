@@ -72,7 +72,8 @@ export const CompanySessionProvider = ({
     }
     setLoading(false);
     setopenSwitchDialog(false);
-    router.refresh();
+    router.replace("/dashboard");
+    // router.refresh();
   };
 
   const fetchUcrm = async (ucrmId: IUcrm["id"]) => {
@@ -92,6 +93,11 @@ export const CompanySessionProvider = ({
       setMyCompanyMappings(res?.data);
     }
     setLoading(false);
+  };
+
+  const addNewCompanyMapping = (newUcrm: IUcrm) => {
+    setMyCompanyMappings([...myCompanyMappings, newUcrm]);
+    return switchCompany(newUcrm.id);
   };
 
   const refreshUcrmList = useCallback(async () => {
@@ -133,8 +139,9 @@ export const CompanySessionProvider = ({
       value={{
         loading,
         error,
-        myCompanyMappings,
         currentUcrm,
+        myCompanyMappings,
+        addNewCompanyMapping,
         switchCompany,
       }}
     >

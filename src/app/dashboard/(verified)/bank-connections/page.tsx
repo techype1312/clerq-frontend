@@ -7,6 +7,7 @@ import { ErrorProps } from "@/types/general";
 import Script from "next/script";
 import BankingApis from "@/actions/data/banking.data";
 import BankConnectionsSkeleton from "@/components/skeletons/dashboard/BankConnectionsSkeleton";
+import ConnectAccount from "@/components/dashboard/bankAccounts/ConnectAccount";
 
 const BankConnections = lazy(() => import("./BankConnections"));
 
@@ -67,6 +68,7 @@ export default function Page() {
                   companyId={currentUcrm?.company?.id as string}
                 />
               </Suspense>
+              <ConnectAccount companyId={currentUcrm?.company?.id as string} />
             </div>
           </div>
         </div>

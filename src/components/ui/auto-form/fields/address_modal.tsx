@@ -20,6 +20,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { ErrorProps } from "@/types/general";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 
 type AutoFormModalComponentProps = {
   label: string;
@@ -81,7 +82,7 @@ export default function AutoFormAddressModal({
       city: res.city,
       state: res.state,
       postal_code: res.postal_code,
-      country: "US",
+      country: DEFAULT_COUNTRY_CODE,
     });
 
     refreshUser();
@@ -124,8 +125,8 @@ export default function AutoFormAddressModal({
         label: form.getValues()?.address?.address_line_1,
         value: form.getValues()?.address?.address_line_1,
       });
-    if (form.getValues("address.country") !== "US") {
-      form.setValue("address.country", "US");
+    if (form.getValues("address.country") !== DEFAULT_COUNTRY_CODE) {
+      form.setValue("address.country", DEFAULT_COUNTRY_CODE);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues("address_id")]);
@@ -149,7 +150,7 @@ export default function AutoFormAddressModal({
     if (addressType === "address") {
       let body = form.getValues("mailing_address");
       delete body.id;
-      body.country = "US";
+      body.country = DEFAULT_COUNTRY_CODE;
       handleUpdateAddress(form.getValues("address_id"), body);
 
       form.setValue("address", body);
@@ -161,7 +162,7 @@ export default function AutoFormAddressModal({
       let body = form.getValues("legal_address");
       delete body.id;
       handleUpdateAddress(form.getValues("address_id"), body);
-      body.country = "US";
+      body.country = DEFAULT_COUNTRY_CODE;
       form.setValue("address", body);
       setValue({
         label: form.getValues()?.mailing_address?.address_line_1,
@@ -188,10 +189,10 @@ export default function AutoFormAddressModal({
                     { lat: 100, lng: 100 },
                   ],
                   componentRestrictions: {
-                    country: ["us"],
+                    country: enabledCountries.map((c) => c.toLowerCase()),
                   },
                 }}
-                apiOptions={{ language: "en", region: "us" }}
+                apiOptions={{ language: "en", region: DEFAULT_COUNTRY_CODE.toLowerCase() }}
                 selectProps={{
                   value,
                   onChange: handlePlaceSelect,

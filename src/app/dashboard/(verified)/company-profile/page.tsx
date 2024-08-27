@@ -11,6 +11,7 @@ import { CompanyUpdateSchema } from "@/types/schemas/company";
 import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
+import { DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 
 const CompanyContainer = () => {
   const {
@@ -176,7 +177,7 @@ const CompanyContainer = () => {
           values: {
             address: {
               country:
-                companyData.mailing_address?.country?.toUpperCase() ?? "US",
+                companyData.mailing_address?.country?.toUpperCase() ?? DEFAULT_COUNTRY_CODE,
               address_line_1: companyData.mailing_address?.address_line_1,
               address_line_2: companyData.mailing_address?.address_line_2,
               city: companyData.mailing_address?.city,
@@ -212,7 +213,7 @@ const CompanyContainer = () => {
           values: {
             address: {
               country:
-                companyData.legal_address?.country?.toUpperCase() ?? "US",
+                companyData.legal_address?.country?.toUpperCase() ?? DEFAULT_COUNTRY_CODE,
               address_line_1: companyData.legal_address?.address_line_1,
               address_line_2: companyData.legal_address?.address_line_2,
               city: companyData.legal_address?.city,

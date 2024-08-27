@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import Image from "next/image";
-import CompanyToggleDrawer from "./company-toggle-drawer";
+import CompanyToggleDrawer from "../company/CompanyToggleDrawer";
 import { Fragment } from "react";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
@@ -202,7 +202,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-5 pb-6"
       } `}
     >
-      <div className="flex flex-row px-6 justify-between items-center gap-6 pb-2 border-b">
+      <div className="flex flex-row px-6 justify-between items-center gap-6 pb-2">
         <Image
           src={"/otto_logo_large.png"}
           alt="Otto"

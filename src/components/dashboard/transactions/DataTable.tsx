@@ -301,7 +301,6 @@ export function DataTable<TData, TValue>({
       currentUcrm?.company?.id &&
       accounts?.length
     ) {
-      console.log("filtersChanged >>>>>");
       handleFetchTransactions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -55,16 +55,16 @@ const AcceptInvitationPage = () => {
     if (loading || !hash) return false;
     setServerError("");
     setLoading(true);
-    const data = {
+    const newUserData = {
       hash: hash as string,
       email: values.email,
       password: values.password,
       firstName: values.name.firstName,
       lastName: values.name.lastName,
       phone: values.phone,
-      country_code: 91,
+      country_code: Number(values.country_code),
     };
-    return InviteTeamApis.acceptInvite(data).then(
+    return InviteTeamApis.acceptInvite(newUserData).then(
       onFetchAcceptInviteSuccess,
       onError
     );

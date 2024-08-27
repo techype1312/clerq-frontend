@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import CompanyApis from "@/actions/data/company.data";
 import { DependencyType } from "../ui/auto-form/types";
 import { Button } from "../ui/button";
+import { DEFAULT_COUNTRY_CODE, DEFAULT_DIAL_CODE } from "@/utils/constants";
 
 const Step2 = ({
   changeStep,
@@ -24,7 +25,7 @@ const Step2 = ({
   const [localCompanyData, setLocalCompanyData] = useState<any>({
     name: "",
     phone: "",
-    country_code: 91,
+    country_code: DEFAULT_DIAL_CODE,
   });
   const {
     userData: user,
@@ -57,7 +58,6 @@ const Step2 = ({
       let res: any;
       if (companyData && companyId) {
         let companyUpdateData: any = e;
-        companyUpdateData.country_code = 91;
         delete companyUpdateData.address;
         delete companyUpdateData.mailing_address;
         delete companyUpdateData.address_id;
@@ -65,7 +65,8 @@ const Step2 = ({
         delete companyUpdateData.is_mailing_address_same;
         res = await CompanyApis.updateCompany(companyId, companyUpdateData);
       } else {
-        res = await CompanyApis.createCompany(companyData);
+        const newCompanyRes: any = await CompanyApis.createCompany(companyData);
+        res = newCompanyRes.company;
       }
       setCompanyData(res);
       setLoading(false);
@@ -218,14 +219,14 @@ const Step2 = ({
             : "",
           phone: localCompanyData?.phone ?? "",
           tax_residence_country:
-            localCompanyData?.tax_residence_country ?? "US",
+            localCompanyData?.tax_residence_country ?? DEFAULT_COUNTRY_CODE,
           address: {
             address_line_1: address ? address?.address_line_1 : "",
             address_line_2: address ? address?.address_line_2 : "",
             city: address ? address?.city : "",
             state: address ? address?.state : "",
             postal_code: address?.postal_code ?? "",
-            country: address?.country ?? "US",
+            country: address?.country ?? DEFAULT_COUNTRY_CODE,
           },
           mailing_address: {
             address_line_1: mailingAddress
@@ -237,7 +238,7 @@ const Step2 = ({
             city: mailingAddress ? mailingAddress?.city : "",
             state: mailingAddress ? mailingAddress?.state : "",
             postal_code: mailingAddress?.postal_code ?? "",
-            country: mailingAddress?.country ?? "US",
+            country: mailingAddress?.country ?? DEFAULT_COUNTRY_CODE,
           },
           address_id: addressId ?? "",
           mailing_address_id:

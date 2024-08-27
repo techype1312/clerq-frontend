@@ -12,6 +12,7 @@ import isObject from "lodash/isObject";
 import { setAuthOnboardingStatus, setAuthRefreshToken, setAuthToken } from "@/utils/session-manager.util";
 import AuthApis from "@/actions/data/auth.data";
 import localStorage from "@/utils/storage/local-storage.util";
+import { DEFAULT_DIAL_CODE } from "@/utils/constants";
 
 const VerifyOtpPage = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const VerifyOtpPage = () => {
     return AuthApis.verifyOtp({
       phone,
       otp,
-      country_code: parseInt(country_code ?? "91"),
+      country_code: country_code ? parseInt(country_code) : DEFAULT_DIAL_CODE,
     }).then(handleVerifyOtpSuccess, onError);
   };
 
@@ -65,7 +66,7 @@ const VerifyOtpPage = () => {
     setLoading(true);
     return AuthApis.loginUserWithOtp({
       phone,
-      country_code: parseInt(country_code ?? "91"),
+      country_code: country_code ? parseInt(country_code) : DEFAULT_DIAL_CODE,
     }).then(handleResendOtpSuccess, onError);
   };
 

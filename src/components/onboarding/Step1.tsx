@@ -10,6 +10,7 @@ import AuthApis from "@/actions/data/auth.data";
 import isObject from "lodash/isObject";
 import { ErrorProps } from "@/types/general";
 import CompanyApis from "@/actions/data/company.data";
+import { DEFAULT_COUNTRY_CODE } from "@/utils/constants";
 
 const Step1 = ({
   userData,
@@ -84,7 +85,7 @@ const Step1 = ({
         phone: userData?.phone,
         country_code: e.country_code,
         ein: userData?.phone,
-        tax_residence_country: "US",
+        tax_residence_country: DEFAULT_COUNTRY_CODE,
         tax_classification: "Individual/Sole Proprietor",
       });
     } else if (userData?.company === "No" && companyData?.length > 0) {
@@ -95,7 +96,7 @@ const Step1 = ({
         phone: localUserData?.phone,
         country_code: e.country_code,
         ein: localUserData?.phone,
-        tax_residence_country: "US",
+        tax_residence_country: DEFAULT_COUNTRY_CODE,
         tax_classification: "Individual/Sole Proprietor",
       });
     }
@@ -108,7 +109,7 @@ const Step1 = ({
     userData.legalFirstName = e.name.legalFirstName ?? localUserData.firstName;
     userData.legalLastName = e.name.legalLastName ?? localUserData.lastName;
     delete userData.name;
-    (userData.tax_residence_country = "US"),
+    (userData.tax_residence_country = DEFAULT_COUNTRY_CODE),
       delete userData.tax_residence_country;
     delete userData.email;
     delete userData.phone;
@@ -337,7 +338,7 @@ const Step1 = ({
         email: localUserData?.email,
         phone: localUserData?.phone ?? "",
         country_code: localUserData?.country_code ?? 1,
-        tax_residence_country: localUserData?.tax_residence_country ?? "US",
+        tax_residence_country: localUserData?.tax_residence_country ?? DEFAULT_COUNTRY_CODE,
         date_of_birth: localUserData?.dob
           ? new Date(localUserData?.dob ?? "")
           : undefined,
@@ -347,7 +348,7 @@ const Step1 = ({
           city: address ? address?.city : "",
           state: address ? address?.state : "",
           postal_code: address?.postal_code ?? "",
-          country: address?.country ?? "US",
+          country: address?.country ?? DEFAULT_COUNTRY_CODE,
         },
         mailing_address: {
           address_line_1: mailingAddress ? mailingAddress?.address_line_1 : "",
@@ -355,7 +356,7 @@ const Step1 = ({
           city: mailingAddress ? mailingAddress?.city : "",
           state: mailingAddress ? mailingAddress?.state : "",
           postal_code: mailingAddress?.postal_code ?? "",
-          country: mailingAddress?.country ?? "US",
+          country: mailingAddress?.country ?? DEFAULT_COUNTRY_CODE,
         },
         address_id: addressId ?? "",
         mailing_address_id:

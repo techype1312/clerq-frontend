@@ -30,7 +30,6 @@ import React from "react";
 //     const fetchDropdown = async () => {
 //       const res = await supabase.from("dropdown").select("*");
 //       if (res.error) {
-//         console.log(res.error);
 //         return;
 //       } else {
 //         setFetchingDropdown(false);

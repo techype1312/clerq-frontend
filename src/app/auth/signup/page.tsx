@@ -36,7 +36,7 @@ const SignupPage = () => {
       firstName: values.name.firstName,
       lastName: values.name.lastName,
       phone: values.phone,
-      country_code: 91,
+      country_code: Number(values.country_code),
     };
     return AuthApis.signUpUser(data).then(handleSignupSuccess, onError);
   };
@@ -75,6 +75,10 @@ const SignupPage = () => {
             },
             phone: {
               fieldType: "phone",
+              label: "Phone number",
+              inputProps: {
+                placeholder: "(123)-456-7890",
+              },
             },
           }}
           dependencies={[

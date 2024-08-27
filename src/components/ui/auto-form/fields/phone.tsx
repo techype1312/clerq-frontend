@@ -4,7 +4,7 @@ import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import PhoneInput, { CountryData } from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { country } from "@/utils/constants";
+import { DEFAULT_COUNTRY_CODE, enabledCountries } from "@/utils/constants";
 
 export default function AutoFormPhone({
   label,
@@ -54,9 +54,9 @@ export default function AutoFormPhone({
         )}
         <FormControl>
           <PhoneInput
-            country="in"
+            country={DEFAULT_COUNTRY_CODE.toLowerCase()}
             specialLabel=""
-            onlyCountries={country.map((c) => c.toLowerCase())}
+            onlyCountries={enabledCountries.map((c) => c.toLowerCase())}
             inputProps={{
               placeholder: "(123)-456-7890",
             }}

@@ -4,7 +4,7 @@ import { IImageFileType } from "./file";
 import { IStatus } from "./general";
 
 export interface ICompany {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -16,9 +16,9 @@ export interface ICompany {
   logo?: IImageFileType;
   legal_address?: IAddress;
   mailing_address?: IAddress;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }
 
 export interface ICompanyContext {

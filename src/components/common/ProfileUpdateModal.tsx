@@ -120,11 +120,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
                   },
                 },
               ]}
-              defaultValues={{
-                address: {
-                  country: "US",
-                },
-              }}
+              defaultValues={{}}
             >
               <div className="w-full flex flex-row gap-4 justify-end items-center !mt-5">
                 <DialogClose asChild disabled={loading}>
