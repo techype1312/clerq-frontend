@@ -36,9 +36,9 @@ export async function middleware(request: NextRequest) {
   } else if (pathname.startsWith("/onboarding") && token && isDemoEnv()) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-  if (pathname.startsWith("/dashboard") && !token) {
+  if ((pathname.startsWith("/dashboard") || pathname === "/") && !token) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
-  } else if (pathname.startsWith("/auth") && token) {
+  } else if ((pathname.startsWith("/auth") || pathname === "/") && token) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
   return NextResponse.next();

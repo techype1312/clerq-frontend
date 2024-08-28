@@ -20,6 +20,9 @@ const SymbolIcon = ({
       size={size ?? 24}
       color={color ? color : '#535460'} // Default color
       className={className}
+      style={{
+        maxWidth: size ?? 24
+      }}
     />
   );
 };
