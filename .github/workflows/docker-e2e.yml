@@ -1,0 +1,38 @@
+name: Otto - PR Build check
+
+on:
+  pull_request:
+    branches:
+      - master
+      - staging
+      - demo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image with build args
+        run: |
+          docker build --build-arg APP_ENV=staging -t otto:${{ github.sha }} .
+
+      # - name: Check - Run Docker image
+      #   run: docker run --rm -e APP_ENV=staging otto:${{ github.sha }}
+
+      # - name: Check - Test Docker image
+      #   run: |
+      #     docker run --rm otto:${{ github.sha }} npm run test
+
+      # - name: Check - Lint inside Docker container
+      #   run: |
+      #     docker run --rm otto:${{ github.sha }} npm run lint
+
+      - name: Remove Docker image
+        run: |
+          docker rmi otto:${{ github.sha }}

@@ -2,8 +2,8 @@ name: Staging - Deploy Otto App
 
 on:
   push:
-    branches:
-      - staging
+    branches: [staging]
+  workflow_dispatch:
 
 env:
   AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppStaging/c3d176d41d1947be883776368561dcde
