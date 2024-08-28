@@ -2,8 +2,8 @@ name: Demo - Deploy Otto App
 
 on:
   push:
-    branches:
-      - demo
+    branches: [demo]
+  workflow_dispatch:
 
 env:
   AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppDemo/fb9d199d82614dce88d19aedefbb3a23
