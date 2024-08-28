@@ -201,3 +201,37 @@ input::placeholder {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+@keyframes moveIcon1 {
+  0% {
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100px) scale(0.5);
+    filter: blur(4px);
+    opacity: 0;
+  }
+}
+
+@keyframes moveIcon2 {
+  0% {
+    transform: translateX(100px) scale(0.5);
+    filter: blur(4px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+.icon1-animate {
+  animation: moveIcon1 1s forwards;
+}
+
+.icon2-animate {
+  animation: moveIcon2 1s forwards;
+}

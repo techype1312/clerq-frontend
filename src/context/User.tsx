@@ -22,6 +22,7 @@ import {
   setAuthToken,
 } from "@/utils/session-manager.util";
 import { isDemoEnv, Servers } from "../../config";
+import { Loader2Icon } from "lucide-react";
 
 export const UserContext = createContext<IUserContext>({} as IUserContext);
 
@@ -139,7 +140,7 @@ export const UserContextProvider = ({
     if (values.photo) {
       payload.photo = values.photo;
     }
-    if(values.onboarding_completed){
+    if (values.onboarding_completed) {
       payload.onboarding_completed = values.onboarding_completed;
     }
 
@@ -171,6 +172,22 @@ export const UserContextProvider = ({
         updateUserData,
       }}
     >
+      {loading && (
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            zIndex: 999,
+            position: "fixed",
+            background: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <Loader2Icon
+            className="animate-spin absolute top-[50%] left-[50%] stroke-[#233ED6] z-[1000]"
+            size={"48px"}
+          />
+        </div>
+      )}
       {children}
     </UserContext.Provider>
   );

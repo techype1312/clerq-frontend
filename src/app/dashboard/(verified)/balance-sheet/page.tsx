@@ -2,7 +2,7 @@
 import DateRangeDropdownSelect from "@/components/common/DateRangeDropdownSelect";
 import HeaderCard from "@/components/common/HeaderCard";
 import SheetsData from "@/components/common/SheetsData";
-import IncomeBankSkeleton from "@/components/skeletonLoading/dashboard/IncomeBankSkeleton";
+import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkeleton";
 import { Button } from "@/components/ui/button";
 import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";

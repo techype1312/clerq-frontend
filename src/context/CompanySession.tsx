@@ -20,6 +20,8 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IUcrm, IUCRMContext } from "@/types/ucrm";
 import CompanyApis from "@/actions/data/company.data";
 import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
+import { Loader2Icon } from "lucide-react";
+import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
 
 // Create a context
 export const CompanySessionContext = createContext<IUCRMContext>(
@@ -37,8 +39,8 @@ export const CompanySessionProvider = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openSwitchDialog, setopenSwitchDialog] = useState(false);
-  const [selectedUcrm, setSelectedUcrm] = useState<IUcrm["id"]>();
   const [currentUcrm, setCurrentUcrm] = useState<IUcrm>();
+  const [nextUcrm, setNextUcrm] = useState<IUcrm>();
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.errors.message : err);
@@ -49,10 +51,10 @@ export const CompanySessionProvider = ({
     setAuthUcrmId(ucrmId);
   };
 
-  const handleUcrmSwitch = (ucrmId: IUcrm["id"]) => {
-    setSelectedUcrm(ucrmId);
+  const handleCurrentUcrm = (ucrmId: IUcrm["id"]) => {
+    setCurrentUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === ucrmId));
     setUcrmCookie(ucrmId);
-  };
+  }
 
   const onFetchUCRMSuccess = (res: any) => {
     if (res) {
@@ -69,11 +71,12 @@ export const CompanySessionProvider = ({
           color: "white",
         },
       });
+      handleCurrentUcrm(res?.id);
     }
+    setNextUcrm(undefined)
     setLoading(false);
     setopenSwitchDialog(false);
     router.replace("/dashboard");
-    // router.refresh();
   };
 
   const fetchUcrm = async (ucrmId: IUcrm["id"]) => {
@@ -82,7 +85,7 @@ export const CompanySessionProvider = ({
   };
 
   const switchCompany = async (ucrmId: IUcrm["id"]) => {
-    handleUcrmSwitch(ucrmId);
+    setNextUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === ucrmId));
     setopenSwitchDialog(true);
     setLoading(true);
     return fetchUcrm(ucrmId);
@@ -111,17 +114,17 @@ export const CompanySessionProvider = ({
     const ucrmFromCookie = getAuthUcrmId();
     if (!myCompanyMappings?.length) return;
     if (ucrmFromCookie) {
-      const currentUcrm = myCompanyMappings?.find(
+      const ucrmFound = myCompanyMappings?.find(
         (ucrm) => ucrm.id === ucrmFromCookie
       );
-      if (currentUcrm) {
-        handleUcrmSwitch(ucrmFromCookie);
+      if (ucrmFound) {
+        handleCurrentUcrm(ucrmFromCookie);
       } else {
-        handleUcrmSwitch(myCompanyMappings[0].id);
+        handleCurrentUcrm(myCompanyMappings[0].id);
       }
     }
     if (!ucrmFromCookie) {
-      handleUcrmSwitch(myCompanyMappings[0].id);
+      handleCurrentUcrm(myCompanyMappings[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myCompanyMappings]);
@@ -129,10 +132,6 @@ export const CompanySessionProvider = ({
   useEffect(() => {
     refreshUcrmList();
   }, [refreshUcrmList]);
-
-  useEffect(() => {
-    setCurrentUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === selectedUcrm));
-  }, [myCompanyMappings, selectedUcrm]);
 
   return (
     <CompanySessionContext.Provider
@@ -145,27 +144,80 @@ export const CompanySessionProvider = ({
         switchCompany,
       }}
     >
+      {loading && !openSwitchDialog && (
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            zIndex: 999,
+            position: "fixed",
+            background: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <Loader2Icon
+            className="animate-spin absolute top-[50%] left-[50%] stroke-[#233ED6] z-[1000]"
+            size={"48px"}
+          />
+        </div>
+      )}
       {children}
-      <SwitchUcrmDialog
-        nextUcrm={myCompanyMappings?.find((ucrm) => ucrm.id === selectedUcrm)}
-        open={loading && openSwitchDialog}
-      />
+      <SwitchUcrmDialog currentUcrm={currentUcrm} nextUcrm={nextUcrm} open={openSwitchDialog} />
     </CompanySessionContext.Provider>
   );
 };
 
 const SwitchUcrmDialog = ({
+  currentUcrm,
   nextUcrm,
   open,
 }: {
-  nextUcrm?: Record<string, any>;
+  currentUcrm?: IUcrm;
+  nextUcrm?: IUcrm;
   open: boolean;
 }) => {
-  if (!nextUcrm) return null;
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
+
+  if (!nextUcrm || !currentUcrm) return null;
   return (
     <Dialog open={open}>
-      <DialogContentWithoutClose className="sm:max-w-lg">
-        <DialogDescription className="p-12">{`Switching to ${nextUcrm?.company?.name} ...`}</DialogDescription>
+      <DialogContentWithoutClose className="sm:max-w-md flex flex-col items-center p-8">
+        <div className="relative h-16">
+          <div
+            className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ${
+              animate ? "icon1-animate" : ""
+            }`}
+          >
+            <ProfilePhotoPreview
+              firstName={currentUcrm.company?.name?.split(" ")?.[0]}
+              lastName={currentUcrm.company?.name?.split(" ")?.[1]}
+              photo={currentUcrm.company?.logo}
+              size={38}
+            />
+          </div>
+
+          <div
+            className={`absolute left-full top-1/2 transform -translate-y-1/2 transition-all duration-1000 ${
+              animate ? "icon2-animate" : "hidden"
+            }`}
+          >
+            <ProfilePhotoPreview
+              firstName={nextUcrm.company?.name?.split(" ")?.[0]}
+              lastName={nextUcrm.company?.name?.split(" ")?.[1]}
+              photo={nextUcrm.company?.logo}
+              size={38}
+            />
+          </div>
+        </div>
+        <DialogDescription className="p-4 flex flex-col items-center">
+          <span>{`Switching to...`}</span>
+          <span className="font-bold text-black">
+            {nextUcrm?.company?.name}
+          </span>
+        </DialogDescription>
       </DialogContentWithoutClose>
     </Dialog>
   );
