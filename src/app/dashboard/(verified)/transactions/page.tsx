@@ -1,22 +1,20 @@
 "use client";
 
-import BankingApis from "@/actions/data/banking.data";
 import { DataTable } from "@/components/dashboard/transactions/DataTable";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
-import { ErrorProps } from "@/types/general";
 import { cn } from "@/utils/utils";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import isObject from "lodash/isObject";
 import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { useBankAccountsContext } from "@/context/BankAccounts";
 
 type merchant = {
   merchant_name: string;
@@ -269,39 +267,10 @@ const getTableColumns = ({
 
 const Page = () => {
   const { windowWidth } = useMainContext();
-  const [accounts, setAccounts] = React.useState([]);
+  const { bankAccountsData: accounts, loading: accountsLoading } = useBankAccountsContext();
   const [transactions, setTransactions] = React.useState([]);
-  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [accountsLoading, setAccountsLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
-
-  const onError = (err: string | ErrorProps) => {
-    setServerError(isObject(err) ? err.errors.message : err);
-    setAccountsLoading(false);
-  };
-
-  const onFetchAccountsSuccess = (res: any) => {
-    if (res && res?.length) {
-      setAccounts(res);
-    }
-    setAccountsLoading(false);
-  };
-
-  const fetchAccounts = useCallback(async () => {
-    if (!currentUcrm?.company?.id) return false;
-    setAccountsLoading(true);
-    return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
-      onFetchAccountsSuccess,
-      onError
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
-
-  useEffect(() => {
-    fetchAccounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
 
   return (
     <div className="flex gap-24 flex-row justify-center">
