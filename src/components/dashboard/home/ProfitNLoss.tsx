@@ -1,9 +1,11 @@
 import ProfitNLossGraph from "@/components/common/graphs/ProfitNLossGraph";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { monthlyGraphDataType, profitLossDataType } from "@/types/general";
+import { monthlyGraphDataType, profitLossDataType, textType } from "@/types/general";
 import React, { useEffect, useState } from "react";
 import { months } from "./BookkeepingStatus";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 
 const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
   
@@ -31,27 +33,60 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
       setIsDataFormatted(true);
     }
   }, [profitNLoss.profitLoss, isDataFormatted]);
+
+  const [selectedTimeLine, setSelectedTimeLine] = React.useState<textType>({
+    title: "This month",
+    value: 30,
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <h1 className="text-primary font-medium text-xl">Profit & Loss</h1>
-        <p className="text-sm text-muted ml-auto">Group by</p>
+        <h1 className="text-primary font-medium text-base md:text-xl">Profit & Loss</h1>
+        {/* <p className="text-sm text-muted ml-auto">Group by</p> */}
+        <div className="text-xs md:text-sm text-muted ml-auto md:ml-0 flex gap-2 items-center justify-center">
+          Group by
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
+              <DropdownMenuLabel className="text-xs">{selectedTimeLine.title}</DropdownMenuLabel>
+              <SymbolIcon icon="expand_more" color="#9D9DA7" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-w-16 w-16">
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTimeLine({ title: "Last month", value: -30 });
+                }}
+              >
+                Last month
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTimeLine({ title: "This month", value: 30 });
+                }}
+              >
+                This month
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="grid md:grid-cols-3 w-full gap-4">
         <Card className="flex flex-col py-4 px-6">
-          <CardTitle className="text-label text-base">Total revenue</CardTitle>
-          <p className="text-background-primary text-xl">
+          <CardTitle className="text-label text-sm md:text-base">Total revenue</CardTitle>
+          <p className="text-background-primary text-lg md:text-xl">
             ${profitNLoss.totalRevenue.toFixed(2).toLocaleString()}
           </p>
         </Card>
         <Card className="flex flex-col py-4 px-6">
-          <CardTitle className="text-label text-base">Total expense</CardTitle>
-          <p className="text-xl text-[#900B09]">
+          <CardTitle className="text-label text-sm md:text-base">Total expense</CardTitle>
+          <p className="text-[#900B09] text-lg md:text-xl">
             ${profitNLoss.totalExpenses.toFixed(2).toLocaleString()}
           </p>
         </Card>
         <Card className="flex flex-col py-4 px-6">
-          <CardTitle className="text-label text-base">
+          <CardTitle className="text-label text-sm md:text-base">
             Net profit/loss
           </CardTitle>
           <div
@@ -59,7 +94,7 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
               profitNLoss.totalRevenue - profitNLoss.totalExpenses > 0
                 ? "text-[#02542D]"
                 : "text-[#900B09]"
-            } text-xl`}
+            } text-lg md:text-xl`}
           >
             $
             {(

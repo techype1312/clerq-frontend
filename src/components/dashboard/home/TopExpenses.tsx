@@ -18,13 +18,13 @@ const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <h1 className="text-primary text-xl">Top Expenses</h1>
-        <div className="text-sm text-muted ml-auto md:ml-0 flex gap-2 items-center justify-center">
+        <h1 className="text-primary text-base md:text-xl">Top Expenses</h1>
+        <div className="text-xs md:text-sm text-muted ml-auto md:ml-0 flex gap-2 items-center justify-center">
           Compare to
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
-              <DropdownMenuLabel>{selectedTimeLine.title}</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{selectedTimeLine.title}</DropdownMenuLabel>
               <SymbolIcon icon="expand_more" color="#9D9DA7" />
               </div>
             </DropdownMenuTrigger>
@@ -50,17 +50,17 @@ const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
       {topExpenses.map((expense, index) => (
         <div
           key={index}
-          className="grid custom-grid-template justify-between border-b last:border-0 py-2 text-label"
+          className="grid gap-4 md:gap-0 custom-grid-template justify-between border-b last:border-0 py-2 text-label"
         >
-          <p className="col-span-2 flex items-center gap-2">
+          <p className="col-span-2 flex items-center gap-2 text-xs md:text-base">
             <SymbolIcon icon="local_shipping" color="#9D9DA7" />
             {expense.title}
           </p>
-          <p className="text-end w-fit">
+          <p className="text-end w-fit text-sm md:text-base ml-auto md:ml-0">
             -$
             {Math.abs(expense.value).toFixed(2).toLocaleString()}
           </p>
-          <p className="flex gap-2 items-center justify-end px-2">
+          <p className="hidden md:flex gap-2 items-center justify-end px-2">
             <PercentageBar percentage={expense.percentage ?? 0} />
             {expense.percentage}%
           </p>
