@@ -290,11 +290,9 @@ const CompanyContainer = () => {
 
 const Page = () => {
   return (
-    <CompanyContextProvider>
       <Suspense fallback={<ProfileSkeleton />}>
         <CompanyContainer />
       </Suspense>
-    </CompanyContextProvider>
   );
 };
 
