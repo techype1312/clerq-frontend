@@ -1,15 +1,51 @@
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import PercentageBar from "@/components/common/graphs/PercentageBar";
-import { Select } from "@/components/ui/select";
 import { textType } from "@/types/general";
 import React from "react";
 
 const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
+  const [selectedTimeLine, setSelectedTimeLine] = React.useState<textType>({
+    title: "This month",
+    value: 30,
+  });
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <h1 className="text-primary text-xl">Top Expenses</h1>
-        <p className="text-sm text-muted ml-auto md:ml-0">Compare to</p>
+        <div className="text-sm text-muted ml-auto md:ml-0 flex gap-2 items-center justify-center">
+          Compare to
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
+              <DropdownMenuLabel>{selectedTimeLine.title}</DropdownMenuLabel>
+              <SymbolIcon icon="expand_more" color="#9D9DA7" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-w-16 w-16">
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTimeLine({ title: "Last month", value: -30 });
+                }}
+              >
+                Last month
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTimeLine({ title: "This month", value: 30 });
+                }}
+              >
+                This month
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       {topExpenses.map((expense, index) => (
         <div

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { find, findIndex, isObject, reject } from "lodash";
 import { Loader2Icon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -16,6 +16,7 @@ import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
 import InviteTeamApis from "@/actions/data/invite.data";
 import TeamApis from "@/actions/data/team-data";
+import TeamSkeleton from "@/components/skeletons/dashboard/TeamSkeleton";
 
 const getTableColumns = ({
   windowWidth,
@@ -97,7 +98,7 @@ const getTableColumns = ({
   return [userProfileCol, userRoleCol, userStatusCol, userActionsCol];
 };
 
-const Page = () => {
+const TeamsPage = () => {
   const { windowWidth } = useMainContext();
   const { userData } = useUserContext();
   const { currentUcrm } = useCompanySessionContext();
@@ -264,4 +265,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense fallback={<TeamSkeleton />}>
+      <TeamsPage />
+    </Suspense>
+  );
+}

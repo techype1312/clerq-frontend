@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useCallback, useEffect, useState } from "react";
 import compact from "lodash/compact";
 import isObject from "lodash/isObject";
 import { Check, Minus } from "lucide-react";
@@ -24,8 +24,9 @@ import { Button } from "@/components/ui/button";
 import ShareDocumentsDialog from "@/components/dashboard/documents/ShareDocumentsDialog";
 import DocumentListItem from "@/components/dashboard/documents/DocumentListItem";
 import DocumentApis from "@/actions/data/document.data";
+import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
 
-const Page = () => {
+const DocumentsPage = () => {
   const { toast, dismiss: dismissToast } = useToast();
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -290,4 +291,11 @@ const Page = () => {
   );
 };
 
-export default Page;
+
+export default function Page() {
+  return (
+    <Suspense fallback={<DocumentSkeleton />}>
+      <DocumentsPage />
+    </Suspense>
+  );
+}

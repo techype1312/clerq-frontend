@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useUserContext } from "@/context/User";
 import { ErrorProps, RowData } from "@/types/general";
@@ -35,7 +35,7 @@ const RoleItem = ({ label }: { label: string }) => {
   );
 };
 
-const Page = () => {
+const ProfilePage = () => {
   const {
     loading: userDataLoading,
     error,
@@ -299,4 +299,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfilePage />
+    </Suspense>
+  );
+}

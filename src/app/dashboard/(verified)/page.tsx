@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   bookKeepingStatusType,
@@ -11,8 +11,9 @@ import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
+import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleton";
 
-const Page = () => {
+const Dashboard = () => {
   const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
     {
       title: "Last 7 days",
@@ -128,6 +129,12 @@ const Page = () => {
     ],
   });
 
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setDataLoading(false);
+  }, []);
+
   return (
     <div className="flex gap-24 flex-row justify-center">
       <div className="w-full lg:max-w-[950px]">
@@ -152,48 +159,34 @@ const Page = () => {
               ))}
             </div>
           </div>
-          <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
-          <div className="flex flex-col gap-4">
-            <h2 className="text-primary font-medium text-base md:text-xl">
-              Money movement
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <MoneyMovement moneyMovementData={moneyMovementData} />
-              <MoneyMovement moneyMovementData={moneyMovementData1} />
-            </div>
-          </div>
-          <TopExpenses topExpenses={topExpenses} />
-          <ProfitNLoss profitNLoss={profitNLoss} />
+          {dataLoading ? (
+            <DashboardSkeleton />
+          ) : (
+            <>
+              <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
+              <div className="flex flex-col gap-4">
+                <h2 className="text-primary font-medium text-base md:text-xl">
+                  Money movement
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <MoneyMovement moneyMovementData={moneyMovementData} />
+                  <MoneyMovement moneyMovementData={moneyMovementData1} />
+                </div>
+              </div>
+              <TopExpenses topExpenses={topExpenses} />
+              <ProfitNLoss profitNLoss={profitNLoss} />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Page;
-
-{
-  /* <Card
-  onClick={() => {
-    open();
-  }}
-  className="p-4 flex gap-2 bg-[#FAFBFD] border-none cursor-pointer"
->
-  <div className="my-auto">
-    <Image
-      src="/otto_plaid.png"
-      alt="Plaid & Otto"
-      width={102}
-      height={64}
-    />
-  </div>
-  <CardHeader>
-    <CardTitle className="text-xl font-normal text-primary">
-      Connect with Plaid
-    </CardTitle>
-    <CardDescription className="text-base font-normal text-label">
-      Deploy your new project in one-click.
-    </CardDescription>
-  </CardHeader>
-</Card> */
+export default function Page() {
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <Dashboard />
+    </Suspense>
+  );
 }

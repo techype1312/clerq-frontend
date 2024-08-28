@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { ErrorProps, RowData } from "@/types/general";
 import { formatAddress, formatPhoneNumber } from "@/utils/utils";
@@ -291,7 +291,9 @@ const CompanyContainer = () => {
 const Page = () => {
   return (
     <CompanyContextProvider>
-      <CompanyContainer />
+      <Suspense fallback={<ProfileSkeleton />}>
+        <CompanyContainer />
+      </Suspense>
     </CompanyContextProvider>
   );
 };
