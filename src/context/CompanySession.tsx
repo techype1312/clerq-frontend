@@ -91,7 +91,7 @@ export const CompanySessionProvider = ({
     return fetchUcrm(ucrmId);
   };
 
-  const onFetchUCRMListSuccess = (res: { data: IUcrm[] }) => {
+  const onFetchUCRMListSuccess = (res: any) => {
     if (res.data) {
       setMyCompanyMappings(res?.data);
     }
