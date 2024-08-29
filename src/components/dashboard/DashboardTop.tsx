@@ -30,10 +30,19 @@ import {
   removeSessionId,
 } from "@/utils/session-manager.util";
 import { isDemoEnv } from "../../../config";
+import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
-const DashboardTop = () => {
+const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
   const router = useRouter();
   const { userData } = useUserContext();
+  const { currentUcrm } = useCompanySessionContext();
   const pathname = usePathname();
   const inputRef = useRef<any>(null);
   const [showInput, setShowInput] = React.useState(false);
@@ -75,6 +84,10 @@ const DashboardTop = () => {
     return AuthApis.signOutUser().then(onLogoutSuccess, onError);
   };
 
+  const handleNotifications = () => {
+    router.replace("/dashboard/notifications");
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
@@ -90,23 +103,42 @@ const DashboardTop = () => {
   }, []);
 
   return (
-    <div className="my-5 w-full flex" ref={inputRef}>
-      <h1
-        className={cn(
-          "text-primary text-2xl font-medium ml-14 flex items-center justify-center md:hidden mb-3",
-          {
+    <div
+      className="my-5 w-[-webkit-fill-available] flex items-center ml-4 md:ml-8 mr-4 md:mr-8 "
+      ref={inputRef}
+    >
+      <div className="flex items-center relative lg:hidden">
+        <Button className="p-0" onClick={toggleDrawer} variant="ghost">
+          <ProfilePhotoPreview
+            firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
+            lastName={currentUcrm?.company?.name?.split(" ")?.[1]}
+            photo={currentUcrm?.company?.logo}
+            size={30}
+          />
+        </Button>
+      </div>
+      <div className={cn("ml-4 flex items-center")}>
+        <h1
+          className={cn("text-xl font-medium lg:hidden", {
             ["flex"]: !showInput,
             ["hidden"]: showInput,
-          }
-        )}
-      >
-        {mobileTitle ? mobileTitle : "Dashboard"}
-      </h1>
+          })}
+        >
+          {mobileTitle ? mobileTitle : "Dashboard"}
+        </h1>
+        <Image
+          src={"/otto_logo_large.png"}
+          alt="Otto"
+          width={77}
+          height={30}
+          className="max-md:hidden"
+        />
+      </div>
 
       <Input
-        className="ml-8 w-3/4 md:w-1/2 rounded-2xl bg-white"
+        className="w-full md:w-1/2 rounded-2xl bg-white h-9"
         outerClassName={cn(
-          "items-center justify-center max-md:hidden md:flex",
+          "items-center justify-center max-md:hidden md:flex ml-5 mr-4",
           {
             "!flex": showInput,
           }
@@ -120,25 +152,48 @@ const DashboardTop = () => {
 
       <Button
         variant={"ghost"}
-        className={cn("ml-auto mr-4 hover:bg-white md:hidden", {
-          ["flex"]: !showInput,
-          ["hidden"]: showInput,
-        })}
+        className={cn(
+          "ml-auto hover:bg-white md:hidden min-w-8 h-8 mr-[22px] p-0",
+          {
+            ["flex"]: !showInput,
+            ["hidden"]: showInput,
+          }
+        )}
         onClick={() => {
           setShowInput(!showInput);
         }}
       >
-        <SymbolIcon icon="search" className="text-muted" />
+        <SymbolIcon icon="search" className="text-muted" size={28} />
       </Button>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger
+            className="flex hover:bg-accent rounded-full min-w-8 h-8 mr-6 p-0 items-center justify-center"
+            onClick={handleNotifications}
+          >
+            <SymbolIcon
+              icon="notifications"
+              color={pathname === "/dashboard/notifications" ? "#5266EB" : ""}
+              size={28}
+            />
+          </TooltipTrigger>
+          <TooltipContent className="text-xs bg-slate-800 text-white px-2 items-center">
+            <p className="whitespace-break-spaces max-w-72">
+              {"Notifications"}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="md:ml-auto mr-4 md:mr-8 flex items-center cursor-pointer">
+          <div className="md:ml-auto flex items-center cursor-pointer">
             <ProfilePhotoPreview
               firstName={userData?.firstName}
               lastName={userData?.lastName}
               photo={userData?.photo}
-              size={38}
+              size={36}
               className="rounded-full"
             />
           </div>

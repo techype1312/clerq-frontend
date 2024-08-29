@@ -66,8 +66,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         />
         {EndIcon && (
           <div className="relative">
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-              <SymbolIcon icon={endIcon} />
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 items-center flex">
+              <SymbolIcon icon={endIcon} size={28}/>
             </div>
           </div>
         )}

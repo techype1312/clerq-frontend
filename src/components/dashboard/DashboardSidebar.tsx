@@ -173,8 +173,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
       </SidebarLink>
 
       {/* User Section */}
-      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
-        {/* <SymbolIcon icon="person" size={24} /> */}
+      {/* <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
         <span>Personal</span>
       </div>
 
@@ -202,7 +201,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           size={20}
         />
         Notifications
-      </SidebarLink>
+      </SidebarLink> */}
     </Fragment>
   ) : null;
 
@@ -214,23 +213,15 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-5 pb-6"
       } `}
     >
-      <div className="flex flex-row px-6 justify-between items-center gap-6 pb-2">
-        <Image
-          src={"/otto_logo_large.png"}
-          alt="Otto"
-          width={77}
-          height={30}
-        />
+      <div className="flex flex-row px-6 items-center">
         <button
-          className="flex lg:hidden items-center"
+          className="flex lg:hidden items-center mr-4 w-7 h-7"
           onClick={() => {
             setOpen(false);
           }}
         >
-          <SymbolIcon icon="close" />
+          <SymbolIcon icon="arrow_back" />
         </button>
-      </div>
-      <div className="flex flex-col px-6">
         <CompanyToggleDrawer />
       </div>
       <div className="flex flex-col mt-0 gap-3 items-start border-t px-6 overflow-scroll">

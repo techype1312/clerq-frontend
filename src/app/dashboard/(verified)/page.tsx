@@ -15,8 +15,10 @@ import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
 import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleton";
 import FinanceApis from "@/actions/data/finance.data";
 import { isObject } from "lodash";
+import { useUserContext } from "@/context/User";
 
 const Dashboard = () => {
+  const { userData } = useUserContext()
   const [overviewTimeLine, setOverviewTimeLine] = useState<LabelValue[]>([
     {
       label: "Last 7 days",
@@ -79,8 +81,8 @@ const Dashboard = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 flex-col md:flex-row justify-between">
-            <h1 className="text-primary text-2xl font-medium ml-1 max-md:hidden">
-              Overview
+            <h1 className="text-primary text-2xl font-medium max-md:hidden">
+              {`Welcome, ${userData?.firstName}`}
             </h1>
             <div className="flex gap-2 overflow-auto">
               {overviewTimeLine.map((timeLine, index) => (
