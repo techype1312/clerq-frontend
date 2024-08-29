@@ -31,7 +31,7 @@ const BookkeepingStatus = ({
         </p>
       </div>
       <div className="grid w-full grid-flow-col overflow-scroll">
-        {bookkeepingStatus.map((status, index) => (
+        {bookkeepingStatus?.map((status, index) => (
           <div key={index} className="flex flex-col gap-1 py-2 px-4 first:pl-0 last:pr-0 items-center">
             <p className="text-sm text-muted">{months[index]?.toUpperCase()}</p>
             <p

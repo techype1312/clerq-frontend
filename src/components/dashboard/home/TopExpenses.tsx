@@ -47,7 +47,7 @@ const TopExpenses = ({ topExpenses }: { topExpenses: TextType[] }) => {
           </DropdownMenu>
         </div>
       </div>
-      {topExpenses.map((expense, index) => (
+      {topExpenses?.map((expense, index) => (
         <div
           key={index}
           className="grid gap-4 md:gap-0 custom-grid-template justify-between border-b last:border-0 py-2 text-label"
