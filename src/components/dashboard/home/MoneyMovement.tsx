@@ -11,7 +11,7 @@ const MoneyMovement = ({
   moneyMovementData: MoneyMovementDataType;
 }) => {
   const [formattedData, setFormattedData] = useState<MonthlyGraphDataType[]>(
-    moneyMovementData.avgValueDistribution.map((value) => ({
+    moneyMovementData?.avgValueDistribution.map((value) => ({
       name: value.toString(),
       amt: value,
       uv: value,
@@ -20,9 +20,9 @@ const MoneyMovement = ({
   );
   const [isDataFormatted, setIsDataFormatted] = useState(false);
   useEffect(() => {
-    if (moneyMovementData.avgValueDistribution.length > 0 && !isDataFormatted) {
+    if (moneyMovementData?.avgValueDistribution.length > 0 && !isDataFormatted) {
       setFormattedData(
-        moneyMovementData.avgValueDistribution.map((value) => ({
+        moneyMovementData?.avgValueDistribution.map((value) => ({
           name: value.toString(),
           amt: value,
           uv: value,
@@ -31,7 +31,8 @@ const MoneyMovement = ({
       );
       setIsDataFormatted(true);
     }
-  }, [moneyMovementData.avgValueDistribution]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moneyMovementData?.avgValueDistribution]);
   return (
     <div className="flex flex-col gap-2 w-full border-input border p-4 rounded-md">
       <div className="flex justify-between items-center">

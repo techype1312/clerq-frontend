@@ -1,139 +1,79 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
-import {
-  BookKeepingStatusType,
-  MoneyMovementDataType,
-  ProfitLossDataType,
-  TextType,
-} from "@/types/general";
+import { ErrorProps, LabelValue } from "@/types/general";
 import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
 import TopExpenses from "@/components/dashboard/home/TopExpenses";
 import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
 import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleton";
+import FinanceApis from "@/actions/data/finance.data";
+import { isObject } from "lodash";
 
 const Dashboard = () => {
-  const [overviewTimeLine, setOverviewTimeLine] = useState<TextType[]>([
+  const [overviewTimeLine, setOverviewTimeLine] = useState<LabelValue[]>([
     {
       label: "Last 7 days",
-      value: -7,
+      value: "-7",
     },
     {
       label: "Last month",
-      value: -30,
+      value: "-30",
     },
     {
       label: "This month",
-      value: 30,
+      value: "30",
     },
     {
       label: "Year to date",
-      value: 365,
+      value: "ytd",
     },
   ]);
-  const [selectedTimeLine, setSelectedTimeLine] = useState<TextType>({
+  const [selectedTimeLine, setSelectedTimeLine] = useState<LabelValue>({
     label: "This month",
-    value: 30,
+    value: "30",
   });
 
-  const [bookkeepingStatus, setBookkeepingStatus] = useState<
-    BookKeepingStatusType[]
-  >([
-    { value: "completed" },
-    { value: "completed" },
-    { value: "completed" },
-    { value: "completed" },
-    { value: "completed" },
-    { value: "completed" },
-    { value: "completed" },
-    { value: "pending" },
-    { value: "upcoming" },
-    { value: "upcoming" },
-    { value: "upcoming" },
-    { value: "upcoming" },
-  ]);
-
-  const [moneyMovementData, setMoneyMovementData] =
-    useState<MoneyMovementDataType>({
-      title: "Money in",
-      value: 10000,
-      categories: [
-        { label: "Logistics", value: 1000 },
-        { label: "Wages", value: 700 },
-        { label: "Stationery", value: 200 },
-        { label: "Uncategorised", value: 100 },
-      ],
-      avgValue: 4000000,
-      avgValueDistribution: [1000000, 2000000, 3000000],
-    });
-  const [moneyMovementData1, setMoneyMovementData1] =
-    useState<MoneyMovementDataType>({
-      title: "Money out",
-      value: -10000,
-      categories: [
-        { label: "Logistics", value: 1000 },
-        { label: "Wages", value: 700 },
-        { label: "Stationery", value: 200 },
-        { label: "Uncategorised", value: 100 },
-      ],
-      avgValue: 200000,
-      avgValueDistribution: [10000, 20000, 30000],
-    });
-  const [topExpenses, setTopExpenses] = useState<TextType[]>([
-    {
-      label: "Independent Contractor Expense",
-      value: -1456,
-      percentage: 40,
-    },
-    {
-      label: "Travel & Transportation Expense",
-      value: -1000,
-      percentage: 30,
-    },
-    {
-      label: "Training & Education Expense",
-      value: -500,
-      percentage: 15,
-    },
-    {
-      label: "Business Meals",
-      value: -200,
-      percentage: 10,
-    },
-    {
-      label: "Overhead Costs (Rent, Utilities etc)",
-      value: -100,
-      percentage: 5,
-    },
-  ]);
-
-  const [profitNLoss, setProfitNLoss] = useState<ProfitLossDataType>({
-    totalRevenue: 100000.5,
-    totalExpenses: 50000.632,
-    fromMonth: "Jan",
-    toMonth: "Mar",
-    profitLoss: [
-      {
-        revenue: 100000,
-        expenses: 50000,
-      },
-      {
-        revenue: 150000,
-        expenses: 50000,
-      },
-      {
-        revenue: 6000,
-        expenses: 50000,
-      },
-    ],
-  });
-
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [analyticsReport, setAnalyticsReport] = useState<Record<string, any>>();
   const [dataLoading, setDataLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
     setDataLoading(false);
-  }, []);
+  };
+
+  const onFetchAnalyticsSuccess = (res: any) => {
+    if (res) {
+      setAnalyticsReport(res);
+    }
+    setDataLoading(false);
+    setLoading(false);
+  };
+
+  const fetchAnalyticsReport = useCallback(async () => {
+    if (loading || !selectedTimeLine?.value) return false;
+    setLoading(true);
+    return FinanceApis.getAnalytics(selectedTimeLine.value).then(
+      onFetchAnalyticsSuccess,
+      onError
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTimeLine]);
+
+  useEffect(() => {
+    fetchAnalyticsReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchAnalyticsReport]);
+
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -153,6 +93,9 @@ const Dashboard = () => {
                       ? "text-background-primary background-muted"
                       : "text-muted"
                   } hover:text-label `}
+                  onClick={() => {
+                    setSelectedTimeLine(timeLine);
+                  }}
                 >
                   {timeLine.label}
                 </Button>
@@ -163,18 +106,34 @@ const Dashboard = () => {
             <DashboardSkeleton />
           ) : (
             <>
-              <BookkeepingStatus bookkeepingStatus={bookkeepingStatus} />
+              {analyticsReport?.bookKeepingStatus && (
+                <BookkeepingStatus
+                  bookkeepingStatus={analyticsReport?.bookKeepingStatus}
+                />
+              )}
               <div className="flex flex-col gap-4">
                 <h2 className="text-primary font-medium text-base md:text-xl">
                   Money movement
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <MoneyMovement moneyMovementData={moneyMovementData} />
-                  <MoneyMovement moneyMovementData={moneyMovementData1} />
+                  {analyticsReport?.moneyIn && analyticsReport?.moneyOut && (
+                    <Fragment>
+                      <MoneyMovement
+                        moneyMovementData={analyticsReport.moneyIn}
+                      />
+                      <MoneyMovement
+                        moneyMovementData={analyticsReport.moneyOut}
+                      />
+                    </Fragment>
+                  )}
                 </div>
               </div>
-              <TopExpenses topExpenses={topExpenses} />
-              <ProfitNLoss profitNLoss={profitNLoss} />
+              {analyticsReport?.topExpenses && (
+                <TopExpenses topExpenses={analyticsReport?.topExpenses} />
+              )}
+              {analyticsReport?.PNL && (
+                <ProfitNLoss profitNLoss={analyticsReport?.PNL} />
+              )}
             </>
           )}
         </div>

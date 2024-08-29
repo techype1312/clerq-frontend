@@ -10,7 +10,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
   
   const [formattedData, setFormattedData] = useState<MonthlyGraphDataType[]>(
-    profitNLoss.profitLoss.map((value,index) => ({
+    profitNLoss?.profitLoss.map((value,index) => ({
       name: value.revenue.toString(),
       uv: value.expenses,
       pv: value.revenue,
@@ -20,9 +20,9 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
   );
   const [isDataFormatted, setIsDataFormatted] = useState(false);
   useEffect(() => {
-    if (profitNLoss.profitLoss.length > 0 && !isDataFormatted) {
+    if (profitNLoss?.profitLoss.length > 0 && !isDataFormatted) {
       setFormattedData(
-        profitNLoss.profitLoss.map((value,index) => ({
+        profitNLoss?.profitLoss.map((value,index) => ({
           name: value.revenue.toString(),
           uv: value.expenses,
           pv: value.revenue,
@@ -32,7 +32,7 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
       );
       setIsDataFormatted(true);
     }
-  }, [profitNLoss.profitLoss, isDataFormatted]);
+  }, [profitNLoss?.profitLoss, isDataFormatted]);
 
   const [selectedTimeLine, setSelectedTimeLine] = React.useState<TextType>({
     label: "This month",
