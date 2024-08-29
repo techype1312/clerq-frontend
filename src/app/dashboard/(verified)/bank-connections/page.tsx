@@ -1,11 +1,8 @@
 "use client";
 
-import React, { Fragment, lazy, Suspense, useEffect, useState } from "react";
-import isObject from "lodash/isObject";
+import React, { Fragment, lazy, Suspense } from "react";
 import { useCompanySessionContext } from "@/context/CompanySession";
-import { ErrorProps } from "@/types/general";
 import Script from "next/script";
-import BankingApis from "@/actions/data/banking.data";
 import BankConnectionsSkeleton from "@/components/skeletons/dashboard/BankConnectionsSkeleton";
 import ConnectAccount from "@/components/dashboard/bankAccounts/ConnectAccount";
 import { useBankAccountsContext } from "@/context/BankAccounts";
@@ -37,10 +34,7 @@ export default function Page() {
                 Automatically extract all business transactions for bookkeeping.
               </p>
               <Suspense fallback={<BankConnectionsSkeleton />}>
-                <BankConnections
-                  bankAccounts={bankAccountsData}
-                  companyId={currentUcrm?.company?.id as string}
-                />
+                <BankConnections bankAccounts={bankAccountsData} />
               </Suspense>
               <ConnectAccount companyId={currentUcrm?.company?.id as string} />
             </div>

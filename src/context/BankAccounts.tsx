@@ -14,7 +14,6 @@ import BankingApis from "@/actions/data/banking.data";
 
 export const BankAccountsContext = createContext<any>({} as any);
 
-// Create a provider component
 export const BankAccountsContextProvider = ({
   children,
 }: {
@@ -22,7 +21,6 @@ export const BankAccountsContextProvider = ({
 }) => {
   const { currentUcrm } = useCompanySessionContext();
   const [loading, setLoading] = useState(true);
-  // const [bankAccountsLoaded, setBankAccountsLoaded] = useState(false);
   const [error, setError] = useState("");
   const [bankAccountsData, setBankAccountsData] = useState<any>();
   const onError = (err: string | ErrorProps) => {

@@ -267,7 +267,8 @@ const getTableColumns = ({
 
 const Page = () => {
   const { windowWidth } = useMainContext();
-  const { bankAccountsData: accounts, loading: accountsLoading } = useBankAccountsContext();
+  const { bankAccountsData: accounts, loading: accountsLoading } =
+    useBankAccountsContext();
   const [transactions, setTransactions] = React.useState([]);
   const [loading, setLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
