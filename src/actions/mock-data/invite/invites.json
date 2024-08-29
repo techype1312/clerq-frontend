@@ -1,23 +1,46 @@
 [
   {
     "id": "25c1f8e9-73db-4200-982d-6503241f192f",
-    "email": "anurag+1@joinotto.com",
+    "email": "cali@joinotto.com",
     "company": {
       "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
-      "name": "Clerq Tech",
+      "name": "Juliana Swim LLC",
       "logo": {
         "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
-        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "path": "https://stage-public.joinotto.com/demo/company1.png",
         "__entity": "FileEntity"
       }
     },
     "role": {
-      "id": 5,
-      "name": "Accountant"
+      "id": 4,
+      "name": "Account Admin"
     },
     "status": "PENDING",
-    "firstName": "Anurag",
-    "lastName": "Patel",
+    "firstName": "Cali",
+    "lastName": "Rockowitz",
+    "permissions": null,
+    "createdAt": "2024-08-24T08:07:29.280Z",
+    "updatedAt": "2024-08-24T08:07:29.280Z"
+  },
+  {
+    "id": "25c1f8e9-73db-4200-982d-6503241f192f",
+    "email": "nikko@joinotto.com",
+    "company": {
+      "id": "59485580-f970-4ae4-a664-d64ce7d831f2",
+      "name": "Laughalot Entertainment LLC",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/demo/company2.png",
+        "__entity": "FileEntity"
+      }
+    },
+    "role": {
+      "id": 4,
+      "name": "Account Admin"
+    },
+    "status": "PENDING",
+    "firstName": "Nikko",
+    "lastName": "Lara",
     "permissions": null,
     "createdAt": "2024-08-24T08:07:29.280Z",
     "updatedAt": "2024-08-24T08:07:29.280Z"

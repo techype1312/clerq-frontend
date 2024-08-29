@@ -4,6 +4,8 @@ import { get, patch, post } from "@/utils/fetch.util";
 import { isDemoEnv } from "../../../config";
 import documentsMockData from "../mock-data/document/documents.json";
 import { getMockAllDocuments } from "../mock-data/document";
+import { getAuthUcrmId } from "@/utils/session-manager.util";
+import { getMockUCRM } from "../mock-data/company";
 
 const getAllDocuments = async (query: {
   page?: number;
@@ -22,7 +24,9 @@ const getAllDocuments = async (query: {
   const sort = [{ orderBy, order }];
 
   if (isDemoEnv()) {
-    const companyId = "1c94436d-f396-4e45-8bc8-6ce06ab5fd56";
+    const ucrmId = getAuthUcrmId();
+    const ucrm: any = await getMockUCRM(ucrmId as string);
+    const companyId = ucrm?.company?.id;
     return getMockAllDocuments(companyId, filters.type)
   }
 

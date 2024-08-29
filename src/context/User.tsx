@@ -73,6 +73,7 @@ export const UserContextProvider = ({
   // ? Don't touch this DemoEnv AutoLogin
   useEffect(() => {
     if (isDemoEnv() && Servers.DemoEnvToken) {
+      localStorage.remove("user");
       setAuthToken(Servers.DemoEnvToken);
       setAuthOnboardingStatus(true);
     }
