@@ -21,6 +21,9 @@ export const getMockMyAllUCRMs = () => {
 export const getMockUCRM = (ucrmId: string) => {
   return new Promise((resolve) => {
     const ucrmMock = ucrmsMockData.find((md) => md.id === ucrmId) || {};
-    return resolve(ucrmMock);
+    var delayInMilliseconds = 2000;
+    setTimeout(function() {
+      return resolve(ucrmMock);
+    }, delayInMilliseconds);
   });
 };

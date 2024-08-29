@@ -131,7 +131,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
           alt="Otto"
           width={77}
           height={30}
-          className="max-md:hidden"
+          className="hidden lg:flex"
         />
       </div>
 

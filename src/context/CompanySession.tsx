@@ -15,6 +15,7 @@ import {
   Dialog,
   DialogContentWithoutClose,
   DialogDescription,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IUcrm, IUCRMContext } from "@/types/ucrm";
@@ -54,7 +55,7 @@ export const CompanySessionProvider = ({
   const handleCurrentUcrm = (ucrmId: IUcrm["id"]) => {
     setCurrentUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === ucrmId));
     setUcrmCookie(ucrmId);
-  }
+  };
 
   const onFetchUCRMSuccess = (res: any) => {
     if (res) {
@@ -73,7 +74,7 @@ export const CompanySessionProvider = ({
       });
       handleCurrentUcrm(res?.id);
     }
-    setNextUcrm(undefined)
+    setNextUcrm(undefined);
     setLoading(false);
     setopenSwitchDialog(false);
     router.replace("/dashboard");
@@ -161,7 +162,11 @@ export const CompanySessionProvider = ({
         </div>
       )}
       {children}
-      <SwitchUcrmDialog currentUcrm={currentUcrm} nextUcrm={nextUcrm} open={openSwitchDialog} />
+      <SwitchUcrmDialog
+        currentUcrm={currentUcrm}
+        nextUcrm={nextUcrm}
+        open={openSwitchDialog}
+      />
     </CompanySessionContext.Provider>
   );
 };
@@ -181,10 +186,12 @@ const SwitchUcrmDialog = ({
     setAnimate(true);
   }, []);
 
-  if (!nextUcrm || !currentUcrm) return null;
+  const openDialog = open && !!nextUcrm && !!currentUcrm;
+
   return (
-    <Dialog open={open}>
+    <Dialog open={openDialog}>
       <DialogContentWithoutClose className="sm:max-w-md flex flex-col items-center p-8">
+        <DialogTitle className="hidden"></DialogTitle>
         <div className="relative h-16">
           <div
             className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ${
@@ -192,9 +199,9 @@ const SwitchUcrmDialog = ({
             }`}
           >
             <ProfilePhotoPreview
-              firstName={currentUcrm.company?.name?.split(" ")?.[0]}
-              lastName={currentUcrm.company?.name?.split(" ")?.[1]}
-              photo={currentUcrm.company?.logo}
+              firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
+              lastName={currentUcrm?.company?.name?.split(" ")?.[1]}
+              photo={currentUcrm?.company?.logo}
               size={38}
             />
           </div>
@@ -205,9 +212,9 @@ const SwitchUcrmDialog = ({
             }`}
           >
             <ProfilePhotoPreview
-              firstName={nextUcrm.company?.name?.split(" ")?.[0]}
-              lastName={nextUcrm.company?.name?.split(" ")?.[1]}
-              photo={nextUcrm.company?.logo}
+              firstName={nextUcrm?.company?.name?.split(" ")?.[0]}
+              lastName={nextUcrm?.company?.name?.split(" ")?.[1]}
+              photo={nextUcrm?.company?.logo}
               size={38}
             />
           </div>

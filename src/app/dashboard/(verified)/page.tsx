@@ -18,7 +18,7 @@ import { isObject } from "lodash";
 import { useUserContext } from "@/context/User";
 
 const Dashboard = () => {
-  const { userData } = useUserContext()
+  const { userData } = useUserContext();
   const [overviewTimeLine, setOverviewTimeLine] = useState<LabelValue[]>([
     {
       label: "Last 7 days",
@@ -82,7 +82,7 @@ const Dashboard = () => {
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 flex-col md:flex-row justify-between">
             <h1 className="text-primary text-2xl font-medium max-md:hidden">
-              {`Welcome, ${userData?.firstName}`}
+              {userData?.firstName ? `Welcome, ${userData?.firstName}` : ""}
             </h1>
             <div className="flex gap-2 overflow-auto">
               {overviewTimeLine.map((timeLine, index) => (

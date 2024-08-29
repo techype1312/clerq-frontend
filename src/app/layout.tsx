@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { cn } from "@/utils/utils";
 import { MainContextProvider } from "@/context/Main";
-import "react-material-symbols/rounded";
+// import "react-material-symbols/rounded";
 import { Toaster } from "@/components/ui/toaster";
 import { UserContextProvider } from "@/context/User";
 import "react-loading-skeleton/dist/skeleton.css";

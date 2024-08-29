@@ -213,7 +213,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-5 pb-6"
       } `}
     >
-      <div className="flex flex-row px-6 items-center">
+      <div className="flex flex-row px-6 items-center h-7">
         <button
           className="flex lg:hidden items-center mr-4 w-7 h-7"
           onClick={() => {

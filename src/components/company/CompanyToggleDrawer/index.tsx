@@ -49,7 +49,7 @@ const CompanyToggleDrawer = ({
                   firstName={currentUcrm.company?.name?.split(' ')?.[0]}
                   lastName={currentUcrm.company?.name?.split(' ')?.[1]}
                   photo={currentUcrm.company.logo}
-                  size={30}
+                  size={28}
                 />
               )}
               <p

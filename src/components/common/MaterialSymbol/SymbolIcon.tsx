@@ -1,6 +1,5 @@
 import React from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { SymbolCodepoints } from "react-material-symbols";
+import { MaterialSymbol, SymbolCodepoints } from "react-material-symbols";
 
 const SymbolIcon = ({
   icon,
@@ -21,7 +20,8 @@ const SymbolIcon = ({
       color={color ? color : '#535460'} // Default color
       className={className}
       style={{
-        maxWidth: size ?? 24
+        maxWidth: size ?? 24,
+        overflow: 'hidden'
       }}
     />
   );
