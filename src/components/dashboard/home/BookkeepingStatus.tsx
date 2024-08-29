@@ -1,5 +1,5 @@
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
-import { bookKeepingStatusType } from "@/types/general";
+import { BookKeepingStatusType } from "@/types/general";
 import React from "react";
 
 export const months = [
@@ -20,7 +20,7 @@ export const months = [
 const BookkeepingStatus = ({
   bookkeepingStatus,
 }: {
-  bookkeepingStatus: bookKeepingStatusType[];
+  bookkeepingStatus: BookKeepingStatusType[];
 }) => {
   return (
     <div className="flex flex-col gap-4 md:px-4 py-8 md:border md:border-input rounded-md">

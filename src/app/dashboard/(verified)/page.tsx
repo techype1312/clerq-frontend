@@ -2,10 +2,10 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  bookKeepingStatusType,
-  moneyMovementDataType,
-  profitLossDataType,
-  textType,
+  BookKeepingStatusType,
+  MoneyMovementDataType,
+  ProfitLossDataType,
+  TextType,
 } from "@/types/general";
 import BookkeepingStatus from "@/components/dashboard/home/BookkeepingStatus";
 import MoneyMovement from "@/components/dashboard/home/MoneyMovement";
@@ -14,31 +14,31 @@ import ProfitNLoss from "@/components/dashboard/home/ProfitNLoss";
 import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleton";
 
 const Dashboard = () => {
-  const [overviewTimeLine, setOverviewTimeLine] = useState<textType[]>([
+  const [overviewTimeLine, setOverviewTimeLine] = useState<TextType[]>([
     {
-      title: "Last 7 days",
+      label: "Last 7 days",
       value: -7,
     },
     {
-      title: "Last month",
+      label: "Last month",
       value: -30,
     },
     {
-      title: "This month",
+      label: "This month",
       value: 30,
     },
     {
-      title: "Year to date",
+      label: "Year to date",
       value: 365,
     },
   ]);
-  const [selectedTimeLine, setSelectedTimeLine] = useState<textType>({
-    title: "This month",
+  const [selectedTimeLine, setSelectedTimeLine] = useState<TextType>({
+    label: "This month",
     value: 30,
   });
 
   const [bookkeepingStatus, setBookkeepingStatus] = useState<
-    bookKeepingStatusType[]
+    BookKeepingStatusType[]
   >([
     { value: "completed" },
     { value: "completed" },
@@ -55,60 +55,60 @@ const Dashboard = () => {
   ]);
 
   const [moneyMovementData, setMoneyMovementData] =
-    useState<moneyMovementDataType>({
+    useState<MoneyMovementDataType>({
       title: "Money in",
       value: 10000,
       categories: [
-        { title: "Logistics", value: 1000 },
-        { title: "Wages", value: 700 },
-        { title: "Stationery", value: 200 },
-        { title: "Uncategorised", value: 100 },
+        { label: "Logistics", value: 1000 },
+        { label: "Wages", value: 700 },
+        { label: "Stationery", value: 200 },
+        { label: "Uncategorised", value: 100 },
       ],
       avgValue: 4000000,
       avgValueDistribution: [1000000, 2000000, 3000000],
     });
   const [moneyMovementData1, setMoneyMovementData1] =
-    useState<moneyMovementDataType>({
+    useState<MoneyMovementDataType>({
       title: "Money out",
       value: -10000,
       categories: [
-        { title: "Logistics", value: 1000 },
-        { title: "Wages", value: 700 },
-        { title: "Stationery", value: 200 },
-        { title: "Uncategorised", value: 100 },
+        { label: "Logistics", value: 1000 },
+        { label: "Wages", value: 700 },
+        { label: "Stationery", value: 200 },
+        { label: "Uncategorised", value: 100 },
       ],
       avgValue: 200000,
       avgValueDistribution: [10000, 20000, 30000],
     });
-  const [topExpenses, setTopExpenses] = useState<textType[]>([
+  const [topExpenses, setTopExpenses] = useState<TextType[]>([
     {
-      title: "Independent Contractor Expense",
+      label: "Independent Contractor Expense",
       value: -1456,
       percentage: 40,
     },
     {
-      title: "Travel & Transportation Expense",
+      label: "Travel & Transportation Expense",
       value: -1000,
       percentage: 30,
     },
     {
-      title: "Training & Education Expense",
+      label: "Training & Education Expense",
       value: -500,
       percentage: 15,
     },
     {
-      title: "Business Meals",
+      label: "Business Meals",
       value: -200,
       percentage: 10,
     },
     {
-      title: "Overhead Costs (Rent, Utilities etc)",
+      label: "Overhead Costs (Rent, Utilities etc)",
       value: -100,
       percentage: 5,
     },
   ]);
 
-  const [profitNLoss, setProfitNLoss] = useState<profitLossDataType>({
+  const [profitNLoss, setProfitNLoss] = useState<ProfitLossDataType>({
     totalRevenue: 100000.5,
     totalExpenses: 50000.632,
     fromMonth: "Jan",
@@ -154,7 +154,7 @@ const Dashboard = () => {
                       : "text-muted"
                   } hover:text-label `}
                 >
-                  {timeLine.title}
+                  {timeLine.label}
                 </Button>
               ))}
             </div>

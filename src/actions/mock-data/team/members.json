@@ -1,0 +1,206 @@
+[
+  {
+    "id": "b45a0c2b-feae-44a0-a45e-179bcf8d784b",
+    "user": {
+      "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+      "email": "anurag.patel1223@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Otto",
+      "photo": {
+        "id": "be2bb436-7386-429a-bf23-b17556186dca",
+        "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 3,
+      "name": "Account Owner"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-11T15:56:19.444Z",
+    "updatedAt": "2024-08-11T15:56:19.444Z"
+  },
+  {
+    "id": "01c87643-5793-4e41-9d34-b40fb2a6a40c",
+    "user": {
+      "id": "c120b1e0-2850-4a1d-936e-49255dd4731c",
+      "email": "anurag@joinotto.com",
+      "firstName": "Anurag",
+      "lastName": "Patel",
+      "photo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 4,
+      "name": "Account Admin"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-20T16:16:35.083Z",
+    "updatedAt": "2024-08-22T06:22:02.946Z"
+  },
+  {
+    "id": "22cc1dfe-c7f2-4146-83f8-8a742e35ae54",
+    "user": {
+      "id": "ad7dee40-aa70-486e-97bd-56cefa33946c",
+      "email": "anuragpatel.optnio@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Patel",
+      "photo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 4,
+      "name": "Account Admin"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-22T09:21:58.410Z",
+    "updatedAt": "2024-08-22T09:21:58.410Z"
+  },
+  {
+    "id": "7f25a2c3-752d-4c47-a5eb-6ffd95f9ed7e",
+    "user": {
+      "id": "3b259176-ac7e-4ff5-b7fd-162b7f2b6e55",
+      "email": "anurag@joinclerq.com",
+      "firstName": "Anurag",
+      "lastName": "Patel",
+      "photo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 5,
+      "name": "Accountant"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-22T09:59:15.241Z",
+    "updatedAt": "2024-08-26T16:45:14.233Z"
+  },
+  {
+    "id": "9f9f2709-c693-4e53-9cb0-eaa86825dc66",
+    "user": {
+      "id": "534ec7d9-8d20-4ac6-bc3c-e9906b96be30",
+      "email": "tools+1@joinotto.com",
+      "firstName": "Tools",
+      "lastName": "Otto",
+      "photo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 5,
+      "name": "Accountant"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-23T15:33:45.519Z",
+    "updatedAt": "2024-08-23T15:35:16.295Z"
+  }
+]

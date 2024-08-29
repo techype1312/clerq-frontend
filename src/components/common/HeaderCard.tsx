@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "../ui/card";
-import { cardDetails, textType } from "@/types/general";
+import { CardDetails, TextType } from "@/types/general";
 import { DownloadButton } from "./DownloadButton";
 import { formatDateRange } from "@/utils/utils";
 
-const HeaderCard = ({ cardDetails }: { cardDetails: cardDetails }) => {
+const HeaderCard = ({ cardDetails }: { cardDetails: CardDetails }) => {
   const [formattedDateRange, setFormattedDateRange] = React.useState<string>();
   useEffect(() => {
     setFormattedDateRange(
@@ -14,6 +14,7 @@ const HeaderCard = ({ cardDetails }: { cardDetails: cardDetails }) => {
       )
     );
   }, [cardDetails.dateRange.startDate, cardDetails.dateRange.endDate]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between ">
@@ -44,10 +45,10 @@ const HeaderCard = ({ cardDetails }: { cardDetails: cardDetails }) => {
   );
 };
 
-const ExpenseModule = ({ expense }: { expense: textType }) => {
+const ExpenseModule = ({ expense }: { expense: TextType }) => {
   return (
     <div className="flex flex-col">
-      <h6 className="text-primary text-sm">{expense.title}</h6>
+      <h6 className="text-primary text-sm">{expense.label}</h6>
       <p className="text-background-primary md:text-[32px]">
         {expense.value < 0 && "-"}$
         {Math.abs(expense.value).toLocaleString("en-US", {

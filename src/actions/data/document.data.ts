@@ -1,6 +1,9 @@
 import { convertBase64toFile } from "@/utils/file";
 import { DocumentTypes, ILocalFile } from "@/types/file";
 import { get, patch, post } from "@/utils/fetch.util";
+import { isDemoEnv } from "../../../config";
+import documentsMockData from "../mock-data/document/documents.json";
+import { getMockAllDocuments } from "../mock-data/document";
 
 const getAllDocuments = async (query: {
   page?: number;
@@ -17,6 +20,12 @@ const getAllDocuments = async (query: {
     order = "Desc",
   } = query;
   const sort = [{ orderBy, order }];
+
+  if (isDemoEnv()) {
+    const companyId = "1c94436d-f396-4e45-8bc8-6ce06ab5fd56";
+    return getMockAllDocuments(companyId, filters.type)
+  }
+
   return get({
     url: `/v1/documents?page=${page}&limit=${limit}&filters=${JSON.stringify(
       filters

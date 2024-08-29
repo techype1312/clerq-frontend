@@ -1,0 +1,60 @@
+{
+  "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+  "email": "anurag.patel1223@gmail.com",
+  "provider": "email",
+  "socialId": null,
+  "firstName": "Anurag",
+  "lastName": "Otto",
+  "legalFirstName": "Anurag",
+  "legalLastName": "Patel",
+  "dob": "1999-08-25",
+  "phone": "8962230334",
+  "country_code": 91,
+  "photo": {
+    "id": "be2bb436-7386-429a-bf23-b17556186dca",
+    "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg"
+  },
+  "role": {
+    "id": 3,
+    "name": "Account Owner",
+    "__entity": "RoleEntity"
+  },
+  "status": {
+    "id": 1,
+    "name": "Active",
+    "__entity": "StatusEntity"
+  },
+  "email_verified": true,
+  "phone_verified": false,
+  "tax_residence_country": null,
+  "onboarding_completed": true,
+  "createdAt": "2024-08-11T10:16:32.013Z",
+  "updatedAt": "2024-08-23T09:57:44.010Z",
+  "deletedAt": null,
+  "legal_address": {
+    "id": "ccc2e65b-c95b-4c2c-81af-a8625aae1293",
+    "address_line_1": "#197, 40 Feet Rd, Behind HDFC Bank, Green Glen Layout, Bellandur, Bengaluru, Karnataka 560103, India",
+    "address_line_2": "abc",
+    "country": "India",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "postal_code": "560103",
+    "createdAt": "2024-08-11T11:41:00.485Z",
+    "updatedAt": "2024-08-28T01:44:21.969Z",
+    "latitude": 12.9267885,
+    "longitude": 77.6701042
+  },
+  "mailing_address": {
+    "id": "ccc2e65b-c95b-4c2c-81af-a8625aae1293",
+    "address_line_1": "#197, 40 Feet Rd, Behind HDFC Bank, Green Glen Layout, Bellandur, Bengaluru, Karnataka 560103, India",
+    "address_line_2": "abc",
+    "country": "India",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "postal_code": "560103",
+    "createdAt": "2024-08-11T11:41:00.485Z",
+    "updatedAt": "2024-08-28T01:44:21.969Z",
+    "latitude": 12.9267885,
+    "longitude": 77.6701042
+  }
+}

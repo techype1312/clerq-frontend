@@ -1,4 +1,9 @@
 import { get, post } from "@/utils/fetch.util";
+import { isDemoEnv } from "../../../config";
+import {
+  getMockbankAccounts,
+  getMockBankTransactions,
+} from "../mock-data/banking";
 
 interface IQuerySort {
   orderBy?: string;
@@ -27,6 +32,10 @@ const exchangePublicToken = async (payload: any) => {
 };
 
 const getBankAccounts = async (companyId: string) => {
+  if (isDemoEnv()) {
+    return getMockbankAccounts(companyId);
+  }
+
   return get({ url: `/v1/banking/accounts/${companyId}` }).then((resp) => resp);
 };
 
@@ -89,6 +98,10 @@ const getBankTransactions = async (companyId: string, query: IQuery) => {
         created_at_to: dateFilter.to,
       }),
     };
+  }
+
+  if (isDemoEnv()) {
+    return getMockBankTransactions(companyId);
   }
 
   return get({

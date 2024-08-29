@@ -123,7 +123,7 @@ const DocumentsPage = () => {
   };
 
   const onFetchDocumentsSuccess = (res: any) => {
-    if (res && res.data?.length) {
+    if (res && res.data) {
       setDocuments(res.data);
     }
     setLoading(false);

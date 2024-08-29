@@ -1,53 +1,54 @@
 import { HttpStatusCode } from "axios";
 import { z } from "zod";
 
-export type dateRangeType = {
+export type DateRangeType = {
+  year: string;
   startDate: string;
   endDate: string;
 };
 
-export type textType = {
-  title: string;
+export type TextType = {
+  label: string;
   value: number;
   percentage?: number;
 };
 
-export type labelValue = {
+export type LabelValue = {
   label: string;
   value: string;
 };
 
-export type switchModuleType = {
+export type SwitchModuleType = {
   title: string;
   description?: string;
   isActive: boolean;
 };
 
-export type cardDetails = {
+export type CardDetails = {
   title?: string;
-  dateRange: dateRangeType;
+  dateRange: DateRangeType;
   download: string;
-  leftText: textType;
-  centerText: textType;
-  rightText: textType;
+  leftText: TextType;
+  centerText: TextType;
+  rightText: TextType;
 };
 
-export type sheetDataType = {
-  title: textType;
-  data: textType[];
+export type SheetDataType = {
+  title: TextType;
+  data: TextType[];
   showFooter: boolean;
-  footerData?: textType;
+  footerData?: TextType;
   isCollapsible: boolean;
 };
 
-export type bookKeepingStatusType = {
+export type BookKeepingStatusType = {
   value: "completed" | "pending" | "in-progress" | "upcoming";
 };
 
-export type moneyMovementDataType = {
+export type MoneyMovementDataType = {
   title: string;
   value: number;
-  categories: textType[];
+  categories: TextType[];
   avgValue: number;
   avgValueDistribution: number[];
 };
@@ -57,7 +58,7 @@ export type profitLossType = {
   expenses: number;
 };
 
-export type profitLossDataType = {
+export type ProfitLossDataType = {
   totalRevenue: number;
   totalExpenses: number;
   profitLoss: profitLossType[];
@@ -65,7 +66,7 @@ export type profitLossDataType = {
   toMonth: string;
 };
 
-export type monthlyGraphDataType = {
+export type MonthlyGraphDataType = {
   name: string;
   uv: number;
   pv: number;

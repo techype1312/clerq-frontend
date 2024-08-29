@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "createdAt": "2024-08-11T15:56:14.825Z",
+    "updatedAt": "2024-08-26T18:40:34.078Z",
+    "name": "Clerq Tech",
+    "email": "anurag@joinclerq.com",
+    "phone": "8962230389",
+    "country_code": 91,
+    "tax_residence_country": "United States (US)",
+    "tax_classification": "Partnership",
+    "ein": "123456789",
+    "status": {
+      "id": 1,
+      "name": "Active",
+      "__entity": "StatusEntity"
+    },
+    "deletedAt": null,
+    "logo": {
+      "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+      "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg"
+    },
+    "legal_address": {
+      "id": "c783b3a3-36a3-4e49-a73b-22bdaa6c4577",
+      "address_line_1": "225, Central Park West",
+      "address_line_2": "Manhattan",
+      "country": "United States",
+      "city": "New York",
+      "state": "New York",
+      "postal_code": "10024",
+      "createdAt": "2024-08-11T17:11:55.303Z",
+      "updatedAt": "2024-08-23T05:32:54.218Z",
+      "latitude": 40.7830603,
+      "longitude": -73.9712488
+    },
+    "mailing_address": {
+      "id": "c783b3a3-36a3-4e49-a73b-22bdaa6c4577",
+      "address_line_1": "225, Central Park West",
+      "address_line_2": "Manhattan",
+      "country": "United States",
+      "city": "New York",
+      "state": "New York",
+      "postal_code": "10024",
+      "createdAt": "2024-08-11T17:11:55.303Z",
+      "updatedAt": "2024-08-23T05:32:54.218Z",
+      "latitude": 40.7830603,
+      "longitude": -73.9712488
+    }
+  }
+]

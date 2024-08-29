@@ -1,15 +1,15 @@
 import ProfitNLossGraph from "@/components/common/graphs/ProfitNLossGraph";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { monthlyGraphDataType, profitLossDataType, textType } from "@/types/general";
+import { MonthlyGraphDataType, ProfitLossDataType, TextType } from "@/types/general";
 import React, { useEffect, useState } from "react";
 import { months } from "./BookkeepingStatus";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 
-const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
+const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
   
-  const [formattedData, setFormattedData] = useState<monthlyGraphDataType[]>(
+  const [formattedData, setFormattedData] = useState<MonthlyGraphDataType[]>(
     profitNLoss.profitLoss.map((value,index) => ({
       name: value.revenue.toString(),
       uv: value.expenses,
@@ -34,8 +34,8 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
     }
   }, [profitNLoss.profitLoss, isDataFormatted]);
 
-  const [selectedTimeLine, setSelectedTimeLine] = React.useState<textType>({
-    title: "This month",
+  const [selectedTimeLine, setSelectedTimeLine] = React.useState<TextType>({
+    label: "This month",
     value: 30,
   });
 
@@ -49,21 +49,21 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: profitLossDataType }) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
-              <DropdownMenuLabel className="text-xs">{selectedTimeLine.title}</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{selectedTimeLine.label}</DropdownMenuLabel>
               <SymbolIcon icon="expand_more" color="#9D9DA7" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-16 w-16">
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedTimeLine({ title: "Last month", value: -30 });
+                  setSelectedTimeLine({ label: "Last month", value: -30 });
                 }}
               >
                 Last month
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedTimeLine({ title: "This month", value: 30 });
+                  setSelectedTimeLine({ label: "This month", value: 30 });
                 }}
               >
                 This month

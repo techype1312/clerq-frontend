@@ -1,0 +1,128 @@
+[
+  {
+    "id": "k9RR7ADzmJIBZxeZ3MPPHNb4dD57exfLDAxam",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "173f76fb-e2ff-476f-84ac-8387dbb14074",
+      "institution_logo": null,
+      "institution_name": "Bank of America"
+    },
+    "account_id": "k9RR7ADzmJIBZxeZ3MPPHNb4dD57exfLDAxam",
+    "name": "Plaid Checking",
+    "official_name": "Plaid Gold Standard 0% Interest Checking",
+    "mask": "0000",
+    "type": "depository",
+    "sub_type": "checking",
+    "current_balance": 110,
+    "available_balance": 100,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-11T15:59:45.271Z",
+    "updatedAt": "2024-08-11T15:59:45.271Z"
+  },
+  {
+    "id": "lvRReADB1qs6pd9p3Daaf8r1ag3Bvpipg6LNN",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "173f76fb-e2ff-476f-84ac-8387dbb14074",
+      "institution_logo": null,
+      "institution_name": "Bank of America"
+    },
+    "account_id": "lvRReADB1qs6pd9p3Daaf8r1ag3Bvpipg6LNN",
+    "name": "Plaid Saving",
+    "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+    "mask": "1111",
+    "type": "depository",
+    "sub_type": "savings",
+    "current_balance": 210,
+    "available_balance": 200,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-11T15:59:45.271Z",
+    "updatedAt": "2024-08-11T15:59:45.271Z"
+  },
+  {
+    "id": "XdeRQR3kxBSo5rnbavGLfAr4Ew6aALib85rVp",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "69f27739-266e-4df4-905e-219fe87cb8c5",
+      "institution_logo": null,
+      "institution_name": "Chase"
+    },
+    "account_id": "XdeRQR3kxBSo5rnbavGLfAr4Ew6aALib85rVp",
+    "name": "Plaid Checking",
+    "official_name": "Plaid Gold Standard 0% Interest Checking",
+    "mask": "0000",
+    "type": "depository",
+    "sub_type": "checking",
+    "current_balance": 110,
+    "available_balance": 100,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-12T19:51:45.822Z",
+    "updatedAt": "2024-08-12T19:51:45.822Z"
+  },
+  {
+    "id": "DeLG4GEQJVUGgjBEoM4lu1y6Rlvr1XF3GzrVz",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "69f27739-266e-4df4-905e-219fe87cb8c5",
+      "institution_logo": null,
+      "institution_name": "Chase"
+    },
+    "account_id": "DeLG4GEQJVUGgjBEoM4lu1y6Rlvr1XF3GzrVz",
+    "name": "Plaid Saving",
+    "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+    "mask": "1111",
+    "type": "depository",
+    "sub_type": "savings",
+    "current_balance": 210,
+    "available_balance": 200,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-12T19:51:45.822Z",
+    "updatedAt": "2024-08-12T19:51:45.822Z"
+  },
+  {
+    "id": "jVRdgljNl7IEPKXz4ljrFDx3n9BeawF6Krejd",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "6d790dbe-de9c-497f-bd87-bea030f243c7",
+      "institution_logo": null,
+      "institution_name": "Citibank Online"
+    },
+    "account_id": "jVRdgljNl7IEPKXz4ljrFDx3n9BeawF6Krejd",
+    "name": "Plaid Checking",
+    "official_name": "Plaid Gold Standard 0% Interest Checking",
+    "mask": "0000",
+    "type": "depository",
+    "sub_type": "checking",
+    "current_balance": 110,
+    "available_balance": 100,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-14T16:20:05.551Z",
+    "updatedAt": "2024-08-14T16:20:05.551Z"
+  },
+  {
+    "id": "7AgjVE6mEXh3dprMkjaztyPvzWoAq7Udb7qaq",
+    "company": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+    "institution": {
+      "id": "6d790dbe-de9c-497f-bd87-bea030f243c7",
+      "institution_logo": null,
+      "institution_name": "Citibank Online"
+    },
+    "account_id": "7AgjVE6mEXh3dprMkjaztyPvzWoAq7Udb7qaq",
+    "name": "Plaid Saving",
+    "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+    "mask": "1111",
+    "type": "depository",
+    "sub_type": "savings",
+    "current_balance": 210,
+    "available_balance": 200,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "createdAt": "2024-08-14T16:20:05.551Z",
+    "updatedAt": "2024-08-14T16:20:05.551Z"
+  }
+]

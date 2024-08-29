@@ -1,12 +1,12 @@
 "use client";
-import { monthlyGraphDataType } from "@/types/general";
+import { MonthlyGraphDataType } from "@/types/general";
 import React from "react";
 import { BarChart, Bar, Legend } from "recharts";
 
 const MonthsAvgBarGraph = ({
   monthlyData,
 }: {
-  monthlyData: monthlyGraphDataType[];
+  monthlyData: MonthlyGraphDataType[];
 }) => {
     
   return (

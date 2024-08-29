@@ -22,7 +22,7 @@ import {
 import Permissions from "@/components/common/Permissions";
 import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
-import TeamApis from "@/actions/data/team-data";
+import TeamApis from "@/actions/data/team.data";
 import Avatar from "../Avatar";
 import { isDemoEnv } from "../../../../../config";
 

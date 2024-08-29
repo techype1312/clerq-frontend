@@ -1,0 +1,166 @@
+[
+  {
+    "id": "b45a0c2b-feae-44a0-a45e-179bcf8d784b",
+    "user": {
+      "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+      "email": "anurag.patel1223@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Otto",
+      "photo": {
+        "id": "be2bb436-7386-429a-bf23-b17556186dca",
+        "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "1c94436d-f396-4e45-8bc8-6ce06ab5fd56",
+      "name": "Clerq Tech",
+      "logo": {
+        "id": "8756f6b4-9e07-4af1-a70c-de1a1b69f56f",
+        "path": "https://stage-public.joinotto.com/6b67b713a2ac62bad0c3b.jpg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 3,
+      "name": "Account Owner"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-11T15:56:19.444Z",
+    "updatedAt": "2024-08-11T15:56:19.444Z"
+  },
+  {
+    "id": "aa906f1b-c121-40cd-9574-6d9eda2e4f89",
+    "user": {
+      "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+      "email": "anurag.patel1223@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Otto",
+      "photo": {
+        "id": "be2bb436-7386-429a-bf23-b17556186dca",
+        "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "59485580-f970-4ae4-a664-d64ce7d831f2",
+      "name": "Otto Inc",
+      "logo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 3,
+      "name": "Account Owner"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-12T09:42:42.044Z",
+    "updatedAt": "2024-08-12T09:42:42.044Z"
+  },
+  {
+    "id": "86a7dcf3-59ae-4b4d-9651-34e00a8227d8",
+    "user": {
+      "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+      "email": "anurag.patel1223@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Otto",
+      "photo": {
+        "id": "be2bb436-7386-429a-bf23-b17556186dca",
+        "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "b38594b4-0250-425e-8e65-3dad2d91ed39",
+      "name": "Anurag Patel",
+      "logo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 3,
+      "name": "Account Owner"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-27T10:55:43.613Z",
+    "updatedAt": "2024-08-27T10:55:43.613Z"
+  },
+  {
+    "id": "ce7e1d29-6aae-4095-9285-53eef2e75a8a",
+    "user": {
+      "id": "9b173bdf-94ed-4a54-97dc-1cba6b56650d",
+      "email": "anurag.patel1223@gmail.com",
+      "firstName": "Anurag",
+      "lastName": "Otto",
+      "photo": {
+        "id": "be2bb436-7386-429a-bf23-b17556186dca",
+        "path": "https://stage-public.joinotto.com/290795a1dce5818f30af4.jpeg",
+        "__entity": "FileEntity"
+      },
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "company": {
+      "id": "0087c8ed-01fd-4c2f-a233-254569d747f8",
+      "name": "Anurag Otto",
+      "logo": null,
+      "status": {
+        "id": 1,
+        "name": "Active",
+        "__entity": "StatusEntity"
+      }
+    },
+    "role": {
+      "id": 3,
+      "name": "Account Owner"
+    },
+    "status": {
+      "id": 1,
+      "name": "Active"
+    },
+    "permissions": {},
+    "createdAt": "2024-08-27T10:58:15.996Z",
+    "updatedAt": "2024-08-27T10:58:15.996Z"
+  }
+]

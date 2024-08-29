@@ -1,0 +1,222 @@
+[
+  {
+    "id": "5eXXv5byVLTzZnkZNADDU1mBPoL6kgh5XBAkp",
+    "account": {
+      "id": "k9RR7ADzmJIBZxeZ3MPPHNb4dD57exfLDAxam"
+    },
+    "transaction_id": "5eXXv5byVLTzZnkZNADDU1mBPoL6kgh5XBAkp",
+    "category": "Food and Drink",
+    "sub_category": "Restaurants",
+    "category_id": "13005032",
+    "transaction_type": "place",
+    "name": "McDonald's",
+    "amount": 12,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "McDonald's",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/mcdonalds_619.png",
+    "createdAt": "2024-08-11T15:59:46.467Z",
+    "updatedAt": "2024-08-11T15:59:46.467Z"
+  },
+  {
+    "id": "3jZZyJbkvQHgMX8M71AAFgdEBX67EoIZgVRX9",
+    "account": {
+      "id": "k9RR7ADzmJIBZxeZ3MPPHNb4dD57exfLDAxam"
+    },
+    "transaction_id": "3jZZyJbkvQHgMX8M71AAFgdEBX67EoIZgVRX9",
+    "category": "Travel",
+    "sub_category": "Taxi",
+    "category_id": "22016000",
+    "transaction_type": "special",
+    "name": "Uber 072515 SF**POOL**",
+    "amount": 6.33,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Uber",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+    "createdAt": "2024-08-11T15:59:46.467Z",
+    "updatedAt": "2024-08-11T15:59:46.467Z"
+  },
+  {
+    "id": "47AA9ZbyVMCVzZ8zboDDTGnzaZKqz8cJpRMWw",
+    "account": {
+      "id": "k9RR7ADzmJIBZxeZ3MPPHNb4dD57exfLDAxam"
+    },
+    "transaction_id": "47AA9ZbyVMCVzZ8zboDDTGnzaZKqz8cJpRMWw",
+    "category": "Food and Drink",
+    "sub_category": "Restaurants",
+    "category_id": "13005043",
+    "transaction_type": "place",
+    "name": "Starbucks",
+    "amount": 4.33,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Starbucks",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/starbucks_956.png",
+    "createdAt": "2024-08-11T15:59:46.467Z",
+    "updatedAt": "2024-08-11T15:59:46.467Z"
+  },
+  {
+    "id": "6q34L4kKpdTg7xrBMzapCzExElPjJec83VZZX",
+    "account": {
+      "id": "XdeRQR3kxBSo5rnbavGLfAr4Ew6aALib85rVp"
+    },
+    "transaction_id": "6q34L4kKpdTg7xrBMzapCzExElPjJec83VZZX",
+    "category": "Food and Drink",
+    "sub_category": "Restaurants",
+    "category_id": "13005043",
+    "transaction_type": "place",
+    "name": "Starbucks",
+    "amount": 4.33,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Starbucks",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/starbucks_956.png",
+    "createdAt": "2024-08-12T19:51:45.836Z",
+    "updatedAt": "2024-08-12T19:51:45.836Z"
+  },
+  {
+    "id": "6q34L4kKpdTg7xrBMzapCzExn5D8ZZu8Qnryk",
+    "account": {
+      "id": "XdeRQR3kxBSo5rnbavGLfAr4Ew6aALib85rVp"
+    },
+    "transaction_id": "6q34L4kKpdTg7xrBMzapCzExn5D8ZZu8Qnryk",
+    "category": "Travel",
+    "sub_category": "Taxi",
+    "category_id": "22016000",
+    "transaction_type": "special",
+    "name": "Uber 063015 SF**POOL**",
+    "amount": 5.4,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Uber",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+    "createdAt": "2024-08-12T19:51:45.836Z",
+    "updatedAt": "2024-08-12T19:51:45.836Z"
+  },
+  {
+    "id": "5lBaJaXqk6hGj3gRBrd8uW9eVkKRxxh5XjxWq",
+    "account": {
+      "id": "XdeRQR3kxBSo5rnbavGLfAr4Ew6aALib85rVp"
+    },
+    "transaction_id": "5lBaJaXqk6hGj3gRBrd8uW9eVkKRxxh5XjxWq",
+    "category": "Travel",
+    "sub_category": "Taxi",
+    "category_id": "22016000",
+    "transaction_type": "special",
+    "name": "Uber 072515 SF**POOL**",
+    "amount": 6.33,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Uber",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+    "createdAt": "2024-08-12T19:51:45.836Z",
+    "updatedAt": "2024-08-12T19:51:45.836Z"
+  },
+  {
+    "id": "3RrxLxZmMdHVpejN5q3osnAew1l7KKCZg5wen",
+    "account": {
+      "id": "DeLG4GEQJVUGgjBEoM4lu1y6Rlvr1XF3GzrVz"
+    },
+    "transaction_id": "3RrxLxZmMdHVpejN5q3osnAew1l7KKCZg5wen",
+    "category": "Transfer",
+    "sub_category": "Payroll",
+    "category_id": "21009000",
+    "transaction_type": "special",
+    "name": "INTRST PYMNT",
+    "amount": -4.22,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": null,
+    "merchant_logo_url": null,
+    "createdAt": "2024-08-12T19:51:45.836Z",
+    "updatedAt": "2024-08-12T19:51:45.836Z"
+  },
+  {
+    "id": "3gZavpyopJSgjvQ7kMlzFgZWepnwyBhZgMDw9",
+    "account": {
+      "id": "jVRdgljNl7IEPKXz4ljrFDx3n9BeawF6Krejd"
+    },
+    "transaction_id": "3gZavpyopJSgjvQ7kMlzFgZWepnwyBhZgMDw9",
+    "category": "Travel",
+    "sub_category": "Taxi",
+    "category_id": "22016000",
+    "transaction_type": "special",
+    "name": "Uber 063015 SF**POOL**",
+    "amount": 5.4,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "Uber",
+    "merchant_logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+    "createdAt": "2024-08-14T16:20:05.575Z",
+    "updatedAt": "2024-08-14T16:20:05.575Z"
+  },
+  {
+    "id": "48A4Vo9DoZSV9wlbRzBeTGNjJpMgyatJpnQgw",
+    "account": {
+      "id": "jVRdgljNl7IEPKXz4ljrFDx3n9BeawF6Krejd"
+    },
+    "transaction_id": "48A4Vo9DoZSV9wlbRzBeTGNjJpMgyatJpnQgw",
+    "category": "Food and Drink",
+    "sub_category": "Restaurants",
+    "category_id": "13005000",
+    "transaction_type": "place",
+    "name": "SparkFun",
+    "amount": 89.4,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": "FUN",
+    "merchant_logo_url": null,
+    "createdAt": "2024-08-14T16:20:05.575Z",
+    "updatedAt": "2024-08-14T16:20:05.575Z"
+  },
+  {
+    "id": "6WkPB8R58vcmrNKWoqVwiPr9n5PMMgC8MGBmV",
+    "account": {
+      "id": "7AgjVE6mEXh3dprMkjaztyPvzWoAq7Udb7qaq"
+    },
+    "transaction_id": "6WkPB8R58vcmrNKWoqVwiPr9n5PMMgC8MGBmV",
+    "category": "Transfer",
+    "sub_category": "Payroll",
+    "category_id": "21009000",
+    "transaction_type": "special",
+    "name": "INTRST PYMNT",
+    "amount": -4.22,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null,
+    "transaction_datetime": null,
+    "pending": false,
+    "account_owner": null,
+    "merchant_name": null,
+    "merchant_logo_url": null,
+    "createdAt": "2024-08-14T16:20:05.575Z",
+    "updatedAt": "2024-08-14T16:20:05.575Z"
+  }
+]

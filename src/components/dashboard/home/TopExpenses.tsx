@@ -7,12 +7,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import PercentageBar from "@/components/common/graphs/PercentageBar";
-import { textType } from "@/types/general";
+import { TextType } from "@/types/general";
 import React from "react";
 
-const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
-  const [selectedTimeLine, setSelectedTimeLine] = React.useState<textType>({
-    title: "This month",
+const TopExpenses = ({ topExpenses }: { topExpenses: TextType[] }) => {
+  const [selectedTimeLine, setSelectedTimeLine] = React.useState<TextType>({
+    label: "This month",
     value: 30,
   });
   return (
@@ -24,21 +24,21 @@ const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
-              <DropdownMenuLabel className="text-xs">{selectedTimeLine.title}</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{selectedTimeLine.label}</DropdownMenuLabel>
               <SymbolIcon icon="expand_more" color="#9D9DA7" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-16 w-16">
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedTimeLine({ title: "Last month", value: -30 });
+                  setSelectedTimeLine({ label: "Last month", value: -30 });
                 }}
               >
                 Last month
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedTimeLine({ title: "This month", value: 30 });
+                  setSelectedTimeLine({ label: "This month", value: 30 });
                 }}
               >
                 This month
@@ -54,7 +54,7 @@ const TopExpenses = ({ topExpenses }: { topExpenses: textType[] }) => {
         >
           <p className="col-span-2 flex items-center gap-2 text-xs md:text-base">
             <SymbolIcon icon="local_shipping" color="#9D9DA7" />
-            {expense.title}
+            {expense.label}
           </p>
           <p className="text-end w-fit text-sm md:text-base ml-auto md:ml-0">
             -$

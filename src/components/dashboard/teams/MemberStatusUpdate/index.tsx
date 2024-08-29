@@ -14,7 +14,7 @@ import {
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { ErrorProps } from "@/types/general";
-import TeamApis from "@/actions/data/team-data";
+import TeamApis from "@/actions/data/team.data";
 import { isDemoEnv } from "../../../../../config";
 
 const MemberStatusUpdateDialog = ({

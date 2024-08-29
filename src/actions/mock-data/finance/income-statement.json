@@ -1,0 +1,76 @@
+[
+  {
+    "id": "154f0737-de63-4586-92ab-492fb58fb652",
+    "year": "2024",
+    "overview": {
+      "dateRange": {
+        "endDate": "May 2025",
+        "startDate": "May 2024"
+      },
+      "download": "https://gseijrhbhurcrpgbxrgt.supabase.co/storage/v1/object/sign/Test%20bucket/sample.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJUZXN0IGJ1Y2tldC9zYW1wbGUucGRmIiwiaWF0IjoxNzIyNDMwNzgxLCJleHAiOjE3MjMwMzU1ODF9.DJSWsvWgcN6VPhR1Tc59nlHu1CcVqCVUDAv2Y5w4RqE&t=2024-07-31T12%3A59%3A41.813Z",
+      "leftText": { "label": "Net profit", "value": -500.0 },
+      "centerText": { "label": "Gross profit", "value": 162500.123 },
+      "rightText": { "label": "Expenses", "value": 162500.123 }
+    },
+    "revenue": {
+      "title": { "label": "Revenue", "value": 162500.7 },
+      "data": [
+        { "label": "Sales revenue", "value": 112205.17 },
+        { "label": "Operating expenses", "value": 162500.123 }
+      ],
+      "showFooter": true,
+      "footerData": { "label": "Gross profit", "value": -500.0 },
+      "isCollapsible": false
+    },
+    "expenses": {
+      "title": { "label": "Operating expenses", "value": 162982.11 },
+      "data": [
+        { "label": "Individual contractor expenses", "value": 159716.61 },
+        { "label": "Travel & transportation expense", "value": 1300.78 },
+        { "label": "Training & education expense", "value": 300.78 },
+        { "label": "Business meals", "value": 178.73 },
+        { "label": "Overhead costs (Rent, utilities etc)", "value": 515.19 },
+        { "label": "Gift expense", "value": 14.32 }
+      ],
+      "showFooter": false,
+      "isCollapsible": false
+    }
+  },
+  {
+    "id": "d9fd30fb-1462-4458-bbf9-c7f8dcc6fef3",
+    "year": "2023",
+    "overview": {
+      "dateRange": {
+        "endDate": "May 2024",
+        "startDate": "May 2023"
+      },
+      "download": "https://gseijrhbhurcrpgbxrgt.supabase.co/storage/v1/object/sign/Test%20bucket/sample.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJUZXN0IGJ1Y2tldC9zYW1wbGUucGRmIiwiaWF0IjoxNzIyNDMwNzgxLCJleHAiOjE3MjMwMzU1ODF9.DJSWsvWgcN6VPhR1Tc59nlHu1CcVqCVUDAv2Y5w4RqE&t=2024-07-31T12%3A59%3A41.813Z",
+      "leftText": { "label": "Net profit", "value": -500.0 },
+      "centerText": { "label": "Gross profit", "value": 162500.123 },
+      "rightText": { "label": "Expenses", "value": 162500.123 }
+    },
+    "revenue": {
+      "title": { "label": "Revenue", "value": 162500.7 },
+      "data": [
+        { "label": "Sales revenue", "value": 112205.17 },
+        { "label": "Operating expenses", "value": 162500.123 }
+      ],
+      "showFooter": true,
+      "footerData": { "label": "Gross profit", "value": -500.0 },
+      "isCollapsible": false
+    },
+    "expenses": {
+      "title": { "label": "Operating expenses", "value": 162982.11 },
+      "data": [
+        { "label": "Individual contractor expenses", "value": 159716.61 },
+        { "label": "Travel & transportation expense", "value": 1300.78 },
+        { "label": "Training & education expense", "value": 300.78 },
+        { "label": "Business meals", "value": 178.73 },
+        { "label": "Overhead costs (Rent, utilities etc)", "value": 515.19 },
+        { "label": "Gift expense", "value": 14.32 }
+      ],
+      "showFooter": false,
+      "isCollapsible": false
+    }
+  }
+]

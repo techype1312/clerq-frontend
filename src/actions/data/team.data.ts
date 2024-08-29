@@ -1,6 +1,8 @@
 import { get, patch } from "@/utils/fetch.util";
+import { isDemoEnv } from "../../../config";
+import { getMockAllTeamMembers } from "../mock-data/team";
 
-const getAllTeamMembers = (query: {
+const getAllTeamMembers = async (query: {
   page?: number;
   limit?: number;
   orderBy?: string;
@@ -15,6 +17,12 @@ const getAllTeamMembers = (query: {
     order = "Desc",
   } = query;
   const sort = [{ orderBy, order }];
+
+  if (isDemoEnv()) {
+    const companyId = "1c94436d-f396-4e45-8bc8-6ce06ab5fd56";
+    return getMockAllTeamMembers(companyId);
+  }
+
   return get({
     url: `/v1/ucrms?page=${page}&limit=${limit}&filters=${JSON.stringify(
       filters

@@ -1,16 +1,16 @@
 'use client'
 import MonthsAvgBarGraph from "@/components/common/graphs/MonthsAvgBarGraph";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
-import { moneyMovementDataType, monthlyGraphDataType } from "@/types/general";
+import { MoneyMovementDataType, MonthlyGraphDataType } from "@/types/general";
 import { formatNumber } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
 
 const MoneyMovement = ({
   moneyMovementData,
 }: {
-  moneyMovementData: moneyMovementDataType;
+  moneyMovementData: MoneyMovementDataType;
 }) => {
-  const [formattedData, setFormattedData] = useState<monthlyGraphDataType[]>(
+  const [formattedData, setFormattedData] = useState<MonthlyGraphDataType[]>(
     moneyMovementData.avgValueDistribution.map((value) => ({
       name: value.toString(),
       amt: value,
@@ -59,7 +59,7 @@ const MoneyMovement = ({
           key={index}
           className="flex justify-between items-center text-sm text-muted"
         >
-          <p>{category.title}</p>
+          <p>{category.label}</p>
           <p>${category.value.toFixed(2).toLocaleString()}</p>
         </div>
       ))}

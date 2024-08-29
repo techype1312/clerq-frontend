@@ -151,7 +151,6 @@ export default function AutoFormAddressModal({
     if (addressType === "address") {
       let body = form.getValues("mailing_address");
       if (!body) return;
-      console.log(body);
       delete body?.id;
       body.country = DEFAULT_COUNTRY_CODE;
       handleUpdateAddress(form.getValues("address_id"), body);
@@ -163,7 +162,6 @@ export default function AutoFormAddressModal({
     } else if (addressType === "mailing_address") {
       let body = form.getValues("legal_address");
       if (!body) return;
-      console.log(body);
       delete body?.id;
       handleUpdateAddress(form.getValues("address_id"), body);
       body.country = DEFAULT_COUNTRY_CODE;

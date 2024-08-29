@@ -1,67 +1,56 @@
 "use client";
+
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import FinanceApis from "@/actions/data/finance.data";
 import DateRangeDropdownSelect from "@/components/common/DateRangeDropdownSelect";
 import { DownloadButton } from "@/components/common/DownloadButton";
 import HeaderCard from "@/components/common/HeaderCard";
 import SheetsData from "@/components/common/SheetsData";
 import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkeleton";
-import { cardDetails, dateRangeType, sheetDataType } from "@/types/general";
+import { DateRangeType, ErrorProps } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
-import React, { Fragment, useEffect, useState } from "react";
+import { isObject } from "lodash";
 
 const Page = () => {
   const dateRange = generateDateRange();
-  const [selectedDateRange, setSelectedDateRange] = useState<dateRangeType>(
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRangeType>(
     dateRange[0]
   );
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
-  const [sheetData, setSheetData] = useState<sheetDataType>({
-    title: { title: "Revenue", value: 162500.7 },
-    data: [
-      { title: "Sales revenue", value: 112205.17 },
-      { title: "Operating expenses", value: 162500.123 },
-    ],
-    showFooter: true,
-    footerData: { title: "Gross profit", value: -500.0 },
-    isCollapsible: false,
-  });
-  const [sheetData1, setSheetData1] = useState<sheetDataType>({
-    title: { title: "Operating expenses", value: 162982.11 },
-    data: [
-      { title: "Individual contractor expenses", value: 159716.61 },
-      { title: "Travel & transportation expense", value: 1300.78 },
-      { title: "Training & education expense", value: 300.78 },
-      { title: "Business meals", value: 178.73 },
-      { title: "Overhead costs (Rent, utilities etc)", value: 515.19 },
-      { title: "Gift expense", value: 14.32 },
-    ],
-    showFooter: false,
-    isCollapsible: false,
-  });
-  const [cardDetails, setCardDetails] = useState<cardDetails>({
-    dateRange: dateRange[0],
-    download:
-      "https://gseijrhbhurcrpgbxrgt.supabase.co/storage/v1/object/sign/Test%20bucket/sample.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJUZXN0IGJ1Y2tldC9zYW1wbGUucGRmIiwiaWF0IjoxNzIyNDMwNzgxLCJleHAiOjE3MjMwMzU1ODF9.DJSWsvWgcN6VPhR1Tc59nlHu1CcVqCVUDAv2Y5w4RqE&t=2024-07-31T12%3A59%3A41.813Z",
-    leftText: { title: "Net profit", value: -500.0 },
-    centerText: { title: "Gross profit", value: 162500.123 },
-    rightText: { title: "Expenses", value: 162500.123 },
-  });
-  useEffect(() => {
-    setCardDetails({
-      dateRange: selectedDateRange,
-      download:
-        "https://gseijrhbhurcrpgbxrgt.supabase.co/storage/v1/object/sign/Test%20bucket/sample.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJUZXN0IGJ1Y2tldC9zYW1wbGUucGRmIiwiaWF0IjoxNzIyNDMwNzgxLCJleHAiOjE3MjMwMzU1ODF9.DJSWsvWgcN6VPhR1Tc59nlHu1CcVqCVUDAv2Y5w4RqE&t=2024-07-31T12%3A59%3A41.813Z",
-      leftText: { title: "Net profit", value: -500.0 },
-      centerText: { title: "Gross profit", value: 162500.123 },
-      rightText: { title: "Expenses", value: 162500.123 },
-    });
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [incomeStatement, setIncomeStatement] = useState<Record<string, any>>();
+
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+
+  const onFetchStatementSuccess = (res: any) => {
+    if (res) {
+      setIncomeStatement(res);
+    }
+    setLoading(false);
+  };
+
+  const fetchIncomeStatement = useCallback(async () => {
+    if (loading || !selectedDateRange?.year) return false;
+    setLoading(true);
+    return FinanceApis.getIncomeStatement(selectedDateRange.year).then(
+      onFetchStatementSuccess,
+      onError
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDateRange]);
-  const netProfit = sheetData.title.value - sheetData1.title.value;
-
-  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
-     setDataLoading(false);
-  }, []);
+    fetchIncomeStatement();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchIncomeStatement]);
+
+  const netProfit =
+    incomeStatement?.revenue.title.value -
+    incomeStatement?.expenses.title.value;
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -82,20 +71,20 @@ const Page = () => {
               <div className="w-fit md:hidden">
                 <DownloadButton
                   showText={false}
-                  downloadLink={cardDetails.download}
+                  downloadLink={incomeStatement?.overview.download}
                 />
               </div>
             </div>
           </div>
-          {dataLoading ? (
+          {loading || !incomeStatement ? (
             <IncomeBankSkeleton showLastSkeleton={true} />
           ) : (
             <Fragment>
-              <HeaderCard cardDetails={cardDetails} />
+              <HeaderCard cardDetails={incomeStatement?.overview} />
               <div className="flex flex-col gap-4 mt-4 mx-1">
-                <SheetsData sheetData={sheetData} />
+                <SheetsData sheetData={incomeStatement?.revenue} />
                 <span className="border-b border-muted"></span>
-                <SheetsData sheetData={sheetData1} />
+                <SheetsData sheetData={incomeStatement?.expenses} />
                 <span className="border-b border-muted"></span>
               </div>
               <div className="flex justify-between font-semibold text-primary mx-1">

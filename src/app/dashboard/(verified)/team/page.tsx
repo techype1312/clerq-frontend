@@ -15,7 +15,7 @@ import TeamActionMenu from "@/components/dashboard/teams/TeamActionMenu";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
 import InviteTeamApis from "@/actions/data/invite.data";
-import TeamApis from "@/actions/data/team-data";
+import TeamApis from "@/actions/data/team.data";
 import TeamSkeleton from "@/components/skeletons/dashboard/TeamSkeleton";
 
 const getTableColumns = ({

@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { dateRangeType } from "@/types/general";
+import { DateRangeType } from "@/types/general";
 
 const DateRangeDropdownSelect = ({
   dateRange,
@@ -16,9 +16,9 @@ const DateRangeDropdownSelect = ({
   selectedDateRangeIndex,
   setSelectedDateRangeIndex,
 }: {
-  dateRange: dateRangeType[];
-  selectedDateRange: dateRangeType;
-  setSelectedDateRange: React.Dispatch<React.SetStateAction<dateRangeType>>;
+  dateRange: DateRangeType[];
+  selectedDateRange: DateRangeType;
+  setSelectedDateRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
   selectedDateRangeIndex: number;
   setSelectedDateRangeIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {

@@ -19,6 +19,7 @@ export const generateDateRange = () => {
   while (currentStartDate < today) {
     const currentEndDate = addYears(currentStartDate, 1);
     dateRange.push({
+      year: format(currentStartDate, "yyyy"),
       startDate: format(currentStartDate, "MMMM yyyy"),
       endDate: format(currentEndDate, "MMMM yyyy"),
     });

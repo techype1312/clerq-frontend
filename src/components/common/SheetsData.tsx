@@ -1,13 +1,13 @@
 //This component will be used to display the data on Income statement and Balance sheet pages
 import React, { useEffect } from "react";
-import { sheetDataType } from "@/types/general";
+import { SheetDataType } from "@/types/general";
 import SymbolIcon from "./MaterialSymbol/SymbolIcon";
 
 const SheetsData = ({
   sheetData,
   isOpened,
 }: {
-  sheetData: sheetDataType;
+  sheetData: SheetDataType;
   isOpened?: string;
 }) => {
   const [showData, setShowData] = React.useState<boolean>(
@@ -15,7 +15,7 @@ const SheetsData = ({
   );
   useEffect(() => {
     if (sheetData.isCollapsible) {
-      if (isOpened === sheetData.title.title || isOpened === "all") {
+      if (isOpened === sheetData.title.label || isOpened === "all") {
         setShowData(true);
       } else {
         setShowData(false);
@@ -39,7 +39,7 @@ const SheetsData = ({
               <SymbolIcon icon="arrow_drop_down" color="#1E1E2A" size={32} />
             </span>
           )}
-          {sheetData.title.title}
+          {sheetData.title.label}
         </h1>
         <p className="text-label font-medium md:font-semibold">
           {sheetData.title.value < 0 && "-"}$
@@ -53,7 +53,7 @@ const SheetsData = ({
         <>
           {sheetData.data.map((data, index) => (
             <div key={index} className="flex justify-between text-muted">
-              <p className="text-sm">{data.title}</p>
+              <p className="text-sm">{data.label}</p>
               <p className="text-sm">
                 {data.value < 0 && "-"}$
                 {Math.abs(data.value).toLocaleString("en-US", {
@@ -65,7 +65,7 @@ const SheetsData = ({
           ))}
           {sheetData.showFooter && sheetData.footerData && (
             <div className="flex justify-between font-semibold text-primary-alt">
-              <p className="text-sm">{sheetData.footerData.title}</p>
+              <p className="text-sm">{sheetData.footerData.label}</p>
               <p className="text-sm">
                 {sheetData.footerData.value < 0 && "-"}$
                 {Math.abs(sheetData.footerData.value).toLocaleString("en-US", {
