@@ -1,46 +1,17 @@
 "use client";
 
-import React, { Fragment, lazy, Suspense, useEffect, useState } from "react";
-import isObject from "lodash/isObject";
+import React, { Fragment, lazy, Suspense } from "react";
 import { useCompanySessionContext } from "@/context/CompanySession";
-import { ErrorProps } from "@/types/general";
 import Script from "next/script";
-import BankingApis from "@/actions/data/banking.data";
 import BankConnectionsSkeleton from "@/components/skeletons/dashboard/BankConnectionsSkeleton";
 import ConnectAccount from "@/components/dashboard/bankAccounts/ConnectAccount";
+import { useBankAccountsContext } from "@/context/BankAccounts";
 
 const BankConnections = lazy(() => import("./BankConnections"));
 
 export default function Page() {
   const { currentUcrm } = useCompanySessionContext();
-  const [serverError, setServerError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [bankAccounts, setBankAccounts] = useState<Record<string, any>[]>([]);
-
-  const onError = (err: string | ErrorProps) => {
-    setServerError(isObject(err) ? err.errors.message : err);
-    setLoading(false);
-  };
-
-  const onFetchAccountsSuccess = (res: any) => {
-    if (res && res.length) {
-      setBankAccounts(res);
-    }
-    setLoading(false);
-  };
-
-  const fetchBankAccounts = () => {
-    if (!currentUcrm?.company?.id) return false;
-    return BankingApis.getBankAccounts(currentUcrm?.company?.id).then(
-      onFetchAccountsSuccess,
-      onError
-    );
-  };
-
-  useEffect(() => {
-    fetchBankAccounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
+  const { bankAccountsData } = useBankAccountsContext();
 
   return (
     <Fragment>
@@ -63,10 +34,7 @@ export default function Page() {
                 Automatically extract all business transactions for bookkeeping.
               </p>
               <Suspense fallback={<BankConnectionsSkeleton />}>
-                <BankConnections
-                  bankAccounts={bankAccounts}
-                  companyId={currentUcrm?.company?.id as string}
-                />
+                <BankConnections bankAccounts={bankAccountsData} />
               </Suspense>
               <ConnectAccount companyId={currentUcrm?.company?.id as string} />
             </div>

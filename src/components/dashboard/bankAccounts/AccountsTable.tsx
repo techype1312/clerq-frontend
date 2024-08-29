@@ -11,10 +11,8 @@ import { Fragment } from "react";
 
 const AccountsTable = ({
   accounts = [],
-  companyId,
 }: {
   accounts: Record<string, any>[];
-  companyId: string;
 }) => {
   if (accounts.length === 0) {
     return null;
