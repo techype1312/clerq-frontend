@@ -1,0 +1,502 @@
+[
+  {
+    "id": "154f0737-de63-4586-11ab-492fb58fb652",
+    "duration": "30",
+    "bookKeepingStatus": [
+      {
+        "label": "Jan",
+        "value": "completed"
+      },
+      {
+        "label": "Feb",
+        "value": "completed"
+      },
+      {
+        "label": "Mar",
+        "value": "completed"
+      },
+      {
+        "label": "Apr",
+        "value": "completed"
+      },
+      {
+        "label": "May",
+        "value": "completed"
+      },
+      {
+        "label": "Jun",
+        "value": "completed"
+      },
+      {
+        "label": "Jul",
+        "value": "completed"
+      },
+      {
+        "label": "Aug",
+        "value": "pending"
+      },
+      {
+        "label": "Sep",
+        "value": "upcoming"
+      },
+      {
+        "label": "Oct",
+        "value": "upcoming"
+      },
+      {
+        "label": "Nov",
+        "value": "upcoming"
+      },
+      {
+        "label": "Dec",
+        "value": "upcoming"
+      }
+    ],
+    "moneyIn": {
+      "title": "Money in",
+      "value": 10000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 4000000,
+      "avgValueDistribution": [1000000, 2000000, 3000000]
+    },
+    "moneyOut": {
+      "title": "Money out",
+      "value": -10000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 2000000,
+      "avgValueDistribution": [100000, 200000, 300000]
+    },
+    "topExpenses": [
+      {
+        "label": "Independent Contractor Expense",
+        "value": -1456,
+        "percentage": 40
+      },
+      {
+        "label": "Travel & Transportation Expense",
+        "value": -1000,
+        "percentage": 30
+      },
+      {
+        "label": "Training & Education Expense",
+        "value": -500,
+        "percentage": 15
+      },
+      {
+        "label": "Business Meals",
+        "value": -200,
+        "percentage": 10
+      },
+      {
+        "label": "Overhead Costs (Rent, Utilities etc)",
+        "value": -100,
+        "percentage": 5
+      }
+    ],
+    "PNL": {
+      "totalRevenue": 100000.5,
+      "totalExpenses": 50000.632,
+      "fromMonth": "Jan",
+      "toMonth": "Mar",
+      "profitLoss": [
+        {
+          "revenue": 100000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 150000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 6000,
+          "expenses": 50000
+        }
+      ]
+    }
+  },
+  {
+    "id": "154f0737-de63-4286-11ab-492fb58fb652",
+    "duration": "-7",
+    "bookKeepingStatus": [
+      {
+        "label": "Jan",
+        "value": "completed"
+      },
+      {
+        "label": "Feb",
+        "value": "completed"
+      },
+      {
+        "label": "Mar",
+        "value": "completed"
+      },
+      {
+        "label": "Apr",
+        "value": "completed"
+      },
+      {
+        "label": "May",
+        "value": "completed"
+      },
+      {
+        "label": "Jun",
+        "value": "completed"
+      },
+      {
+        "label": "Jul",
+        "value": "completed"
+      },
+      {
+        "label": "Aug",
+        "value": "pending"
+      },
+      {
+        "label": "Sep",
+        "value": "upcoming"
+      },
+      {
+        "label": "Oct",
+        "value": "upcoming"
+      },
+      {
+        "label": "Nov",
+        "value": "upcoming"
+      },
+      {
+        "label": "Dec",
+        "value": "upcoming"
+      }
+    ],
+    "moneyIn": {
+      "title": "Money in",
+      "value": 2000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 3000000,
+      "avgValueDistribution": [1000000, 2000000, 3000000]
+    },
+    "moneyOut": {
+      "title": "Money out",
+      "value": -60000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 2000000,
+      "avgValueDistribution": [100000, 200000, 300000]
+    },
+    "topExpenses": [
+      {
+        "label": "Independent Contractor Expense",
+        "value": -1456,
+        "percentage": 40
+      },
+      {
+        "label": "Travel & Transportation Expense",
+        "value": -1000,
+        "percentage": 30
+      },
+      {
+        "label": "Training & Education Expense",
+        "value": -500,
+        "percentage": 15
+      },
+      {
+        "label": "Business Meals",
+        "value": -200,
+        "percentage": 10
+      },
+      {
+        "label": "Overhead Costs (Rent, Utilities etc)",
+        "value": -100,
+        "percentage": 5
+      }
+    ],
+    "PNL": {
+      "totalRevenue": 100000.5,
+      "totalExpenses": 50000.632,
+      "fromMonth": "Jan",
+      "toMonth": "Mar",
+      "profitLoss": [
+        {
+          "revenue": 100000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 150000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 6000,
+          "expenses": 50000
+        }
+      ]
+    }
+  },
+  {
+    "id": "154f0737-de63-4386-11ab-492fb58fb652",
+    "duration": "-30",
+    "bookKeepingStatus": [
+      {
+        "label": "Jan",
+        "value": "completed"
+      },
+      {
+        "label": "Feb",
+        "value": "completed"
+      },
+      {
+        "label": "Mar",
+        "value": "completed"
+      },
+      {
+        "label": "Apr",
+        "value": "completed"
+      },
+      {
+        "label": "May",
+        "value": "completed"
+      },
+      {
+        "label": "Jun",
+        "value": "completed"
+      },
+      {
+        "label": "Jul",
+        "value": "pending"
+      },
+      {
+        "label": "Aug",
+        "value": "upcoming"
+      },
+      {
+        "label": "Sep",
+        "value": "upcoming"
+      },
+      {
+        "label": "Oct",
+        "value": "upcoming"
+      },
+      {
+        "label": "Nov",
+        "value": "upcoming"
+      },
+      {
+        "label": "Dec",
+        "value": "upcoming"
+      }
+    ],
+    "moneyIn": {
+      "title": "Money in",
+      "value": 45000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 4500000,
+      "avgValueDistribution": [1000000, 2000000, 3000000]
+    },
+    "moneyOut": {
+      "title": "Money out",
+      "value": -64000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 7000000,
+      "avgValueDistribution": [100000, 200000, 300000]
+    },
+    "topExpenses": [
+      {
+        "label": "Independent Contractor Expense",
+        "value": -1456,
+        "percentage": 40
+      },
+      {
+        "label": "Travel & Transportation Expense",
+        "value": -1000,
+        "percentage": 30
+      },
+      {
+        "label": "Training & Education Expense",
+        "value": -500,
+        "percentage": 15
+      },
+      {
+        "label": "Business Meals",
+        "value": -200,
+        "percentage": 10
+      },
+      {
+        "label": "Overhead Costs (Rent, Utilities etc)",
+        "value": -100,
+        "percentage": 5
+      }
+    ],
+    "PNL": {
+      "totalRevenue": 1024000.5,
+      "totalExpenses": 50400.632,
+      "fromMonth": "Jan",
+      "toMonth": "Mar",
+      "profitLoss": [
+        {
+          "revenue": 100000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 150000,
+          "expenses": 50000
+        },
+        {
+          "revenue": 6000,
+          "expenses": 50000
+        }
+      ]
+    }
+  },
+  {
+    "id": "132f0737-de63-4386-11ab-492fb58fb652",
+    "duration": "ytd",
+    "bookKeepingStatus": [
+      {
+        "label": "Jan",
+        "value": "completed"
+      },
+      {
+        "label": "Feb",
+        "value": "completed"
+      },
+      {
+        "label": "Mar",
+        "value": "completed"
+      },
+      {
+        "label": "Apr",
+        "value": "completed"
+      },
+      {
+        "label": "May",
+        "value": "completed"
+      },
+      {
+        "label": "Jun",
+        "value": "completed"
+      },
+      {
+        "label": "Jul",
+        "value": "completed"
+      },
+      {
+        "label": "Aug",
+        "value": "pending"
+      },
+      {
+        "label": "Sep",
+        "value": "upcoming"
+      },
+      {
+        "label": "Oct",
+        "value": "upcoming"
+      },
+      {
+        "label": "Nov",
+        "value": "upcoming"
+      },
+      {
+        "label": "Dec",
+        "value": "upcoming"
+      }
+    ],
+    "moneyIn": {
+      "title": "Money in",
+      "value": 63000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 2135000,
+      "avgValueDistribution": [1000000, 2000000, 3000000]
+    },
+    "moneyOut": {
+      "title": "Money out",
+      "value": -94000,
+      "categories": [
+        { "label": "Logistics", "value": 1000 },
+        { "label": "Wages", "value": 700 },
+        { "label": "Stationery", "value": 200 },
+        { "label": "Uncategorised", "value": 100 }
+      ],
+      "avgValue": 8800000,
+      "avgValueDistribution": [100000, 200000, 300000]
+    },
+    "topExpenses": [
+      {
+        "label": "Independent Contractor Expense",
+        "value": -1456,
+        "percentage": 40
+      },
+      {
+        "label": "Travel & Transportation Expense",
+        "value": -1000,
+        "percentage": 30
+      },
+      {
+        "label": "Training & Education Expense",
+        "value": -500,
+        "percentage": 15
+      },
+      {
+        "label": "Business Meals",
+        "value": -200,
+        "percentage": 10
+      },
+      {
+        "label": "Overhead Costs (Rent, Utilities etc)",
+        "value": -100,
+        "percentage": 5
+      }
+    ],
+    "PNL": {
+      "totalRevenue": 1024000.5,
+      "totalExpenses": 50400.632,
+      "fromMonth": "Jan",
+      "toMonth": "Mar",
+      "profitLoss": [
+        {
+          "revenue": 900000,
+          "expenses": 70000
+        },
+        {
+          "revenue": 159000,
+          "expenses": 55000
+        },
+        {
+          "revenue": 6000,
+          "expenses": 50000
+        }
+      ]
+    }
+  }
+]
