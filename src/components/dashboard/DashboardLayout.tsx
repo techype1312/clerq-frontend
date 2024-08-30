@@ -54,7 +54,7 @@ export const DashboardLayout = ({
     <main className="h-full w-full bg-white">
       <div className="flex flex-col h-[100svh]">
         <DemoBanner />
-        <div className="flex flex-row overflow-y-scroll">
+        <div className="flex flex-row overflow-y-scroll h-full">
           <DashboardSidebar isOpen={isOpen} setOpen={setOpen} />
           <div className="flex flex-col flex-1 bg-white overflow-hidden">
             <DashboardTop toggleDrawer={() => setOpen(!isOpen)} />

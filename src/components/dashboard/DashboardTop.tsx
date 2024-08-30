@@ -225,6 +225,14 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
             >
               Settings
             </DropdownMenuItem>
+            {/* <DropdownMenuItem
+              className="py-2 cursor-pointer"
+              onClick={() => {
+                router.push("/dashboard/security");
+              }}
+            >
+              Security
+            </DropdownMenuItem> */}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="py-2 cursor-pointer">

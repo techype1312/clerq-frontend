@@ -30,13 +30,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ErrorProps } from "@/types/general";
+import { LabelValue } from "@/types/general";
 import { formatFilterId } from "@/utils/utils";
 import TransactionSkeleton from "@/components/skeletons/dashboard/TransactionSkeleton";
 import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
 import TeamSkeleton from "@/components/skeletons/dashboard/TeamSkeleton";
-import BankingApis from "@/actions/data/banking.data";
-import isObject from "lodash/isObject";
+import SecuritySkeleton from "@/components/skeletons/dashboard/SecuritySkeleton";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -44,6 +43,11 @@ const csvConfig = mkConfig({
   decimalSeparator: ".",
   useKeysAsHeaders: true,
 });
+
+type pagination = {
+  pageIndex: number;
+  pageSize: number;
+};
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,12 +59,21 @@ interface DataTableProps<TData, TValue> {
   showPagination?: boolean;
   showFilter?: boolean;
   onUpload?: () => void;
-  setTransactions?: any;
-  setLoading?: any;
-  accounts?: any;
-  currentUcrm?: any;
   showDownload?: boolean;
   type?: string;
+  filtersCategory?: LabelValue[];
+  hasNextPage?: boolean;
+  pagination?: pagination;
+  setPagination?: React.Dispatch<React.SetStateAction<pagination>>;
+  sorting?: SortingState;
+  setSorting?: React.Dispatch<React.SetStateAction<SortingState>>;
+  columnFilters?: ColumnFiltersState;
+  setColumnFilters?: React.Dispatch<React.SetStateAction<ColumnFiltersState>>;
+  dateFilter?: any;
+  setDateFilter?: React.Dispatch<React.SetStateAction<any>>;
+  amountFilter?: any;
+  setAmountFilter?: React.Dispatch<React.SetStateAction<any>>;
+  defaultOpenedFilter?: string;
 }
 
 const filterCategories = [
@@ -90,6 +103,11 @@ const filterCategories = [
   },
 ];
 
+const defaultPagination = {
+  pageIndex: 1,
+  pageSize: 10,
+};
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -100,28 +118,23 @@ export function DataTable<TData, TValue>({
   showUploadButton = false,
   showHeader = true,
   showPagination = true,
-  setTransactions,
-  setLoading,
-  accounts,
-  currentUcrm,
   showDownload = true,
   type,
+  filtersCategory = filterCategories,
+  hasNextPage = false,
+  pagination = defaultPagination,
+  setPagination,
+  sorting,
+  setSorting,
+  columnFilters,
+  setColumnFilters,
+  dateFilter,
+  setDateFilter,
+  amountFilter,
+  setAmountFilter,
+  defaultOpenedFilter = "category",
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 1,
-    pageSize: 10,
-  });
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
-  const [openedFilter, setOpenedFilter] = useState<string>("category");
-  const [dateFilter, setDateFilter] = useState<any>();
-  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
-  const [pagesVisited, setPagesVisited] = useState<number[]>([]);
-  const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
-  const [amountFilter, setAmountFilter] = useState<any>();
-  const [oldSorting, setOldSorting] = useState<SortingState>([]);
-  const [serverError, setServerError] = useState("");
+  const [openedFilter, setOpenedFilter] = useState<string>(defaultOpenedFilter);
 
   const exportExcel = (rows: any) => {
     // const rowData = rows.map((row: any) => row.original);
@@ -167,155 +180,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const onError = (err: string | ErrorProps) => {
-    setServerError(isObject(err) ? err.errors.message : err);
-    setLoading(false);
-  };
-
-  const onFetchTransactionsSuccess = (res: any) => {
-    if (filtersChanged || !pagesVisited.includes(pagination.pageIndex)) {
-      setTransactions(
-        res.data?.map((transaction: any, index: number) => {
-          return {
-            ...transaction,
-            date: transaction.createdAt,
-            merchant: {
-              merchant_name: transaction.merchant_name,
-              merchant_logo: transaction.merchant_logo_url,
-            },
-            // glCode: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
-            // ottoCategory: index === 0 ? "Cleaning" : "Advertising",
-            account: accounts?.filter(
-              (account: any) => account.id === transaction.account.id
-            )[0],
-          };
-        })
-      );
-    } else {
-      setTransactions(historyTransactions[pagination.pageIndex - 1]);
-    }
-    if (filtersChanged) {
-      setHistoryTransactions([
-        res.data?.map((transaction: any, index: number) => {
-          return {
-            ...transaction,
-            date: transaction.createdAt,
-            merchant: {
-              merchant_name: transaction.merchant_name,
-              merchant_logo: transaction.merchant_logo_url,
-            },
-            account: accounts?.filter(
-              (account: any) => account.id === transaction.account.id
-            )[0],
-          };
-        }),
-      ]);
-    } else if (!pagesVisited.includes(pagination.pageIndex)) {
-      setHistoryTransactions([
-        ...historyTransactions,
-        res.data?.map((transaction: any, index: number) => {
-          return {
-            ...transaction,
-            date: transaction.createdAt,
-            merchant: {
-              merchant_name: transaction.merchant_name,
-              merchant_logo: transaction.merchant_logo_url,
-            },
-            account: accounts?.filter(
-              (account: any) => account.id === transaction.account.id
-            )[0],
-          };
-        }),
-      ]);
-      setPagesVisited([...pagesVisited, pagination.pageIndex]);
-    }
-    //Once we have total length of data, we can calculate if there are more pages
-    setHasNextPage(
-      res.hasNextPage ?? pagesVisited.includes(pagination.pageIndex + 1)
-    );
-    setFiltersChanged(false);
-    setLoading(false);
-  };
-
-  const handleFetchTransactions = () => {
-    if (!accounts.length) return false;
-    if (!pagesVisited.includes(pagination.pageIndex) || filtersChanged) {
-      setLoading(true);
-      return BankingApis.getBankTransactions(currentUcrm?.company?.id, {
-        page: pagination.pageIndex,
-        limit: pagination.pageSize,
-        sort: sorting.map((sort) => {
-          return {
-            order: sort.desc ? "DESC" : "ASC",
-            orderBy: sort.id,
-          };
-        }),
-        filters:
-          columnFilters &&
-          columnFilters.map((filter) => {
-            return {
-              id: filter.id,
-              value: filter.value,
-            };
-          }),
-        dateFilter: dateFilter && dateFilter.value,
-        amountFilter: amountFilter && amountFilter,
-      }).then(onFetchTransactionsSuccess, onError);
-    }
-  };
-
-  useEffect(() => {
-    if (!loading && currentUcrm?.company?.id) {
-      handleFetchTransactions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.pageIndex]);
-
-  useEffect(() => {
-    if (data.length === 0 && currentUcrm?.company?.id) {
-      handleFetchTransactions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (
-      sorting !== oldSorting &&
-      currentUcrm?.company?.id &&
-      accounts?.length
-    ) {
-      setOldSorting(sorting);
-      setFiltersChanged(true);
-      setPagesVisited([]);
-    } else if (columnFilters.length > 0) {
-      setFiltersChanged(true);
-      setPagesVisited([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting, columnFilters]);
-
-  useEffect(() => {
-    if (
-      !loading &&
-      filtersChanged &&
-      currentUcrm?.company?.id &&
-      accounts?.length
-    ) {
-      handleFetchTransactions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtersChanged]);
-
-  useEffect(() => {
-    setFiltersChanged(true);
-    setPagesVisited([]);
-  }, [dateFilter]);
-
-  useEffect(() => {
-    setFiltersChanged(true);
-    setPagesVisited([]);
-  }, [amountFilter]);
-
   return (
     <>
       <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4 md:gap-0 w-full">
@@ -328,7 +192,7 @@ export function DataTable<TData, TValue>({
                     <span className="-mb-1">
                       <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
                     </span>
-                    {columnFilters.length > 0 ||
+                    {(columnFilters && columnFilters.length > 0) ||
                     dateFilter?.value ||
                     amountFilter?.value ? (
                       <span>Filter applied</span>
@@ -343,7 +207,7 @@ export function DataTable<TData, TValue>({
                 <DropdownMenuSeparator />
                 <div className="flex">
                   <div className="flex flex-col gap-2 text-left border-r">
-                    {filterCategories.map((category, index) => {
+                    {filtersCategory.map((category, index) => {
                       return (
                         <Button
                           variant={"ghost"}
@@ -355,7 +219,7 @@ export function DataTable<TData, TValue>({
                             openedFilter === category.value
                               ? "text-primary bg-muted"
                               : " text-label hover:text-label"
-                          } justify-between`}
+                          } justify-between min-w-36`}
                         >
                           {category.label}{" "}
                           <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />
@@ -363,7 +227,7 @@ export function DataTable<TData, TValue>({
                       );
                     })}
                   </div>
-                  <div className="max-w-lg overflow-x-scroll">
+                  <div className="min-w-40 max-w-lg overflow-x-scroll">
                     <Filters
                       openedFilter={openedFilter}
                       setColumnFilters={setColumnFilters}
@@ -395,6 +259,7 @@ export function DataTable<TData, TValue>({
                     className="py-0"
                     onClick={() =>
                       pagination.pageIndex > 1 &&
+                      setPagination &&
                       setPagination({
                         ...pagination,
                         pageIndex: pagination.pageIndex - 1,
@@ -409,6 +274,7 @@ export function DataTable<TData, TValue>({
                     size="sm"
                     className="py-0"
                     onClick={() =>
+                      setPagination &&
                       setPagination((prev) => ({
                         ...prev,
                         pageIndex: pagination.pageIndex + 1,
@@ -472,42 +338,44 @@ export function DataTable<TData, TValue>({
             </div>
           </div>
           <div className="flex flex-row gap-2 max-md:hidden">
-            {columnFilters.map((filter: any, index: number) => {
-              return (
-                <div
-                  className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
-                  key={index}
-                >
-                  <p className="text-primary-alt">
-                    {Array.isArray(filter?.value)
-                      ? filter?.value.length > 1
-                        ? formatFilterId(filter?.id) +
-                          ` (${filter?.value.length})`
-                        : filter?.value
-                      : (filter.id === "amount" ? "$" : "") +
-                        " " +
-                        filter?.value}
-                  </p>
-                  <p
-                    className="cursor-pointer h-5"
-                    onClick={() => {
-                      setColumnFilters(
-                        columnFilters.filter((val) => val.id !== filter.id)
-                      );
-                    }}
+            {columnFilters &&
+              columnFilters.map((filter: any, index: number) => {
+                return (
+                  <div
+                    className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
+                    key={index}
                   >
-                    <SymbolIcon icon="close" color="#535460" size={20} />
-                  </p>
-                </div>
-              );
-            })}
+                    <p className="text-primary-alt">
+                      {Array.isArray(filter?.value)
+                        ? filter?.value.length > 1
+                          ? formatFilterId(filter?.id) +
+                            ` (${filter?.value.length})`
+                          : filter?.value
+                        : (filter.id === "amount" ? "$" : "") +
+                          " " +
+                          filter?.value}
+                    </p>
+                    <p
+                      className="cursor-pointer h-5"
+                      onClick={() => {
+                        setColumnFilters &&
+                          setColumnFilters(
+                            columnFilters.filter((val) => val.id !== filter.id)
+                          );
+                      }}
+                    >
+                      <SymbolIcon icon="close" color="#535460" size={20} />
+                    </p>
+                  </div>
+                );
+              })}
             {dateFilter && dateFilter?.value && (
               <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
                 <p className="text-primary-alt">{dateFilter.label}</p>
                 <p
                   className="cursor-pointer h-5"
                   onClick={() => {
-                    setDateFilter({});
+                    setDateFilter && setDateFilter({});
                   }}
                 >
                   <SymbolIcon icon="close" color="#535460" size={20} />
@@ -520,22 +388,22 @@ export function DataTable<TData, TValue>({
                 <p
                   className="cursor-pointer h-5"
                   onClick={() => {
-                    setAmountFilter({});
+                    setAmountFilter && setAmountFilter({});
                   }}
                 >
                   <SymbolIcon icon="close" color="#535460" size={20} />
                 </p>
               </div>
             )}
-            {(columnFilters.length > 0 ||
+            {((columnFilters && columnFilters.length > 0) ||
               dateFilter?.value ||
               amountFilter?.value) && (
               <Button
                 variant="ghost"
                 onClick={() => {
-                  setColumnFilters([]);
-                  setDateFilter({});
-                  setAmountFilter({});
+                  setColumnFilters && setColumnFilters([]);
+                  setDateFilter && setDateFilter({});
+                  setAmountFilter && setAmountFilter({});
                 }}
                 className="h-8"
               >
@@ -562,6 +430,7 @@ export function DataTable<TData, TValue>({
                 className="py-0"
                 onClick={() =>
                   pagination.pageIndex > 1 &&
+                  setPagination &&
                   setPagination({
                     ...pagination,
                     pageIndex: pagination.pageIndex - 1,
@@ -576,6 +445,7 @@ export function DataTable<TData, TValue>({
                 size="sm"
                 className="py-0"
                 onClick={() =>
+                  setPagination &&
                   setPagination((prev) => ({
                     ...prev,
                     pageIndex: pagination.pageIndex + 1,
@@ -664,6 +534,7 @@ export function DataTable<TData, TValue>({
             {type === "document" && <DocumentSkeleton />}
             {type === "transaction" && <TransactionSkeleton />}
             {type === "team" && <TeamSkeleton />}
+            {type === "security" && <SecuritySkeleton />}
           </>
         ) : (
           <TableBody>
