@@ -19,12 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Permissions from "@/components/common/Permissions";
+import { permissions } from "@/components/common/Permissions";
 import { ErrorProps } from "@/types/general";
 import { allowedRoles } from "@/utils/constants";
 import TeamApis from "@/actions/data/team.data";
 import Avatar from "../Avatar";
 import { isDemoEnv } from "../../../../../config";
+import Permission from "@/components/common/Permissions";
+import AutoForm from "@/components/ui/auto-form";
+import { AutoFormInputComponentProps } from "@/components/ui/auto-form/types";
 
 const EditMemberDialog = ({
   row,
@@ -35,6 +38,11 @@ const EditMemberDialog = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [roleId, setRoleId] = useState(String(row.role));
+  const [customPermissions, setCustomPermissions] = useState({
+    manage_user: row.permissions?.manage_user ?? false,
+    bank_accounts: row.permissions?.bank_accounts ?? false,
+    documents: row.permissions?.documents ?? false,
+  });
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,6 +71,7 @@ const EditMemberDialog = ({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
+  console.log(customPermissions);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -119,7 +128,65 @@ const EditMemberDialog = ({
           </div>
         </DialogHeader>
         <DialogDescription className="h-fit">
-          <Permissions />
+          {/* <Permissions /> */}
+          {/* <AutoForm
+            formSchema={customPermissionsSchema}
+            fieldConfig={{
+              custom_permissions: {
+                inputProps: {
+                  label: "custom_permissions",
+                  accordionSingle: true,
+                },
+                manage_user: {
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => (
+                    <Permission
+                      permissionData={permissions[0]}
+                      field={field}
+                      fieldProps={fieldProps}
+                    />
+                  ),
+                },
+                bank_accounts: {
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => (
+                    <Permission
+                      permissionData={permissions[1]}
+                      field={field}
+                      fieldProps={fieldProps}
+                    />
+                  ),
+                },
+                documents: {
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => (
+                    <Permission
+                      permissionData={permissions[2]}
+                      field={field}
+                      fieldProps={fieldProps}
+                    />
+                  ),
+                },
+              },
+            }}
+            withSubmitButton={false}
+            className="flex flex-col gap-4 max-w-lg mx-auto"
+            zodItemClass="flex flex-col md:flex-row grow gap-4 space-y-0 w-full"
+            zodItemClassWithoutName="flex flex-col grow gap-4 space-y-0 w-full"
+            values={{
+              custom_permissions: {
+                manage_user: customPermissions.manage_user,
+                bank_accounts: customPermissions.bank_accounts,
+                documents: customPermissions.documents,
+              },
+            }}
+          ></AutoForm> */}
           <div className="mt-4 ml-auto flex gap-2 justify-end">
             <DialogClose asChild>
               <Button

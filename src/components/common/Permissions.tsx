@@ -7,8 +7,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Checkbox } from "../ui/checkbox";
+import { FormControl, FormItem } from "../ui/form";
+import { Button } from "../ui/button";
+import { beautifyObjectName } from "../ui/auto-form/utils";
 
-const permissions = [
+export const permissions = [
   {
     label: "Manage Users",
     value: "manage_users",
@@ -65,53 +68,79 @@ const permissions = [
   },
 ];
 
-const Permissions = () => {
+const Permission = ({
+  field,
+  fieldProps,
+  permissionData,
+  permissions,
+  setPermissions,
+}: {
+  permissionData: any;
+  field: any;
+  fieldProps?: any;
+  permissions?: any;
+  setPermissions?: any;
+}) => {
   return (
-    <div>
-      <Accordion type="single" collapsible className="w-full">
-        {permissions.map((prs) => {
-          return (
-            <AccordionItem value={prs.value} key={`prs_${prs.value}`}>
-              <AccordionTrigger>
-                <div className="flex gap-2 items-start">
+    <FormItem className="border-b">
+      <AccordionItem
+        className="flex flex-col w-full"
+        value={permissionData.value}
+        key={`prs_${permissionData.value}`}
+      >
+        <FormControl>
+          <div className="flex flex-row gap-2 items-center flex-1 w-full">
+            <AccordionTrigger className="p-2">
+              <div className="flex flex-col gap-2 items-start flex-1">
+                <h3 className="font-medium">{permissionData.label}</h3>
+                <p>{permissionData.description}</p>
+              </div>
+            <Button
+              onClick={() => {
+                const newPermissions = { ...permissions };
+                permissionData.data.forEach((item: any) => {
+                  newPermissions[permissionData.value][item] = !field.value;
+                });
+                console.log(newPermissions)
+                setPermissions(newPermissions);
+                field.onChange(!field.value);
+              }}
+              className="text-sm ml-auto"
+              variant={'ghost'}
+            >
+              {field.value ? "Unselect All" : "Select All"}
+            </Button>
+            </AccordionTrigger>
+          </div>
+        </FormControl>
+        <AccordionContent className="ml-6">
+          {permissions &&
+            permissionData.data.map((item: any, idx: number) => {
+              return (
+                <div
+                  key={`item_${item}`}
+                  className="mb-4 flex gap-2 text-[#9D9DA7]"
+                >
                   <Checkbox
-                    checked={prs.defaultSelected}
-                    onCheckedChange={() => {}}
+                    checked={permissions[permissionData.value][item]}
+                    onCheckedChange={() => {
+                      setPermissions({
+                        ...permissions,
+                        [permissionData.value]: {
+                          ...permissions[permissionData.value],
+                          [item]: !permissions[permissionData.value][item],
+                        },
+                      });
+                    }}
                   />
-                  {prs.label}
+                  <p className="font-medium">{beautifyObjectName(item)}</p>
                 </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                {prs.data.map((item, idx) => {
-                  return (
-                    <div
-                      key={`item_${prs.value}`}
-                      className="mb-4 list-item text-[#9D9DA7]"
-                    >
-                      <p className="font-medium">{item.label}</p>
-                      <ul className="list-disc ml-2">
-                        {item.points.map((point, idx) => {
-                          return (
-                            <li
-                              key={`sub_item_${idx}`}
-                              className="flex flex-row"
-                            >
-                              <span className="mr-1">&#x2022;</span>
-                              <span>{point}</span>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                })}
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-    </div>
+              );
+            })}
+        </AccordionContent>
+      </AccordionItem>
+    </FormItem>
   );
 };
 
-export default Permissions;
+export default Permission;
