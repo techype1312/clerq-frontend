@@ -23,7 +23,7 @@ const BookkeepingStatus = ({
   bookkeepingStatus: BookKeepingStatusType[];
 }) => {
   return (
-    <div className="flex flex-col gap-4 md:px-4 py-8 md:border md:border-input rounded-md">
+    <div className="flex flex-col gap-4 md:px-4 md:py-8 py-2 md:border md:border-input rounded-md">
       <div className="flex justify-between flex-col md:flex-row">
         <h2 className="text-primary text-base font-medium md:text-xl">Bookkeeping status</h2>
         <p className="text-muted text-sm">

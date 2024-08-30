@@ -16,6 +16,7 @@ import DashboardSkeleton from "@/components/skeletons/dashboard/DashboardSkeleto
 import FinanceApis from "@/actions/data/finance.data";
 import { isObject } from "lodash";
 import { useUserContext } from "@/context/User";
+import { cn } from "@/utils/utils";
 
 const Dashboard = () => {
   const { userData } = useUserContext();
@@ -81,7 +82,7 @@ const Dashboard = () => {
       <div className="w-full lg:max-w-[950px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 flex-col md:flex-row justify-between">
-            <h1 className="text-primary text-2xl font-medium max-md:hidden">
+            <h1 className="text-primary text-xl font-medium leading-10">
               {userData?.firstName ? `Welcome, ${userData?.firstName}` : ""}
             </h1>
             <div className="flex gap-2 overflow-auto">
@@ -89,11 +90,11 @@ const Dashboard = () => {
                 <Button
                   key={index}
                   variant={"ghost"}
-                  className={`${
-                    selectedTimeLine.value === timeLine.value
-                      ? "text-background-primary background-muted"
-                      : "text-muted"
-                  } hover:text-label `}
+                  className={cn("hover:text-label", {
+                    ["text-background-primary background-muted"]: selectedTimeLine.value === timeLine.value,
+                    ["text-muted"]: selectedTimeLine.value !== timeLine.value,
+                    ["pl-0"] : index === 0,
+                  })}
                   onClick={() => {
                     setSelectedTimeLine(timeLine);
                   }}

@@ -81,7 +81,7 @@ const EditMemberDialog = ({
       </DialogTrigger>
       <DialogContent className="max-md:min-w-full h-screen md:h-auto overflow-auto">
         <DialogHeader className="h-fit mt-auto">
-          <div className="flex w-full items-center justify-between min-w-64 mt-6 text-base font-normal text-left text-label">
+          <div className="flex flex-row max-sm:flex-col gap-4 w-full items-start justify-between min-w-64 mt-6 text-base font-normal text-left text-label">
             <div className="flex text-label text-base gap-4 items-center min-w-52">
               <Avatar firstName={row.firstName} lastName={row.lastName} />
               <div className="flex flex-col justify-center">
@@ -101,7 +101,7 @@ const EditMemberDialog = ({
               </div>
             </div>
             <Select defaultValue={roleId} onValueChange={setRoleId}>
-              <SelectTrigger className="flex h-10 text-black min-w-36 w-fit">
+              <SelectTrigger className="flex h-10 text-black min-w-36 w-fit max-sm:w-full">
                 <SelectValue placeholder="select value" />
               </SelectTrigger>
               <SelectContent>

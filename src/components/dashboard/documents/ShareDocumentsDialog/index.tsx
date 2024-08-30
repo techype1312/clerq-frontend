@@ -77,7 +77,7 @@ const ShareDocumentsDialog = ({
             <SymbolIcon icon="email" size={20} color="#000000" />
           </Button>
         ) : (
-          <Button className="gap-2 rounded-full w-5 h-5" variant="ghost">
+          <Button className="gap-2 rounded-full w-5 h-5 p-0" variant="ghost">
             <SymbolIcon icon="email" size={20} color="#000000" />
           </Button>
         )}

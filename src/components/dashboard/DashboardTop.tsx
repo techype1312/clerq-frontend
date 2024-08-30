@@ -104,11 +104,11 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
 
   return (
     <div
-      className="my-5 w-[-webkit-fill-available] flex items-center ml-4 md:ml-8 mr-4 md:mr-8 "
+      className="py-2 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 shadow fixed bg-white"
       ref={inputRef}
     >
       <div className="flex items-center relative lg:hidden">
-        <Button className="p-0" onClick={toggleDrawer} variant="ghost">
+        <Button className="p-0 h-fit" onClick={toggleDrawer} variant="ghost">
           <ProfilePhotoPreview
             firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
             lastName={currentUcrm?.company?.name?.split(" ")?.[1]}
@@ -130,7 +130,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
           src={"/otto_logo_large.png"}
           alt="Otto"
           width={77}
-          height={30}
+          height={32}
           className="hidden lg:flex"
         />
       </div>

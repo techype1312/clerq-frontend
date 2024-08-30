@@ -73,8 +73,8 @@ const RemoveInviteDialog = ({
           {triggerBtnText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-lg rounded-lg">
+        <DialogHeader className="text-left">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <DialogDescription>{description}</DialogDescription>

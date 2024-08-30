@@ -277,7 +277,7 @@ const CompanyContainer = () => {
                   canEdit={true}
                   showButtons={false}
                 />
-                <p className="ml-2 text-3xl font-[380]">{companyData?.name}</p>
+                <p className="ml-2 text-xl font-[380]">{companyData?.name}</p>
               </div>
               <ProfileRowContainer profileData={rowData} />
             </Fragment>

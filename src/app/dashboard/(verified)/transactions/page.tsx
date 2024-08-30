@@ -12,7 +12,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { toast } from "react-toastify";
 import { useBankAccountsContext } from "@/context/BankAccounts";
 
@@ -85,30 +85,35 @@ const getTableColumns = ({
 
   const merchantCol: ColumnDef<any> = {
     accessorKey: "merchant",
-    header: "Company",
-    cell: ({ cell }) => {
+    header: "Merchant",
+    cell: ({ cell, row }) => {
       return (
-        <div className="flex items-center gap-2 text-label text-base">
-          {(cell.getValue() as merchant) &&
-          (cell.getValue() as merchant).merchant_logo &&
-          (cell.getValue() as merchant).merchant_name ? (
-            <>
+        <div className="flex flex-row items-center gap-2 text-label text-base">
+          <Fragment>
+            {(cell.getValue() as merchant)?.merchant_logo ? (
               <Image
-                width={24}
-                height={24}
-                src={(cell.getValue() as merchant).merchant_logo}
-                alt={(cell.getValue() as merchant).merchant_name}
+                width={28}
+                height={28}
+                src={(cell.getValue() as merchant)?.merchant_logo}
+                alt={(cell.getValue() as merchant)?.merchant_name}
                 className="rounded-full"
               />
+            ) : <div className="rounded-full h-7 w-7 bg-[#CCE8EA]"/>}
+            <div className="flex flex-col">
               <span className="text-sm font-semibold">
-                {(cell.getValue() as merchant).merchant_name}
+                {(cell.getValue() as merchant)?.merchant_name ?? "Unknown"}
               </span>
-            </>
-          ) : (
-            <span className="text-sm font-semibold">
-              {(cell.getValue() as merchant).merchant_name}
-            </span>
-          )}
+
+              <p className="flex flex-row text-[12px] leading-4 md:hidden">
+                <span>{row.original.account?.name} ••</span>
+                <span>{row.original.account?.mask}</span>
+              </p>
+
+              <span className="text-muted text-[10px] leading-4">
+                {format(row.original.date, "MMM d, yyyy")}
+              </span>
+            </div>
+          </Fragment>
         </div>
       );
     },
@@ -135,6 +140,7 @@ const getTableColumns = ({
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0 w-full max-md:justify-end justify-start"
         >
           Amount
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -146,7 +152,7 @@ const getTableColumns = ({
         (cell.getValue() as number) && (cell.getValue() as number) < 0;
       return (
         <div
-          className={cn("text-label text-base", {
+          className={cn("text-label text-base max-md:text-right", {
             ["text-[#036e43]"]: !isDebited,
           })}
         >
@@ -231,38 +237,40 @@ const getTableColumns = ({
 
   const receiptCol: ColumnDef<any> = {
     accessorKey: "receipt",
-    header: "Receipt",
+    header: () => <span className="text-right block w-full">{"Receipt"}</span>,
     cell: ({ cell }) => (
-      <Button
-        onClick={() => {
-          if (cell.getValue()) {
-            console.log("Receipt");
-          } else {
-            toast.error("No receipt available");
-          }
-        }}
-        variant="ghost"
-        className="text-label rounded-full p-0 h-8 w-8 bg-slate-100 hover:bg-slate-200"
-      >
-        {cell.getValue() ? (
-          <SymbolIcon icon="receipt_long" size={24} />
-        ) : (
-          <SymbolIcon icon="add" size={24} />
-        )}
-      </Button>
+      <div className="w-full flex justify-end">
+        <Button
+          onClick={() => {
+            if (cell.getValue()) {
+              console.log("Receipt");
+            } else {
+              toast.error("No receipt available");
+            }
+          }}
+          variant="ghost"
+          className="text-label rounded-full p-0 h-8 w-8 bg-slate-100 hover:bg-slate-200"
+        >
+          {cell.getValue() ? (
+            <SymbolIcon icon="receipt_long" size={24} />
+          ) : (
+            <SymbolIcon icon="add" size={24} />
+          )}
+        </Button>
+      </div>
     ),
   };
 
   if (windowWidth < 576) {
-    return [dateCol, merchantCol, amountCol, receiptCol];
+    return [merchantCol, amountCol];
   }
   if (windowWidth < 768) {
-    return [dateCol, merchantCol, amountCol, receiptCol];
+    return [merchantCol, amountCol, receiptCol];
   }
   if (windowWidth < 1024) {
-    return [dateCol, merchantCol, accountCol, amountCol, receiptCol];
+    return [merchantCol, accountCol, amountCol, receiptCol];
   }
-  return [dateCol, merchantCol, accountCol, amountCol, categoryCol, receiptCol];
+  return [merchantCol, accountCol, amountCol, categoryCol, receiptCol];
 };
 
 const Page = () => {

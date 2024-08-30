@@ -58,7 +58,7 @@ const ProfileUpdateModal = ({ rowData }: { rowData: RowData }) => {
           <SymbolIcon icon="chevron_right" color="#5265EB" size={20} />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-left">Edit {rowData.label}</DialogTitle>
         </DialogHeader>

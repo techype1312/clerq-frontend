@@ -65,20 +65,28 @@ const getTableColumns = ({
       );
     },
   };
-  const userActionsCol: ColumnDef<any> = {
+  const userLastActiveCol: ColumnDef<any> = {
     accessorKey: "lastActive",
-    header: () => <div className="text-center">{"Last Active"}</div>,
+    header: () => <div className="text-left">{"Last Active"}</div>,
+    cell: ({ cell, row }) => {
+      return (
+        <span
+          style={{
+            letterSpacing: ".2px",
+          }}
+          className="text-xs text-[#535461] font-normal"
+        >
+          {cell.getValue() as string}
+        </span>
+      );
+    },
+  };
+  const userActionsCol: ColumnDef<any> = {
+    accessorKey: "id",
+    header: "Action",
     cell: ({ cell, row }) => {
       return (
         <div className="flex flex-row gap-2 justify-end">
-          <span
-            style={{
-              letterSpacing: ".2px",
-            }}
-            className="text-xs text-[#535461] font-normal"
-          >
-            {cell.getValue() as string}
-          </span>
           <TeamActionMenu
             row={row.original}
             onRemoveInvite={onRemoveInvite}
@@ -93,9 +101,15 @@ const getTableColumns = ({
     return [userProfileCol, userActionsCol];
   }
   if (windowWidth < 768) {
-    return [userProfileCol, userStatusCol, userActionsCol];
+    return [userProfileCol, userStatusCol, userLastActiveCol, userActionsCol];
   }
-  return [userProfileCol, userRoleCol, userStatusCol, userActionsCol];
+  return [
+    userProfileCol,
+    userRoleCol,
+    userStatusCol,
+    userLastActiveCol,
+    userActionsCol,
+  ];
 };
 
 const TeamsPage = () => {

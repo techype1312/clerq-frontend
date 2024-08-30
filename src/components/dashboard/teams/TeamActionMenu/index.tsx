@@ -36,7 +36,7 @@ const TeamActionMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="rounded-md flex items-center cursor-pointer mr-4 hover:bg-blue-100">
+        <div className="rounded-md flex items-center cursor-pointer hover:bg-blue-100">
           <SymbolIcon icon="more_vert" size={20} />
         </div>
       </DropdownMenuTrigger>

@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogHeader,
+  DialogDescription,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import SymbolIcon from "../MaterialSymbol/SymbolIcon";
@@ -90,11 +91,11 @@ const ProfilePhotoEditModel = ({
           )}
         </div>
       </DialogTrigger>
-      <DialogContent className="max-md:max-w-full max-md:h-screen h-auto z-[100] items-center rounded-md justify-center max-w-md">
-        <DialogHeader className="text-start w-full">
+      <DialogContent className="max-md:min-w-full h-screen md:h-auto overflow-auto">
+        <DialogHeader className="h-fit mt-auto text-start w-full">
           <DialogTitle>{`Edit profile image`}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-start my-2 justify-center">
+        <DialogDescription className="h-fit flex flex-col items-start my-2 justify-center">
           <p
             style={{
               fontSize: "15px",
@@ -140,7 +141,7 @@ const ProfilePhotoEditModel = ({
             </div>
           )}
           <UploadProfilePhoto onUploadSuccess={handleUpdatePhoto} />
-        </div>
+        </DialogDescription>
       </DialogContent>
     </Dialog>
   );

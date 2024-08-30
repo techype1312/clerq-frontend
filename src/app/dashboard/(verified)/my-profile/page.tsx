@@ -285,7 +285,7 @@ const ProfilePage = () => {
                   canEdit={true}
                   showButtons={false}
                 />
-                <p className="ml-2 text-lg text-nowrap mr-2 md:text-[28px] font-[380]">
+                <p className="ml-2 text-xl text-nowrap mr-2 md:text-[28px] font-[380]">
                   {userData?.firstName} {userData?.lastName}
                 </p>
                 <RoleItem label={userData?.role?.name ?? ""} />

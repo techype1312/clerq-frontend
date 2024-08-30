@@ -34,7 +34,7 @@ export function HelpCenter() {
       <DrawerTrigger asChild>
         <Button
           variant="secondary"
-          className="shadow-sm shadow-slate-500 hover:shadow-xl z-50 absolute bottom-6 right-6 rounded-full w-12 h-12 hover:bg-black bg-slate-800"
+          className="shadow-sm shadow-slate-500 hover:shadow-xl z-50 absolute bottom-6 right-6 rounded-full w-12 h-12 hover:bg-black bg-slate-800 p-0"
         >
           <SymbolIcon icon="question_mark" color="#ffffff" size={24} />
         </Button>
@@ -45,7 +45,7 @@ export function HelpCenter() {
             <Button
               asChild
               variant="ghost"
-              className="h-5 w-5 rounded-full px-0 py-0"
+              className="w-7 h-7 rounded-full p-0"
               style={{
                 fontWeight: 400,
                 fontSize: "16px",

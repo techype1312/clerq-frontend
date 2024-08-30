@@ -209,8 +209,8 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
     <div
       className={`absolute flex gap-3 h-screen background-light border-r border-[#F1F1F4] z-40 lg:flex lg:static lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
-          ? "px-0 pt-5 pb-6 min-w-48"
-          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-5 pb-6"
+          ? "px-0 pt-3 pb-6 min-w-48"
+          : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-4 pb-6"
       } `}
     >
       <div className="flex flex-row px-6 items-center h-7">

@@ -31,9 +31,9 @@ const AccountsTable = ({
             {accounts?.map((acc: any | any, index: number) => (
               <TableRow key={index}>
                 <TableCell className="font-medium pl-0 md:pl-4">
-                  <div className="flex gap-2">
-                    <span className="bg-[#5266EB29] flex items-center justify-center rounded-full px-3 py-0">
-                      <SymbolIcon icon="account_balance" color="#5266EB" />
+                  <div className="flex gap-2 items-center">
+                    <span className="bg-[#5266EB29] flex items-center justify-center rounded-full p-0 h-8 w-9">
+                      <SymbolIcon icon="account_balance" color="#5266EB" size={24}/>
                     </span>
                     <div className="flex flex-col">
                       <p className="text-primary first-letter:capitalize text-base">

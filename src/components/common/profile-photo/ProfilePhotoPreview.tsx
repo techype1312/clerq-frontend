@@ -33,9 +33,9 @@ const ProfilePhotoPreview = ({
       ) : (
         <div
           style={{
-            fontSize: "18px",
+            fontSize: "16px",
             color: "#1e1e2a",
-            fontWeight: 500,
+            fontWeight: 400,
             lineHeight: "24px",
             textTransform: "uppercase",
             backgroundColor: "#cce8ea",

@@ -21,7 +21,7 @@ const ProfileItem = ({ rowData }: { rowData: RowData }) => {
         );
       default:
         return (
-          <div className="flex flex-col min-w-40 md:min-w-56 gap-1">
+          <div className="flex flex-col min-w-40 md:min-w-56 gap-1 text-sm">
             <span className="text-primary whitespace-break-spaces">
               {rowData.formattedValue}
             </span>

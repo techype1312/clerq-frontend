@@ -85,12 +85,12 @@ const DocumentsPage = () => {
       )} selected`,
       description: "PDF File",
       action: (
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row max-sm:flex-col gap-4">
           <a
             target="_blank"
             href="https://stage-documents.joinotto.com/6ab61e7cb7614f5ab28f4.pdf"
           >
-            <Button className="gap-2 rounded-full" variant="default">
+            <Button className="gap-2 rounded-full w-full" variant="default">
               Download <SymbolIcon icon="download" size={20} color="#ffffff" />
             </Button>
           </a>
