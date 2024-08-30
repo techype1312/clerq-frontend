@@ -113,9 +113,11 @@ export const step1Schema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -135,9 +137,11 @@ export const step1Schema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -188,9 +192,11 @@ export const step2Schema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -210,9 +216,11 @@ export const step2Schema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -273,14 +281,78 @@ export const inviteUserSchema = (roles: string[]) => {
         required_error: "Email is required",
       })
       .email(),
-    role: z.enum(
-      [roles[0], ...roles.slice(1)],
-      {
-        errorMap: customErrorMap,
-      }
-    ),
+    role: z.enum([roles[0], ...roles.slice(1)], {
+      errorMap: customErrorMap,
+    }),
+    permissions: permissionsSchema,
+    show_permissions: showPermissionsSchema,
   });
 };
+
+export const showPermissionsSchema = z.object({
+  // routes_show: z.boolean(),
+  finance_show: z.boolean(),
+  documents_show: z.boolean(),
+  reports_show: z.boolean(),
+  company_settings_show: z.boolean(),
+  teams_show: z.boolean(),
+});
+
+export const routesSchema = z.object({
+  dashboard: z.boolean(),
+  transactions: z.boolean(),
+  incomeStatement: z.boolean(),
+  balanceSheet: z.boolean(),
+  accounts: z.boolean(),
+  teams: z.boolean(),
+  documents: z.boolean(),
+  controls: z.boolean(),
+  myProfile: z.boolean(),
+  companyProfile: z.boolean(),
+  newCompany: z.boolean(),
+});
+
+export const financeSchema = z.object({
+  viewBookKeepings: z.boolean(),
+  viewFinance: z.boolean(),
+  manageTransactions: z.boolean(),
+  manageBankAccounts: z.boolean(),
+});
+
+export const documentsSchema = z.object({
+  uploadDocument: z.boolean(),
+  generateDocument: z.boolean(),
+  downloadDocument: z.boolean(),
+  shareDocument: z.boolean(),
+});
+
+export const reportsSchema = z.object({
+  downloadTransactionReports: z.boolean(),
+  downloadSheetReports: z.boolean(),
+  downloadStatementReports: z.boolean(),
+  downloadFinanceReports: z.boolean(),
+});
+
+export const companySettingsSchema = z.object({
+  bookMeeting: z.boolean(),
+  chatSupport: z.boolean(),
+  manageCompanyProfile: z.boolean(),
+  updateControls: z.boolean(),
+});
+
+export const teamsSchema = z.object({
+  manageTeam: z.boolean(),
+  manageInvite: z.boolean(),
+});
+
+export const permissionsSchema = z.object({
+  routes: routesSchema,
+  finance: financeSchema,
+  documents: documentsSchema,
+  reports: reportsSchema,
+  companySettings: companySettingsSchema,
+  teams: teamsSchema,
+});
 
 export const shareDocumentsSchema = z.object({
   recipient_email: z
@@ -320,7 +392,6 @@ export const addressSchema = z.object({
   address_id: z.string().optional(),
 });
 
-
 export const newCompanySchema = z.object({
   name: z.string({
     required_error: "Company Name is required",
@@ -342,9 +413,11 @@ export const newCompanySchema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
@@ -364,9 +437,11 @@ export const newCompanySchema = z.object({
       address_line_1: z.string({
         required_error: "Street is required",
       }),
-      address_line_2: z.string({
-        required_error: "City is required",
-      }).optional(),
+      address_line_2: z
+        .string({
+          required_error: "City is required",
+        })
+        .optional(),
       city: z.string({
         required_error: "City is required",
       }),
