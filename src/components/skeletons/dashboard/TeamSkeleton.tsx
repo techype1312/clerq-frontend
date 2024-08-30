@@ -38,6 +38,14 @@ const TeamSkeleton = ({ duration }: { duration?: number }) => {
             count={5}
           />
         </TableCell>
+        <TableCell>
+          <Skeleton
+            height={25}
+            className="my-2"
+            duration={duration}
+            count={5}
+          />
+        </TableCell>
       </TableRow>
     </TableBody>
   );
