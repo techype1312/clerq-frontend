@@ -42,4 +42,6 @@ export const dashboardTitle = [
   "Team",
   "Settings",
   "Profile",
+  "Company security",
+  "Security"
 ];
