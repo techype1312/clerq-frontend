@@ -1,10 +1,7 @@
 import { format } from "date-fns";
 import { useForm, useFormContext } from "react-hook-form";
 import * as z from "zod";
-import {
-  Accordion,
-  AccordionItem,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { cn } from "@/utils/utils";
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from "../config";
@@ -37,7 +34,10 @@ export default function AutoFormObject<
   innerClassName,
   edit = true,
   zodItemClass,
+  zodItemClassWithoutName,
   labelClass,
+  accordionSingle = false,
+  showObject = true,
 }: {
   schema: SchemaType | z.ZodEffects<SchemaType>;
   form: ReturnType<typeof useForm>;
@@ -47,7 +47,10 @@ export default function AutoFormObject<
   innerClassName?: string;
   edit?: boolean;
   zodItemClass?: string;
+  zodItemClassWithoutName?: string;
   labelClass?: string;
+  accordionSingle?: boolean;
+  showObject?: boolean;
 }) {
   const { watch } = useFormContext(); // Use useFormContext to access the watch function
 
@@ -76,7 +79,7 @@ export default function AutoFormObject<
 
   return (
     <Accordion
-      type="multiple"
+      type={accordionSingle ? "single" : "multiple"}
       className={cn("space-y-5 border-none w-full", innerClassName)}
     >
       {Object.keys(shape).map((name) => {
@@ -97,12 +100,42 @@ export default function AutoFormObject<
         if (isHidden) {
           return null;
         }
-
+        if(!showObject){
+          return null;
+        }
+        if (
+          zodBaseType === "ZodObject" &&
+          fieldConfigItem.fieldType !== "phone" &&
+          fieldConfigItem.fieldType !== "modal" &&
+          fieldConfigItem.fieldType !== "address_modal" &&
+          fieldConfigItem.inputProps?.accordionSingle &&
+          showObject
+        ) {
+          return (
+            <AccordionItem value={name} key={key} className="border-none mt-0">
+              <AutoFormObject
+                schema={item as unknown as z.ZodObject<any, any>}
+                form={form}
+                fieldConfig={
+                  (fieldConfig?.[name] ?? {}) as FieldConfig<
+                    z.infer<typeof item>
+                  >
+                }
+                path={[...path, name]}
+                innerClassName={zodItemClassWithoutName}
+                labelClass={labelClass}
+                accordionSingle={fieldConfigItem?.inputProps?.accordionSingle}
+                showObject={fieldConfigItem.inputProps?.showObject}
+              />
+            </AccordionItem>
+          );
+        }
         if (
           zodBaseType === "ZodObject" &&
           fieldConfigItem.fieldType !== "modal" &&
           fieldConfigItem.fieldType !== "address_modal" &&
-          fieldConfigItem.fieldType !== "phone"
+          fieldConfigItem.fieldType !== "phone" &&
+          showObject
         ) {
           return (
             <AccordionItem value={name} key={key} className="border-none mt-0">
@@ -117,6 +150,7 @@ export default function AutoFormObject<
                 path={[...path, name]}
                 innerClassName={zodItemClass}
                 labelClass={labelClass}
+                showObject={fieldConfigItem.inputProps?.showObject}
               />
             </AccordionItem>
           );

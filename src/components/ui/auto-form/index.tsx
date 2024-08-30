@@ -72,6 +72,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   isLoading,
   submitButtonClass,
   labelClass,
+  zodItemClassWithoutName,
 }: {
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
@@ -96,6 +97,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   isLoading?: boolean;
   submitButtonClass?: string;
   labelClass?: string;
+  zodItemClassWithoutName?: string;
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
@@ -152,6 +154,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
               edit={edit}
               zodItemClass={zodItemClass}
               labelClass={labelClass}
+              zodItemClassWithoutName={zodItemClassWithoutName}
             />
             {renderChildren}
             {formAction && (

@@ -8,6 +8,8 @@ export type FieldConfigItem = {
     showLabel?: boolean;
     isPresent?: boolean;
     addressType?: string;
+    accordionSingle?: boolean;
+    showObject?: boolean;
   };
   label?: string;
   fieldType?:
