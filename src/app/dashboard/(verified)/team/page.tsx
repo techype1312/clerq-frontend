@@ -4,7 +4,7 @@ import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { find, findIndex, isObject, reject } from "lodash";
 import { Loader2Icon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/components/dashboard/transactions/DataTable";
+import { DataTable } from "@/components/common/table/DataTable";
 import { ErrorProps } from "@/types/general";
 import { useUserContext } from "@/context/User";
 import { allRoles, statuses } from "@/utils/constants";

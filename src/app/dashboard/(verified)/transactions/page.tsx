@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/dashboard/transactions/DataTable";
+import { DataTable } from "@/components/common/table/DataTable";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent } from "@/components/ui/select";
@@ -105,7 +105,9 @@ const getTableColumns = ({
                 alt={(cell.getValue() as merchant)?.merchant_name}
                 className="rounded-full"
               />
-            ) : <div className="rounded-full h-7 w-7 bg-[#CCE8EA]"/>}
+            ) : (
+              <div className="rounded-full h-7 w-7 bg-[#CCE8EA]" />
+            )}
             <div className="flex flex-col">
               <span className="text-sm font-semibold">
                 {(cell.getValue() as merchant)?.merchant_name ?? "Unknown"}

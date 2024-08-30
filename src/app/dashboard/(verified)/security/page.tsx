@@ -1,11 +1,44 @@
 "use client";
-import { DataTable } from "@/components/dashboard/transactions/DataTable";
+import { DataTable } from "@/components/common/table/DataTable";
 import SecuritySkeleton from "@/components/skeletons/dashboard/SecuritySkeleton";
 import { useUserContext } from "@/context/User";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import React, { Suspense, useState } from "react";
-import { getSecurityTableColumns } from "../company-security/page";
+
+const getSecurityTableColumns = (): ColumnDef<any>[] => {
+  const dateCol: ColumnDef<any> = {
+    accessorKey: "activity",
+    header: "Most recent activity",
+    cell: ({ cell }) => {
+      return (
+        <div className="text-sm">
+          {format(cell.getValue() as string, "MMM d, yyyy") +
+            " at " +
+            format(cell.getValue() as string, "h:mm a")}
+        </div>
+      );
+    },
+  };
+  const browserCol: ColumnDef<any> = {
+    accessorKey: "browser",
+    header: "Browser",
+  };
+  const countryCol: ColumnDef<any> = {
+    accessorKey: "country",
+    header: "Country",
+  };
+  const ipCol: ColumnDef<any> = {
+    accessorKey: "ip",
+    header: "IP Address",
+  };
+
+  const teamMember: ColumnDef<any> = {
+    accessorKey: "teamMember",
+    header: "Team Member",
+  };
+  return [dateCol, teamMember, browserCol, ipCol, countryCol];
+};
 
 const getTableColumns = (): ColumnDef<any>[] => {
   const dateCol: ColumnDef<any> = {
@@ -30,45 +63,36 @@ const getTableColumns = (): ColumnDef<any>[] => {
   const browserCol: ColumnDef<any> = {
     accessorKey: "browser",
     header: "Browser",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-muted text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
   const countryCol: ColumnDef<any> = {
     accessorKey: "country",
     header: "Country",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-muted text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
+  };
+  const eventCol: ColumnDef<any> = {
+    accessorKey: "event",
+    header: "Event",
   };
   const ipCol: ColumnDef<any> = {
     accessorKey: "ip",
     header: "IP Address",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
-  return [browserCol, countryCol, dateCol, ipCol];
+  return [dateCol, eventCol, browserCol, countryCol, ipCol];
 };
 
 const SecurityPage = () => {
   const { loading: userDataLoading, userData } = useUserContext();
   const [activeSessions, setActiveSessions] = useState([
     {
-      browser: "Chrome",
+      browser: "Chrome (Linux)",
       country: "United States",
+      event: "Log in failure",
       activity: new Date(),
       ip: "127.0.0.1",
     },
     {
       browser: "Brave",
       country: "India",
+      event: "Log in",
       activity: "current session",
       ip: "127.0.0.1",
     },

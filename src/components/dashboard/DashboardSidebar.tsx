@@ -171,7 +171,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         />
         Controls
       </SidebarLink>
-      <SidebarLink
+      {/* <SidebarLink
         pathname={pathname}
         href="/dashboard/company-security"
         setOpen={setOpen}
@@ -182,50 +182,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
           size={20}
         />
         Company Security
-      </SidebarLink>
-
-      {/* User Section */}
-      {/* <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
-        <span>Personal</span>
-      </div>
-
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/my-profile"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="account_box"
-          color={pathname === "/dashboard/my-profile" ? "#5266EB" : ""}
-          size={20}
-        />
-        My profile
-      </SidebarLink>
-
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/notifications"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="edit_notifications"
-          color={pathname === "/dashboard/notifications" ? "#5266EB" : ""}
-          size={20}
-        />
-        Notifications
       </SidebarLink> */}
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/security"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="badge"
-          color={pathname === "/dashboard/security" ? "#5266EB" : ""}
-          size={20}
-        />
-        Security
-      </SidebarLink>
     </Fragment>
   ) : null;
 

@@ -1,12 +1,12 @@
 "use client";
-import { DataTable } from "@/components/dashboard/transactions/DataTable";
+import { DataTable } from "@/components/common/table/DataTable";
 import SecuritySkeleton from "@/components/skeletons/dashboard/SecuritySkeleton";
 import { useUserContext } from "@/context/User";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import React, { Suspense, useState } from "react";
 
-export const getSecurityTableColumns = (): ColumnDef<any>[] => {
+const getSecurityTableColumns = (): ColumnDef<any>[] => {
   const dateCol: ColumnDef<any> = {
     accessorKey: "activity",
     header: "Most recent activity",
@@ -23,41 +23,24 @@ export const getSecurityTableColumns = (): ColumnDef<any>[] => {
   const browserCol: ColumnDef<any> = {
     accessorKey: "browser",
     header: "Browser",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-muted text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
   const countryCol: ColumnDef<any> = {
     accessorKey: "country",
     header: "Country",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-muted text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
   const ipCol: ColumnDef<any> = {
     accessorKey: "ip",
     header: "IP Address",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
-
-  const teamMember: ColumnDef<any> = {
+  const eventCol: ColumnDef<any> = {
+    accessorKey: "event",
+    header: "Event",
+  };
+  const teamMemberCol: ColumnDef<any> = {
     accessorKey: "teamMember",
     header: "Team Member",
-    // cell: ({ cell }) => {
-    //   return (
-    //     <div className="text-sm">{cell.getValue() as string}</div>
-    //   );
-    // },
   };
-  return [dateCol, teamMember, browserCol, ipCol, countryCol];
+  return [dateCol, teamMemberCol, eventCol, browserCol, ipCol, countryCol];
 };
 
 const CompanySecurityPage = () => {
@@ -69,9 +52,10 @@ const CompanySecurityPage = () => {
   const [dateFilter, setDateFilter] = useState<any>();
   const [activeHistory, setActiveHistory] = useState([
     {
-      browser: "Chrome",
+      browser: "Chrome(Linux)",
       country: "United States",
       teamMember: "John Doe",
+      event: "Log in failure",
       activity: new Date(),
       ip: "127.0.0.1",
     },
@@ -79,6 +63,7 @@ const CompanySecurityPage = () => {
       browser: "Brave",
       country: "India",
       teamMember: "John Doe",
+      event: "Log in",
       activity: new Date(),
       ip: "127.0.0.1",
     },
