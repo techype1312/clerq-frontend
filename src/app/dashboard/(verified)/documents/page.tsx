@@ -205,7 +205,7 @@ const DocumentsPage = () => {
             <h1 className="text-2xl font-medium text-left text-primary max-md:hidden">
               Documents
             </h1>
-            <div className="mt-8 flex flex-row md:flex-col overflow-auto gap-2">
+            <div className="mt-2 md:mt-8 flex flex-row md:flex-col overflow-auto gap-2">
               {documentDetails.map((dt) => (
                 <div
                   key={dt.id}

@@ -104,7 +104,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
 
   return (
     <div
-      className="py-2 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 shadow fixed bg-white"
+      className="py-3 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 fixed bg-white z-50"
       ref={inputRef}
     >
       <div className="flex items-center relative lg:hidden">
@@ -126,13 +126,13 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
         >
           {mobileTitle ? mobileTitle : "Dashboard"}
         </h1>
-        <Image
+        {/* <Image
           src={"/otto_logo_large.png"}
           alt="Otto"
           width={77}
           height={32}
           className="hidden lg:flex"
-        />
+        /> */}
       </div>
 
       <Input
