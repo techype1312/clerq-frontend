@@ -60,7 +60,7 @@ export const DashboardLayout = ({
             <DashboardTop toggleDrawer={() => setOpen(!isOpen)} />
             <div
               className={
-                "px-4 sm:px-8 pt-4 pb-12 md:mx-8 overflow-y-auto overflow-x-hidden"
+                "px-4 sm:px-8 pt-4 pb-12 md:mx-8 overflow-y-auto overflow-x-hidden mt-14"
               }
             >
               {children}
