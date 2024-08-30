@@ -119,7 +119,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
       </div>
       <div className={cn("ml-4 flex items-center")}>
         <h1
-          className={cn("text-xl font-medium lg:hidden", {
+          className={cn("text-xl font-medium md:hidden w-max", {
             ["flex"]: !showInput,
             ["hidden"]: showInput,
           })}

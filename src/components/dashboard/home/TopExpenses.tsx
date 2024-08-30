@@ -9,6 +9,7 @@ import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import PercentageBar from "@/components/common/graphs/PercentageBar";
 import { TextType } from "@/types/general";
 import React from "react";
+import { formatAmount } from "@/utils/utils";
 
 const TopExpenses = ({ topExpenses }: { topExpenses: TextType[] }) => {
   const [selectedTimeLine, setSelectedTimeLine] = React.useState<TextType>({
@@ -57,8 +58,7 @@ const TopExpenses = ({ topExpenses }: { topExpenses: TextType[] }) => {
             {expense.label}
           </p>
           <p className="text-end w-fit text-sm md:text-base ml-auto md:ml-0">
-            -$
-            {Math.abs(expense.value).toFixed(2).toLocaleString()}
+            {formatAmount(expense.value)}
           </p>
           <p className="hidden md:flex gap-2 items-center justify-end px-2">
             <PercentageBar percentage={expense.percentage ?? 0} />
