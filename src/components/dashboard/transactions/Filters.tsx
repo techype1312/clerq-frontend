@@ -54,15 +54,15 @@ const Filters = ({
   setAmountFilter,
 }: {
   openedFilter: string;
-  columnFilters: ColumnFiltersState;
-  setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
-  dateFilter: any;
-  setDateFilter: any;
-  setAmountFilter: any;
-  amountFilter: any;
+  columnFilters?: ColumnFiltersState;
+  setColumnFilters?: Dispatch<SetStateAction<ColumnFiltersState>>;
+  dateFilter?: any;
+  setDateFilter?: any;
+  setAmountFilter?: any;
+  amountFilter?: any;
 }) => {
   const handleCheckboxClick = (value: string, isChecked: boolean) => {
-    setColumnFilters((prevFilters) => {
+    setColumnFilters && setColumnFilters((prevFilters) => {
       let updatedFilters = prevFilters.map((filter) =>
         filter.id === openedFilter
           ? {
@@ -104,7 +104,7 @@ const Filters = ({
   };
   const [filter, setFilter] = React.useState<any | null>([]);
   useEffect(() => {
-    setFilter(columnFilters.filter((filter) => filter.id === openedFilter));
+    setFilter(columnFilters && columnFilters.filter((filter) => filter.id === openedFilter));
   }, [columnFilters, openedFilter]);
 
   return (

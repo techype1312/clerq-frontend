@@ -8,13 +8,20 @@ import { useCompanySessionContext } from "@/context/CompanySession";
 import { useMainContext } from "@/context/Main";
 import { cn } from "@/utils/utils";
 import { SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ArrowUpDown, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useBankAccountsContext } from "@/context/BankAccounts";
+import { isObject } from "lodash";
+import { ErrorProps } from "@/types/general";
+import BankingApis from "@/actions/data/banking.data";
 
 type merchant = {
   merchant_name: string;
@@ -280,6 +287,168 @@ const Page = () => {
   const [transactions, setTransactions] = React.useState([]);
   const [loading, setLoading] = useState(true);
   const { currentUcrm } = useCompanySessionContext();
+  const [serverError, setServerError] = useState("");
+  const [pagesVisited, setPagesVisited] = useState<number[]>([]);
+  const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
+  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 1,
+    pageSize: 10,
+  });
+  const [oldSorting, setOldSorting] = useState<SortingState>([]);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const onError = (err: string | ErrorProps) => {
+    setServerError(isObject(err) ? err.errors.message : err);
+    setLoading(false);
+  };
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [dateFilter, setDateFilter] = useState<any>();
+  const [amountFilter, setAmountFilter] = useState<any>();
+
+  const onFetchTransactionsSuccess = (res: any) => {
+    if (filtersChanged || !pagesVisited.includes(pagination.pageIndex)) {
+      setTransactions(
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            // glCode: index === 0 ? "400 - Inventory" : "230 - Electric Bills",
+            // ottoCategory: index === 0 ? "Cleaning" : "Advertising",
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        })
+      );
+    } else {
+      setTransactions(historyTransactions[pagination.pageIndex - 1]);
+    }
+    if (filtersChanged) {
+      setHistoryTransactions([
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        }),
+      ]);
+    } else if (!pagesVisited.includes(pagination.pageIndex)) {
+      setHistoryTransactions([
+        ...historyTransactions,
+        res.data?.map((transaction: any, index: number) => {
+          return {
+            ...transaction,
+            date: transaction.createdAt,
+            merchant: {
+              merchant_name: transaction.merchant_name,
+              merchant_logo: transaction.merchant_logo_url,
+            },
+            account: accounts?.filter(
+              (account: any) => account.id === transaction.account.id
+            )[0],
+          };
+        }),
+      ]);
+      setPagesVisited([...pagesVisited, pagination.pageIndex]);
+    }
+    //Once we have total length of data, we can calculate if there are more pages
+    setHasNextPage(
+      res.hasNextPage ?? pagesVisited.includes(pagination.pageIndex + 1)
+    );
+    setFiltersChanged(false);
+    setLoading(false);
+  };
+
+  const handleFetchTransactions = () => {
+    if (!accounts.length || !currentUcrm?.company?.id) return false;
+    if (!pagesVisited.includes(pagination.pageIndex) || filtersChanged) {
+      setLoading(true);
+      return BankingApis.getBankTransactions(currentUcrm.company.id, {
+        page: pagination.pageIndex,
+        limit: pagination.pageSize,
+        sort: sorting.map((sort) => {
+          return {
+            order: sort.desc ? "DESC" : "ASC",
+            orderBy: sort.id,
+          };
+        }),
+        filters:
+          columnFilters &&
+          columnFilters.map((filter) => {
+            return {
+              id: filter.id,
+              value: filter.value,
+            };
+          }),
+        dateFilter: dateFilter && dateFilter.value,
+        amountFilter: amountFilter && amountFilter,
+      }).then(onFetchTransactionsSuccess, onError);
+    }
+  };
+
+  useEffect(() => {
+    if (!loading && currentUcrm?.company?.id) {
+      handleFetchTransactions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.pageIndex]);
+
+  useEffect(() => {
+    if (transactions.length === 0 && currentUcrm?.company?.id) {
+      handleFetchTransactions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUcrm?.company?.id]);
+
+  useEffect(() => {
+    if (
+      sorting !== oldSorting &&
+      currentUcrm?.company?.id &&
+      accounts?.length
+    ) {
+      setOldSorting(sorting);
+      setFiltersChanged(true);
+      setPagesVisited([]);
+    } else if (columnFilters.length > 0) {
+      setFiltersChanged(true);
+      setPagesVisited([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorting, columnFilters]);
+
+  useEffect(() => {
+    if (
+      !loading &&
+      filtersChanged &&
+      currentUcrm?.company?.id &&
+      accounts?.length
+    ) {
+      handleFetchTransactions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersChanged]);
+
+  useEffect(() => {
+    setFiltersChanged(true);
+    setPagesVisited([]);
+  }, [dateFilter]);
+
+  useEffect(() => {
+    setFiltersChanged(true);
+    setPagesVisited([]);
+  }, [amountFilter]);
 
   return (
     <div className="flex gap-24 flex-row justify-center">
@@ -305,13 +474,20 @@ const Page = () => {
             <DataTable
               columns={getTableColumns({ windowWidth })}
               data={transactions}
-              accounts={accounts}
-              setTransactions={setTransactions}
               loading={loading}
-              setLoading={setLoading}
-              currentUcrm={currentUcrm}
               showFilter={true}
               type="transaction"
+              hasNextPage={hasNextPage}
+              pagination={pagination}
+              setPagination={setPagination}
+              sorting={sorting}
+              setSorting={setSorting}
+              columnFilters={columnFilters}
+              setColumnFilters={setColumnFilters}
+              dateFilter={dateFilter}
+              setDateFilter={setDateFilter}
+              amountFilter={amountFilter}
+              setAmountFilter={setAmountFilter}
             />
           )}
         </div>
