@@ -227,7 +227,7 @@ export function DataTable<TData, TValue>({
                       );
                     })}
                   </div>
-                  <div className="max-w-lg overflow-x-scroll">
+                  <div className="min-w-40 max-w-lg overflow-x-scroll">
                     <Filters
                       openedFilter={openedFilter}
                       setColumnFilters={setColumnFilters}
