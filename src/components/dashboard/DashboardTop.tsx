@@ -143,10 +143,10 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
             "!flex": showInput,
           }
         )}
-        endIcon={"search"}
+        startIcon={"search"}
         onChange={(e) => setSearch(e.target.value)}
         value={search}
-        placeholder="Search for a product"
+        placeholder="Search or jump to"
         type="text"
       />
 
