@@ -1,14 +1,14 @@
 import * as React from "react";
 
 import { cn } from "@/utils/utils";
+import Link from "next/link";
+import { format } from "date-fns";
 import { SymbolCodepoints } from "react-material-symbols";
-import SymbolIcon from "../../common/MaterialSymbol/SymbolIcon";
 import { ISearchSelects } from "@/types/general";
 import { Button } from "@/components/ui/button";
 import { pages } from "@/utils/constants/pages";
-import Link from "next/link";
 import { transactions } from "@/utils/constants/transactions";
-import { format } from "date-fns";
+import SymbolIcon from "../../common/MaterialSymbol/SymbolIcon";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -17,6 +17,7 @@ export interface InputProps
   outerClassName?: string;
 }
 
+const DEFAULT_SEARCH = "Pages"
 const searchSelects = [
   {
     id: 1,
@@ -35,10 +36,15 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
     const searchRef = React.useRef<any>(null);
     const [selectedSearch, setSelectedSearch] = React.useState<
       string | undefined
-    >();
+    >(DEFAULT_SEARCH);
     const [openDropdown, setOpenDropdown] = React.useState(false);
     const dropdownRef = React.useRef<HTMLDivElement>(null);
     const [searchedPages, setSearchedPages] = React.useState<any>(pages);
+
+    const resetSearch = () => {
+      setSelectedSearch(DEFAULT_SEARCH);
+    };
+
     React.useEffect(() => {
       if (
         selectedSearch === "Pages" &&
@@ -64,8 +70,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
           //   !searchRef.current.contains(event.target as Node)
         ) {
           setOpenDropdown(false);
-          //This will make search like mercury on clicking outside it clears the search
-          //setSelectedSearch(undefined);
+          resetSearch();
         }
       };
 
@@ -75,21 +80,27 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }, []);
-    console.log(openDropdown);
 
     return (
-      <div className="flex flex-col h-12 w-full relative" ref={dropdownRef}>
+      <div className="flex flex-col h-12 w-full relative items-center">
         <div
-          className={cn("w-full h-full relative border-input", outerClassName)}
-          onClick={() => {
-            setOpenDropdown(!openDropdown);
-          }}
+          className={cn(
+            "md:w-[500px] max-md:w-full h-full relative",
+            outerClassName
+          )}
+          ref={dropdownRef}
         >
           <div
             className={cn(
-              "w-full h-10 max-w-md relative border border-input rounded-md flex items-center md:ml-5 mr-4 bg-white",
-              selectedSearch && "rounded-b-none"
+              "w-full h-10 relative border border-input rounded-md flex items-center md:ml-5 mr-4 bg-white",
+              {
+                ["!border-b-2 !border-b-[#233FDB] !rounded-b-none"]:
+                  openDropdown,
+              }
             )}
+            onClick={() => {
+              setOpenDropdown(true);
+            }}
           >
             <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2 items-center flex py-2">
               <SymbolIcon icon={"search"} size={20} />
@@ -99,7 +110,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
                 {selectedSearch}
                 <span
                   onClick={() => {
-                    setSelectedSearch(undefined);
+                    resetSearch();
                   }}
                   className="flex items-center gap-2 cursor-pointer"
                 >
@@ -110,7 +121,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
             <input
               type={type}
               className={cn(
-                "flex h-12 grow w-full rounded-md bg-background border-0 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
+                "border-0 flex h-12 grow w-full rounded-md bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
                 selectedSearch ? "pl-3 pr-8" : "pl-8",
                 className
               )}
@@ -123,7 +134,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
                 <div
                   onClick={() => {
                     setOpenDropdown(false);
-                    setSelectedSearch(undefined);
+                    resetSearch();
                   }}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 items-center flex"
                 >
@@ -134,7 +145,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
           {openDropdown && (
             <div
-              className="border-t border-color-primary-background absolute top-10 -ml-4 md:ml-0.5 w-full max-w-[11.2rem] md:max-w-md bg-white shadow p-2"
+              className="absolute top-11 md:ml-5 mr-4 w-[-webkit-fill-available] bg-white shadow p-2"
               ref={searchRef}
             >
               {!selectedSearch && (
@@ -148,7 +159,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
                           setSelectedSearch(select.name);
                         }}
                         key={select.id}
-                        className="flex items-center gap-2 px-2 py-0 h-8 hover:bg-gray-100 background-muted rounded-lg cursor-pointer"
+                        className="flex items-center gap-2 px-2 py-0 h-8 hover:bg-gray-100 background-muted rounded-lg cursor-pointer max-md:w-[130px]"
                         variant={"ghost"}
                       >
                         {select.icon}
@@ -161,27 +172,43 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
                 </div>
               )}
               {selectedSearch === "Pages" && (
-                <div className="flex flex-col gap-2 mt-2 overflow-auto max-h-[50rem]">
-                  <p className="text-sm text-muted">pages</p>
+                <div className="flex flex-col mt-2 overflow-auto max-h-[50rem]">
+                  <p className="text-sm text-muted mb-2 ml-2">Pages</p>
                   {searchedPages.map((page: any) => (
                     <Link
-                      className="text-base text-primary flex items-center gap-2"
+                      className="group text-base text-primary flex flex-row justify-between items-center rounded-md hover:bg-slate-100 px-2 py-[7px]"
                       key={page.name}
                       href={page.pathname}
+                      onClick={() => {
+                        setOpenDropdown(false);
+                        resetSearch();
+                      }}
                     >
-                      <SymbolIcon icon={"web_asset"} size={20} /> {page.name}
+                      <div className="flex items-center gap-2">
+                        <SymbolIcon icon={"web_asset"} size={16} /> {page.name}
+                      </div>
+                      <SymbolIcon
+                        icon={"chevron_right"}
+                        size={22}
+                        color="#233FDB"
+                        className="!hidden group-hover:!block"
+                      />
                     </Link>
                   ))}
                 </div>
               )}
               {selectedSearch === "Transactions" && (
                 <div className="flex flex-col gap-2 mt-2 overflow-auto max-h-[50rem]">
-                  <p className="text-sm text-muted">transactions</p>
+                  <p className="text-sm text-muted">Transactions</p>
                   {transactions?.map((transaction, index) => (
                     <Link
                       className="flex gap-4"
                       key={index}
                       href={`/dashboard/transactions?open=${transaction.id}`}
+                      onClick={() => {
+                        setOpenDropdown(false);
+                        resetSearch();
+                      }}
                     >
                       <span className="text-nowrap">
                         {format(transaction.date, "MMM dd")}

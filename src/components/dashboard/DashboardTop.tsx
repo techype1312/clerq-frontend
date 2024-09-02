@@ -54,7 +54,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
       className="py-3 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 fixed bg-white z-30"
       ref={inputRef}
     >
-      <div className="flex items-center relative lg:hidden">
+      <div className="flex items-center relative lg:hidden mr-6">
         <Button className="p-0 h-fit" onClick={toggleDrawer} variant="ghost">
           <ProfilePhotoPreview
             firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
@@ -64,7 +64,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
           />
         </Button>
       </div>
-      <div className={cn("ml-4 flex items-center")}>
+      <div className={cn("flex items-center")}>
         <h1
           className={cn("text-xl font-medium md:hidden w-max", {
             ["flex"]: !showInput,
@@ -95,21 +95,6 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
         placeholder="Search or jump to"
         type="text"
       />
-
-      {/* <Input
-        className="w-full md:w-1/2 rounded-2xl bg-white h-9"
-        outerClassName={cn(
-          "items-center justify-center max-md:hidden md:flex ml-5 mr-4",
-          {
-            "!flex": showInput,
-          }
-        )}
-        startIcon={"search"}
-        onChange={(e) => setSearch(e.target.value)}
-        value={search}
-        placeholder="Search or jump to"
-        type="text"
-      /> */}
 
       <Button
         variant={"ghost"}

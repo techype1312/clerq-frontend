@@ -21,26 +21,22 @@ export const pages = [
   },
   {
     name: "Settings",
-    pathname: "/dashboard/settings",
+    pathname: "/dashboard/controls",
   },
   {
     name: "Bank accounts",
-    pathname: "/dashboard/bank-accounts",
+    pathname: "/dashboard/bank-connections",
   },
   {
     name: "Team",
     pathname: "/dashboard/team",
   },
   {
-    name: "Profile",
-    pathname: "/dashboard/profile",
+    name: "Company Profile",
+    pathname: "/dashboard/company-profile",
   },
   {
-    name: "Company security",
-    pathname: "/dashboard/company-security",
-  },
-  {
-    name: "Security",
-    pathname: "/dashboard/security",
+    name: "My Profile",
+    pathname: "/dashboard/my-profile",
   },
 ];
