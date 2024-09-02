@@ -22,20 +22,19 @@ import {
 import { Button } from "@/components/ui/button";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { Fragment, useEffect, useState } from "react";
-import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { mkConfig, generateCsv, download } from "export-to-csv";
-import Filters from "./Filters";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { LabelValue } from "@/types/general";
-import { formatFilterId } from "@/utils/utils";
 import TransactionSkeleton from "@/components/skeletons/dashboard/TransactionSkeleton";
 import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
 import TeamSkeleton from "@/components/skeletons/dashboard/TeamSkeleton";
 import SecuritySkeleton from "@/components/skeletons/dashboard/SecuritySkeleton";
+import FilterTrigger from "./FilterTrigger";
+import { formatFilterId } from "@/utils/utils";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -180,67 +179,29 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const noOfFiltersApplied =
+    (columnFilters?.length || 0) +
+    (dateFilter?.value ? 1 : 0) +
+    (amountFilter?.value ? 1 : 0);
+
   return (
     <>
       <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4 md:gap-0 w-full">
         <div className="flex flex-row max-md:flex-nowrap gap-2 w-full">
           <div className="flex items-center justify-between gap-2 max-md:w-full">
-            <Popover>
-              {showFilter && (
-                <PopoverTrigger asChild>
-                  <Button className="h-8 gap-2 px-2 flex items-center">
-                    <span className="-mb-1">
-                      <SymbolIcon icon="filter_list" color={"#9D9DA7"} />
-                    </span>
-                    {(columnFilters && columnFilters.length > 0) ||
-                    dateFilter?.value ||
-                    amountFilter?.value ? (
-                      <span>Filter applied</span>
-                    ) : (
-                      <span>Filter</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-              )}
-              <PopoverContent align="start" className="h-full w-max">
-                <h6>Filters</h6>
-                <DropdownMenuSeparator />
-                <div className="flex">
-                  <div className="flex flex-col gap-2 text-left border-r">
-                    {filtersCategory.map((category, index) => {
-                      return (
-                        <Button
-                          variant={"ghost"}
-                          key={index}
-                          onClick={() => {
-                            setOpenedFilter(category.value);
-                          }}
-                          className={`${
-                            openedFilter === category.value
-                              ? "text-primary bg-muted"
-                              : " text-label hover:text-label"
-                          } justify-between min-w-36`}
-                        >
-                          {category.label}{" "}
-                          <SymbolIcon icon="arrow_right" color={"#1e1e2a"} />
-                        </Button>
-                      );
-                    })}
-                  </div>
-                  <div className="min-w-40 max-w-lg overflow-x-scroll">
-                    <Filters
-                      openedFilter={openedFilter}
-                      setColumnFilters={setColumnFilters}
-                      columnFilters={columnFilters}
-                      setDateFilter={setDateFilter}
-                      dateFilter={dateFilter}
-                      setAmountFilter={setAmountFilter}
-                      amountFilter={amountFilter}
-                    />
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <FilterTrigger
+              showFilter={showFilter}
+              openedFilter={openedFilter}
+              setOpenedFilter={setOpenedFilter}
+              noOfFiltersApplied={noOfFiltersApplied}
+              filtersCategory={filtersCategory}
+              columnFilters={columnFilters}
+              setColumnFilters={setColumnFilters}
+              dateFilter={dateFilter}
+              setDateFilter={setDateFilter}
+              amountFilter={amountFilter}
+              setAmountFilter={setAmountFilter}
+            />
             <div className="flex items-center justify-end ml-auto md:mx-0 w-full md:hidden">
               {showPagination && (
                 <Fragment>
@@ -336,80 +297,82 @@ export function DataTable<TData, TValue>({
                 </Button>
               )}
             </div>
-          </div>
-          <div className="flex flex-row gap-2 max-md:hidden">
-            {columnFilters &&
-              columnFilters.map((filter: any, index: number) => {
-                return (
-                  <div
-                    className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
-                    key={index}
-                  >
-                    <p className="text-primary-alt">
-                      {Array.isArray(filter?.value)
-                        ? filter?.value.length > 1
-                          ? formatFilterId(filter?.id) +
-                            ` (${filter?.value.length})`
-                          : filter?.value
-                        : (filter.id === "amount" ? "$" : "") +
-                          " " +
-                          filter?.value}
-                    </p>
-                    <p
-                      className="cursor-pointer h-5"
-                      onClick={() => {
-                        setColumnFilters &&
-                          setColumnFilters(
-                            columnFilters.filter((val) => val.id !== filter.id)
-                          );
-                      }}
+            <div className="flex flex-row gap-2 max-md:hidden">
+              {columnFilters &&
+                columnFilters.map((filter: any, index: number) => {
+                  return (
+                    <div
+                      className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap"
+                      key={index}
                     >
-                      <SymbolIcon icon="close" color="#535460" size={20} />
-                    </p>
-                  </div>
-                );
-              })}
-            {dateFilter && dateFilter?.value && (
-              <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
-                <p className="text-primary-alt">{dateFilter.label}</p>
-                <p
-                  className="cursor-pointer h-5"
+                      <p className="text-primary-alt">
+                        {Array.isArray(filter?.value)
+                          ? filter?.value.length > 1
+                            ? formatFilterId(filter?.id) +
+                              ` (${filter?.value.length})`
+                            : filter?.value
+                          : (filter.id === "amount" ? "$" : "") +
+                            " " +
+                            filter?.value}
+                      </p>
+                      <p
+                        className="cursor-pointer h-5"
+                        onClick={() => {
+                          setColumnFilters &&
+                            setColumnFilters(
+                              columnFilters.filter(
+                                (val) => val.id !== filter.id
+                              )
+                            );
+                        }}
+                      >
+                        <SymbolIcon icon="close" color="#535460" size={20} />
+                      </p>
+                    </div>
+                  );
+                })}
+              {dateFilter && dateFilter?.value && (
+                <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
+                  <p className="text-primary-alt">{dateFilter.label}</p>
+                  <p
+                    className="cursor-pointer h-5"
+                    onClick={() => {
+                      setDateFilter && setDateFilter({});
+                    }}
+                  >
+                    <SymbolIcon icon="close" color="#535460" size={20} />
+                  </p>
+                </div>
+              )}
+              {amountFilter && amountFilter?.value && (
+                <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
+                  <p className="text-primary-alt">${amountFilter?.value}</p>
+                  <p
+                    className="cursor-pointer h-5"
+                    onClick={() => {
+                      setAmountFilter && setAmountFilter({});
+                    }}
+                  >
+                    <SymbolIcon icon="close" color="#535460" size={20} />
+                  </p>
+                </div>
+              )}
+              {((columnFilters && columnFilters.length > 0) ||
+                dateFilter?.value ||
+                amountFilter?.value) && (
+                <Button
+                  variant="ghost"
                   onClick={() => {
+                    setColumnFilters && setColumnFilters([]);
                     setDateFilter && setDateFilter({});
-                  }}
-                >
-                  <SymbolIcon icon="close" color="#535460" size={20} />
-                </p>
-              </div>
-            )}
-            {amountFilter && amountFilter?.value && (
-              <div className="h-8 bg-muted flex gap-2 w-fit px-2 items-center justify-center rounded-md text-sm text-nowrap">
-                <p className="text-primary-alt">${amountFilter?.value}</p>
-                <p
-                  className="cursor-pointer h-5"
-                  onClick={() => {
                     setAmountFilter && setAmountFilter({});
                   }}
+                  className="h-8"
                 >
-                  <SymbolIcon icon="close" color="#535460" size={20} />
-                </p>
-              </div>
-            )}
-            {((columnFilters && columnFilters.length > 0) ||
-              dateFilter?.value ||
-              amountFilter?.value) && (
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setColumnFilters && setColumnFilters([]);
-                  setDateFilter && setDateFilter({});
-                  setAmountFilter && setAmountFilter({});
-                }}
-                className="h-8"
-              >
-                Clear
-              </Button>
-            )}
+                  Clear
+                </Button>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-end space-x-2 mx-auto md:mx-0 max-md:hidden">

@@ -108,12 +108,12 @@ const Filters = ({
   }, [columnFilters, openedFilter]);
 
   return (
-    <div className="p-2 w-full">
+    <div className="p-2 pb-0 w-full">
       {openedFilter === "date" && (
         <DateFilter dateFilter={dateFilter} setDateFilter={setDateFilter} />
       )}
       {openedFilter === "category" && (
-        <div className="h-80 w-full">
+        <div className="h-96 w-full flex flex-col gap-2">
           {categories.map((value, index) => (
             <div
               key={value + index}
@@ -135,7 +135,7 @@ const Filters = ({
         </div>
       )}
       {openedFilter === "gl_code" && (
-        <div className="h-80 w-full">
+        <div className="md:h-80 w-full">
           {glCodes.map((value, index) => {
             return (
               <div
@@ -159,7 +159,7 @@ const Filters = ({
         </div>
       )}
       {openedFilter === "sub_categories" && (
-        <div className="h-80 w-full">
+        <div className="md:h-80 w-full">
           {sub_categories.map((value, index) => {
             return (
               <div
@@ -183,7 +183,7 @@ const Filters = ({
         </div>
       )}
       {openedFilter === "amount" && (
-        <div className="h-80 w-full px-2">
+        <div className="md:h-80 w-full px-2">
           <RadioGroup
             onValueChange={(e) => {
               if (e === "All") {

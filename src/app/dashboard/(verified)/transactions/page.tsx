@@ -374,7 +374,7 @@ const Page = () => {
   };
 
   const handleFetchTransactions = () => {
-    if (!accounts.length || !currentUcrm?.company?.id) return false;
+    if (!accounts?.length || !currentUcrm?.company?.id) return false;
     if (!pagesVisited.includes(pagination.pageIndex) || filtersChanged) {
       setLoading(true);
       return BankingApis.getBankTransactions(currentUcrm.company.id, {
@@ -408,11 +408,11 @@ const Page = () => {
   }, [pagination.pageIndex]);
 
   useEffect(() => {
-    if (transactions.length === 0 && currentUcrm?.company?.id) {
+    if (transactions.length === 0 && currentUcrm?.company?.id && accounts) {
       handleFetchTransactions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUcrm?.company?.id]);
+  }, [currentUcrm?.company?.id, accounts]);
 
   useEffect(() => {
     if (
