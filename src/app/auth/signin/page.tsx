@@ -72,7 +72,7 @@ const SigninPage = () => {
   return (
     <div className="flex h-screen w-full items-center justify-center md:items-stretch md:justify-normal gap-12">
       <div className="hidden md:block background-placeholder w-1/2"></div>
-      <div className="flex flex-col justify-center items-center gap-6">
+      <div className="flex flex-col justify-center items-center gap-6 mr-4">
         <Image src={"/otto_logo_large.png"} alt="Otto" width={77} height={30} />
         <div className="flex flex-col gap-4 w-full items-start">
           <h1 className="text-2xl md:text-4xl font-normal text-primary">
