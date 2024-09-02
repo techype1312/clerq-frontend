@@ -110,7 +110,7 @@ const FilterTrigger = ({
                 );
               })}
 
-              <div className="flex md:hidden flex-col gap-2 mt-auto mb-8">
+              <div className="flex md:hidden flex-col gap-2 mt-4 mb-8">
                 <PopoverClose>
                   <Button className="h-8 gap-2 px-2 flex w-full items-center">
                     {(columnFilters && columnFilters.length > 0) ||
