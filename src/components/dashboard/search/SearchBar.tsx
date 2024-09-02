@@ -31,13 +31,30 @@ const searchSelects = [
 ];
 
 const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, outerClassName, type, ...props }, ref) => {
+  ({ className, outerClassName, type, value, ...props }, ref) => {
     const searchRef = React.useRef<any>(null);
     const [selectedSearch, setSelectedSearch] = React.useState<
       string | undefined
     >();
     const [openDropdown, setOpenDropdown] = React.useState(false);
     const dropdownRef = React.useRef<HTMLDivElement>(null);
+    const [searchedPages, setSearchedPages] = React.useState<any>(pages);
+    React.useEffect(() => {
+      if (
+        selectedSearch === "Pages" &&
+        value !== "" &&
+        value !== undefined &&
+        typeof value === "string"
+      ) {
+        setSearchedPages(
+          pages.filter((page) =>
+            page.name.toLowerCase().includes(value?.toLowerCase())
+          )
+        );
+      } else if (selectedSearch === "Pages") {
+        setSearchedPages(pages);
+      }
+    }, [value]);
 
     React.useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -98,6 +115,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
                 className
               )}
               ref={searchRef}
+              value={value}
               {...props}
             />
             {openDropdown && (
@@ -145,7 +163,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
               {selectedSearch === "Pages" && (
                 <div className="flex flex-col gap-2 mt-2 overflow-auto max-h-[50rem]">
                   <p className="text-sm text-muted">pages</p>
-                  {pages.map((page) => (
+                  {searchedPages.map((page: any) => (
                     <Link
                       className="text-base text-primary flex items-center gap-2"
                       key={page.name}
