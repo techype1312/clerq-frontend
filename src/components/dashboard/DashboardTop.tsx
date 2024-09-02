@@ -11,6 +11,7 @@ import { cn } from "@/utils/utils";
 import { useCompanySessionContext } from "@/context/CompanySession";
 import UserMenu from "./user/UserMenu";
 import { NotificationCenter } from "./notifications";
+import { SearchBar } from "./search/SearchBar";
 
 const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
   const router = useRouter();
@@ -81,7 +82,21 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
         /> */}
       </div>
 
-      <Input
+      <SearchBar
+        className="w-full md:w-1/2 rounded-md bg-white h-9"
+        outerClassName={cn(
+          "items-center justify-center max-md:hidden md:flex md:ml-5 mr-4",
+          {
+            "!flex": showInput,
+          }
+        )}
+        onChange={(e) => setSearch(e.target.value)}
+        value={search}
+        placeholder="Search or jump to"
+        type="text"
+      />
+
+      {/* <Input
         className="w-full md:w-1/2 rounded-2xl bg-white h-9"
         outerClassName={cn(
           "items-center justify-center max-md:hidden md:flex ml-5 mr-4",
@@ -94,7 +109,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
         value={search}
         placeholder="Search or jump to"
         type="text"
-      />
+      /> */}
 
       <Button
         variant={"ghost"}
