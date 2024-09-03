@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppDemo/fb9d199d82614dce88d19aedefbb3a23
-  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-staging
+  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-demo
   APP_ENV: demo
 
 jobs:

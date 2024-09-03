@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { Options } from "@openreplay/tracker";
 import * as Sentry from "@sentry/nextjs";
-import { isDevEnv, Servers } from "../../config";
+import { isDevEnv, isTrackerEnabled, Servers } from "../../config";
 import { useUserContext } from "./User";
 
 type TrackerContextType = {
@@ -147,7 +147,7 @@ export default function TrackerProvider({ children }: TrackerProviderProps) {
   };
 
   useEffect(() => {
-    if (Servers.TrackerEnabled) {
+    if (isTrackerEnabled()) {
       value.initTracker();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
