@@ -29,16 +29,16 @@ RUN echo "Current app environment: ${APP_ENV}"
 # This will do the trick, use the corresponding env file for each environment.
 # Copy the environment file for production
 # This line will ensure the correct environment variables are available during build
-RUN echo "APP_ENV is ${APP_ENV}" && \
-  if [ "$APP_ENV" = "staging" ]; then \
-  cp .env.staging .env; \
-  elif [ "$APP_ENV" = "demo" ]; then \
-  cp .env.demo .env; \
-  elif [ "$APP_ENV" = "production" ]; then \
-  cp .env.example .env; \
-  else \
-  cp .env.example .env; \
-  fi
+# RUN echo "APP_ENV is ${APP_ENV}" && \
+#   if [ "$APP_ENV" = "staging" ]; then \
+#   cp .env.staging .env; \
+#   elif [ "$APP_ENV" = "demo" ]; then \
+#   cp .env.demo .env; \
+#   elif [ "$APP_ENV" = "production" ]; then \
+#   cp .env.example .env; \
+#   else \
+#   cp .env.example .env; \
+#   fi
 # RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 RUN npm run build
@@ -84,6 +84,13 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY entrypoint.sh .
+COPY .env.production .
+
+# Execute script
+RUN apk add --no-cache --upgrade bash
+RUN ["chmod", "+x", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 USER nextjs
 
