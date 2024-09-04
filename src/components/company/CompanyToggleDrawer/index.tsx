@@ -17,7 +17,7 @@ import { isDemoEnv } from "../../../../config";
 
 const CompanyToggleDrawer = ({
   toggleBtnText,
-  showAddNew = true,
+  showAddNew = false,
 }: {
   toggleBtnText?: string;
   showAddNew?: boolean;
@@ -31,6 +31,7 @@ const CompanyToggleDrawer = ({
   } = useCompanySessionContext();
 
   const initiateNewCompany = () => {
+    if(showAddNew)
     router.push("/onboarding/new-company");
   };
   if (!currentUcrm || !myCompanyMappings.length) return null;
