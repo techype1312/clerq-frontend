@@ -171,43 +171,24 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         />
         Controls
       </SidebarLink>
-
-      {/* User Section */}
-      {/* <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
-        <span>Personal</span>
-      </div>
-
-      <SidebarLink
+      {/* <SidebarLink
         pathname={pathname}
-        href="/dashboard/my-profile"
+        href="/dashboard/company-security"
         setOpen={setOpen}
       >
         <SymbolIcon
-          icon="account_box"
-          color={pathname === "/dashboard/my-profile" ? "#5266EB" : ""}
+          icon="policy"
+          color={pathname === "/dashboard/company-security" ? "#5266EB" : ""}
           size={20}
         />
-        My profile
-      </SidebarLink>
-
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/notifications"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="edit_notifications"
-          color={pathname === "/dashboard/notifications" ? "#5266EB" : ""}
-          size={20}
-        />
-        Notifications
+        Company Security
       </SidebarLink> */}
     </Fragment>
   ) : null;
 
   return (
     <div
-      className={`absolute flex gap-3 h-screen background-light border-r border-[#F1F1F4] z-[52] lg:flex lg:static lg:h-auto flex-col min-w-fit transition-all duration-500 ${
+      className={`absolute flex gap-3 h-screen background-light border-r border-[#F1F1F4] z-[40] lg:flex lg:static lg:h-auto flex-col min-w-fit transition-all duration-500 ${
         isOpen
           ? "px-0 pt-3 pb-6 min-w-48"
           : "-translate-x-full lg:translate-x-0 ml-auto overflow-hidden pt-4 pb-6"

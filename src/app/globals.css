@@ -152,6 +152,10 @@
   background: var(--primary-background);
 }
 
+.border-color-primary-background {
+  border-color: var(--primary-background);
+}
+
 .text-background-primary {
   color: var(--primary-background);
 }

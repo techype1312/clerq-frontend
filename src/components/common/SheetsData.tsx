@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { SheetDataType } from "@/types/general";
 import SymbolIcon from "./MaterialSymbol/SymbolIcon";
+import { formatAmount } from "@/utils/utils";
 
 const SheetsData = ({
   sheetData,
@@ -42,11 +43,7 @@ const SheetsData = ({
           {sheetData.title.label}
         </h1>
         <p className="text-label font-medium md:font-semibold">
-          {sheetData.title.value < 0 && "-"}$
-          {Math.abs(sheetData.title.value).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatAmount(sheetData.title.value)}
         </p>
       </div>
       {showData && (
@@ -55,11 +52,7 @@ const SheetsData = ({
             <div key={index} className="flex justify-between text-muted">
               <p className="text-sm">{data.label}</p>
               <p className="text-sm">
-                {data.value < 0 && "-"}$
-                {Math.abs(data.value).toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {formatAmount(data.value)}
               </p>
             </div>
           ))}
@@ -67,11 +60,7 @@ const SheetsData = ({
             <div className="flex justify-between font-semibold text-primary-alt">
               <p className="text-sm">{sheetData.footerData.label}</p>
               <p className="text-sm">
-                {sheetData.footerData.value < 0 && "-"}$
-                {Math.abs(sheetData.footerData.value).toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {formatAmount(sheetData.footerData.value)}
               </p>
             </div>
           )}

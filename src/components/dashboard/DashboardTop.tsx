@@ -2,52 +2,23 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useUserContext } from "@/context/User";
 import { Input } from "../ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import ProfilePhotoPreview from "../common/profile-photo/ProfilePhotoPreview";
 import { dashboardTitle } from "@/utils/constants";
 import { Button } from "../ui/button";
 import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import { cn } from "@/utils/utils";
-import AuthApis from "@/actions/data/auth.data";
-import isObject from "lodash/isObject";
-import { ErrorProps } from "@/types/general";
-import localStorage from "@/utils/storage/local-storage.util";
-import {
-  removeAuthOnboardingStatus,
-  removeAuthRefreshToken,
-  removeAuthToken,
-  removeAuthUcrmId,
-  removeSessionId,
-} from "@/utils/session-manager.util";
-import { isDemoEnv } from "../../../config";
-import Image from "next/image";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { useCompanySessionContext } from "@/context/CompanySession";
+import UserMenu from "./user/UserMenu";
+import { NotificationCenter } from "./notifications";
+import { SearchBar } from "./search/SearchBar";
 
 const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
   const router = useRouter();
-  const { userData } = useUserContext();
   const { currentUcrm } = useCompanySessionContext();
   const pathname = usePathname();
   const inputRef = useRef<any>(null);
   const [showInput, setShowInput] = React.useState(false);
-  const [serverError, setServerError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [search, setSearch] = React.useState("");
 
   const mobileTitle = dashboardTitle.find(
@@ -59,30 +30,6 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
       (title === "Settings" && pathname === "/dashboard/controls") ||
       (title === "Profile" && pathname === "/dashboard/my-profile")
   );
-
-  const onError = (err: string | ErrorProps) => {
-    setServerError(isObject(err) ? err.errors.message : err);
-    setLoading(false);
-  };
-
-  const onLogoutSuccess = (res: any) => {
-    setLoading(false);
-    removeAuthToken();
-    removeAuthRefreshToken();
-    removeAuthUcrmId();
-    removeSessionId();
-    localStorage.remove("user");
-    removeAuthOnboardingStatus();
-    router.replace("/auth/signin");
-    router.refresh();
-  };
-
-  const handleLogout = async () => {
-    if (loading) return false;
-    setLoading(true);
-    setServerError("");
-    return AuthApis.signOutUser().then(onLogoutSuccess, onError);
-  };
 
   const handleNotifications = () => {
     router.replace("/dashboard/notifications");
@@ -104,10 +51,10 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
 
   return (
     <div
-      className="py-3 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 fixed bg-white z-50"
+      className="py-3 w-[-webkit-fill-available] flex items-center pl-4 md:pl-8 pr-2 md:pr-8 fixed bg-white z-30"
       ref={inputRef}
     >
-      <div className="flex items-center relative lg:hidden">
+      <div className="flex items-center relative lg:hidden mr-6">
         <Button className="p-0 h-fit" onClick={toggleDrawer} variant="ghost">
           <ProfilePhotoPreview
             firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
@@ -117,9 +64,9 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
           />
         </Button>
       </div>
-      <div className={cn("ml-4 flex items-center")}>
+      <div className={cn("flex items-center")}>
         <h1
-          className={cn("text-xl font-medium lg:hidden", {
+          className={cn("text-xl font-medium md:hidden w-max", {
             ["flex"]: !showInput,
             ["hidden"]: showInput,
           })}
@@ -135,18 +82,17 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
         /> */}
       </div>
 
-      <Input
-        className="w-full md:w-1/2 rounded-2xl bg-white h-9"
+      <SearchBar
+        className="w-full md:w-1/2 rounded-md bg-white h-9"
         outerClassName={cn(
-          "items-center justify-center max-md:hidden md:flex ml-5 mr-4",
+          "items-center justify-center max-md:hidden md:flex md:ml-5 mr-4",
           {
             "!flex": showInput,
           }
         )}
-        endIcon={"search"}
         onChange={(e) => setSearch(e.target.value)}
         value={search}
-        placeholder="Search for a product"
+        placeholder="Search or jump to"
         type="text"
       />
 
@@ -165,82 +111,8 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
       >
         <SymbolIcon icon="search" className="text-muted" size={28} />
       </Button>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger
-            className="flex hover:bg-accent rounded-full min-w-8 h-8 mr-6 p-0 items-center justify-center"
-            onClick={handleNotifications}
-          >
-            <SymbolIcon
-              icon="notifications"
-              color={pathname === "/dashboard/notifications" ? "#5266EB" : ""}
-              size={28}
-            />
-          </TooltipTrigger>
-          <TooltipContent className="text-xs bg-slate-800 text-white px-2 items-center">
-            <p className="whitespace-break-spaces max-w-72">
-              {"Notifications"}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className="md:ml-auto flex items-center cursor-pointer">
-            <ProfilePhotoPreview
-              firstName={userData?.firstName}
-              lastName={userData?.lastName}
-              photo={userData?.photo}
-              size={36}
-              className="rounded-full"
-            />
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 mr-8">
-          <DropdownMenuLabel className="py-2">
-            <div className="flex flex-col">
-              <p className="text-label">
-                {userData?.firstName} {userData?.lastName}
-              </p>
-              <p className="text-muted">{userData?.email}</p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="py-2 cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/my-profile");
-              }}
-            >
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="py-2 cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/company-profile");
-              }}
-            >
-              Settings
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="py-2 cursor-pointer">
-            Support
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          {!isDemoEnv() && (
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="py-4 cursor-pointer"
-            >
-              Log out
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <NotificationCenter />
+      <UserMenu />
     </div>
   );
 };

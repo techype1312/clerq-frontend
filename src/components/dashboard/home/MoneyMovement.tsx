@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import MonthsAvgBarGraph from "@/components/common/graphs/MonthsAvgBarGraph";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { MoneyMovementDataType, MonthlyGraphDataType } from "@/types/general";
-import { formatNumber } from "@/utils/utils";
+import { formatAmount } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
 
 const MoneyMovement = ({
@@ -20,7 +20,10 @@ const MoneyMovement = ({
   );
   const [isDataFormatted, setIsDataFormatted] = useState(false);
   useEffect(() => {
-    if (moneyMovementData?.avgValueDistribution.length > 0 && !isDataFormatted) {
+    if (
+      moneyMovementData?.avgValueDistribution.length > 0 &&
+      !isDataFormatted
+    ) {
       setFormattedData(
         moneyMovementData?.avgValueDistribution.map((value) => ({
           name: value.toString(),
@@ -31,7 +34,7 @@ const MoneyMovement = ({
       );
       setIsDataFormatted(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moneyMovementData?.avgValueDistribution]);
   return (
     <div className="flex flex-col gap-2 w-full border-input border p-4 rounded-md">
@@ -43,7 +46,7 @@ const MoneyMovement = ({
               moneyMovementData.value > 0 ? "text-[#29BC97]" : "text-[#900B09]"
             } text-xl`}
           >
-            ${Math.abs(moneyMovementData.value).toFixed(2).toLocaleString()}
+            {formatAmount(moneyMovementData.value)}
           </p>
         </div>
         <div
@@ -61,7 +64,7 @@ const MoneyMovement = ({
           className="flex justify-between items-center text-sm text-muted"
         >
           <p>{category.label}</p>
-          <p>${category.value.toFixed(2).toLocaleString()}</p>
+          <p>{formatAmount(category.value)}</p>
         </div>
       ))}
       {/* <span className="border border-input"></span> */}
@@ -69,14 +72,10 @@ const MoneyMovement = ({
         <div className="flex flex-col gap-2">
           <p className="text-sm text-label">Avg (3 months)</p>
           <p className="text-sm text-primary font-medium">
-            ${formatNumber(moneyMovementData.avgValue)}
+            {formatAmount(moneyMovementData.avgValue)}
           </p>
         </div>
-        {isDataFormatted && (
-          <MonthsAvgBarGraph
-          monthlyData={formattedData}
-          />
-        )}
+        {isDataFormatted && <MonthsAvgBarGraph monthlyData={formattedData} />}
       </div>
     </div>
   );

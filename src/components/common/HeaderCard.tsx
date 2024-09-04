@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "../ui/card";
 import { CardDetails, TextType } from "@/types/general";
 import { DownloadButton } from "./DownloadButton";
-import { formatDateRange } from "@/utils/utils";
+import { formatAmount, formatDateRange } from "@/utils/utils";
 
 const HeaderCard = ({ cardDetails }: { cardDetails: CardDetails }) => {
   const [formattedDateRange, setFormattedDateRange] = React.useState<string>();
@@ -17,7 +17,7 @@ const HeaderCard = ({ cardDetails }: { cardDetails: CardDetails }) => {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between ">
+      <CardHeader className="flex flex-row items-center justify-between">
         {!cardDetails.title && (
           <p className="text-sm">
             From {cardDetails.dateRange.startDate} to{" "}
@@ -34,7 +34,7 @@ const HeaderCard = ({ cardDetails }: { cardDetails: CardDetails }) => {
           <DownloadButton downloadLink={cardDetails.download} showText={true} />
         </div>
       </CardHeader>
-      <CardContent className="mt-8 flex flex-wrap gap-8 md:gap-0">
+      <CardContent className="mt-8 flex flex-wrap gap-2 md:gap-0 justify-between">
         <ExpenseModule expense={cardDetails.leftText} />
         <div className="md:ml-auto flex gap-8">
           <ExpenseModule expense={cardDetails.centerText} />
@@ -50,11 +50,7 @@ const ExpenseModule = ({ expense }: { expense: TextType }) => {
     <div className="flex flex-col">
       <h6 className="text-primary text-sm">{expense.label}</h6>
       <p className="text-background-primary md:text-[32px]">
-        {expense.value < 0 && "-"}$
-        {Math.abs(expense.value).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatAmount(expense.value)}
       </p>
     </div>
   );

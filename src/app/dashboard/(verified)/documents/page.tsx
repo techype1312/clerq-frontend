@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
-import { DataTable } from "@/components/dashboard/transactions/DataTable";
+import { DataTable } from "@/components/common/table/DataTable";
 import UploadFile from "@/components/dashboard/documents/UploadFile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";

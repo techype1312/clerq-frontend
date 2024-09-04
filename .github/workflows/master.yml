@@ -1,17 +1,17 @@
-name: Demo - Deploy Otto App
+name: Production - Deploy Otto App
 
 on:
   push:
-    branches: [demo]
+    branches: [master]
   workflow_dispatch:
 
 env:
-  AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppDemo/fb9d199d82614dce88d19aedefbb3a23
-  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-demo
-  APP_ENV: demo
+  AWS_APP_RUNNER_SERVICE_ARN: arn:aws:apprunner:us-west-2:654654360180:service/OttoAppProduction/766ae222ed4c4c07a312244e21a984de
+  AWS_ECR_REPOSITORY: 654654360180.dkr.ecr.us-west-2.amazonaws.com/otto-app-prod
+  APP_ENV: production
 
 jobs:
-  build-and-deploy-demo:
+  build-and-deploy-prod:
     runs-on: ubuntu-latest
 
     steps:

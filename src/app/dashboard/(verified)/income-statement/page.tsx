@@ -8,7 +8,7 @@ import HeaderCard from "@/components/common/HeaderCard";
 import SheetsData from "@/components/common/SheetsData";
 import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkeleton";
 import { DateRangeType, ErrorProps } from "@/types/general";
-import { generateDateRange } from "@/utils/utils";
+import { formatAmount, generateDateRange } from "@/utils/utils";
 import { isObject } from "lodash";
 
 const Page = () => {
@@ -90,11 +90,7 @@ const Page = () => {
               <div className="flex justify-between font-semibold text-primary mx-1">
                 <p className="text-base">Net profit</p>
                 <p className="text-base">
-                  {netProfit < 0 && "-"}$
-                  {Math.abs(netProfit).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {formatAmount(netProfit)}
                 </p>
               </div>
             </Fragment>

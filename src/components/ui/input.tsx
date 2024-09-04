@@ -28,7 +28,6 @@
 import * as React from "react";
 
 import { cn } from "@/utils/utils";
-import { LucideIcon } from "lucide-react";
 import { SymbolCodepoints } from "react-material-symbols";
 import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 
@@ -48,7 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className={cn("w-full relative border-input", outerClassName)}>
         {StartIcon && (
           <div className="relative">
-            <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2">
+            <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2 items-center flex">
               <SymbolIcon icon={startIcon} />
             </div>
           </div>

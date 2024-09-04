@@ -96,6 +96,12 @@ export interface IStatus {
   name: string;
 }
 
+export interface ISearchSelects {
+  id: number;
+  icon: JSX.Element;
+  name: string;
+}
+
 export interface IRole {
   id: number;
   name: string;

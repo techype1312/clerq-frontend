@@ -1,16 +1,26 @@
 import ProfitNLossGraph from "@/components/common/graphs/ProfitNLossGraph";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { MonthlyGraphDataType, ProfitLossDataType, TextType } from "@/types/general";
+import {
+  MonthlyGraphDataType,
+  ProfitLossDataType,
+  TextType,
+} from "@/types/general";
 import React, { useEffect, useState } from "react";
 import { months } from "./BookkeepingStatus";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
+import { formatAmount } from "@/utils/utils";
 
 const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
-  
   const [formattedData, setFormattedData] = useState<MonthlyGraphDataType[]>(
-    profitNLoss?.profitLoss.map((value,index) => ({
+    profitNLoss?.profitLoss.map((value, index) => ({
       name: value.revenue.toString(),
       uv: value.expenses,
       pv: value.revenue,
@@ -22,7 +32,7 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
   useEffect(() => {
     if (profitNLoss?.profitLoss.length > 0 && !isDataFormatted) {
       setFormattedData(
-        profitNLoss?.profitLoss.map((value,index) => ({
+        profitNLoss?.profitLoss.map((value, index) => ({
           name: value.revenue.toString(),
           uv: value.expenses,
           pv: value.revenue,
@@ -42,15 +52,19 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <h1 className="text-primary font-medium text-base md:text-xl">Profit & Loss</h1>
+        <h1 className="text-primary font-medium text-base md:text-xl">
+          Profit & Loss
+        </h1>
         {/* <p className="text-sm text-muted ml-auto">Group by</p> */}
         <div className="text-xs md:text-sm text-muted ml-auto md:ml-0 flex gap-2 items-center justify-center">
           Group by
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center justify-center cursor-pointer px-1 text-primary border rounded-md">
-              <DropdownMenuLabel className="text-xs">{selectedTimeLine.label}</DropdownMenuLabel>
-              <SymbolIcon icon="expand_more" color="#9D9DA7" />
+                <DropdownMenuLabel className="text-xs">
+                  {selectedTimeLine.label}
+                </DropdownMenuLabel>
+                <SymbolIcon icon="expand_more" color="#9D9DA7" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-16 w-16">
@@ -74,15 +88,19 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
       </div>
       <div className="grid md:grid-cols-3 w-full gap-4">
         <Card className="flex flex-col py-4 px-6">
-          <CardTitle className="text-label text-sm md:text-base">Total revenue</CardTitle>
+          <CardTitle className="text-label text-sm md:text-base">
+            Total revenue
+          </CardTitle>
           <p className="text-background-primary text-lg md:text-xl">
-            ${profitNLoss.totalRevenue.toFixed(2).toLocaleString()}
+            {formatAmount(profitNLoss.totalRevenue)}
           </p>
         </Card>
         <Card className="flex flex-col py-4 px-6">
-          <CardTitle className="text-label text-sm md:text-base">Total expense</CardTitle>
+          <CardTitle className="text-label text-sm md:text-base">
+            Total expense
+          </CardTitle>
           <p className="text-[#900B09] text-lg md:text-xl">
-            ${profitNLoss.totalExpenses.toFixed(2).toLocaleString()}
+            {formatAmount(profitNLoss.totalExpenses)}
           </p>
         </Card>
         <Card className="flex flex-col py-4 px-6">
@@ -96,16 +114,11 @@ const ProfitNLoss = ({ profitNLoss }: { profitNLoss: ProfitLossDataType }) => {
                 : "text-[#900B09]"
             } text-lg md:text-xl`}
           >
-            $
-            {(
-              profitNLoss.totalRevenue - profitNLoss.totalExpenses
-            ).toFixed(2).toLocaleString()}
+            {formatAmount(profitNLoss.totalRevenue - profitNLoss.totalExpenses)}
           </div>
         </Card>
       </div>
-      {isDataFormatted && (
-        <ProfitNLossGraph profitNLoss={formattedData} />
-      )}
+      {isDataFormatted && <ProfitNLossGraph profitNLoss={formattedData} />}
     </div>
   );
 };

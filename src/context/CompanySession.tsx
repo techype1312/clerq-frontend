@@ -23,6 +23,7 @@ import CompanyApis from "@/actions/data/company.data";
 import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
 import { Loader2Icon } from "lucide-react";
 import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
+import { useTrackerContext } from "./Tracker";
 
 // Create a context
 export const CompanySessionContext = createContext<IUCRMContext>(
@@ -35,6 +36,7 @@ export const CompanySessionProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { setCurrentUcrm: setTrackerUcrm } = useTrackerContext();
   const router = useRouter();
   const [myCompanyMappings, setMyCompanyMappings] = useState<IUcrm[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,8 +55,10 @@ export const CompanySessionProvider = ({
   };
 
   const handleCurrentUcrm = (ucrmId: IUcrm["id"]) => {
-    setCurrentUcrm(myCompanyMappings?.find((ucrm) => ucrm.id === ucrmId));
+    const ucrm = myCompanyMappings?.find((ucrm: IUcrm) => ucrm.id === ucrmId)
+    setCurrentUcrm(ucrm);
     setUcrmCookie(ucrmId);
+    setTrackerUcrm(ucrm?.id);
   };
 
   const onFetchUCRMSuccess = (res: any) => {
