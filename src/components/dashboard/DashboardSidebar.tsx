@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
-import Image from "next/image";
 import CompanyToggleDrawer from "../company/CompanyToggleDrawer";
 import { Fragment } from "react";
+import { PermissionType } from "@/types/permissions";
 
 const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   const isActive =
@@ -28,7 +28,15 @@ const SidebarLink = ({ pathname, href, setOpen, children }: any) => {
   );
 };
 
-const DashboardSidebar = ({ isOpen, setOpen }: any) => {
+const DashboardSidebar = ({
+  isOpen,
+  setOpen,
+  permissions,
+}: {
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
+  permissions: PermissionType;
+}) => {
   const pathname = usePathname();
 
   const items = pathname.startsWith("/dashboard") ? (
@@ -38,14 +46,16 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         {/* <SymbolIcon icon="apartment" size={24} /> */}
         <span>Company</span>
       </div>
-      <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
-        <SymbolIcon
-          icon="home"
-          color={pathname === "/dashboard" ? "#5266EB" : ""}
-          size={20}
-        />
-        Home
-      </SidebarLink>
+      {permissions?.routes.dashboard && (
+        <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
+          <SymbolIcon
+            icon="home"
+            color={pathname === "/dashboard" ? "#5266EB" : ""}
+            size={20}
+          />
+          Home
+        </SidebarLink>
+      )}
       <SidebarLink
         pathname={pathname}
         href="/dashboard/deal-tracker"
@@ -70,107 +80,128 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         />
         Invoicing
       </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/transactions"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="attach_money"
-          color={pathname === "/dashboard/transactions" ? "#5266EB" : ""}
-          size={20}
-        />
-        Transactions
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/income-statement"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="import_contacts"
-          color={pathname === "/dashboard/income-statement" ? "#5266EB" : ""}
-          size={20}
-        />
-        Income statements
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/balance-sheet"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="monitoring"
-          color={pathname === "/dashboard/balance-sheet" ? "#5266EB" : ""}
-          size={20}
-        />
-        Balance sheets
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/documents"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="article"
-          color={pathname === "/dashboard/documents" ? "#5266EB" : ""}
-          size={20}
-        />
-        Documents
-      </SidebarLink>
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/bank-connections"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="account_balance"
-          color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""}
-          size={20}
-        />
-        Bank connections
-      </SidebarLink>
+      {permissions?.routes.transactions && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/transactions"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="attach_money"
+            color={pathname === "/dashboard/transactions" ? "#5266EB" : ""}
+            size={20}
+          />
+          Transactions
+        </SidebarLink>
+      )}
+      {permissions?.routes.incomeStatement && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/income-statement"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="import_contacts"
+            color={pathname === "/dashboard/income-statement" ? "#5266EB" : ""}
+            size={20}
+          />
+          Income statements
+        </SidebarLink>
+      )}
+      {permissions?.routes.balanceSheet && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/balance-sheet"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="monitoring"
+            color={pathname === "/dashboard/balance-sheet" ? "#5266EB" : ""}
+            size={20}
+          />
+          Balance sheets
+        </SidebarLink>
+      )}
+      {permissions?.routes.documents && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/documents"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="article"
+            color={pathname === "/dashboard/documents" ? "#5266EB" : ""}
+            size={20}
+          />
+          Documents
+        </SidebarLink>
+      )}
+      {permissions?.routes.accounts && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/bank-connections"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="account_balance"
+            color={pathname === "/dashboard/bank-connections" ? "#5266EB" : ""}
+            size={20}
+          />
+          Bank connections
+        </SidebarLink>
+      )}
 
       {/* Settings Section */}
-      <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
-        {/* <SymbolIcon icon="settings" size={24} /> */}
-        <span>Settings</span>
-      </div>
-
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/company-profile"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="source_environment"
-          color={pathname === "/dashboard/company-profile" ? "#5266EB" : ""}
-          size={20}
-        />
-        Company Profile
-      </SidebarLink>
-
-      <SidebarLink pathname={pathname} href="/dashboard/team" setOpen={setOpen}>
-        <SymbolIcon
-          icon="group"
-          color={pathname === "/dashboard/team" ? "#5266EB" : ""}
-          size={20}
-        />
-        Team
-      </SidebarLink>
-
-      <SidebarLink
-        pathname={pathname}
-        href="/dashboard/controls"
-        setOpen={setOpen}
-      >
-        <SymbolIcon
-          icon="tune"
-          color={pathname === "/dashboard/controls" ? "#5266EB" : ""}
-          size={20}
-        />
-        Controls
-      </SidebarLink>
+      {(permissions?.routes.companyProfile ||
+        permissions?.routes.teams ||
+        permissions?.routes.controls) && (
+        <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
+          {/* <SymbolIcon icon="settings" size={24} /> */}
+          <span>Settings</span>
+        </div>
+      )}
+      {permissions?.routes.companyProfile && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/company-profile"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="source_environment"
+            color={pathname === "/dashboard/company-profile" ? "#5266EB" : ""}
+            size={20}
+          />
+          Company Profile
+        </SidebarLink>
+      )}
+      {permissions?.routes.teams && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/team"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="group"
+            color={pathname === "/dashboard/team" ? "#5266EB" : ""}
+            size={20}
+          />
+          Team
+        </SidebarLink>
+      )}
+      {permissions?.routes.controls && (
+        <SidebarLink
+          pathname={pathname}
+          href="/dashboard/controls"
+          setOpen={setOpen}
+        >
+          <SymbolIcon
+            icon="tune"
+            color={pathname === "/dashboard/controls" ? "#5266EB" : ""}
+            size={20}
+          />
+          Controls
+        </SidebarLink>
+      )}
       {/* <SidebarLink
         pathname={pathname}
         href="/dashboard/company-security"
@@ -203,7 +234,7 @@ const DashboardSidebar = ({ isOpen, setOpen }: any) => {
         >
           <SymbolIcon icon="arrow_back" />
         </button>
-        <CompanyToggleDrawer />
+        <CompanyToggleDrawer showAddNew={permissions.routes.newCompany} />
       </div>
       <div className="flex flex-col mt-0 gap-3 items-start border-t px-6 overflow-scroll">
         {items}
