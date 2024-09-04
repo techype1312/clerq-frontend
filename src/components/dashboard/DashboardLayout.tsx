@@ -60,7 +60,6 @@ export const DashboardLayout = ({
     const fetchPermissions = async () => {
       const ucrmId = Cookies.get("otto-auth-ucrm");
       const data: any = await CompanyApis.getUCRM(ucrmId ?? "");
-      console.log(data.permissions.routes);
       if (data?.permissions) setPermissions(data?.permissions);
     };
     fetchPermissions();
@@ -124,11 +123,13 @@ export const DashboardLayout = ({
       <div className="flex flex-col h-[100svh]">
         <DemoBanner />
         <div className="flex flex-row overflow-y-scroll h-full">
-          <DashboardSidebar
-            isOpen={isOpen}
-            setOpen={setOpen}
-            permissions={permissions}
-          />
+          {permissions && (
+            <DashboardSidebar
+              isOpen={isOpen}
+              setOpen={setOpen}
+              permissions={permissions}
+            />
+          )}
           <div className="flex flex-col flex-1 bg-white overflow-hidden">
             <DashboardTop toggleDrawer={() => setOpen(!isOpen)} />
             <div
