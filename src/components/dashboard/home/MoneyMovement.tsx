@@ -75,7 +75,13 @@ const MoneyMovement = ({
             {formatAmount(moneyMovementData.avgValue)}
           </p>
         </div>
-        {isDataFormatted && <MonthsAvgBarGraph monthlyData={formattedData} />}
+        {isDataFormatted && (
+          <MonthsAvgBarGraph
+            monthlyData={formattedData}
+            color={moneyMovementData.value > 0 ? "#29BC97" : "#900B09"}
+            id={moneyMovementData.value > 0 ? "colorUv" : "colorUv1"}
+          />
+        )}
       </div>
     </div>
   );
