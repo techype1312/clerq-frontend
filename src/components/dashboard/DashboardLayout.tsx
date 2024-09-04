@@ -25,10 +25,10 @@ const DemoBanner = () => {
       </div>
       <a
         className="flex items-center rounded-full max-h-8 gap-2 bg-black text-white p-2"
-        href="https://joinotto.com/"
+        href="https://joinotto.com/apply"
         target="_blank"
       >
-        <span>Open Account</span>
+        <span>Talk to us</span>
         <SymbolIcon icon="keyboard_arrow_right" size={20} color="#FFFFFF" />
       </a>
     </div>

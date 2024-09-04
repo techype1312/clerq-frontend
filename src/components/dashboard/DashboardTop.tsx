@@ -56,12 +56,7 @@ const DashboardTop = ({ toggleDrawer }: { toggleDrawer: () => void }) => {
     >
       <div className="flex items-center relative lg:hidden mr-6">
         <Button className="p-0 h-fit" onClick={toggleDrawer} variant="ghost">
-          <ProfilePhotoPreview
-            firstName={currentUcrm?.company?.name?.split(" ")?.[0]}
-            lastName={currentUcrm?.company?.name?.split(" ")?.[1]}
-            photo={currentUcrm?.company?.logo}
-            size={30}
-          />
+          <SymbolIcon icon="menu" size={28} className="text-muted" />
         </Button>
       </div>
       <div className={cn("flex items-center")}>
