@@ -91,9 +91,9 @@ const Dashboard = () => {
                   key={index}
                   variant={"ghost"}
                   className={cn("hover:text-label", {
-                    ["text-background-primary background-muted"]: selectedTimeLine.value === timeLine.value,
+                    ["text-background-primary background-muted"]:
+                      selectedTimeLine.value === timeLine.value,
                     ["text-muted"]: selectedTimeLine.value !== timeLine.value,
-                    ["pl-0"] : index === 0,
                   })}
                   onClick={() => {
                     setSelectedTimeLine(timeLine);
