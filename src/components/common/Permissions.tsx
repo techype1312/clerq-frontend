@@ -115,14 +115,14 @@ const Permission = ({
         </FormControl>
         <AccordionContent className="ml-6">
           {permissions &&
-            permissionData.data.map((item: any, idx: number) => {
+            permissionData?.data?.map((item: any, idx: number) => {
               return (
                 <div
                   key={`item_${item}`}
                   className="mb-4 flex gap-2 text-[#9D9DA7]"
                 >
                   <Checkbox
-                    checked={permissions[permissionData.value][item]}
+                    checked={permissions && permissions[permissionData?.value] && permissions[permissionData?.value][item] && permissions[permissionData?.value][item]}
                     onCheckedChange={() => {
                       setPermissions({
                         ...permissions,

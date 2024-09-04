@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import startCase from "lodash/startCase";
 import isObject from "lodash/isObject";
 import { Loader2Icon } from "lucide-react";
@@ -28,6 +28,10 @@ import { isDemoEnv } from "../../../../../config";
 import Permission from "@/components/common/Permissions";
 import AutoForm from "@/components/ui/auto-form";
 import { AutoFormInputComponentProps } from "@/components/ui/auto-form/types";
+import { editUserSchema, permissionsSchema } from "@/types/schema-embedded";
+import { DefaultRolePermissions } from "@/utils/constants/roles";
+import { PermissionType } from "@/types/permissions";
+import { routesPermissionSetter } from "@/utils/utils";
 
 const EditMemberDialog = ({
   row,
@@ -38,14 +42,11 @@ const EditMemberDialog = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [roleId, setRoleId] = useState(String(row.role));
-  const [customPermissions, setCustomPermissions] = useState({
-    manage_user: row.permissions?.manage_user ?? false,
-    bank_accounts: row.permissions?.bank_accounts ?? false,
-    documents: row.permissions?.documents ?? false,
-  });
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [permissions, setPermissions] = useState<PermissionType>(
+    row.permissions
+  );
   const onError = (err: string | ErrorProps) => {
     setServerError(isObject(err) ? err.errors.message : err);
     setLoading(false);
@@ -65,13 +66,13 @@ const EditMemberDialog = ({
     if (loading) return false;
     setLoading(true);
     setServerError("");
-    return TeamApis.updateTeamMember(row.id, { role: { id: roleId } }).then(
-      onUpdateSucess,
-      onError
-    );
+    let routeSortedPermissions = routesPermissionSetter(permissions);
+    return TeamApis.updateTeamMember(row.id, {
+      role: { id: roleId },
+      permissions: routeSortedPermissions,
+    }).then(onUpdateSucess, onError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
-  console.log(customPermissions);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -109,7 +110,21 @@ const EditMemberDialog = ({
                 </span>
               </div>
             </div>
-            <Select defaultValue={roleId} onValueChange={setRoleId}>
+            <Select
+              defaultValue={roleId}
+              onValueChange={(e) => {
+                setRoleId(e);
+                const roleName = allowedRoles.find(
+                  (role) => role.id === Number(e)
+                )?.name;
+                console.log("here");
+                setPermissions(
+                  DefaultRolePermissions[
+                    roleName?.toLowerCase() as keyof typeof DefaultRolePermissions
+                  ]
+                );
+              }}
+            >
               <SelectTrigger className="flex h-10 text-black min-w-36 w-fit max-sm:w-full">
                 <SelectValue placeholder="select value" />
               </SelectTrigger>
@@ -129,64 +144,206 @@ const EditMemberDialog = ({
         </DialogHeader>
         <DialogDescription className="h-fit">
           {/* <Permissions /> */}
-          {/* <AutoForm
-            formSchema={customPermissionsSchema}
+          <AutoForm
+            formSchema={editUserSchema}
             fieldConfig={{
-              custom_permissions: {
+              show_permissions: {
                 inputProps: {
-                  label: "custom_permissions",
                   accordionSingle: true,
                 },
-                manage_user: {
+                finance_show: {
+                  label: "Finance",
+
                   fieldType: ({
                     field,
                     fieldProps,
-                  }: AutoFormInputComponentProps) => (
-                    <Permission
-                      permissionData={permissions[0]}
-                      field={field}
-                      fieldProps={fieldProps}
-                    />
-                  ),
+                  }: AutoFormInputComponentProps) => {
+                    return (
+                      <Permission
+                        permissionData={{
+                          value: "finance",
+                          label: "Finance",
+                          description: "Can view and access finance",
+                          data: Object.keys(
+                            permissionsSchema.shape.finance.shape
+                          ),
+                        }}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
+                        field={field}
+                        fieldProps={fieldProps}
+                      />
+                    );
+                  },
                 },
-                bank_accounts: {
+                documents_show: {
+                  label: "Documents",
                   fieldType: ({
                     field,
                     fieldProps,
-                  }: AutoFormInputComponentProps) => (
-                    <Permission
-                      permissionData={permissions[1]}
-                      field={field}
-                      fieldProps={fieldProps}
-                    />
-                  ),
+                  }: AutoFormInputComponentProps) => {
+                    return (
+                      <Permission
+                        permissionData={{
+                          value: "documents",
+                          label: "Documents",
+                          description: "Can view and access documents",
+                          data: Object.keys(
+                            permissionsSchema.shape.documents.shape
+                          ),
+                        }}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
+                        field={field}
+                        fieldProps={fieldProps}
+                      />
+                    );
+                  },
+                },
+                reports_show: {
+                  label: "Reports",
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => {
+                    return (
+                      <Permission
+                        permissionData={{
+                          value: "reports",
+                          label: "Reports",
+                          description: "Can view and access reports",
+                          data: Object.keys(
+                            permissionsSchema.shape.reports.shape
+                          ),
+                        }}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
+                        field={field}
+                        fieldProps={fieldProps}
+                      />
+                    );
+                  },
+                },
+                company_settings_show: {
+                  label: "Company Settings",
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => {
+                    return (
+                      <Permission
+                        permissionData={{
+                          value: "companySettings",
+                          label: "Company Settings",
+                          description: "Can view and access company settings",
+                          data: Object.keys(
+                            permissionsSchema.shape.companySettings.shape
+                          ),
+                        }}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
+                        field={field}
+                        fieldProps={fieldProps}
+                      />
+                    );
+                  },
+                },
+                teams_show: {
+                  label: "Teams",
+                  fieldType: ({
+                    field,
+                    fieldProps,
+                  }: AutoFormInputComponentProps) => {
+                    return (
+                      <Permission
+                        permissionData={{
+                          value: "teams",
+                          label: "Teams",
+                          description: "Can view and access teams",
+                          data: Object.keys(
+                            permissionsSchema.shape.teams.shape
+                          ),
+                        }}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
+                        field={field}
+                        fieldProps={fieldProps}
+                      />
+                    );
+                  },
+                },
+              },
+              permissions: {
+                routes: {
+                  inputProps: {
+                    showObject: false,
+                  },
+                },
+                finance: {
+                  inputProps: {
+                    showObject: false,
+                  },
                 },
                 documents: {
-                  fieldType: ({
-                    field,
-                    fieldProps,
-                  }: AutoFormInputComponentProps) => (
-                    <Permission
-                      permissionData={permissions[2]}
-                      field={field}
-                      fieldProps={fieldProps}
-                    />
-                  ),
+                  inputProps: {
+                    showObject: false,
+                  },
+                },
+                reports: {
+                  inputProps: {
+                    showObject: false,
+                  },
+                },
+                companySettings: {
+                  inputProps: {
+                    showObject: false,
+                  },
+                },
+                teams: {
+                  inputProps: {
+                    showObject: false,
+                  },
                 },
               },
             }}
-            withSubmitButton={false}
+            values={{
+              show_permissions: {
+                finance_show: permissions.finance
+                  ? permissions.finance.manageBankAccounts ||
+                    permissions.finance.manageTransactions ||
+                    permissions.finance.viewBookKeepings ||
+                    permissions.finance.viewFinance
+                  : false,
+                documents_show:
+                  permissions.documents.downloadDocument ||
+                  permissions.documents.uploadDocument ||
+                  permissions.documents.generateDocument ||
+                  permissions.documents.shareDocument,
+                reports_show:
+                  permissions.reports.downloadFinanceReports ||
+                  permissions.reports.downloadSheetReports ||
+                  permissions.reports.downloadStatementReports ||
+                  permissions.reports.downloadTransactionReports,
+                company_settings_show:
+                  permissions.companySettings.bookMeeting ||
+                  permissions.companySettings.chatSupport ||
+                  permissions.companySettings.updateControls ||
+                  permissions.companySettings.manageCompanyProfile,
+                teams_show:
+                  permissions.teams.manageInvite ||
+                  permissions.teams.manageTeam,
+              },
+              permissions: permissions,
+            }}
             className="flex flex-col gap-4 max-w-lg mx-auto"
             zodItemClass="flex flex-col md:flex-row grow gap-4 space-y-0 w-full"
             zodItemClassWithoutName="flex flex-col grow gap-4 space-y-0 w-full"
-            values={{
-              custom_permissions: {
-                manage_user: customPermissions.manage_user,
-                bank_accounts: customPermissions.bank_accounts,
-                documents: customPermissions.documents,
-              },
-            }}
-          ></AutoForm> */}
+            withSubmitButton={false}
+            submitButtonText="Get started"
+            submitButtonClass="background-primary"
+            labelClass="text-primary"
+            onValuesChange={(values) => {}}
+          ></AutoForm>
           <div className="mt-4 ml-auto flex gap-2 justify-end">
             <DialogClose asChild>
               <Button

@@ -204,12 +204,13 @@ const TeamsPage = () => {
       status: tm.status?.id,
       statusLabel: find(statuses, { id: tm.status?.id })?.name,
       showEdit:
-        tm.role?.id !== 3 &&
-        userData?.id !== tm.user?.id &&
-        tm.status?.id === 1,
+      tm.role?.id !== 3 &&
+      userData?.id !== tm.user?.id &&
+      tm.status?.id === 1,
       showStatusUpdate: tm.role?.id !== 3 && userData?.id !== tm.user?.id,
       lastActive: "Yesterday",
       photo: tm.user?.photo,
+      permissions: tm.permissions,
     }));
     const invites = teamInvites.map((im) => ({
       id: im.id,
@@ -226,6 +227,7 @@ const TeamsPage = () => {
       showResendInvite: true,
       showRemoveInvite: true,
       lastActive: "Invited",
+      permissions: im.permissions,
     }));
     setRowData([...members, ...invites]);
   };

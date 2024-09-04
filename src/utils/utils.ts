@@ -182,3 +182,175 @@ export const formatAmount = (value: string | number, locale = "en-US") => {
   });
   return amount < 0 ? `-${formattedAmount}` : `${formattedAmount}`;
 };
+
+
+export const routesPermissionSetter = (permissions: any) => {
+  let permissionsValue = permissions;
+  
+  if (permissions?.finance.manageBankAccounts) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        accounts: true,
+      },
+    };
+  } else if (!permissions?.finance.manageBankAccounts) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        accounts: false,
+      },
+    };
+  }
+
+  if (permissions?.finance.manageTransactions) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        transactions: true,
+      },
+    };
+  } else if (!permissions?.finance.manageTransactions) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        transactions: false,
+      },
+    };
+  }
+
+  if (
+    permissions?.finance.viewBookKeepings ||
+    permissions?.finance?.viewFinance
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        dashboard: true,
+      },
+    };
+  } else if (
+    !permissions?.finance.viewBookKeepings &&
+    !permissions?.finance?.viewFinance
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        dashboard: false,
+      },
+    };
+  }
+
+  if (
+    permissions?.documents.uploadDocument ||
+    permissions?.documents.downloadDocument ||
+    permissions?.documents.generateDocument ||
+    permissions?.documents.shareDocument
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        documents: true,
+      },
+    };
+  } else if (
+    !permissions?.documents.uploadDocument &&
+    !permissions?.documents.downloadDocument &&
+    !permissions?.documents.generateDocument &&
+    !permissions?.documents.shareDocument
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        documents: false,
+      },
+    };
+  }
+  if (permissions?.teams.manageInvite || permissions?.teams.manageTeam) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        teams: true,
+      },
+    };
+    // }
+  } else if (
+    !permissions?.teams.manageInvite &&
+    !permissions?.teams.manageTeam
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        teams: false,
+      },
+    };
+  }
+  if (
+    permissions?.companySettings.updateControls ||
+    permissions?.companySettings.manageCompanyProfile
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        companyProfile: true,
+      },
+    };
+  } else if (
+    !permissions?.companySettings.updateControls &&
+    !permissions?.companySettings.manageCompanyProfile
+  ) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        companyProfile: false,
+      },
+    };
+  }
+  if (permissions?.reports.downloadSheetReports) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        incomeStatement: true,
+      },
+    };
+  } else if (!permissions?.reports.downloadSheetReports) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        incomeStatement: false,
+      },
+    };
+  }
+  if (permissions?.reports.downloadStatementReports) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        balanceSheet: true,
+      },
+    };
+  } else if (!permissions?.reports.downloadStatementReports) {
+    permissionsValue = {
+      ...permissionsValue,
+      routes: {
+        ...permissionsValue.routes,
+        balanceSheet: false,
+      },
+    };
+  }
+  return permissionsValue;
+} 

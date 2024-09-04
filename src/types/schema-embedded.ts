@@ -266,28 +266,7 @@ export const step5Schema = z.object({
   legal: z.string().array().optional(),
 });
 
-export const inviteUserSchema = (roles: string[]) => {
-  return z.object({
-    name: z.object({
-      firstName: z.string({
-        required_error: "First Name is required",
-      }),
-      lastName: z.string({
-        required_error: "Last Name is required",
-      }),
-    }),
-    email: z
-      .string({
-        required_error: "Email is required",
-      })
-      .email(),
-    role: z.enum([roles[0], ...roles.slice(1)], {
-      errorMap: customErrorMap,
-    }),
-    permissions: permissionsSchema,
-    show_permissions: showPermissionsSchema,
-  });
-};
+
 
 export const showPermissionsSchema = z.object({
   // routes_show: z.boolean(),
@@ -352,6 +331,34 @@ export const permissionsSchema = z.object({
   reports: reportsSchema,
   companySettings: companySettingsSchema,
   teams: teamsSchema,
+});
+
+export const inviteUserSchema = (roles: string[]) => {
+  return z.object({
+    name: z.object({
+      firstName: z.string({
+        required_error: "First Name is required",
+      }),
+      lastName: z.string({
+        required_error: "Last Name is required",
+      }),
+    }),
+    email: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email(),
+    role: z.enum([roles[0], ...roles.slice(1)], {
+      errorMap: customErrorMap,
+    }),
+    permissions: permissionsSchema,
+    show_permissions: showPermissionsSchema,
+  });
+};
+
+export const editUserSchema = z.object({
+  permissions: permissionsSchema,
+  show_permissions: showPermissionsSchema,
 });
 
 export const shareDocumentsSchema = z.object({

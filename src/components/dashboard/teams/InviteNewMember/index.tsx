@@ -28,6 +28,7 @@ import { isDemoEnv } from "../../../../../config";
 import { AutoFormInputComponentProps } from "@/components/ui/auto-form/types";
 import { PermissionType } from "@/types/permissions";
 import { DefaultRolePermissions } from "@/utils/constants/roles";
+import { routesPermissionSetter } from "@/utils/utils";
 
 const InviteNewMemberDialog = ({
   onAddSuccess,
@@ -64,6 +65,7 @@ const InviteNewMemberDialog = ({
     setLoading(true);
     setServerError("");
     const selectedRoleId = find(allowedRoles, { name: values.role })?.id;
+    let routeSortedPermissions = routesPermissionSetter(permissions);
     return InviteTeamApis.createInvite({
       email: values.email,
       firstName: values.name.firstName,
@@ -71,7 +73,7 @@ const InviteNewMemberDialog = ({
       role: {
         id: selectedRoleId,
       },
-      permissions: permissions,
+      permissions: routeSortedPermissions,
     }).then(onSuccess, onError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
@@ -105,7 +107,7 @@ const InviteNewMemberDialog = ({
           <DialogTitle className="text-left md:text-center h-fit">{`Add member`}</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          <div className="flex flex-col w-full items-center min-w-64 mt-6 mb-4 overflow-scroll h-screen">
+          <div className="flex flex-col w-full items-center min-w-64 mt-6 mb-4 overflow-scroll h-screen md:h-[80vh]">
             <AutoForm
               formSchema={inviteUserSchema(allowedRoles.map((r) => r.name))}
               fieldConfig={{
@@ -293,11 +295,29 @@ const InviteNewMemberDialog = ({
               values={{
                 role: role,
                 show_permissions: {
-                  finance_show: true,
-                  documents_show: true,
-                  reports_show: true,
-                  company_settings_show: true,
-                  teams_show: true,
+                  finance_show: permissions.finance ?
+                    permissions.finance.manageBankAccounts ||
+                    permissions.finance.manageTransactions ||
+                    permissions.finance.viewBookKeepings ||
+                    permissions.finance.viewFinance : false,
+                  documents_show:
+                    permissions.documents.downloadDocument ||
+                    permissions.documents.uploadDocument ||
+                    permissions.documents.generateDocument ||
+                    permissions.documents.shareDocument,
+                  reports_show:
+                    permissions.reports.downloadFinanceReports ||
+                    permissions.reports.downloadSheetReports ||
+                    permissions.reports.downloadStatementReports ||
+                    permissions.reports.downloadTransactionReports,
+                  company_settings_show:
+                    permissions.companySettings.bookMeeting ||
+                    permissions.companySettings.chatSupport ||
+                    permissions.companySettings.updateControls ||
+                    permissions.companySettings.manageCompanyProfile,
+                  teams_show:
+                    permissions.teams.manageInvite ||
+                    permissions.teams.manageTeam,
                 },
                 permissions: permissions,
               }}
