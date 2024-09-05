@@ -74,31 +74,49 @@ const Step1 = ({
     let userData: any = e;
     if (userData?.company === "Yes" && companyData?.length === 0) {
       // Create Company with empty details
-      await CompanyApis.createCompany({
-        email: userData?.email, // added email as passing nothing was giving error
-      });
+      try {
+        await CompanyApis.createCompany({
+          email: userData?.email, // added email as passing nothing was giving error
+        });
+      } catch (err: any) {
+        // onError(err);
+        toast.error(err?.response?.data?.errors?.message);
+        setLoading(false);
+      }
     } else if (userData?.company === "No" && companyData?.length === 0) {
       // Create Company with User details
-      await CompanyApis.createCompany({
-        email: userData?.email,
-        name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
-        phone: userData?.phone,
-        country_code: e.country_code,
-        ein: userData?.phone,
-        tax_residence_country: DEFAULT_COUNTRY_CODE,
-        tax_classification: "Individual/Sole Proprietor",
-      });
+      try {
+        await CompanyApis.createCompany({
+          email: userData?.email,
+          name: `${userData?.legalFirstName} ${userData?.legalLastName}`,
+          phone: userData?.phone,
+          country_code: e.country_code,
+          ein: userData?.phone,
+          tax_residence_country: DEFAULT_COUNTRY_CODE,
+          tax_classification: "Individual/Sole Proprietor",
+        });
+      } catch (err: any) {
+        // onError(err);
+        toast.error(err?.response?.data?.errors?.message);
+        setLoading(false);
+      }
     } else if (userData?.company === "No" && companyData?.length > 0) {
       // Update Existing company details
-      await CompanyApis.updateCompany(companyData[0].id, {
-        email: userData?.email,
-        name: `${localUserData?.legalFirstName} ${localUserData?.legalLastName}`,
-        phone: localUserData?.phone,
-        country_code: e.country_code,
-        ein: localUserData?.phone,
-        tax_residence_country: DEFAULT_COUNTRY_CODE,
-        tax_classification: "Individual/Sole Proprietor",
-      });
+      try {
+        await CompanyApis.updateCompany(companyData[0].id, {
+          email: userData?.email,
+          name: `${localUserData?.legalFirstName} ${localUserData?.legalLastName}`,
+          phone: localUserData?.phone,
+          country_code: e.country_code,
+          ein: localUserData?.phone,
+          tax_residence_country: DEFAULT_COUNTRY_CODE,
+          tax_classification: "Individual/Sole Proprietor",
+        });
+      } catch (err: any) {
+        // onError(err);
+        toast.error(err?.response?.data?.errors?.message);
+        setLoading(false);
+      }
     }
     delete userData.address;
     delete userData.mailing_address;
@@ -133,7 +151,7 @@ const Step1 = ({
       }
     };
     updateAndFetchAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressId, createdAddress]);
 
   useEffect(() => {
@@ -168,7 +186,7 @@ const Step1 = ({
         setMailingAddress(userData?.mailing_address);
       setAddressDataLoaded(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, userRefetch, addressDataLoaded]);
 
   useEffect(() => {
@@ -338,7 +356,8 @@ const Step1 = ({
         email: localUserData?.email,
         phone: localUserData?.phone ?? "",
         country_code: localUserData?.country_code ?? 1,
-        tax_residence_country: localUserData?.tax_residence_country ?? DEFAULT_COUNTRY_CODE,
+        tax_residence_country:
+          localUserData?.tax_residence_country ?? DEFAULT_COUNTRY_CODE,
         date_of_birth: localUserData?.dob
           ? new Date(localUserData?.dob ?? "")
           : undefined,

@@ -11,6 +11,7 @@ import BankingApis from "@/actions/data/banking.data";
 import { useUserContext } from "@/context/User";
 import CompanyApis from "@/actions/data/company.data";
 import { setAuthOnboardingStatus } from "@/utils/session-manager.util";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const Step4 = ({
   userData,
@@ -20,6 +21,7 @@ const Step4 = ({
   step: number;
 }) => {
   const { updateUserData } = useUserContext();
+  const {fetchCurrentUcrm} = useCompanySessionContext();
   const router = useRouter();
   const [linkToken, setLinkToken] = useState<string>("");
   const [companyId, setCompanyId] = useState<string>("");
@@ -46,6 +48,7 @@ const Step4 = ({
           },
           true
         );
+        fetchCurrentUcrm(companyId)
         router.push("/dashboard");
         return true;
       });
