@@ -1,5 +1,6 @@
 import { ICompany } from "./company";
 import { IRole, IStatus } from "./general";
+import { PermissionType } from "./permissions";
 import { IUser } from "./user";
 
 export interface IUcrm {
@@ -17,4 +18,6 @@ export interface IUCRMContext {
   myCompanyMappings: IUcrm[];
   addNewCompanyMapping: (newUcrm: IUcrm) => void;
   switchCompany: (ucrmId: IUcrm['id']) => Promise<void>;
+  permissions: PermissionType | undefined;
+  fetchCurrentUcrm: (ucrmId: IUcrm['id']) => Promise<void>;
 }

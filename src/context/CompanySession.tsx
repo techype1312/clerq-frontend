@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
 } from "react";
 import isObject from "lodash/isObject";
@@ -24,6 +25,7 @@ import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
 import { Loader2Icon } from "lucide-react";
 import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
 import { useTrackerContext } from "./Tracker";
+import { PermissionType } from "@/types/permissions";
 
 // Create a context
 export const CompanySessionContext = createContext<IUCRMContext>(
@@ -44,6 +46,7 @@ export const CompanySessionProvider = ({
   const [openSwitchDialog, setopenSwitchDialog] = useState(false);
   const [currentUcrm, setCurrentUcrm] = useState<IUcrm>();
   const [nextUcrm, setNextUcrm] = useState<IUcrm>();
+  const [permissions, setPermissions] = useState<PermissionType | undefined>();
 
   const onError = (err: string | ErrorProps) => {
     setError(isObject(err) ? err.errors.message : err);
@@ -55,7 +58,7 @@ export const CompanySessionProvider = ({
   };
 
   const handleCurrentUcrm = (ucrmId: IUcrm["id"]) => {
-    const ucrm = myCompanyMappings?.find((ucrm: IUcrm) => ucrm.id === ucrmId)
+    const ucrm = myCompanyMappings?.find((ucrm: IUcrm) => ucrm.id === ucrmId);
     setCurrentUcrm(ucrm);
     setUcrmCookie(ucrmId);
     setTrackerUcrm(ucrm?.id);
@@ -87,6 +90,18 @@ export const CompanySessionProvider = ({
   const fetchUcrm = async (ucrmId: IUcrm["id"]) => {
     setLoading(true);
     return CompanyApis.getUCRM(ucrmId).then(onFetchUCRMSuccess, onError);
+  };
+
+  const onFetchCurrentUCRMSuccess = (res: any) => {
+    if (res) {
+      setPermissions(res?.permissions);
+    }
+    setLoading(false);
+  };
+
+  const fetchCurrentUcrm = async (ucrmId: IUcrm["id"]) => {
+    setLoading(true);
+    return CompanyApis.getUCRM(ucrmId).then(onFetchCurrentUCRMSuccess, onError);
   };
 
   const switchCompany = async (ucrmId: IUcrm["id"]) => {
@@ -138,6 +153,11 @@ export const CompanySessionProvider = ({
     refreshUcrmList();
   }, [refreshUcrmList]);
 
+  useLayoutEffect(() => {
+    const ucrmFromCookie = getAuthUcrmId();
+    if (ucrmFromCookie) fetchCurrentUcrm(ucrmFromCookie);
+  }, []);
+
   return (
     <CompanySessionContext.Provider
       value={{
@@ -147,6 +167,8 @@ export const CompanySessionProvider = ({
         myCompanyMappings,
         addNewCompanyMapping,
         switchCompany,
+        permissions,
+        fetchCurrentUcrm
       }}
     >
       {loading && !openSwitchDialog && (
