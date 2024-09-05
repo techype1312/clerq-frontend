@@ -39,6 +39,11 @@ const InviteNewMemberDialog = ({
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState(allowedRoles[0].name);
+  const [name, setName] = useState({
+    firstName: "",
+    lastName: "",
+  });
+  const [email, setEmail] = useState("");
   const [permissions, setPermissions] = useState<PermissionType>(
     DefaultRolePermissions[
       allowedRoles[0].name.toLowerCase() as keyof typeof DefaultRolePermissions
@@ -115,28 +120,7 @@ const InviteNewMemberDialog = ({
                   inputProps: {
                     accordionSingle: true,
                   },
-                  // routes_show: {
-                  //   label: "Routes",
-                  //   description: "Can view and access routes",
-                  //   fieldType: ({
-                  //     field,
-                  //     fieldProps,
-                  //   }: AutoFormInputComponentProps) => {
-                  //     return (
-                  //       <Permission
-                  //         permissionData={{
-                  //           value: "routes",
-                  //           label: "Routes",
-                  //           data: Object.keys(routesSchema.shape),
-                  //         }}
-                  //         permissions={permissions}
-                  //         setPermissions={setPermissions}
-                  //         field={field}
-                  //         fieldProps={fieldProps}
-                  //       />
-                  //     );
-                  //   },
-                  // },
+                 
                   finance_show: {
                     label: "Finance",
 
@@ -320,6 +304,11 @@ const InviteNewMemberDialog = ({
                     permissions.teams.manageTeam,
                 },
                 permissions: permissions,
+                name: {
+                  firstName: name.firstName,
+                  lastName: name.lastName,
+                },
+                email: email,
               }}
               defaultValues={{
                 role: allowedRoles[0].name,
@@ -334,6 +323,12 @@ const InviteNewMemberDialog = ({
               onValuesChange={(values) => {
                 if (values.role) {
                   setRole(values.role);
+                }
+                if(values.name){
+                  setName(values.name);
+                }
+                if(values.email){
+                  setEmail(values.email);
                 }
               }}
               onSubmit={sendNewInvite}
