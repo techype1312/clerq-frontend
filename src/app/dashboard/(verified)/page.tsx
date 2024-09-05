@@ -17,6 +17,7 @@ import FinanceApis from "@/actions/data/finance.data";
 import { isObject } from "lodash";
 import { useUserContext } from "@/context/User";
 import { cn } from "@/utils/utils";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const Dashboard = () => {
   const { userData } = useUserContext();
@@ -42,6 +43,8 @@ const Dashboard = () => {
     label: "This month",
     value: "30",
   });
+
+  const { permissions } = useCompanySessionContext();
 
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -107,36 +110,42 @@ const Dashboard = () => {
           {dataLoading ? (
             <DashboardSkeleton />
           ) : (
-            <>
-              {analyticsReport?.bookKeepingStatus && (
-                <BookkeepingStatus
-                  bookkeepingStatus={analyticsReport?.bookKeepingStatus}
-                />
-              )}
-              <div className="flex flex-col gap-4">
-                <h2 className="text-primary font-medium text-base md:text-xl">
-                  Money movement
-                </h2>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {analyticsReport?.moneyIn && analyticsReport?.moneyOut && (
-                    <Fragment>
-                      <MoneyMovement
-                        moneyMovementData={analyticsReport.moneyIn}
-                      />
-                      <MoneyMovement
-                        moneyMovementData={analyticsReport.moneyOut}
-                      />
-                    </Fragment>
+            <Fragment>
+              {analyticsReport?.bookKeepingStatus &&
+                permissions?.finance?.viewBookKeepings && (
+                  <BookkeepingStatus
+                    bookkeepingStatus={analyticsReport?.bookKeepingStatus}
+                  />
+                )}
+              {permissions?.finance?.viewFinance && (
+                <Fragment>
+                  <div className="flex flex-col gap-4">
+                    <h2 className="text-primary font-medium text-base md:text-xl">
+                      Money movement
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {analyticsReport?.moneyIn &&
+                        analyticsReport?.moneyOut && (
+                          <Fragment>
+                            <MoneyMovement
+                              moneyMovementData={analyticsReport.moneyIn}
+                            />
+                            <MoneyMovement
+                              moneyMovementData={analyticsReport.moneyOut}
+                            />
+                          </Fragment>
+                        )}
+                    </div>
+                  </div>
+                  {analyticsReport?.topExpenses && (
+                    <TopExpenses topExpenses={analyticsReport?.topExpenses} />
                   )}
-                </div>
-              </div>
-              {analyticsReport?.topExpenses && (
-                <TopExpenses topExpenses={analyticsReport?.topExpenses} />
+                  {analyticsReport?.PNL && (
+                    <ProfitNLoss profitNLoss={analyticsReport?.PNL} />
+                  )}
+                </Fragment>
               )}
-              {analyticsReport?.PNL && (
-                <ProfitNLoss profitNLoss={analyticsReport?.PNL} />
-              )}
-            </>
+            </Fragment>
           )}
         </div>
       </div>
