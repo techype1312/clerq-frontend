@@ -10,7 +10,7 @@ import { useBankAccountsContext } from "@/context/BankAccounts";
 const BankConnections = lazy(() => import("./BankConnections"));
 
 export default function Page() {
-  const { currentUcrm } = useCompanySessionContext();
+  const { currentUcrm, permissions } = useCompanySessionContext();
   const { bankAccountsData } = useBankAccountsContext();
 
   return (
@@ -34,9 +34,15 @@ export default function Page() {
                 Automatically extract all business transactions for bookkeeping.
               </p>
               <Suspense fallback={<BankConnectionsSkeleton />}>
-                <BankConnections bankAccounts={bankAccountsData} />
+                {permissions?.routes?.accounts && (
+                  <BankConnections bankAccounts={bankAccountsData} />
+                )}
               </Suspense>
-              <ConnectAccount companyId={currentUcrm?.company?.id as string} />
+              {permissions?.finance?.manageBankAccounts && (
+                <ConnectAccount
+                  companyId={currentUcrm?.company?.id as string}
+                />
+              )}
             </div>
           </div>
         </div>

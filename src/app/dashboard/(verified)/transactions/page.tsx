@@ -64,8 +64,10 @@ const categories = [
 
 const getTableColumns = ({
   windowWidth,
+  manageTransactions,
 }: {
   windowWidth: number;
+  manageTransactions: boolean;
 }): ColumnDef<any>[] => {
   const dateCol: ColumnDef<any> = {
     accessorKey: "date",
@@ -274,12 +276,24 @@ const getTableColumns = ({
     return [merchantCol, amountCol];
   }
   if (windowWidth < 768) {
-    return [merchantCol, amountCol, receiptCol];
+    if (manageTransactions) {
+      return [merchantCol, amountCol, receiptCol];
+    } else {
+      return [merchantCol, accountCol, amountCol];
+    }
   }
   if (windowWidth < 1024) {
-    return [merchantCol, accountCol, amountCol, receiptCol];
+    if (manageTransactions) {
+      return [merchantCol, accountCol, amountCol, receiptCol];
+    } else {
+      return [merchantCol, accountCol, amountCol, categoryCol];
+    }
   }
-  return [merchantCol, accountCol, amountCol, categoryCol, receiptCol];
+  if (manageTransactions) {
+    return [merchantCol, accountCol, amountCol, categoryCol, receiptCol];
+  } else {
+    return [merchantCol, accountCol, amountCol, categoryCol];
+  }
 };
 
 const Page = () => {
@@ -288,7 +302,7 @@ const Page = () => {
     useBankAccountsContext();
   const [transactions, setTransactions] = React.useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentUcrm } = useCompanySessionContext();
+  const { currentUcrm, permissions } = useCompanySessionContext();
   const [serverError, setServerError] = useState("");
   const [pagesVisited, setPagesVisited] = useState<number[]>([]);
   const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
@@ -401,14 +415,23 @@ const Page = () => {
   };
 
   useEffect(() => {
-    if (!loading && currentUcrm?.company?.id) {
+    if (
+      !loading &&
+      currentUcrm?.company?.id &&
+      permissions?.routes?.transactions
+    ) {
       handleFetchTransactions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex]);
 
   useEffect(() => {
-    if (transactions.length === 0 && currentUcrm?.company?.id && accounts) {
+    if (
+      transactions.length === 0 &&
+      currentUcrm?.company?.id &&
+      accounts &&
+      permissions?.routes?.transactions
+    ) {
       handleFetchTransactions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -418,7 +441,8 @@ const Page = () => {
     if (
       sorting !== oldSorting &&
       currentUcrm?.company?.id &&
-      accounts?.length
+      accounts?.length &&
+      permissions?.routes?.transactions
     ) {
       setOldSorting(sorting);
       setFiltersChanged(true);
@@ -435,7 +459,8 @@ const Page = () => {
       !loading &&
       filtersChanged &&
       currentUcrm?.company?.id &&
-      accounts?.length
+      accounts?.length &&
+      permissions?.routes?.transactions
     ) {
       handleFetchTransactions();
     }
@@ -472,26 +497,35 @@ const Page = () => {
             </div>
           )}
 
-          {!accountsLoading && !!accounts.length && (
-            <DataTable
-              columns={getTableColumns({ windowWidth })}
-              data={transactions}
-              loading={loading}
-              showFilter={true}
-              type="transaction"
-              hasNextPage={hasNextPage}
-              pagination={pagination}
-              setPagination={setPagination}
-              sorting={sorting}
-              setSorting={setSorting}
-              columnFilters={columnFilters}
-              setColumnFilters={setColumnFilters}
-              dateFilter={dateFilter}
-              setDateFilter={setDateFilter}
-              amountFilter={amountFilter}
-              setAmountFilter={setAmountFilter}
-            />
-          )}
+          {!accountsLoading &&
+            !!accounts.length &&
+            permissions?.routes?.transactions && (
+              <DataTable
+                columns={getTableColumns({
+                  windowWidth,
+                  manageTransactions: permissions?.finance?.manageTransactions,
+                })}
+                data={transactions}
+                loading={loading}
+                showFilter={true}
+                type="transaction"
+                hasNextPage={hasNextPage}
+                pagination={pagination}
+                setPagination={setPagination}
+                sorting={sorting}
+                setSorting={setSorting}
+                columnFilters={columnFilters}
+                setColumnFilters={setColumnFilters}
+                dateFilter={dateFilter}
+                setDateFilter={setDateFilter}
+                amountFilter={amountFilter}
+                setAmountFilter={setAmountFilter}
+                showDownloadButton={
+                  permissions?.reports?.downloadTransactionReports
+                }
+                showDownload={permissions?.reports?.downloadTransactionReports}
+              />
+            )}
         </div>
       </div>
     </div>
