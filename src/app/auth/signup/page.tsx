@@ -60,7 +60,6 @@ const SignupPage = () => {
         </div>
         <AutoForm
           formSchema={signUpSchema}
-          // formAction={signup}
           onSubmit={handleSignup}
           fieldConfig={{
             password: {

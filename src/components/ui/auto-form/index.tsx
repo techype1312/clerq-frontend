@@ -120,8 +120,8 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   const valueError = formSchema.safeParse(values);
   // valuesString is needed because form.watch() returns a new object every time
   const valuesString = JSON.stringify(values);
+  const [showError, setShowError] = React.useState(false);
 
-  let showError = false;
 
   React.useEffect(() => {
     onValuesChangeProp?.(values);
@@ -176,7 +176,9 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
         ) : (
           <form
             onSubmit={(e) => {
-              showError = true;
+              console.log("submitting");
+              e.preventDefault();
+              setShowError(true);
               form.handleSubmit(onSubmit)(e);
             }}
             className={cn("space-y-2", className)}
@@ -194,10 +196,10 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
             {renderChildren}
             {withSubmitButton && <AutoFormSubmit />}
             {showError && valueError.error?.issues.map((issue) => (
-              <div key={issue.path.join(".")}>
+              <div key={issue.path.join(".") ?? issue.message}>
                 <FormMessage>
                   <div className="flex flex-col gap-2">
-                    <p>{formatFilterId(issue.path.join(" -> "))}</p>
+                    <p>{formatFilterId(issue.path.join(" -> ") ?? issue.code)}</p>
                     {issue.message}
                   </div>
                 </FormMessage>
@@ -211,3 +213,6 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 }
 
 export default AutoForm;
+
+
+//Need a better way of showing errors, maybe customize the form message component to only show messages for certain conditions
