@@ -10,6 +10,7 @@ import CompanyApis from "@/actions/data/company.data";
 import Cookies from "js-cookie";
 // import { PermissionType } from "@/types/permissions";
 import { usePathname, useRouter } from "next/navigation";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const DemoBanner = () => {
   if (!isDemoEnv()) return null;
@@ -45,7 +46,7 @@ export const DashboardLayout = ({
   children: React.ReactNode;
 }) => {
   const [isOpen, setOpen] = useState(false);
-  const [permissions, setPermissions] = useState<any>();
+  const {permissions} = useCompanySessionContext();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
@@ -56,16 +57,7 @@ export const DashboardLayout = ({
     }
   }, [isOpen]);
 
-  useLayoutEffect(() => {
-    const fetchPermissions = async () => {
-      const ucrmId = Cookies.get("otto-auth-ucrm");
-      const data: any = await CompanyApis.getUCRM(ucrmId ?? "");
-      if (data?.permissions) setPermissions(data?.permissions);
-    };
-    fetchPermissions();
-  }, []);
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (typeof permissions === "object" && permissions && permissions?.routes) {
       if (!permissions?.routes?.dashboard && pathname === "/dashboard") {
         router.push("/dashboard/my-profile");

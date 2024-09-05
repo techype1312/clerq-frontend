@@ -46,7 +46,7 @@ const DashboardSidebar = ({
         {/* <SymbolIcon icon="apartment" size={24} /> */}
         <span>Company</span>
       </div>
-      {permissions?.routes.dashboard && (
+      {permissions?.routes?.dashboard && (
         <SidebarLink pathname={pathname} href="/dashboard" setOpen={setOpen}>
           <SymbolIcon
             icon="home"
@@ -80,7 +80,7 @@ const DashboardSidebar = ({
         />
         Invoicing
       </SidebarLink>
-      {permissions?.routes.transactions && (
+      {permissions?.routes?.transactions && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/transactions"
@@ -94,7 +94,7 @@ const DashboardSidebar = ({
           Transactions
         </SidebarLink>
       )}
-      {permissions?.routes.incomeStatement && (
+      {permissions?.routes?.incomeStatement && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/income-statement"
@@ -108,7 +108,7 @@ const DashboardSidebar = ({
           Income statements
         </SidebarLink>
       )}
-      {permissions?.routes.balanceSheet && (
+      {permissions?.routes?.balanceSheet && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/balance-sheet"
@@ -122,7 +122,7 @@ const DashboardSidebar = ({
           Balance sheets
         </SidebarLink>
       )}
-      {permissions?.routes.documents && (
+      {permissions?.routes?.documents && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/documents"
@@ -136,7 +136,7 @@ const DashboardSidebar = ({
           Documents
         </SidebarLink>
       )}
-      {permissions?.routes.accounts && (
+      {permissions?.routes?.accounts && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/bank-connections"
@@ -152,15 +152,15 @@ const DashboardSidebar = ({
       )}
 
       {/* Settings Section */}
-      {(permissions?.routes.companyProfile ||
-        permissions?.routes.teams ||
-        permissions?.routes.controls) && (
+      {(permissions?.routes?.companyProfile ||
+        permissions?.routes?.teams ||
+        permissions?.routes?.controls) && (
         <div className="mt-4 mb-1 text-muted text-sm flex flex-row items-center gap-2">
           {/* <SymbolIcon icon="settings" size={24} /> */}
           <span>Settings</span>
         </div>
       )}
-      {permissions?.routes.companyProfile && (
+      {permissions?.routes?.companyProfile && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/company-profile"
@@ -174,7 +174,7 @@ const DashboardSidebar = ({
           Company Profile
         </SidebarLink>
       )}
-      {permissions?.routes.teams && (
+      {permissions?.routes?.teams && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/team"
@@ -188,7 +188,7 @@ const DashboardSidebar = ({
           Team
         </SidebarLink>
       )}
-      {permissions?.routes.controls && (
+      {permissions?.routes?.controls && (
         <SidebarLink
           pathname={pathname}
           href="/dashboard/controls"
@@ -234,7 +234,7 @@ const DashboardSidebar = ({
         >
           <SymbolIcon icon="arrow_back" />
         </button>
-        <CompanyToggleDrawer showAddNew={permissions.routes.newCompany} />
+        <CompanyToggleDrawer showAddNew={permissions?.routes?.newCompany} />
       </div>
       <div className="flex flex-col mt-0 gap-3 items-start border-t px-6 overflow-scroll">
         {items}
