@@ -45,4 +45,5 @@ export interface IUserContext {
     values: Partial<IUser>,
     onboarding?: boolean
   ) => Promise<false | void>;
+  userRoleId?: IRole["id"];
 }

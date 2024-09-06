@@ -21,11 +21,12 @@ import {
 import SymbolIcon from "@/components/common/MaterialSymbol/SymbolIcon";
 import { IUcrm, IUCRMContext } from "@/types/ucrm";
 import CompanyApis from "@/actions/data/company.data";
-import { getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
+import { authUcrmDataBucket, getAuthUcrmId, setAuthUcrmId } from "@/utils/session-manager.util";
 import { Loader2Icon } from "lucide-react";
 import ProfilePhotoPreview from "@/components/common/profile-photo/ProfilePhotoPreview";
 import { useTrackerContext } from "./Tracker";
 import { PermissionType } from "@/types/permissions";
+import { getCookie } from "@/utils/storage/cookies.util";
 
 // Create a context
 export const CompanySessionContext = createContext<IUCRMContext>(
@@ -156,7 +157,7 @@ export const CompanySessionProvider = ({
   useLayoutEffect(() => {
     const ucrmFromCookie = getAuthUcrmId();
     if (ucrmFromCookie) fetchCurrentUcrm(ucrmFromCookie);
-  }, []);
+  }, [getCookie(authUcrmDataBucket)]);
 
   return (
     <CompanySessionContext.Provider

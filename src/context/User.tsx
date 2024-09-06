@@ -164,6 +164,7 @@ export const UserContextProvider = ({
         loading,
         error: serverError,
         userData,
+        userRoleId: userData?.role?.id,
         refetchUserData,
         refreshUser,
         setRefetchUserData,
