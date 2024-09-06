@@ -6,12 +6,11 @@ import DashboardTop from "./DashboardTop";
 import Image from "next/image";
 import SymbolIcon from "../common/MaterialSymbol/SymbolIcon";
 import { isDemoEnv } from "../../../config";
-import CompanyApis from "@/actions/data/company.data";
-import Cookies from "js-cookie";
 // import { PermissionType } from "@/types/permissions";
 import { usePathname, useRouter } from "next/navigation";
 import { useCompanySessionContext } from "@/context/CompanySession";
-
+import { routePermissionMatcher } from "@/utils/route-permission-matcher.util";
+import { pathPermission } from "@/utils/constants/path-permissions";
 const DemoBanner = () => {
   if (!isDemoEnv()) return null;
   return (
@@ -46,7 +45,7 @@ export const DashboardLayout = ({
   children: React.ReactNode;
 }) => {
   const [isOpen, setOpen] = useState(false);
-  const {permissions} = useCompanySessionContext();
+  const { permissions } = useCompanySessionContext();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
@@ -57,56 +56,16 @@ export const DashboardLayout = ({
     }
   }, [isOpen]);
 
+  const redirectTo = "/dashboard";
+
   useEffect(() => {
     if (typeof permissions === "object" && permissions && permissions?.routes) {
-      if (!permissions?.routes?.dashboard && pathname === "/dashboard") {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.accounts &&
-        pathname === "/dashboard/bank-connections"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.transactions &&
-        pathname === "/dashboard/transactions"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.balanceSheet &&
-        pathname === "/dashboard/balance-sheet"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.incomeStatement &&
-        pathname === "/dashboard/income-statement"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.documents &&
-        pathname === "/dashboard/documents"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (!permissions?.routes?.teams && pathname === "/dashboard/team") {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.controls &&
-        pathname === "/dashboard/controls"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
-      if (
-        !permissions?.routes?.companyProfile &&
-        pathname === "/dashboard/company-profile"
-      ) {
-        router.push("/dashboard/my-profile");
-      }
+      routePermissionMatcher(
+        // @ts-ignore
+        permissions?.routes[pathPermission[pathname]],
+        router,
+        pathname === redirectTo ? "/dashboard/my-profile" : redirectTo,
+      );
     }
   }, [pathname, permissions, router]);
 

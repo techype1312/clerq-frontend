@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { pages } from "@/utils/constants/pages";
 import { transactions } from "@/utils/constants/transactions";
 import SymbolIcon from "../../common/MaterialSymbol/SymbolIcon";
+import { routePermissionMatcher } from "@/utils/route-permission-matcher.util";
+import { useCompanySessionContext } from "@/context/CompanySession";
+import { pathPermission } from "@/utils/constants/path-permissions";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -17,7 +20,7 @@ export interface InputProps
   outerClassName?: string;
 }
 
-const DEFAULT_SEARCH = "Pages"
+const DEFAULT_SEARCH = "Pages";
 const searchSelects = [
   {
     id: 1,
@@ -37,6 +40,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
     const [selectedSearch, setSelectedSearch] = React.useState<
       string | undefined
     >(DEFAULT_SEARCH);
+    const { permissions } = useCompanySessionContext();
     const [openDropdown, setOpenDropdown] = React.useState(false);
     const dropdownRef = React.useRef<HTMLDivElement>(null);
     const [searchedPages, setSearchedPages] = React.useState<any>(pages);
@@ -174,27 +178,36 @@ const SearchBar = React.forwardRef<HTMLInputElement, InputProps>(
               {selectedSearch === "Pages" && (
                 <div className="flex flex-col mt-2 overflow-auto max-h-[50rem]">
                   <p className="text-sm text-muted mb-2 ml-2">Pages</p>
-                  {searchedPages.map((page: any) => (
-                    <Link
-                      className="group text-base text-primary flex flex-row justify-between items-center rounded-md hover:bg-slate-100 px-2 py-[7px]"
-                      key={page.name}
-                      href={page.pathname}
-                      onClick={() => {
-                        setOpenDropdown(false);
-                        resetSearch();
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <SymbolIcon icon={"web_asset"} size={16} /> {page.name}
-                      </div>
-                      <SymbolIcon
-                        icon={"chevron_right"}
-                        size={22}
-                        color="#233FDB"
-                        className="!hidden group-hover:!block"
-                      />
-                    </Link>
-                  ))}
+                  {searchedPages.map((page: any) => {
+                   const showPage = routePermissionMatcher(
+                      // @ts-ignore
+                      permissions?.routes[pathPermission[page.pathname]],
+                      page.pathname
+                    );
+                    if(!showPage && page.pathname !== "/dashboard/my-profile") return null;
+                    return (
+                      <Link
+                        className="group text-base text-primary flex flex-row justify-between items-center rounded-md hover:bg-slate-100 px-2 py-[7px]"
+                        key={page.name}
+                        href={page.pathname}
+                        onClick={() => {
+                          setOpenDropdown(false);
+                          resetSearch();
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <SymbolIcon icon={"web_asset"} size={16} />{" "}
+                          {page.name}
+                        </div>
+                        <SymbolIcon
+                          icon={"chevron_right"}
+                          size={22}
+                          color="#233FDB"
+                          className="!hidden group-hover:!block"
+                        />
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
               {selectedSearch === "Transactions" && (

@@ -304,6 +304,7 @@ export const routesPermissionSetter = (permissions: any) => {
       routes: {
         ...permissionsValue.routes,
         companyProfile: true,
+        newCompany: false,
       },
     };
   } else if (
@@ -315,6 +316,7 @@ export const routesPermissionSetter = (permissions: any) => {
       routes: {
         ...permissionsValue.routes,
         companyProfile: false,
+        newCompany: false,
       },
     };
   }
