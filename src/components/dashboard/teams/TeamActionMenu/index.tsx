@@ -10,6 +10,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserContext } from "@/context/User";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const TeamActionMenu = ({
   row,
@@ -25,6 +27,8 @@ const TeamActionMenu = ({
   onStatusUpdate: (ucrmId: string, status: Record<string, any>) => void;
   onRemoveInvite: (inviteId: string) => void;
 }) => {
+  const { userData } = useUserContext();
+  const { permissions } = useCompanySessionContext();
   if (
     !row.showEdit &&
     !row.showStatusUpdate &&
@@ -32,14 +36,19 @@ const TeamActionMenu = ({
     !row.showResendInvite
   )
     return <div className="ml-8"></div>;
-
+  
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="rounded-md flex items-center cursor-pointer hover:bg-blue-100">
-          <SymbolIcon icon="more_vert" size={20} />
-        </div>
-      </DropdownMenuTrigger>
+      {userData?.role?.id &&
+        row.role >= userData?.role?.id &&
+        ((permissions?.teams.manageInvite && row.status === "PENDING") ||
+          (permissions?.teams?.manageTeam && row.status !== "PENDING")) && (
+          <DropdownMenuTrigger asChild>
+            <div className="rounded-md flex items-center cursor-pointer hover:bg-blue-100">
+              <SymbolIcon icon="more_vert" size={20} />
+            </div>
+          </DropdownMenuTrigger>
+        )}
       <DropdownMenuContent className="mr-8 p-0">
         <DropdownMenuGroup className="flex flex-col">
           {row.showEdit && (

@@ -19,7 +19,7 @@ export const BankAccountsContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { currentUcrm } = useCompanySessionContext();
+  const { currentUcrm, permissions } = useCompanySessionContext();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [bankAccountsData, setBankAccountsData] = useState<any>();
@@ -46,7 +46,7 @@ export const BankAccountsContextProvider = ({
   }, [currentUcrm?.company?.id]);
 
   useEffect(() => {
-    if (currentUcrm?.company?.id) {
+    if (currentUcrm?.company?.id && permissions?.finance?.viewFinance) {
       fetchBankAccounts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

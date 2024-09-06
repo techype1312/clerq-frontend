@@ -32,6 +32,8 @@ import { editUserSchema, permissionsSchema } from "@/types/schema-embedded";
 import { DefaultRolePermissions } from "@/utils/constants/roles";
 import { PermissionType } from "@/types/permissions";
 import { routesPermissionSetter } from "@/utils/utils";
+import { useCompanySessionContext } from "@/context/CompanySession";
+import { useUserContext } from "@/context/User";
 
 const EditMemberDialog = ({
   row,
@@ -41,6 +43,8 @@ const EditMemberDialog = ({
   onUpdate?: (ucrmId: string, status: Record<string, any>) => void;
 }) => {
   const [open, setOpen] = useState(false);
+  const { userRoleId } = useUserContext();
+  const { permissions: allowedPermissions } = useCompanySessionContext();
   const [roleId, setRoleId] = useState(String(row.role));
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -66,12 +70,21 @@ const EditMemberDialog = ({
     if (loading) return false;
     setLoading(true);
     setServerError("");
-    let routeSortedPermissions = routesPermissionSetter(permissions);
-    return TeamApis.updateTeamMember(row.id, {
-      role: { id: roleId },
-      permissions: routeSortedPermissions,
-    }).then(onUpdateSucess, onError);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (
+      !isDemoEnv() &&
+      userRoleId &&
+      roleId &&
+      (parseInt(roleId) >= userRoleId || userRoleId === 9 //Manager?
+      )
+    ) {
+      if (allowedPermissions?.teams?.manageTeam) {
+        const routeSortedPermissions = routesPermissionSetter(permissions);
+        return TeamApis.updateTeamMember(row.id, {
+          role: { id: roleId },
+          permissions: routeSortedPermissions,
+        }).then(onUpdateSucess, onError);
+      }
+    }
   };
 
   return (
