@@ -12,6 +12,7 @@ import isObject from "lodash/isObject";
 import AddressApis from "@/actions/data/address.data";
 import ProfileSkeleton from "@/components/skeletons/dashboard/ProfileSkeleton";
 import { DEFAULT_COUNTRY_CODE } from "@/utils/constants";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const CompanyContainer = () => {
   const {
@@ -23,6 +24,7 @@ const CompanyContainer = () => {
     removeCompanyLogo,
     updateCompanyDetails,
   } = useCompanyContext();
+  const {permissions} = useCompanySessionContext();
   const [rowData, setRowData] = useState<RowData[]>([]);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -265,7 +267,7 @@ const CompanyContainer = () => {
             Company profile
           </h1>
           {loadingState()}
-          {companyData && (
+          {companyData && permissions?.companySettings?.manageCompanyProfile && (
             <Fragment>
               <div className="mt-auto flex gap-2 items-center border-b pb-4">
                 <ProfilePhotoEditModel

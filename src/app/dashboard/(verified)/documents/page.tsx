@@ -1,6 +1,12 @@
 "use client";
 
-import React, { Fragment, Suspense, useCallback, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import compact from "lodash/compact";
 import isObject from "lodash/isObject";
 import { Check, Minus } from "lucide-react";
@@ -25,9 +31,11 @@ import ShareDocumentsDialog from "@/components/dashboard/documents/ShareDocument
 import DocumentListItem from "@/components/dashboard/documents/DocumentListItem";
 import DocumentApis from "@/actions/data/document.data";
 import DocumentSkeleton from "@/components/skeletons/dashboard/DocumentSkeleton";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const DocumentsPage = () => {
   const { toast, dismiss: dismissToast } = useToast();
+  const { permissions } = useCompanySessionContext();
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentType, setCurrentType] = useState<DocumentTypes>(
@@ -193,7 +201,7 @@ const DocumentsPage = () => {
   ];
 
   useEffect(() => {
-    fetchDocuments();
+    if (permissions?.documents?.downloadDocument) fetchDocuments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -206,7 +214,7 @@ const DocumentsPage = () => {
               Documents
             </h1>
             <div className="mt-2 md:mt-8 flex flex-row md:flex-col overflow-auto gap-2">
-              {documentDetails.map((dt) => (
+              {permissions?.documents?.downloadDocument && documentDetails.map((dt) => (
                 <div
                   key={dt.id}
                   style={{
@@ -255,14 +263,20 @@ const DocumentsPage = () => {
                   {showUpload || (!documents.length && !loading) ? (
                     <div className="flex gap-4 flex-col mt-4 w-full">
                       {!documents.length && !loading && (
-                        <span>No document found! Upload one.</span>
+                        <span>
+                          No document found!
+                          {permissions?.documents?.uploadDocument &&
+                            " Upload one."}
+                        </span>
                       )}
-                      <UploadFile
-                        docType={currentType}
-                        onClose={toggleUploadSection}
-                        hideCloseBtn={!documents.length}
-                        onUploadSuccess={uploadDocumentSuccess}
-                      />
+                      {permissions?.documents?.uploadDocument && (
+                        <UploadFile
+                          docType={currentType}
+                          onClose={toggleUploadSection}
+                          hideCloseBtn={!documents.length}
+                          onUploadSuccess={uploadDocumentSuccess}
+                        />
+                      )}
                     </div>
                   ) : (
                     <Fragment>
@@ -290,7 +304,6 @@ const DocumentsPage = () => {
     </div>
   );
 };
-
 
 export default function Page() {
   return (

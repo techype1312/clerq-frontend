@@ -23,6 +23,8 @@ const getTableColumns = ({
   onStatusUpdate,
   onRemoveInvite,
   onRolePermissionsUpdate,
+  manageTeam,
+  manageInvite,
 }: {
   windowWidth: number;
   onRolePermissionsUpdate: (
@@ -31,6 +33,8 @@ const getTableColumns = ({
   ) => void;
   onStatusUpdate: (ucrmId: string, status: Record<string, any>) => void;
   onRemoveInvite: (inviteId: string) => void;
+  manageTeam: boolean;
+  manageInvite: boolean;
 }): ColumnDef<any>[] => {
   const userProfileCol: ColumnDef<any> = {
     accessorKey: "name",
@@ -98,24 +102,34 @@ const getTableColumns = ({
     },
   };
   if (windowWidth < 576) {
-    return [userProfileCol, userActionsCol];
+    if (manageTeam || manageInvite) {
+      return [userProfileCol, userActionsCol];
+    } else {
+      return [userProfileCol, userStatusCol];
+    }
   }
   if (windowWidth < 768) {
-    return [userProfileCol, userStatusCol, userLastActiveCol, userActionsCol];
+    if (manageTeam || manageInvite) {
+      return [userProfileCol, userStatusCol, userLastActiveCol, userActionsCol];
+    } else {
+      return [userProfileCol, userRoleCol, userStatusCol, userLastActiveCol];
+    }
   }
-  return [
-    userProfileCol,
-    userRoleCol,
-    userStatusCol,
-    userLastActiveCol,
-    userActionsCol,
-  ];
+  if (manageTeam || manageInvite) {
+    return [
+      userProfileCol,
+      userRoleCol,
+      userStatusCol,
+      userLastActiveCol,
+      userActionsCol,
+    ];
+  } else return [userProfileCol, userRoleCol, userStatusCol, userLastActiveCol];
 };
 
 const TeamsPage = () => {
   const { windowWidth } = useMainContext();
   const { userData } = useUserContext();
-  const { currentUcrm } = useCompanySessionContext();
+  const { currentUcrm, permissions } = useCompanySessionContext();
   const [teamMembers, setTeamMembers] = useState<Record<string, any>[]>([]);
   const [teamInvites, setTeamInvites] = useState<Record<string, any>[]>([]);
   const [rowData, setRowData] = useState<Record<string, any>[]>([]);
@@ -204,9 +218,9 @@ const TeamsPage = () => {
       status: tm.status?.id,
       statusLabel: find(statuses, { id: tm.status?.id })?.name,
       showEdit:
-      tm.role?.id !== 3 &&
-      userData?.id !== tm.user?.id &&
-      tm.status?.id === 1,
+        tm.role?.id !== 3 &&
+        userData?.id !== tm.user?.id &&
+        tm.status?.id === 1,
       showStatusUpdate: tm.role?.id !== 3 && userData?.id !== tm.user?.id,
       lastActive: "Yesterday",
       photo: tm.user?.photo,
@@ -259,22 +273,26 @@ const TeamsPage = () => {
           </div>
         )}
         <div className="mt-6 flex gap-1 flex-col items-start">
-          <DataTable
-            showPagination={false}
-            showHeader={true}
-            showDownloadButton={false}
-            showUploadButton={false}
-            columns={getTableColumns({
-              windowWidth,
-              onRemoveInvite,
-              onRolePermissionsUpdate,
-              onStatusUpdate,
-            })}
-            data={rowData}
-            showDownload={false}
-            type="team"
-            loading={loading}
-          />
+          {permissions?.routes?.teams && (
+            <DataTable
+              showPagination={false}
+              showHeader={true}
+              showDownloadButton={false}
+              showUploadButton={false}
+              columns={getTableColumns({
+                windowWidth,
+                onRemoveInvite,
+                onRolePermissionsUpdate,
+                onStatusUpdate,
+                manageTeam: permissions?.teams?.manageTeam,
+                manageInvite: permissions?.teams?.manageInvite,
+              })}
+              data={rowData}
+              showDownload={false}
+              type="team"
+              loading={loading}
+            />
+          )}
         </div>
       </div>
     </div>

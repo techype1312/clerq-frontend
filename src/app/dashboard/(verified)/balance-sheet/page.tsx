@@ -5,12 +5,8 @@ import HeaderCard from "@/components/common/HeaderCard";
 import SheetsData from "@/components/common/SheetsData";
 import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkeleton";
 import { Button } from "@/components/ui/button";
-import {
-  CardDetails,
-  DateRangeType,
-  ErrorProps,
-  SheetDataType,
-} from "@/types/general";
+import { useCompanySessionContext } from "@/context/CompanySession";
+import { DateRangeType, ErrorProps } from "@/types/general";
 import { generateDateRange } from "@/utils/utils";
 import { isObject } from "lodash";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
@@ -20,6 +16,7 @@ const Page = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeType>(
     dateRange[0]
   );
+  const { permissions } = useCompanySessionContext();
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
   const [isOpened, setIsOpened] = useState("all");
   const [serverError, setServerError] = useState("");
@@ -49,7 +46,7 @@ const Page = () => {
   }, [selectedDateRange]);
 
   useEffect(() => {
-    fetchBalanceSheet();
+    if (permissions?.finance?.viewFinance) fetchBalanceSheet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchBalanceSheet]);
 
@@ -75,67 +72,74 @@ const Page = () => {
             <IncomeBankSkeleton showLastSkeleton={false} />
           ) : (
             <Fragment>
-              <HeaderCard cardDetails={sheet?.overview} />
-              <div className="flex flex-col gap-4 mt-4 mx-1">
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => {
-                      setIsOpened("all");
-                    }}
-                    className={
-                      isOpened === "all"
-                        ? "bg-primary text-background-muted hover:text-white"
-                        : "background-muted text-label hover:text-white"
-                    }
-                  >
-                    All
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setIsOpened("Revenue");
-                    }}
-                    className={
-                      isOpened === "Revenue"
-                        ? "bg-primary text-background-muted hover:text-white"
-                        : "background-muted text-label hover:text-white"
-                    }
-                  >
-                    Revenue
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setIsOpened("Liabilities");
-                    }}
-                    className={
-                      isOpened === "Liabilities"
-                        ? "bg-primary text-background-muted hover:text-white"
-                        : "background-muted text-label hover:text-white"
-                    }
-                  >
-                    Liabilities
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setIsOpened("Equity");
-                    }}
-                    className={
-                      isOpened === "Equity"
-                        ? "bg-primary text-background-muted hover:text-white"
-                        : "background-muted text-label hover:text-white"
-                    }
-                  >
-                    Equity
-                  </Button>
-                </div>
-                <SheetsData sheetData={sheet?.revenue} isOpened={isOpened} />
-                <span className="border-b border-muted"></span>
-                <SheetsData
-                  sheetData={sheet?.liabilities}
-                  isOpened={isOpened}
-                />
-                <span className="border-b border-muted"></span>
-                <SheetsData sheetData={sheet?.equity} isOpened={isOpened} />
-              </div>
+              {permissions?.finance?.viewFinance && (
+                <Fragment>
+                  <HeaderCard cardDetails={sheet?.overview} />
+                  <div className="flex flex-col gap-4 mt-4 mx-1">
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => {
+                          setIsOpened("all");
+                        }}
+                        className={
+                          isOpened === "all"
+                            ? "bg-primary text-background-muted hover:text-white"
+                            : "background-muted text-label hover:text-white"
+                        }
+                      >
+                        All
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setIsOpened("Revenue");
+                        }}
+                        className={
+                          isOpened === "Revenue"
+                            ? "bg-primary text-background-muted hover:text-white"
+                            : "background-muted text-label hover:text-white"
+                        }
+                      >
+                        Revenue
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setIsOpened("Liabilities");
+                        }}
+                        className={
+                          isOpened === "Liabilities"
+                            ? "bg-primary text-background-muted hover:text-white"
+                            : "background-muted text-label hover:text-white"
+                        }
+                      >
+                        Liabilities
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setIsOpened("Equity");
+                        }}
+                        className={
+                          isOpened === "Equity"
+                            ? "bg-primary text-background-muted hover:text-white"
+                            : "background-muted text-label hover:text-white"
+                        }
+                      >
+                        Equity
+                      </Button>
+                    </div>
+                    <SheetsData
+                      sheetData={sheet?.revenue}
+                      isOpened={isOpened}
+                    />
+                    <span className="border-b border-muted"></span>
+                    <SheetsData
+                      sheetData={sheet?.liabilities}
+                      isOpened={isOpened}
+                    />
+                    <span className="border-b border-muted"></span>
+                    <SheetsData sheetData={sheet?.equity} isOpened={isOpened} />
+                  </div>
+                </Fragment>
+              )}
             </Fragment>
           )}
         </div>

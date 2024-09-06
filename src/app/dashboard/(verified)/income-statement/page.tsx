@@ -10,12 +10,14 @@ import IncomeBankSkeleton from "@/components/skeletons/dashboard/IncomeBankSkele
 import { DateRangeType, ErrorProps } from "@/types/general";
 import { formatAmount, generateDateRange } from "@/utils/utils";
 import { isObject } from "lodash";
+import { useCompanySessionContext } from "@/context/CompanySession";
 
 const Page = () => {
   const dateRange = generateDateRange();
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeType>(
     dateRange[0]
   );
+  const { permissions } = useCompanySessionContext();
   const [selectedDateRangeIndex, setSelectedDateRangeIndex] = useState(0);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +46,7 @@ const Page = () => {
   }, [selectedDateRange]);
 
   useEffect(() => {
-    fetchIncomeStatement();
+    if (permissions?.routes?.incomeStatement) fetchIncomeStatement();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchIncomeStatement]);
 
@@ -68,15 +70,17 @@ const Page = () => {
                 setSelectedDateRangeIndex={setSelectedDateRangeIndex}
                 selectedDateRangeIndex={selectedDateRangeIndex}
               />
-              <div className="w-fit md:hidden">
-                <DownloadButton
-                  showText={false}
-                  downloadLink={incomeStatement?.overview.download}
-                />
-              </div>
+              {permissions?.reports?.downloadStatementReports && (
+                <div className="w-fit md:hidden">
+                  <DownloadButton
+                    showText={false}
+                    downloadLink={incomeStatement?.overview.download}
+                  />
+                </div>
+              )}
             </div>
           </div>
-          {loading || !incomeStatement ? (
+          {loading || !incomeStatement && !permissions?.routes?.incomeStatement ? (
             <IncomeBankSkeleton showLastSkeleton={true} />
           ) : (
             <Fragment>
@@ -89,9 +93,7 @@ const Page = () => {
               </div>
               <div className="flex justify-between font-semibold text-primary mx-1">
                 <p className="text-base">Net profit</p>
-                <p className="text-base">
-                  {formatAmount(netProfit)}
-                </p>
+                <p className="text-base">{formatAmount(netProfit)}</p>
               </div>
             </Fragment>
           )}

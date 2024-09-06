@@ -76,6 +76,7 @@ const Dashboard = () => {
   }, [selectedTimeLine]);
 
   useEffect(() => {
+    if(permissions?.finance?.viewFinance)
     fetchAnalyticsReport();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAnalyticsReport]);
